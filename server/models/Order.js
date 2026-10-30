@@ -46,7 +46,8 @@ const orderSchema = new mongoose.Schema({
     vehicle: { type: String, default: 'EV Insulated Delivery Pod' }
   }
 }, {
-  timestamps: true
+  timestamps: true,
+  strict: false
 });
 
 export const Order = mongoose.models.Order || mongoose.model('Order', orderSchema);

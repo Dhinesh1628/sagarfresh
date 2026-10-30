@@ -20,7 +20,8 @@ const coolerReturnSchema = new mongoose.Schema({
   notes: { type: String, default: '' },
   courierAssigned: { type: String, default: '' }
 }, {
-  timestamps: true
+  timestamps: true,
+  strict: false
 });
 
 export const CoolerReturn = mongoose.models.CoolerReturn || mongoose.model('CoolerReturn', coolerReturnSchema);

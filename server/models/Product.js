@@ -23,7 +23,8 @@ const productSchema = new mongoose.Schema({
   badge: { type: String, default: '' },
   imageUrl: { type: String, default: '' }
 }, {
-  timestamps: true
+  timestamps: true,
+  strict: false
 });
 
 export const Product = mongoose.models.Product || mongoose.model('Product', productSchema);

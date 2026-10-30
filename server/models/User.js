@@ -12,7 +12,8 @@ const userSchema = new mongoose.Schema({
   depositBalance: { type: Number, default: 0 },
   upiId: { type: String, default: '' }
 }, {
-  timestamps: true
+  timestamps: true,
+  strict: false
 });
 
 export const User = mongoose.models.User || mongoose.model('User', userSchema);

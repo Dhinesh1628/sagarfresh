@@ -1,9 +1,17 @@
 import mongoose from 'mongoose';
+import dns from 'dns';
 import { User } from './models/User.js';
 import { Product } from './models/Product.js';
 import { Order } from './models/Order.js';
 import { Cooler } from './models/Cooler.js';
 import { CoolerReturn } from './models/CoolerReturn.js';
+
+// Resolve MongoDB SRV records reliably across all Windows/ISP networks
+try {
+  dns.setServers(['8.8.8.8', '1.1.1.1']);
+} catch (e) {
+  // Ignore if custom DNS cannot be set
+}
 
 let isConnected = false;
 
@@ -13,17 +21,16 @@ export async function connectMongoDB() {
   try {
     mongoose.set('strictQuery', false);
     await mongoose.connect(uri, {
-      serverSelectionTimeoutMS: 2500, // Quick timeout if no local daemon is running
-      connectTimeoutMS: 3000
+      serverSelectionTimeoutMS: 5000,
+      connectTimeoutMS: 5000
     });
     isConnected = true;
     console.log(`[MongoDB] Connected successfully to: ${mongoose.connection.host}/${mongoose.connection.name}`);
     return true;
   } catch (err) {
     isConnected = false;
-    console.warn(`[MongoDB] Notice: Could not connect to MongoDB at "${uri}".`);
+    console.warn(`[MongoDB] Connection notice (${err.message}).`);
     console.warn(`[MongoDB] Running with local persistent document store fallback.`);
-    console.warn(`[MongoDB] To connect directly to MongoDB Atlas, set MONGODB_URI in .env or your environment.`);
     return false;
   }
 }
