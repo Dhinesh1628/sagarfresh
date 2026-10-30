@@ -1,0 +1,335 @@
+import React, { useState, useEffect } from 'react';
+import type { Cooler, CoolerReturn } from '../types';
+import { api } from '../api';
+import { useAuth } from '../context/AuthContext';
+
+export const CoolerReturnsPage: React.FC = () => {
+  const { user, refreshUser } = useAuth();
+  const [coolers, setCoolers] = useState<Cooler[]>([]);
+  const [returns, setReturns] = useState<CoolerReturn[]>([]);
+  const [loading, setLoading] = useState(true);
+  
+  const [selectedCooler, setSelectedCooler] = useState<Cooler | null>(null);
+  const [pickupSlot, setPickupSlot] = useState('Tomorrow Morning, 7:00 AM - 10:00 AM');
+  const [upiId, setUpiId] = useState(user?.upiId || 'pooja@okhdfcbank');
+  const [returnNotes, setReturnNotes] = useState('Box with gel bricks kept at building security gate.');
+  const [pickupAddress, setPickupAddress] = useState(user?.address || 'Flat 402, Alpine Eco Apartments, Doddanekkundi, Bengaluru');
+  const [submittingReturn, setSubmittingReturn] = useState(false);
+  const [notice, setNotice] = useState<string | null>(null);
+
+  const fetchCoolers = async () => {
+    try {
+      setLoading(true);
+      const data = await api.getMyCoolers();
+      setCoolers(data.coolers);
+      setReturns(data.returns);
+    } catch (err) {
+      console.error('Failed to load cooler inventory:', err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchCoolers();
+  }, [user]);
+
+  const handleRequestReturn = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!selectedCooler) return;
+
+    setSubmittingReturn(true);
+    try {
+      await api.requestCoolerReturn({
+        coolerId: selectedCooler.id,
+        pickupSlot,
+        notes: returnNotes,
+        address: pickupAddress,
+        upiId
+      } as any);
+
+      setSelectedCooler(null);
+      setNotice(`Doorstep pickup confirmed for box ${selectedCooler.id}. ₹250 will be credited to UPI (${upiId}) upon courier scan.`);
+      await fetchCoolers();
+      await refreshUser();
+      setTimeout(() => setNotice(null), 6000);
+    } catch (err: any) {
+      alert(err.message || 'Failed to request return');
+    } finally {
+      setSubmittingReturn(false);
+    }
+  };
+
+  const totalHeld = coolers.length;
+  const depositTotal = totalHeld * 250;
+
+  return (
+    <div className="space-y-6 pb-16">
+      
+      {/* Header */}
+      <div className="bg-white border border-gray-200 rounded-xl p-5 shadow-2xs">
+        <h1 className="text-base font-extrabold text-gray-900">Reusable Cold-Gel Box & Deposit Management</h1>
+        <p className="text-xs text-gray-500 mt-1">
+          Zero-thermocol circular packaging. Schedule doorstep collection anytime to unlock your ₹250 security deposit.
+        </p>
+      </div>
+
+      {notice && (
+        <div className="p-3.5 rounded-lg bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs font-semibold">
+          {notice}
+        </div>
+      )}
+
+      {/* KPI Cards */}
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-xs">
+        <div className="p-4 rounded-xl bg-white border border-gray-200 shadow-2xs">
+          <span className="text-gray-500 block">Security Deposit in Custody</span>
+          <div className="text-xl font-extrabold text-[#d11243] mt-1">₹{depositTotal}</div>
+          <span className="text-gray-400 text-[11px]">₹250 per box currently held</span>
+        </div>
+
+        <div className="p-4 rounded-xl bg-white border border-gray-200 shadow-2xs">
+          <span className="text-gray-500 block">Cold Boxes with You</span>
+          <div className="text-xl font-extrabold text-gray-900 mt-1">{totalHeld} Units</div>
+          <span className="text-gray-400 text-[11px]">Eligible for 1-click doorstep collection</span>
+        </div>
+
+        <div className="p-4 rounded-xl bg-white border border-gray-200 shadow-2xs">
+          <span className="text-gray-500 block">Thermocol Boxes Eliminated</span>
+          <div className="text-xl font-extrabold text-emerald-700 mt-1">{Math.max(14, totalHeld * 3)} Boxes</div>
+          <span className="text-gray-400 text-[11px]">Multi-trip food-grade EPP loop</span>
+        </div>
+      </div>
+
+      {/* Main Grid */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        
+        {/* Left: Active Boxes */}
+        <div className="space-y-3">
+          <div className="flex justify-between items-center">
+            <h3 className="text-xs font-bold uppercase tracking-wider text-gray-600">
+              Boxes in Your Custody ({coolers.length})
+            </h3>
+            <span className="text-xs font-semibold text-gray-500">₹250 / box</span>
+          </div>
+
+          {loading ? (
+            <div className="h-32 flex items-center justify-center text-xs text-gray-400">
+              Loading cooler box inventory...
+            </div>
+          ) : coolers.length === 0 ? (
+            <div className="p-8 bg-white border border-gray-200 rounded-xl text-xs text-gray-500 text-center">
+              You currently have no cold boxes in your possession. Boxes are automatically tagged when you place fresh meat orders.
+            </div>
+          ) : (
+            <div className="space-y-3">
+              {coolers.map((cooler) => {
+                const isPending = cooler.status === 'return_requested';
+                return (
+                  <div
+                    key={cooler.id}
+                    className="p-4 bg-white border border-gray-200 rounded-xl space-y-3 text-xs shadow-2xs"
+                  >
+                    <div className="flex justify-between items-start">
+                      <div>
+                        <div className="flex items-center gap-2">
+                          <span className="font-extrabold text-gray-900 font-mono text-sm">{cooler.id}</span>
+                          <span className={`px-2 py-0.5 rounded text-[10px] font-bold ${
+                            isPending 
+                              ? 'bg-amber-50 text-amber-800 border border-amber-200' 
+                              : 'bg-emerald-50 text-emerald-800 border border-emerald-200'
+                          }`}>
+                            {isPending ? 'Collection Scheduled' : 'At Your Residence'}
+                          </span>
+                        </div>
+                        <p className="text-gray-500 mt-0.5">{cooler.model}</p>
+                      </div>
+
+                      <div className="text-right">
+                        <span className="text-gray-400 text-[10px] block font-medium">Refundable:</span>
+                        <span className="text-emerald-700 font-black text-sm">₹{cooler.depositAmount}</span>
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-2 text-[11px] bg-gray-50 p-2.5 rounded-lg border border-gray-100 text-gray-700">
+                      <div>
+                        <span className="text-gray-400 block">QR Serial:</span>
+                        <span className="font-mono">{cooler.qrCode}</span>
+                      </div>
+                      <div>
+                        <span className="text-gray-400 block">Lifecycle Trips:</span>
+                        <span>{cooler.cyclesUsed} round trips</span>
+                      </div>
+                    </div>
+
+                    <div className="pt-1 flex justify-between items-center">
+                      <span className="text-[11px] text-gray-500">
+                        Assigned: {cooler.assignedHub}
+                      </span>
+
+                      {!isPending ? (
+                        <button
+                          onClick={() => setSelectedCooler(cooler)}
+                          className="px-3.5 py-1.5 bg-[#d11243] hover:bg-[#b80f3b] text-white rounded-lg font-bold text-xs cursor-pointer shadow-2xs transition"
+                        >
+                          Request Return (₹250)
+                        </button>
+                      ) : (
+                        <span className="text-amber-700 text-xs font-semibold">
+                          Pickup executive assigned
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          )}
+        </div>
+
+        {/* Right: Return History */}
+        <div className="space-y-3">
+          <div className="flex justify-between items-center">
+            <h3 className="text-xs font-bold uppercase tracking-wider text-gray-600">
+              Return Requests & UPI Refunds
+            </h3>
+          </div>
+
+          {returns.length === 0 ? (
+            <div className="p-8 bg-white border border-gray-200 rounded-xl text-xs text-gray-500 text-center">
+              No return requests on file. When you request a pickup, the status will show here.
+            </div>
+          ) : (
+            <div className="space-y-3">
+              {returns.map((ret) => {
+                const isRefunded = ret.status === 'refunded';
+                return (
+                  <div
+                    key={ret.id}
+                    className="p-4 bg-white border border-gray-200 rounded-xl space-y-2 text-xs shadow-2xs"
+                  >
+                    <div className="flex justify-between items-center">
+                      <div className="flex items-center gap-2">
+                        <span className="font-extrabold text-gray-900">{ret.id}</span>
+                        <span className="font-mono text-gray-500">({ret.coolerId})</span>
+                      </div>
+                      <span className={`px-2 py-0.5 rounded text-[10px] font-bold ${
+                        isRefunded ? 'bg-emerald-50 text-emerald-800 border border-emerald-200' : 'bg-gray-100 text-gray-700 border border-gray-200'
+                      }`}>
+                        {ret.status.replace('_', ' ')}
+                      </span>
+                    </div>
+
+                    <div className="text-[11px] text-gray-600 space-y-0.5">
+                      <div>Pickup Window: <strong className="text-gray-900">{ret.scheduledPickupSlot}</strong></div>
+                      <div>Collection Address: <span>{ret.userAddress}</span></div>
+                      <div>UPI Reversal: <strong className="text-[#d11243]">{ret.refundMode}</strong></div>
+                    </div>
+
+                    <div className="pt-2 border-t border-gray-100 flex justify-between items-center text-[11px]">
+                      <span className="text-gray-500">Agent: {ret.courierAssigned || 'Local Hub Partner'}</span>
+                      <span className={`font-bold ${isRefunded ? 'text-emerald-700' : 'text-amber-700'}`}>
+                        {isRefunded ? '+₹250 Credited to UPI' : '₹250 Pending Collection Scan'}
+                      </span>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          )}
+
+          {/* Simple step card */}
+          <div className="bg-white border border-gray-200 rounded-xl p-4 text-xs space-y-2 shadow-2xs">
+            <h4 className="font-bold text-gray-900">How Doorstep Return Works</h4>
+            <ol className="list-decimal pl-4 space-y-1 text-gray-600 text-[11px] leading-relaxed">
+              <li>Unpack cuts into your refrigerator crisper.</li>
+              <li>Rinse the internal box and keep ice packs inside.</li>
+              <li>Hand the box to our delivery partner or leave with building security.</li>
+              <li>₹250 is instantly reversed to your registered UPI ID upon handover.</li>
+            </ol>
+          </div>
+
+        </div>
+
+      </div>
+
+      {/* Return Scheduling Modal */}
+      {selectedCooler && (
+        <div className="fixed inset-0 z-50 overflow-y-auto flex items-center justify-center p-4">
+          <div onClick={() => setSelectedCooler(null)} className="fixed inset-0 bg-black/60" />
+
+          <div className="relative w-full max-w-md bg-white border border-gray-200 rounded-xl shadow-2xl p-5 text-gray-800 z-10 space-y-4 text-xs">
+            <div className="flex justify-between items-center pb-2 border-b border-gray-100">
+              <div>
+                <h3 className="font-extrabold text-gray-900 text-sm">Schedule Box Pickup</h3>
+                <p className="text-gray-500 text-[11px]">Box Tag: <span className="font-mono text-[#d11243] font-bold">{selectedCooler.id}</span></p>
+              </div>
+              <button onClick={() => setSelectedCooler(null)} className="text-gray-400 hover:text-gray-600">&times;</button>
+            </div>
+
+            <form onSubmit={handleRequestReturn} className="space-y-3">
+              <div>
+                <label className="block text-gray-700 font-bold mb-1">Pickup Address</label>
+                <input
+                  type="text"
+                  required
+                  value={pickupAddress}
+                  onChange={(e) => setPickupAddress(e.target.value)}
+                  className="w-full px-3 py-2 rounded-lg bg-gray-50 border border-gray-200 text-gray-900 focus:bg-white focus:outline-none focus:border-[#d11243]"
+                />
+              </div>
+
+              <div>
+                <label className="block text-gray-700 font-bold mb-1">UPI ID for ₹250 Refund</label>
+                <input
+                  type="text"
+                  required
+                  value={upiId}
+                  onChange={(e) => setUpiId(e.target.value)}
+                  placeholder="e.g. pooja@okhdfcbank"
+                  className="w-full px-3 py-2 rounded-lg bg-gray-50 border border-gray-200 text-gray-900 focus:bg-white focus:outline-none focus:border-[#d11243]"
+                />
+              </div>
+
+              <div>
+                <label className="block text-gray-700 font-bold mb-1">Pickup Window</label>
+                <select
+                  value={pickupSlot}
+                  onChange={(e) => setPickupSlot(e.target.value)}
+                  className="w-full px-3 py-2 rounded-lg bg-gray-50 border border-gray-200 text-gray-900 focus:bg-white focus:outline-none focus:border-[#d11243]"
+                >
+                  <option value="Tomorrow Morning, 7:00 AM - 10:00 AM">Tomorrow Morning, 7:00 AM - 10:00 AM</option>
+                  <option value="Tomorrow Evening, 5:00 PM - 8:00 PM">Tomorrow Evening, 5:00 PM - 8:00 PM</option>
+                </select>
+              </div>
+
+              <div>
+                <label className="block text-gray-700 font-bold mb-1">Gate / Drop Instructions</label>
+                <input
+                  type="text"
+                  value={returnNotes}
+                  onChange={(e) => setReturnNotes(e.target.value)}
+                  className="w-full px-3 py-2 rounded-lg bg-gray-50 border border-gray-200 text-gray-900 focus:bg-white focus:outline-none focus:border-[#d11243]"
+                />
+              </div>
+
+              <div className="p-3 bg-rose-50/60 rounded-lg border border-rose-100 flex justify-between items-center">
+                <span className="font-bold text-gray-800">Refund Amount:</span>
+                <span className="font-black text-[#d11243] text-sm">₹{selectedCooler.depositAmount}</span>
+              </div>
+
+              <button
+                type="submit"
+                disabled={submittingReturn}
+                className="w-full py-2.5 rounded-lg bg-[#d11243] hover:bg-[#b80f3b] text-white font-extrabold text-xs cursor-pointer shadow-xs transition"
+              >
+                {submittingReturn ? 'Logging Pickup...' : 'Confirm Doorstep Collection'}
+              </button>
+            </form>
+          </div>
+        </div>
+      )}
+
+    </div>
+  );
+};

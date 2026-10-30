@@ -1,0 +1,250 @@
+import React, { useState } from 'react';
+import { X, AlertCircle, Lock, Mail, Phone, MapPin, User as UserIcon } from 'lucide-react';
+import { useAuth } from '../context/AuthContext';
+
+interface AuthModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  defaultRoleHint?: 'customer' | 'admin';
+}
+
+export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, defaultRoleHint }) => {
+  const { login, register } = useAuth();
+  const [mode, setMode] = useState<'login' | 'register'>('login');
+  
+  const [loginIdentifier, setLoginIdentifier] = useState(
+    defaultRoleHint === 'admin' ? 'ops@sagarfresh.in' : ''
+  );
+  const [loginPassword, setLoginPassword] = useState('');
+
+  const [name, setName] = useState('');
+  const [regEmail, setRegEmail] = useState('');
+  const [regPassword, setRegPassword] = useState('');
+  const [phone, setPhone] = useState('');
+  const [address, setAddress] = useState('');
+
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  if (!isOpen) return null;
+
+  const handleLogin = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!loginIdentifier.trim() || !loginPassword) {
+      setError('Please enter your email or mobile number, and password');
+      return;
+    }
+
+    setLoading(true);
+    setError(null);
+    try {
+      await login(loginIdentifier.trim(), loginPassword);
+      onClose();
+    } catch (err: any) {
+      setError(err.message || 'Login failed. Please verify your credentials.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleRegister = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+    setError(null);
+    try {
+      await register({
+        name,
+        email: regEmail,
+        password: regPassword,
+        phone,
+        address
+      });
+      onClose();
+    } catch (err: any) {
+      setError(err.message || 'Registration failed');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div className="fixed inset-0 z-50 overflow-y-auto flex items-center justify-center p-4">
+      <div onClick={onClose} className="fixed inset-0 bg-black/60 backdrop-blur-xs" />
+
+      <div className="relative w-full max-w-md bg-white border border-gray-200 rounded-xl shadow-2xl p-6 text-gray-800 z-10 space-y-4 text-xs">
+        
+        {/* Header */}
+        <div className="flex items-center justify-between pb-3 border-b border-gray-100">
+          <div>
+            <h2 className="text-base font-extrabold text-gray-950">
+              {mode === 'login' ? 'Sign In to Sagar Fresh' : 'Create an Account'}
+            </h2>
+            <p className="text-[11px] text-gray-500 mt-0.5">
+              Enter your registered login details to proceed
+            </p>
+          </div>
+          <button onClick={onClose} className="p-1 text-gray-400 hover:text-gray-600">
+            <X className="w-5 h-5" />
+          </button>
+        </div>
+
+        {error && (
+          <div className="p-3 rounded-lg bg-red-50 border border-red-200 text-red-700 text-xs flex items-center gap-2">
+            <AlertCircle className="w-4 h-4 text-red-600 shrink-0" />
+            <span>{error}</span>
+          </div>
+        )}
+
+        {/* Mode switcher tabs */}
+        <div className="flex bg-gray-100 rounded-lg p-1 border border-gray-200 font-bold">
+          <button
+            onClick={() => { setMode('login'); setError(null); }}
+            className={`flex-1 py-1.5 rounded-md text-center cursor-pointer transition ${
+              mode === 'login' ? 'bg-white text-gray-950 shadow-2xs' : 'text-gray-500 hover:text-gray-900'
+            }`}
+          >
+            Login with Credentials
+          </button>
+          <button
+            onClick={() => { setMode('register'); setError(null); }}
+            className={`flex-1 py-1.5 rounded-md text-center cursor-pointer transition ${
+              mode === 'register' ? 'bg-white text-gray-950 shadow-2xs' : 'text-gray-500 hover:text-gray-900'
+            }`}
+          >
+            New Registration
+          </button>
+        </div>
+
+        {/* Login Form */}
+        {mode === 'login' ? (
+          <form onSubmit={handleLogin} className="space-y-3.5">
+            <div>
+              <label className="block text-gray-700 font-bold mb-1">
+                Email Address or 10-Digit Mobile Number
+              </label>
+              <div className="relative">
+                <Mail className="w-4 h-4 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2" />
+                <input
+                  type="text"
+                  required
+                  value={loginIdentifier}
+                  onChange={(e) => setLoginIdentifier(e.target.value)}
+                  placeholder="e.g. pooja.sundaram@gmail.com or 9876543210"
+                  className="w-full pl-9 pr-3 py-2 rounded-lg bg-gray-50 border border-gray-200 text-gray-900 focus:bg-white focus:outline-none focus:border-[#d11243]"
+                />
+              </div>
+            </div>
+
+            <div>
+              <label className="block text-gray-700 font-bold mb-1">
+                Password
+              </label>
+              <div className="relative">
+                <Lock className="w-4 h-4 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2" />
+                <input
+                  type="password"
+                  required
+                  value={loginPassword}
+                  onChange={(e) => setLoginPassword(e.target.value)}
+                  placeholder="Enter your password"
+                  className="w-full pl-9 pr-3 py-2 rounded-lg bg-gray-50 border border-gray-200 text-gray-900 focus:bg-white focus:outline-none focus:border-[#d11243]"
+                />
+              </div>
+            </div>
+
+            {/* Credential Reference Box (Shows credentials so user knows what to type!) */}
+            <div className="p-3 rounded-lg bg-gray-50 border border-gray-200 text-[11px] space-y-1 text-gray-600">
+              <span className="font-bold text-gray-800 block">Registered Account Credentials:</span>
+              <div className="flex justify-between items-center py-0.5">
+                <span>Customer (Pooja):</span>
+                <span className="font-mono text-gray-900 font-semibold">pooja.sundaram@gmail.com / customer123</span>
+              </div>
+              <div className="flex justify-between items-center py-0.5">
+                <span>Hub Admin (Rajeshwar):</span>
+                <span className="font-mono text-[#d11243] font-semibold">ops@sagarfresh.in / admin123</span>
+              </div>
+            </div>
+
+            <button
+              type="submit"
+              disabled={loading}
+              className="w-full py-2.5 bg-[#d11243] hover:bg-[#b80f3b] text-white rounded-lg font-extrabold text-xs cursor-pointer shadow-xs transition"
+            >
+              {loading ? 'Verifying Credentials...' : 'Sign In'}
+            </button>
+          </form>
+        ) : (
+          /* Register Form */
+          <form onSubmit={handleRegister} className="space-y-3">
+            <div>
+              <label className="block text-gray-700 font-bold mb-1">Full Name</label>
+              <input
+                type="text"
+                required
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                placeholder="e.g. Ananya Sen"
+                className="w-full px-3 py-2 rounded-lg bg-gray-50 border border-gray-200 text-gray-900 focus:bg-white focus:outline-none focus:border-[#d11243]"
+              />
+            </div>
+
+            <div>
+              <label className="block text-gray-700 font-bold mb-1">Email</label>
+              <input
+                type="email"
+                required
+                value={regEmail}
+                onChange={(e) => setRegEmail(e.target.value)}
+                placeholder="ananya@gmail.com"
+                className="w-full px-3 py-2 rounded-lg bg-gray-50 border border-gray-200 text-gray-900 focus:bg-white focus:outline-none focus:border-[#d11243]"
+              />
+            </div>
+
+            <div>
+              <label className="block text-gray-700 font-bold mb-1">Password</label>
+              <input
+                type="password"
+                required
+                value={regPassword}
+                onChange={(e) => setRegPassword(e.target.value)}
+                placeholder="••••••••"
+                className="w-full px-3 py-2 rounded-lg bg-gray-50 border border-gray-200 text-gray-900 focus:bg-white focus:outline-none focus:border-[#d11243]"
+              />
+            </div>
+
+            <div>
+              <label className="block text-gray-700 font-bold mb-1">10-Digit Mobile Number</label>
+              <input
+                type="text"
+                value={phone}
+                onChange={(e) => setPhone(e.target.value)}
+                placeholder="+91 98765 43210"
+                className="w-full px-3 py-2 rounded-lg bg-gray-50 border border-gray-200 text-gray-900 focus:bg-white focus:outline-none focus:border-[#d11243]"
+              />
+            </div>
+
+            <div>
+              <label className="block text-gray-700 font-bold mb-1">Delivery Address</label>
+              <input
+                type="text"
+                value={address}
+                onChange={(e) => setAddress(e.target.value)}
+                placeholder="Flat / Building Name, Locality"
+                className="w-full px-3 py-2 rounded-lg bg-gray-50 border border-gray-200 text-gray-900 focus:bg-white focus:outline-none focus:border-[#d11243]"
+              />
+            </div>
+
+            <button
+              type="submit"
+              disabled={loading}
+              className="w-full py-2.5 bg-[#d11243] hover:bg-[#b80f3b] text-white rounded-lg font-extrabold text-xs cursor-pointer shadow-xs transition"
+            >
+              {loading ? 'Creating Account...' : 'Complete Registration'}
+            </button>
+          </form>
+        )}
+
+      </div>
+    </div>
+  );
+};
