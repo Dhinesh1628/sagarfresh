@@ -2,11 +2,24 @@ import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import bcrypt from 'bcryptjs';
+import mongoose from 'mongoose';
+import { User, Product, Order, Cooler, CoolerReturn } from './mongo.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const isVercel = process.env.VERCEL === '1' || process.env.VERCEL === 'true';
 const DATA_FILE = isVercel ? path.join('/tmp', 'sagar_data.json') : path.join(__dirname, 'data.json');
+
+const getModel = (collection) => {
+  switch (collection) {
+    case 'users': return User;
+    case 'products': return Product;
+    case 'orders': return Order;
+    case 'coolers': return Cooler;
+    case 'coolerReturns': return CoolerReturn;
+    default: return null;
+  }
+};
 
 const hashPassword = (pw) => bcrypt.hashSync(pw, 10);
 
@@ -397,6 +410,41 @@ class Database {
     }
   }
 
+  async syncWithMongo() {
+    if (mongoose.connection.readyState !== 1) return;
+    try {
+      const prodCount = await Product.countDocuments();
+      if (prodCount === 0) {
+        console.log('[MongoDB] Collections empty, auto-seeding Sagar Fresh catalog into MongoDB...');
+        await User.insertMany(INITIAL_DATA.users);
+        await Product.insertMany(INITIAL_DATA.products);
+        await Cooler.insertMany(INITIAL_DATA.coolers);
+        await Order.insertMany(INITIAL_DATA.orders);
+        await CoolerReturn.insertMany(INITIAL_DATA.coolerReturns);
+        console.log('[MongoDB] Auto-seeding into MongoDB complete.');
+      }
+
+      // Sync from MongoDB collections
+      const [users, products, coolers, orders, coolerReturns] = await Promise.all([
+        User.find().lean(),
+        Product.find().lean(),
+        Cooler.find().lean(),
+        Order.find().lean(),
+        CoolerReturn.find().lean()
+      ]);
+
+      if (users.length) this.data.users = users;
+      if (products.length) this.data.products = products;
+      if (coolers.length) this.data.coolers = coolers;
+      if (orders.length) this.data.orders = orders;
+      if (coolerReturns.length) this.data.coolerReturns = coolerReturns;
+      this.save();
+      console.log('[MongoDB] Successfully synchronized cache with live MongoDB.');
+    } catch (err) {
+      console.error('[MongoDB] Error synchronizing with MongoDB:', err);
+    }
+  }
+
   save() {
     try {
       fs.writeFileSync(DATA_FILE, JSON.stringify(this.data, null, 2), 'utf-8');
@@ -419,6 +467,14 @@ class Database {
     }
     this.data[collection].unshift(item);
     this.save();
+
+    // Persist to MongoDB asynchronously if connected
+    if (mongoose.connection.readyState === 1) {
+      const Model = getModel(collection);
+      if (Model) {
+        Model.create(item).catch(err => console.error(`[MongoDB] Error inserting into ${collection}:`, err.message));
+      }
+    }
     return item;
   }
 
@@ -428,6 +484,14 @@ class Database {
     if (idx !== -1) {
       list[idx] = { ...list[idx], ...updates };
       this.save();
+
+      // Persist to MongoDB asynchronously if connected
+      if (mongoose.connection.readyState === 1) {
+        const Model = getModel(collection);
+        if (Model) {
+          Model.updateOne({ id }, { $set: updates }).catch(err => console.error(`[MongoDB] Error updating ${collection}:`, err.message));
+        }
+      }
       return list[idx];
     }
     return null;
@@ -439,6 +503,14 @@ class Database {
     if (idx !== -1) {
       const removed = list.splice(idx, 1)[0];
       this.save();
+
+      // Persist to MongoDB asynchronously if connected
+      if (mongoose.connection.readyState === 1) {
+        const Model = getModel(collection);
+        if (Model) {
+          Model.deleteOne({ id }).catch(err => console.error(`[MongoDB] Error deleting from ${collection}:`, err.message));
+        }
+      }
       return removed;
     }
     return null;

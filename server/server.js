@@ -6,6 +6,7 @@ import { v4 as uuidv4 } from 'uuid';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { db } from './db.js';
+import { connectMongoDB, getMongoStatus } from './mongo.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -13,6 +14,13 @@ const __dirname = path.dirname(__filename);
 const app = express();
 const PORT = process.env.PORT || 5000;
 const JWT_SECRET = process.env.JWT_SECRET || 'sagar-cuts-india-secret-2026';
+
+// Initiate MongoDB connection asynchronously
+connectMongoDB().then(connected => {
+  if (connected) {
+    db.syncWithMongo();
+  }
+});
 
 app.use(cors());
 app.use(express.json());
@@ -23,9 +31,24 @@ if (!process.env.VERCEL) {
   app.use(express.static(clientDist));
 }
 
-// Health check
+// Health & Database Status check
 app.get('/api/health', (req, res) => {
   res.json({ status: 'ok', name: 'Sagar Fresh API', uptime: process.uptime() });
+});
+
+app.get('/api/db/status', (req, res) => {
+  res.json({
+    database: 'MongoDB',
+    engine: 'Mongoose ODM',
+    ...getMongoStatus(),
+    cachedStats: {
+      products: db.get('products').length,
+      orders: db.get('orders').length,
+      coolers: db.get('coolers').length,
+      users: db.get('users').length,
+      returns: db.get('coolerReturns').length
+    }
+  });
 });
 
 app.get('/api', (req, res) => {

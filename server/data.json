@@ -22,7 +22,7 @@
       "phone": "+91 98765 43210",
       "city": "Bengaluru",
       "address": "Flat 402, Alpine Eco Apartments, Doddanekkundi, Marathahalli, Bengaluru 560037",
-      "depositBalance": 750,
+      "depositBalance": 1000,
       "upiId": "pooja@okhdfcbank",
       "createdAt": "2026-02-10T11:20:00.000Z"
     }
@@ -45,7 +45,7 @@
       "catchDate": "Daily 4:00 AM Harbor Catch",
       "origin": "Mangalore Old Port Jetty, Karnataka",
       "cutStyle": "Curry Cut & Tawa Fry Steaks",
-      "stock": 39,
+      "stock": 38,
       "image": "https://images.unsplash.com/photo-1534422298391-e4f8c172dddb?auto=format&fit=crop&w=800&q=80",
       "vacuumSealed": true,
       "featured": true
@@ -266,10 +266,10 @@
       "id": "BOX-BLR-105",
       "qrCode": "SAGAR-BOX-105",
       "model": "ThermalVault 14L - Compact ColdGel Box",
-      "status": "available",
-      "currentOrderId": null,
-      "currentUserId": null,
-      "currentUserName": null,
+      "status": "with_customer",
+      "currentOrderId": "ORD-4165",
+      "currentUserId": "usr_customer",
+      "currentUserName": "Pooja Sundaram",
       "cyclesUsed": 4,
       "lastSanitizedDate": "2026-10-30",
       "depositAmount": 250,
@@ -292,6 +292,54 @@
     }
   ],
   "orders": [
+    {
+      "id": "ORD-4165",
+      "userId": "usr_customer",
+      "customerName": "Pooja Sundaram",
+      "customerEmail": "pooja.sundaram@gmail.com",
+      "customerPhone": "+91 98765 43210",
+      "deliveryAddress": "Flat 402, Alpine Eco, Doddanekkundi, Bengaluru - 560037",
+      "city": "Bengaluru",
+      "items": [
+        {
+          "productId": "prod_1",
+          "name": "Seer Fish / Surmai (Large Steaks)",
+          "price": 799,
+          "quantity": 1,
+          "unit": "500g",
+          "netWeight": "450g",
+          "chillingMethod": "0°C to 4°C FreshSeal™ Cold Chain",
+          "cutStyle": "Curry Cut & Tawa Fry Steaks",
+          "image": "https://images.unsplash.com/photo-1534422298391-e4f8c172dddb?auto=format&fit=crop&w=800&q=80"
+        }
+      ],
+      "subtotal": 799,
+      "coolerDeposit": 250,
+      "shippingFee": 0,
+      "total": 1049,
+      "status": "Delivered",
+      "coolerId": "BOX-BLR-105",
+      "coolerModel": "ThermalVault 14L - Compact ColdGel Box",
+      "liveTemp": 1.8,
+      "deliveryExecutive": "Sunil Gowda (EV Delivery #14, +91 97412 88301)",
+      "tempLog": [
+        {
+          "time": "00:21",
+          "temp": 0.6,
+          "event": "Order Confirmed. Packed in sanitized box BOX-BLR-105."
+        },
+        {
+          "time": "00:21",
+          "temp": 1.8,
+          "event": "Box delivered to Flat 402"
+        }
+      ],
+      "deliverySlot": "Today, Express in 90 Mins",
+      "trackingCode": "SAGAR-TRK-3643",
+      "paymentMethod": "UPI (Google Pay)",
+      "createdAt": "2026-10-30T18:51:39.123Z",
+      "deliveryNotes": ""
+    },
     {
       "id": "ORD-7551",
       "userId": "usr_customer",
