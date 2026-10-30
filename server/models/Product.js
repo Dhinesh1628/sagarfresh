@@ -21,7 +21,8 @@ const productSchema = new mongoose.Schema({
   rating: { type: Number, default: 4.8 },
   reviewsCount: { type: Number, default: 120 },
   badge: { type: String, default: '' },
-  imageUrl: { type: String, default: '' }
+  imageUrl: { type: String, default: '' },
+  image: { type: String, default: '' }
 }, {
   timestamps: true,
   strict: false

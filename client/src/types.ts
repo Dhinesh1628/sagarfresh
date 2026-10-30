@@ -29,8 +29,9 @@ export interface Product {
   origin: string;
   cutStyle: string;
   stock: number;
-  image: string;
-  vacuumSealed: boolean;
+  image?: string;
+  imageUrl?: string;
+  vacuumSealed?: boolean;
   featured?: boolean;
 }
 

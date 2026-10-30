@@ -140,9 +140,13 @@ export const CatalogPage: React.FC<CatalogPageProps> = ({
                 {/* Image & Badges */}
                 <div className="relative h-48 bg-gray-100 overflow-hidden">
                   <img
-                    src={product.image}
+                    src={product.image || product.imageUrl || 'https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&w=800&q=80'}
                     alt={product.name}
                     className="w-full h-full object-cover"
+                    loading="lazy"
+                    onError={(e) => {
+                      (e.target as HTMLImageElement).src = 'https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&w=800&q=80';
+                    }}
                   />
                   
                   {/* ETA tag */}

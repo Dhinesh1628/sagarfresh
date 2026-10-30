@@ -30,7 +30,7 @@
       "upiId": "pooja@okhdfcbank",
       "createdAt": "2026-02-10T11:20:00.000Z",
       "__v": 0,
-      "updatedAt": "2026-10-30T19:00:48.132Z"
+      "updatedAt": "2026-10-30T19:02:30.909Z"
     }
   ],
   "products": [
@@ -56,10 +56,11 @@
       "rating": 4.8,
       "reviewsCount": 120,
       "badge": "",
-      "imageUrl": "",
+      "imageUrl": "https://images.unsplash.com/photo-1534422298391-e4f8c172dddb?auto=format&fit=crop&w=800&q=80",
       "__v": 0,
       "createdAt": "2026-10-30T19:00:48.193Z",
-      "updatedAt": "2026-10-30T19:00:48.193Z"
+      "updatedAt": "2026-10-30T19:02:30.906Z",
+      "image": "https://images.unsplash.com/photo-1534422298391-e4f8c172dddb?auto=format&fit=crop&w=800&q=80"
     },
     {
       "_id": "6ae4e960a752ca05794d5cce",
@@ -83,10 +84,11 @@
       "rating": 4.8,
       "reviewsCount": 120,
       "badge": "",
-      "imageUrl": "",
+      "imageUrl": "https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2?auto=format&fit=crop&w=800&q=80",
       "__v": 0,
       "createdAt": "2026-10-30T19:00:48.193Z",
-      "updatedAt": "2026-10-30T19:00:48.193Z"
+      "updatedAt": "2026-10-30T19:00:48.193Z",
+      "image": "https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2?auto=format&fit=crop&w=800&q=80"
     },
     {
       "_id": "6ae4e960a752ca05794d5ccf",
@@ -110,10 +112,11 @@
       "rating": 4.8,
       "reviewsCount": 120,
       "badge": "",
-      "imageUrl": "",
+      "imageUrl": "https://images.unsplash.com/photo-1565680018434-b513d5e5fd47?auto=format&fit=crop&w=800&q=80",
       "__v": 0,
       "createdAt": "2026-10-30T19:00:48.193Z",
-      "updatedAt": "2026-10-30T19:00:48.193Z"
+      "updatedAt": "2026-10-30T19:00:48.193Z",
+      "image": "https://images.unsplash.com/photo-1565680018434-b513d5e5fd47?auto=format&fit=crop&w=800&q=80"
     },
     {
       "_id": "6ae4e960a752ca05794d5cd0",
@@ -137,10 +140,11 @@
       "rating": 4.8,
       "reviewsCount": 120,
       "badge": "",
-      "imageUrl": "",
+      "imageUrl": "https://images.unsplash.com/photo-1603048588665-791ca8aea617?auto=format&fit=crop&w=800&q=80",
       "__v": 0,
       "createdAt": "2026-10-30T19:00:48.193Z",
-      "updatedAt": "2026-10-30T19:00:48.193Z"
+      "updatedAt": "2026-10-30T19:00:48.193Z",
+      "image": "https://images.unsplash.com/photo-1603048588665-791ca8aea617?auto=format&fit=crop&w=800&q=80"
     },
     {
       "_id": "6ae4e960a752ca05794d5cd1",
@@ -164,10 +168,11 @@
       "rating": 4.8,
       "reviewsCount": 120,
       "badge": "",
-      "imageUrl": "",
+      "imageUrl": "https://images.unsplash.com/photo-1604503468506-a8da13d82791?auto=format&fit=crop&w=800&q=80",
       "__v": 0,
       "createdAt": "2026-10-30T19:00:48.193Z",
-      "updatedAt": "2026-10-30T19:00:48.193Z"
+      "updatedAt": "2026-10-30T19:00:48.193Z",
+      "image": "https://images.unsplash.com/photo-1604503468506-a8da13d82791?auto=format&fit=crop&w=800&q=80"
     },
     {
       "_id": "6ae4e960a752ca05794d5cd2",
@@ -191,10 +196,11 @@
       "rating": 4.8,
       "reviewsCount": 120,
       "badge": "",
-      "imageUrl": "",
+      "imageUrl": "https://images.unsplash.com/photo-1587593810167-a84920ea0781?auto=format&fit=crop&w=800&q=80",
       "__v": 0,
       "createdAt": "2026-10-30T19:00:48.193Z",
-      "updatedAt": "2026-10-30T19:00:48.193Z"
+      "updatedAt": "2026-10-30T19:00:48.193Z",
+      "image": "https://images.unsplash.com/photo-1587593810167-a84920ea0781?auto=format&fit=crop&w=800&q=80"
     },
     {
       "_id": "6ae4e960a752ca05794d5cd3",
@@ -218,10 +224,11 @@
       "rating": 4.8,
       "reviewsCount": 120,
       "badge": "",
-      "imageUrl": "",
+      "imageUrl": "https://images.unsplash.com/photo-1599488615731-7e5c2823ff28?auto=format&fit=crop&w=800&q=80",
       "__v": 0,
       "createdAt": "2026-10-30T19:00:48.193Z",
-      "updatedAt": "2026-10-30T19:00:48.193Z"
+      "updatedAt": "2026-10-30T19:00:48.193Z",
+      "image": "https://images.unsplash.com/photo-1599488615731-7e5c2823ff28?auto=format&fit=crop&w=800&q=80"
     },
     {
       "_id": "6ae4e960a752ca05794d5cd4",
@@ -245,110 +252,31 @@
       "rating": 4.8,
       "reviewsCount": 120,
       "badge": "",
-      "imageUrl": "",
+      "imageUrl": "https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&w=800&q=80",
       "__v": 0,
       "createdAt": "2026-10-30T19:00:48.193Z",
-      "updatedAt": "2026-10-30T19:00:48.193Z"
+      "updatedAt": "2026-10-30T19:00:48.193Z",
+      "image": "https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&w=800&q=80"
     }
   ],
   "coolers": [
     {
+      "_id": "6ae4e9c6d3dfa1be68125774",
       "id": "BOX-BLR-983",
       "qrCode": "SAGAR-BOX-BLR-983",
       "model": "ThermalVault 18L - Reusable EPP Cold-Gel Box",
       "status": "with_customer",
-      "currentOrderId": "ORD-1484",
+      "currentOrderId": null,
       "currentUserId": "usr_customer",
       "currentUserName": "Pooja Sundaram",
       "cyclesUsed": 1,
       "lastSanitizedDate": "2026-10-30",
       "depositAmount": 250,
       "maxHoldingHours": 36,
-      "assignedHub": "Bengaluru Regional Hub Depot"
-    },
-    {
-      "id": "BOX-BLR-101",
-      "qrCode": "SAGAR-BOX-101",
-      "model": "ThermalVault 18L - Reusable EPP Cold-Gel Box",
-      "status": "with_customer",
-      "currentOrderId": "ord_101",
-      "currentUserId": "usr_customer",
-      "currentUserName": "Pooja Sundaram",
-      "cyclesUsed": 11,
-      "lastSanitizedDate": "2026-10-28",
-      "depositAmount": 250,
-      "maxHoldingHours": 36,
-      "assignedHub": "Bengaluru East (Mahadevapura Hub)"
-    },
-    {
-      "id": "BOX-BLR-102",
-      "qrCode": "SAGAR-BOX-102",
-      "model": "ThermalVault 18L - Reusable EPP Cold-Gel Box",
-      "status": "return_requested",
-      "currentOrderId": "ord_098",
-      "currentUserId": "usr_customer",
-      "currentUserName": "Pooja Sundaram",
-      "cyclesUsed": 19,
-      "lastSanitizedDate": "2026-10-22",
-      "depositAmount": 250,
-      "maxHoldingHours": 36,
-      "assignedHub": "Bengaluru East (Mahadevapura Hub)"
-    },
-    {
-      "id": "BOX-BLR-103",
-      "qrCode": "SAGAR-BOX-103",
-      "model": "ThermalVault 24L - Dual Phase ColdGel Box",
-      "status": "in_transit",
-      "currentOrderId": "ord_102",
-      "currentUserId": "usr_customer",
-      "currentUserName": "Pooja Sundaram",
-      "cyclesUsed": 7,
-      "lastSanitizedDate": "2026-10-29",
-      "depositAmount": 250,
-      "maxHoldingHours": 48,
-      "assignedHub": "Bengaluru Central (Indiranagar Hub)"
-    },
-    {
-      "id": "BOX-BLR-104",
-      "qrCode": "SAGAR-BOX-104",
-      "model": "ThermalVault 18L - Reusable EPP Cold-Gel Box",
-      "status": "with_customer",
-      "currentOrderId": "ORD-7551",
-      "currentUserId": "usr_customer",
-      "currentUserName": "Pooja Sundaram",
-      "cyclesUsed": 14,
-      "lastSanitizedDate": "2026-10-30",
-      "depositAmount": 250,
-      "maxHoldingHours": 36,
-      "assignedHub": "Bengaluru Central Hub Depot"
-    },
-    {
-      "id": "BOX-BLR-105",
-      "qrCode": "SAGAR-BOX-105",
-      "model": "ThermalVault 14L - Compact ColdGel Box",
-      "status": "with_customer",
-      "currentOrderId": "ORD-4165",
-      "currentUserId": "usr_customer",
-      "currentUserName": "Pooja Sundaram",
-      "cyclesUsed": 4,
-      "lastSanitizedDate": "2026-10-30",
-      "depositAmount": 250,
-      "maxHoldingHours": 24,
-      "assignedHub": "Bengaluru Central Hub Depot"
-    },
-    {
-      "id": "BOX-BLR-106",
-      "qrCode": "SAGAR-BOX-106",
-      "model": "ThermalVault 18L - Reusable EPP Cold-Gel Box",
-      "status": "sanitizing",
-      "currentOrderId": null,
-      "currentUserId": null,
-      "currentUserName": null,
-      "cyclesUsed": 26,
-      "lastSanitizedDate": "2026-10-29",
-      "depositAmount": 250,
-      "maxHoldingHours": 36,
-      "assignedHub": "Wash & UV Sanitization Bay"
+      "assignedHub": "Bengaluru Regional Hub Depot",
+      "createdAt": "2026-10-30T19:02:30.911Z",
+      "updatedAt": "2026-10-30T19:02:30.917Z",
+      "__v": 0
     }
   ],
   "orders": [
