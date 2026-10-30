@@ -15,7 +15,8 @@ yarn-error.log*
 .system_generated/
 .DS_Store
 
-# Environment
+# Environment & Vercel
 .env
 .env.local
 .env.production
+.vercel/

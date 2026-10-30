@@ -5,7 +5,8 @@ import bcrypt from 'bcryptjs';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-const DATA_FILE = path.join(__dirname, 'data.json');
+const isVercel = process.env.VERCEL === '1' || process.env.VERCEL === 'true';
+const DATA_FILE = isVercel ? path.join('/tmp', 'sagar_data.json') : path.join(__dirname, 'data.json');
 
 const hashPassword = (pw) => bcrypt.hashSync(pw, 10);
 
@@ -380,6 +381,12 @@ class Database {
 
   init() {
     try {
+      if (fs.existsSync(DATA_FILE)) {
+        const raw = fs.readFileSync(DATA_FILE, 'utf-8');
+        this.data = JSON.parse(raw);
+        console.log('[DB] Loaded Sagar Fresh database from persistence');
+        return;
+      }
       this.data = JSON.parse(JSON.stringify(INITIAL_DATA));
       this.save();
       console.log('[DB] Initialized Sagar Fresh Licious-grade database');

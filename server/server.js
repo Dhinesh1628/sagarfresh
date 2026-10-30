@@ -19,7 +19,18 @@ app.use(express.json());
 
 // Serve static frontend in production
 const clientDist = path.join(__dirname, '../client/dist');
-app.use(express.static(clientDist));
+if (!process.env.VERCEL) {
+  app.use(express.static(clientDist));
+}
+
+// Health check
+app.get('/api/health', (req, res) => {
+  res.json({ status: 'ok', name: 'Sagar Fresh API', uptime: process.uptime() });
+});
+
+app.get('/api', (req, res) => {
+  res.json({ status: 'ok', name: 'Sagar Fresh API', uptime: process.uptime() });
+});
 
 // Middleware
 const authenticate = (req, res, next) => {
@@ -560,11 +571,17 @@ app.get('/api/admin/metrics', authenticate, requireAdmin, (req, res) => {
   });
 });
 
-app.get('*', (req, res) => {
-  const indexHtml = path.join(clientDist, 'index.html');
-  res.sendFile(indexHtml);
-});
+const isDirectRun = process.argv[1] && fileURLToPath(import.meta.url) === path.resolve(process.argv[1]);
 
-app.listen(PORT, () => {
-  console.log(`[Sagar Cuts API] Running on port ${PORT}`);
-});
+if (!process.env.VERCEL && isDirectRun) {
+  app.get('*', (req, res) => {
+    const indexHtml = path.join(clientDist, 'index.html');
+    res.sendFile(indexHtml);
+  });
+
+  app.listen(PORT, () => {
+    console.log(`[Sagar Cuts API] Running on port ${PORT}`);
+  });
+}
+
+export default app;

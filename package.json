@@ -3,12 +3,22 @@
   "version": "1.0.0",
   "description": "Indian D2C Fresh Meat & Coastal Seafood Platform with Circular Reusable Cold-Box Logistics",
   "private": true,
+  "type": "module",
   "scripts": {
     "start": "cd server && npm start",
     "dev:server": "cd server && npm run dev",
     "dev:client": "cd client && npm run dev",
     "install:all": "npm --prefix server install && npm --prefix client install",
+    "build": "cd client && npm install && npm run build",
     "build:client": "cd client && npm run build",
     "test": "node test-workflows.js"
+  },
+  "dependencies": {
+    "bcryptjs": "^3.0.3",
+    "cors": "^2.8.5",
+    "dotenv": "^17.3.1",
+    "express": "^4.21.2",
+    "jsonwebtoken": "^9.0.2",
+    "uuid": "^11.1.0"
   }
 }
