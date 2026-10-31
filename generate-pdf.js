@@ -8,9 +8,9 @@ const __dirname = path.dirname(__filename);
 
 async function main() {
   const edgePath = 'C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe';
-  const htmlPath = path.join(__dirname, 'deck.html');
-  const pdfPath = path.join(__dirname, 'SAGAR_FRESH_BUSINESS_DECK.pdf');
-  const artifactPdfPath = 'C:\\Users\\dines\\.gemini\\antigravity\\brain\\099d1afc-5924-49f5-bd3a-3ed010f92bb9\\SAGAR_FRESH_BUSINESS_DECK.pdf';
+  const htmlPath = path.join(__dirname, 'intern_deck.html');
+  const pdfPath = path.join(__dirname, 'SAGAR_FRESH_INTERN_PROJECT_DECK.pdf');
+  const artifactPdfPath = 'C:\\Users\\dines\\.gemini\\antigravity\\brain\\099d1afc-5924-49f5-bd3a-3ed010f92bb9\\SAGAR_FRESH_INTERN_PROJECT_DECK.pdf';
 
   console.log('Launching browser using Edge executable at:', edgePath);
   const browser = await puppeteer.launch({

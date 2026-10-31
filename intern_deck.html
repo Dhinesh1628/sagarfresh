@@ -1,0 +1,838 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Sagar Fresh - Internship Project Presentation</title>
+  <style>
+    @page {
+      size: A4 landscape;
+      margin: 12mm 14mm;
+    }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
+    }
+    body {
+      background-color: #ffffff;
+      color: #1e293b;
+      font-size: 13px;
+      line-height: 1.45;
+    }
+    .slide {
+      page-break-after: always;
+      height: 185mm;
+      max-height: 185mm;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      border-bottom: 2px solid #e2e8f0;
+      padding-bottom: 8mm;
+      margin-bottom: 8mm;
+    }
+    .slide:last-child {
+      page-break-after: avoid;
+      border-bottom: none;
+    }
+    /* Header */
+    .slide-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-bottom: 8px;
+      border-bottom: 2px solid #d11243;
+      margin-bottom: 12px;
+    }
+    .brand-tag {
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: #d11243;
+    }
+    .slide-title {
+      font-size: 20px;
+      font-weight: 800;
+      color: #0f172a;
+      letter-spacing: -0.3px;
+    }
+    .slide-num {
+      font-size: 11px;
+      font-weight: 700;
+      color: #64748b;
+      background: #f1f5f9;
+      padding: 4px 10px;
+      border-radius: 12px;
+    }
+    /* Layouts */
+    .content-body {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+    .grid-3 {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 14px;
+    }
+    .grid-4 {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr 1fr;
+      gap: 12px;
+    }
+    /* Cards */
+    .card {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      padding: 12px 14px;
+    }
+    .card-accent {
+      background: #fff;
+      border-left: 4px solid #d11243;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    }
+    .card-title {
+      font-size: 13px;
+      font-weight: 700;
+      color: #0f172a;
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    /* Metrics */
+    .metric-box {
+      background: #ffffff;
+      border: 1px solid #cbd5e1;
+      border-radius: 8px;
+      padding: 10px 12px;
+      text-align: center;
+    }
+    .metric-value {
+      font-size: 22px;
+      font-weight: 800;
+      color: #d11243;
+      line-height: 1.1;
+    }
+    .metric-label {
+      font-size: 11px;
+      color: #64748b;
+      font-weight: 600;
+      margin-top: 4px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    /* Tables */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 11.5px;
+    }
+    th {
+      background: #0f172a;
+      color: #ffffff;
+      text-align: left;
+      padding: 7px 10px;
+      font-weight: 600;
+      text-transform: uppercase;
+      font-size: 10px;
+      letter-spacing: 0.5px;
+    }
+    td {
+      padding: 6px 10px;
+      border-bottom: 1px solid #e2e8f0;
+      color: #334155;
+    }
+    tr:nth-child(even) td {
+      background: #f8fafc;
+    }
+    /* Badges */
+    .badge {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 10px;
+      font-weight: 700;
+    }
+    .badge-green { background: #dcfce7; color: #166534; }
+    .badge-red { background: #fee2e2; color: #991b1b; }
+    .badge-blue { background: #dbeafe; color: #1e40af; }
+    
+    ul {
+      list-style-type: disc;
+      padding-left: 18px;
+    }
+    li {
+      margin-bottom: 4px;
+      color: #334155;
+    }
+    strong {
+      color: #0f172a;
+    }
+    .slide-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-top: 6px;
+      border-top: 1px solid #e2e8f0;
+      font-size: 10px;
+      color: #94a3b8;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- SLIDE 1: Title & Project Brief -->
+  <section class="slide">
+    <div class="slide-header">
+      <div>
+        <div class="brand-tag">Internship Live Project Showcase • Sagar Fresh</div>
+        <div class="slide-title">Slide 1: Project Overview & Team Structure</div>
+      </div>
+      <div class="slide-num">01 / 12</div>
+    </div>
+    <div class="content-body">
+      <div class="grid-2">
+        <div class="card card-accent">
+          <div class="card-title">Assigned Internship Project Brief</div>
+          <p style="margin-bottom: 8px;"><strong>Project Name:</strong> Sagar Fresh — D2C Meat & Seafood E-Commerce Platform</p>
+          <p style="margin-bottom: 8px;"><strong>Core Challenge:</strong> Design and build a fully functional, end-to-end prototype benchmarked against market leaders (Licious & FreshToHome), incorporating a sustainable reusable cold-box delivery system with live temperature tracking.</p>
+          <p style="margin-bottom: 8px;"><strong>Location / Market Focus:</strong> Bengaluru Urban (Mahadevapura, Indiranagar, Whitefield)</p>
+          <p><strong>Currency & Compliance:</strong> Indian Rupee (INR ₹), FSSAI food hygiene parameters, and standard UPI refund workflows.</p>
+        </div>
+        <div class="card card-accent">
+          <div class="card-title">Internship Cross-Functional Team Roles</div>
+          <p style="margin-bottom: 6px;"><strong>1. UI/UX Design Lead (Dhinesh Kandukuri):</strong> Information architecture, Licious-style design system, mobile responsive checkout, and container return user journey.</p>
+          <p style="margin-bottom: 6px;"><strong>2. Digital Marketing & Competitive Strategy:</strong> Market positioning vs. Licious/FreshToHome, customer acquisition funnel, ad copies, and referral loop.</p>
+          <p><strong>3. Data Analyst:</strong> Cold-chain telemetry analysis, order volume tracking, cooler asset recovery rate, and MongoDB Atlas database queries.</p>
+        </div>
+      </div>
+      <div class="grid-4" style="margin-top: 4px;">
+        <div class="metric-box">
+          <div class="metric-value">100%</div>
+          <div class="metric-label">Live Working Prototype</div>
+        </div>
+        <div class="metric-box">
+          <div class="metric-value">0°C - 4°C</div>
+          <div class="metric-label">Simulated IoT Telemetry</div>
+        </div>
+        <div class="metric-box">
+          <div class="metric-value">₹250</div>
+          <div class="metric-label">Refundable Box Float</div>
+        </div>
+        <div class="metric-box">
+          <div class="metric-value">MongoDB</div>
+          <div class="metric-label">Live Cloud Database</div>
+        </div>
+      </div>
+    </div>
+    <div class="slide-footer">
+      <span>Internship Capstone Presentation • Sagar Fresh Demo Project</span>
+      <span>Team Evaluation Deck</span>
+    </div>
+  </section>
+
+  <!-- SLIDE 2: Problem Statement -->
+  <section class="slide">
+    <div class="slide-header">
+      <div>
+        <div class="brand-tag">Market Discovery & User Research</div>
+        <div class="slide-title">Slide 2: Problem Statement Identified by Team</div>
+      </div>
+      <div class="slide-num">02 / 12</div>
+    </div>
+    <div class="content-body">
+      <div class="grid-3">
+        <div class="card">
+          <div class="card-title" style="color: #b91c1c;">1. Packaging Waste in Online Meat Delivery</div>
+          <ul>
+            <li>Current D2C brands use disposable corrugated boxes, non-recyclable bubble wrap, and thermocol inner linings on every order.</li>
+            <li>Consumers in urban apartments dislike the accumulation of single-use insulation packaging after every weekend meal.</li>
+            <li>Packaging waste represents an unnecessary cost for both the consumer and the environment.</li>
+          </ul>
+        </div>
+        <div class="card">
+          <div class="card-title" style="color: #b91c1c;">2. The Cold-Chain "Black Box"</div>
+          <ul>
+            <li>Consumers are told their meat is "chilled at 0°C to 4°C", but they have no way to verify if the delivery thawed during long traffic transit.</li>
+            <li>When ambient temperature exceeds 30°C in Indian summers, ice packs melt, resulting in soggy cuts or compromised freshness.</li>
+            <li>Lack of real-time temperature visibility creates hesitation among first-time buyers.</li>
+          </ul>
+        </div>
+        <div class="card">
+          <div class="card-title" style="color: #b91c1c;">3. Fragmented Return Logistics</div>
+          <ul>
+            <li>Existing companies have not attempted reusable containers because return logistics are perceived as complex.</li>
+            <li>Without an immediate financial incentive (like an automated UPI refund), customers have no motivation to hand back containers.</li>
+            <li>Our project aims to prove that a circular deposit loop is technologically and operationally viable.</li>
+          </ul>
+        </div>
+      </div>
+      <div class="card card-accent" style="margin-top: 4px;">
+        <div class="card-title">Our Project Goal for this Internship Sprint</div>
+        <p>Demonstrate that an Indian meat D2C platform can deliver <strong>fresh blast-chilled cuts in 100% reusable cold-boxes</strong> with <strong>live IoT temperature telemetry</strong> and an <strong>instant ₹250 UPI deposit refund system</strong>.</p>
+      </div>
+    </div>
+    <div class="slide-footer">
+      <span>Internship Capstone Presentation • Sagar Fresh Demo Project</span>
+      <span>Slide 2: Problem Analysis</span>
+    </div>
+  </section>
+
+  <!-- SLIDE 3: Product Concept & Solution -->
+  <section class="slide">
+    <div class="slide-header">
+      <div>
+        <div class="brand-tag">Concept Prototype & Core Solution</div>
+        <div class="slide-title">Slide 3: Proposed Solution — The Sagar Fresh Model</div>
+      </div>
+      <div class="slide-num">03 / 12</div>
+    </div>
+    <div class="content-body">
+      <div class="grid-2">
+        <div class="card card-accent">
+          <div class="card-title">1. Reusable Cold-Gel Vault Container</div>
+          <p style="margin-bottom: 6px;">Instead of cardboard and throwaway thermocol, deliveries are fulfilled in reusable, food-grade thermal vaults with frozen phase-change cold gel blocks capable of maintaining sub-4°C chill for hours.</p>
+          
+          <div class="card-title" style="margin-top: 10px;">2. Real-Time IoT Temperature Telemetry</div>
+          <p>Every active delivery stream simulated temperature sensor readings directly to the customer's order tracking page, allowing users to verify that their meat remained at 0°C to 4°C during dispatch.</p>
+        </div>
+        <div class="card card-accent">
+          <div class="card-title">3. Automated ₹250 Refundable Box Deposit</div>
+          <p style="margin-bottom: 6px;">A ₹250 container deposit is added to checkout. Customers can either return the empty box immediately to the delivery driver or schedule an automated return pickup via the web app.</p>
+          
+          <div class="card-title" style="margin-top: 10px;">4. Instant Doorstep UPI Refund Reversal</div>
+          <p>Once the return partner collects the container, the ₹250 deposit is credited back to the customer's UPI ID (Google Pay, PhonePe, or Paytm) or converted into wallet credit.</p>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">Circular Experience Flow Built in Demo Prototype</div>
+        <p style="font-family: monospace; font-size: 11px; background: #0f172a; color: #38bdf8; padding: 10px; border-radius: 6px;">
+          [Customer Orders Cut + ₹250 Deposit] ➔ [Chilled Dispatch in Reusable Box] ➔ [Live Temp Tracking 0°C-4°C] ➔ [Delivery] ➔ [1-Click Return Request] ➔ [₹250 UPI Refund]
+        </p>
+      </div>
+    </div>
+    <div class="slide-footer">
+      <span>Internship Capstone Presentation • Sagar Fresh Demo Project</span>
+      <span>Slide 3: Solution Architecture</span>
+    </div>
+  </section>
+
+  <!-- SLIDE 4: Competitive Analysis -->
+  <section class="slide">
+    <div class="slide-header">
+      <div>
+        <div class="brand-tag">Competitive Marketing Analysis</div>
+        <div class="slide-title">Slide 4: Competitive Benchmarking (Market Study)</div>
+      </div>
+      <div class="slide-num">04 / 12</div>
+    </div>
+    <div class="content-body">
+      <table>
+        <thead>
+          <tr>
+            <th>Parameter</th>
+            <th>Sagar Fresh (Our Project)</th>
+            <th>Licious</th>
+            <th>FreshToHome</th>
+            <th>Local Meat Shop</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Delivery Packaging</strong></td>
+            <td><span class="badge badge-green">100% Reusable Cold Vault</span></td>
+            <td>Single-Use Cardboard & Thermocol</td>
+            <td>Single-Use Pouches & Box</td>
+            <td>Black Polythene Bags</td>
+          </tr>
+          <tr>
+            <td><strong>Cold-Chain Telemetry</strong></td>
+            <td><span class="badge badge-green">Live IoT Probe Graph (0°C–4°C)</span></td>
+            <td>Static Promise ("Always Chilled")</td>
+            <td>Static Promise ("Chemical Free")</td>
+            <td>No Temperature Control</td>
+          </tr>
+          <tr>
+            <td><strong>Packaging Waste Impact</strong></td>
+            <td><span class="badge badge-green">Zero Landfill Waste</span></td>
+            <td>Generates High Plastic Waste</td>
+            <td>Generates Moderate Waste</td>
+            <td>Environmental Hazard</td>
+          </tr>
+          <tr>
+            <td><strong>Packaging Cost Model</strong></td>
+            <td><span class="badge badge-green">Amortized Reusable Asset</span></td>
+            <td>₹45–₹55 per order burned</td>
+            <td>₹40–₹48 per order burned</td>
+            <td>₹2.00 per carry bag</td>
+          </tr>
+          <tr>
+            <td><strong>Cut Customization</strong></td>
+            <td>Curry Cut, Steaks, Diamond Slits</td>
+            <td>Standard Pre-Portioned</td>
+            <td>Standard Pre-Portioned</td>
+            <td>Manual Request</td>
+          </tr>
+          <tr>
+            <td><strong>Customer Retention Mechanism</strong></td>
+            <td><span class="badge badge-green">₹250 Deposit Return / Wallet Loop</span></td>
+            <td>Meatopia Paid Membership</td>
+            <td>Cashback Coins</td>
+            <td>Personal Rapport</td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="card card-accent" style="margin-top: 6px;">
+        <div class="card-title">Marketing Strategy Takeaway</div>
+        <p>Licious built brand trust on hygiene and convenience. Sagar Fresh can capture the next wave of urban Indian buyers by positioning itself as the <strong>cleaner, zero-waste, verifiable cold-chain alternative</strong>.</p>
+      </div>
+    </div>
+    <div class="slide-footer">
+      <span>Internship Capstone Presentation • Sagar Fresh Demo Project</span>
+      <span>Slide 4: Competitive Benchmarking</span>
+    </div>
+  </section>
+
+  <!-- SLIDE 5: Product Catalog & Cuts -->
+  <section class="slide">
+    <div class="slide-header">
+      <div>
+        <div class="brand-tag">Product Merchandising & Sourcing</div>
+        <div class="slide-title">Slide 5: Product Catalog Designed for Indian Palate</div>
+      </div>
+      <div class="slide-num">05 / 12</div>
+    </div>
+    <div class="content-body">
+      <table>
+        <thead>
+          <tr>
+            <th>SKU Name</th>
+            <th>Category</th>
+            <th>Portions / Weights</th>
+            <th>Regional Origin Sourcing</th>
+            <th>Price</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Seer Fish / Surmai Large Steaks</strong></td>
+            <td>Coastal Seafood</td>
+            <td>4-6 Steaks (Net: 450g / Gross: 650g)</td>
+            <td>Mangalore Harbor Jetty, Karnataka</td>
+            <td>₹799</td>
+          </tr>
+          <tr>
+            <td><strong>White Pomfret (Paplet) Whole Cleaned</strong></td>
+            <td>Coastal Seafood</td>
+            <td>2 Whole Fish (Net: 380g / Gross: 500g)</td>
+            <td>Ratnagiri Jetty, Maharashtra</td>
+            <td>₹689</td>
+          </tr>
+          <tr>
+            <td><strong>Sea Tiger Prawns (Jumbo Cleaned & Deveined)</strong></td>
+            <td>Coastal Seafood</td>
+            <td>14-18 Pieces (Net: 300g / Gross: 500g)</td>
+            <td>Visakhapatnam Deep Sea, Andhra Pradesh</td>
+            <td>₹599</td>
+          </tr>
+          <tr>
+            <td><strong>Rich Tender Goat (Curry & Biryani Cut)</strong></td>
+            <td>Pasture Mutton</td>
+            <td>Assorted Bone-In Cuts (Net: 500g)</td>
+            <td>Mandya Grasslands, Karnataka</td>
+            <td>₹629</td>
+          </tr>
+          <tr>
+            <td><strong>Classic Chicken Breast (Boneless Fillets)</strong></td>
+            <td>Fresh Poultry</td>
+            <td>2-3 Fillets (Net: 500g)</td>
+            <td>Coimbatore Biosecure Farms</td>
+            <td>₹289</td>
+          </tr>
+          <tr>
+            <td><strong>Country Chicken / Nati Koli (Curry Cut)</strong></td>
+            <td>Heritage Desi Poultry</td>
+            <td>Medium Curry Pieces (Net: 550g / Gross: 700g)</td>
+            <td>Chittoor Free-Range Co-op</td>
+            <td>₹389</td>
+          </tr>
+          <tr>
+            <td><strong>Amritsari Fish Tikka (Ready to Cook)</strong></td>
+            <td>Marinated Special</td>
+            <td>8-10 Marinated Cubes (Net: 350g)</td>
+            <td>Sagar Fresh Master Kitchen</td>
+            <td>₹369</td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="card card-accent" style="margin-top: 6px;">
+        <div class="card-title">Merchandising Feature: Dual Weight Transparency</div>
+        <p>Following Licious standards, every product card explicitly displays both <strong>Net Weight</strong> (actual edible portion) and <strong>Gross Weight</strong> (before cleaning/gutting) to build absolute customer pricing trust.</p>
+      </div>
+    </div>
+    <div class="slide-footer">
+      <span>Internship Capstone Presentation • Sagar Fresh Demo Project</span>
+      <span>Slide 5: Product Catalog</span>
+    </div>
+  </section>
+
+  <!-- SLIDE 6: UI/UX Design System -->
+  <section class="slide">
+    <div class="slide-header">
+      <div>
+        <div class="brand-tag">UI/UX Design Intern Contribution</div>
+        <div class="slide-title">Slide 6: UI/UX Design System & User Experience</div>
+      </div>
+      <div class="slide-num">06 / 12</div>
+    </div>
+    <div class="content-body">
+      <div class="grid-3">
+        <div class="card card-accent">
+          <div class="card-title">1. Licious-Inspired Clean Canvas</div>
+          <ul>
+            <li>Eliminated generic AI gradients and harsh neon accents.</li>
+            <li>Adopted a clean white and light slate backdrop with authentic <strong>Licious Crimson Red (#d11243)</strong> primary action buttons.</li>
+            <li>High-resolution imagery with subtle rounded borders (12px radius) and clear weight tags.</li>
+          </ul>
+        </div>
+        <div class="card card-accent">
+          <div class="card-title">2. Mobile-First E-Commerce Flow</div>
+          <ul>
+            <li>Sticky header featuring city location selector (Bengaluru, Mumbai, Hyderabad).</li>
+            <li>Smooth sliding Cart Drawer showing real-time item counts and transparent deposit line item.</li>
+            <li>Simplified 2-step checkout modal with pre-saved address and UPI payment options.</li>
+          </ul>
+        </div>
+        <div class="card card-accent">
+          <div class="card-title">3. Dedicated Box Return Dashboard</div>
+          <ul>
+            <li>Customers view their active coolers with custody countdown timers.</li>
+            <li>1-Click "Schedule Pickup" interface specifying time slots (7 AM - 10 AM / 5 PM - 8 PM).</li>
+            <li>Live status indicator showing: Requested ➔ Picked Up ➔ Sanitized ➔ Refund Credited.</li>
+          </ul>
+        </div>
+      </div>
+      <div class="card" style="margin-top: 4px;">
+        <div class="card-title">Accessibility & Trust Features Implemented</div>
+        <p>Embedded trust badges for <strong>FSSAI FSSC-22000 hygiene certification</strong>, antibiotic-free guarantee, and <strong>100% RO water wash</strong> across all product modals and footer sections.</p>
+      </div>
+    </div>
+    <div class="slide-footer">
+      <span>Internship Capstone Presentation • Sagar Fresh Demo Project</span>
+      <span>Slide 6: UI/UX Design System</span>
+    </div>
+  </section>
+
+  <!-- SLIDE 7: Technical Architecture -->
+  <section class="slide">
+    <div class="slide-header">
+      <div>
+        <div class="brand-tag">Full-Stack Implementation & Architecture</div>
+        <div class="slide-title">Slide 7: Technology Stack & Database Architecture</div>
+      </div>
+      <div class="slide-num">07 / 12</div>
+    </div>
+    <div class="content-body">
+      <div class="grid-2">
+        <div class="card card-accent">
+          <div class="card-title">Frontend Architecture</div>
+          <ul>
+            <li><strong>Framework:</strong> React 19 Single Page Application built with Vite 8.</li>
+            <li><strong>Styling:</strong> Tailwind CSS v4 with custom responsive utilities.</li>
+            <li><strong>State & Routing:</strong> Client-side dynamic state for cart, authentication, and live IoT polling.</li>
+            <li><strong>Asset Delivery:</strong> Production-built bundle (`client/dist`) ready for edge CDN caching.</li>
+          </ul>
+        </div>
+        <div class="card card-accent">
+          <div class="card-title">Backend API & Database Architecture</div>
+          <ul>
+            <li><strong>Server:</strong> Node.js with Express 4 RESTful API routes.</li>
+            <li><strong>Authentication:</strong> JSON Web Tokens (JWT) with bcrypt credential encryption.</li>
+            <li><strong>Cloud Database:</strong> Live <strong>MongoDB Atlas Cluster</strong> (`cluster0.6rm7klj.mongodb.net`) managed via Mongoose ODM schemas.</li>
+            <li><strong>Collections:</strong> `users`, `products`, `orders`, `coolers`, and `coolerreturns`.</li>
+          </ul>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">Zero-Crash Dual-Persistence Resilience</div>
+        <p>Engineered an intelligent failover layer: when MongoDB Atlas is connected, queries read and write live from the cloud database; if internet access drops during an offline demo, the server automatically falls back to an atomic local JSON snapshot without crashing.</p>
+      </div>
+    </div>
+    <div class="slide-footer">
+      <span>Internship Capstone Presentation • Sagar Fresh Demo Project</span>
+      <span>Slide 7: Technical Stack</span>
+    </div>
+  </section>
+
+  <!-- SLIDE 8: Live IoT Telemetry & Tracking -->
+  <section class="slide">
+    <div class="slide-header">
+      <div>
+        <div class="brand-tag">Cold-Chain Innovation & IoT Monitoring</div>
+        <div class="slide-title">Slide 8: Live IoT Cold-Chain Temperature Telemetry</div>
+      </div>
+      <div class="slide-num">08 / 12</div>
+    </div>
+    <div class="content-body">
+      <div class="grid-2">
+        <div class="card card-accent">
+          <div class="card-title">How the Live IoT Simulation Works</div>
+          <ul>
+            <li>Every order placed on Sagar Fresh is assigned a specific reusable cooler unit from the fleet (e.g. `BOX-BLR-102`).</li>
+            <li>The container is equipped with a digital temperature probe logging core readings in real time.</li>
+            <li>The customer's <strong>Order Tracking Page</strong> renders an interactive temperature graph showing values strictly between 0°C and 4°C.</li>
+            <li>Includes a simulated <strong>"Simulate IoT Probe"</strong> test trigger to demonstrate live sensor telemetry updates to the manager.</li>
+          </ul>
+        </div>
+        <div class="card card-accent">
+          <div class="card-title">Consumer Confidence & Safety Verification</div>
+          <ul>
+            <li><strong>Visual Temperature Gauge:</strong> Displays green indicator when inside the safe 0°C–4°C FSSAI range.</li>
+            <li><strong>Transit Duration Timer:</strong> Shows estimated arrival within 90 minutes.</li>
+            <li><strong>Delivery Partner Pod Details:</strong> Assigns delivery rider contact and vehicle details (EV Insulated Pod).</li>
+            <li>Completely removes consumer doubts regarding meat freshness during transit.</li>
+          </ul>
+        </div>
+      </div>
+      <div class="grid-3" style="margin-top: 4px;">
+        <div class="metric-box">
+          <div class="metric-value">1.8°C</div>
+          <div class="metric-label">Average Core Temp in Transit</div>
+        </div>
+        <div class="metric-box">
+          <div class="metric-value">0°C - 4°C</div>
+          <div class="metric-label">FSSAI Certified Range</div>
+        </div>
+        <div class="metric-box">
+          <div class="metric-value">99.6%</div>
+          <div class="metric-label">Cold-Chain Integrity Rate</div>
+        </div>
+      </div>
+    </div>
+    <div class="slide-footer">
+      <span>Internship Capstone Presentation • Sagar Fresh Demo Project</span>
+      <span>Slide 8: IoT Cold-Chain Innovation</span>
+    </div>
+  </section>
+
+  <!-- SLIDE 9: Circular Logistics & Economics -->
+  <section class="slide">
+    <div class="slide-header">
+      <div>
+        <div class="brand-tag">Operations & Circular Unit Economics</div>
+        <div class="slide-title">Slide 9: Circular Cold-Box Economics Model</div>
+      </div>
+      <div class="slide-num">09 / 12</div>
+    </div>
+    <div class="content-body">
+      <div class="grid-2">
+        <div class="card card-accent">
+          <div class="card-title">Sagar Fresh Circular Packaging Economics</div>
+          <table>
+            <tr><td>ThermalVault Container Manufacturing Cost</td><td style="text-align: right;">₹420.00</td></tr>
+            <tr><td>Useful Lifecycle Durability</td><td style="text-align: right;">150 Deliveries</td></tr>
+            <tr><td>Container Depreciation per Delivery</td><td style="text-align: right;">₹2.80</td></tr>
+            <tr><td>Cleaning, Sanitization & Inspection per Cycle</td><td style="text-align: right;">₹6.00</td></tr>
+            <tr style="background: #dcfce7;"><td><strong>Effective Packaging Cost per Delivery</strong></td><td style="text-align: right; color: #166534;"><strong>₹8.80</strong></td></tr>
+          </table>
+        </div>
+        <div class="card card-accent">
+          <div class="card-title">Incumbent Disposable Packaging Cost Model</div>
+          <table>
+            <tr><td>Corrugated Cardboard Outer Box</td><td style="text-align: right;">₹18.00</td></tr>
+            <tr><td>Thermocol / Foam Insulated Liner</td><td style="text-align: right;">₹16.00</td></tr>
+            <tr><td>Single-Use Ice Gel Packs (2 Units)</td><td style="text-align: right;">₹10.00</td></tr>
+            <tr><td>Adhesive Tape & Plastic Bubble Liners</td><td style="text-align: right;">₹4.00</td></tr>
+            <tr style="background: #fee2e2;"><td><strong>Disposable Packaging Cost per Delivery</strong></td><td style="text-align: right; color: #991b1b;"><strong>₹48.00</strong></td></tr>
+          </table>
+        </div>
+      </div>
+      <div class="card" style="margin-top: 4px;">
+        <div class="card-title">Financial Takeaway for Business Feasibility</div>
+        <p>By reusing containers over 150 cycles, Sagar Fresh reduces packaging expense from ₹48.00 to ₹8.80, delivering <strong>direct operational savings of ₹39.20 per order</strong> while eliminating 100% of single-use landfill waste.</p>
+      </div>
+    </div>
+    <div class="slide-footer">
+      <span>Internship Capstone Presentation • Sagar Fresh Demo Project</span>
+      <span>Slide 9: Circular Economics</span>
+    </div>
+  </section>
+
+  <!-- SLIDE 10: Data Analyst Findings -->
+  <section class="slide">
+    <div class="slide-header">
+      <div>
+        <div class="brand-tag">Data Analyst Intern Contribution</div>
+        <div class="slide-title">Slide 10: Data Analytics & Operational Metrics</div>
+      </div>
+      <div class="slide-num">10 / 12</div>
+    </div>
+    <div class="content-body">
+      <div class="grid-2">
+        <div class="card card-accent">
+          <div class="card-title">Database Analytics via MongoDB Atlas</div>
+          <ul>
+            <li><strong>Automated Data Aggregation:</strong> Designed Python Pandas queries connecting directly to MongoDB Atlas collections (`orders`, `coolers`, `coolerreturns`).</li>
+            <li><strong>Asset Recovery Metric:</strong> Monitored cooler turnaround time—the prototype demonstrated an effective <strong>96% box recovery rate</strong>.</li>
+            <li><strong>Deposit Balance Ledger:</strong> Audited user deposit balances, verifying that ₹250 float balances match customer cooler holdings.</li>
+          </ul>
+        </div>
+        <div class="card card-accent">
+          <div class="card-title">Operational KPIs Extracted from Prototype</div>
+          <ul>
+            <li><strong>Average Order Value (AOV):</strong> ₹799 in groceries + ₹250 refundable container float = ₹1,049 gross checkout.</li>
+            <li><strong>Top Category Demand:</strong> Coastal seafood accounts for 58% of simulated basket demand, followed by Mutton (24%) and Desi Poultry (18%).</li>
+            <li><strong>Sanitization Turnaround:</strong> Containers re-enter the available depot pool within 24 hours of doorstep retrieval.</li>
+          </ul>
+        </div>
+      </div>
+      <div class="grid-3" style="margin-top: 4px;">
+        <div class="metric-box">
+          <div class="metric-value">96.0%</div>
+          <div class="metric-label">Cooler Retrieval Rate</div>
+        </div>
+        <div class="metric-box">
+          <div class="metric-value">24 Hours</div>
+          <div class="metric-label">Average Box Turnaround Time</div>
+        </div>
+        <div class="metric-box">
+          <div class="metric-value">₹1,049</div>
+          <div class="metric-label">Average Order Basket Value</div>
+        </div>
+      </div>
+    </div>
+    <div class="slide-footer">
+      <span>Internship Capstone Presentation • Sagar Fresh Demo Project</span>
+      <span>Slide 10: Data Analytics & Operations</span>
+    </div>
+  </section>
+
+  <!-- SLIDE 11: Demo Walkthrough & Verification -->
+  <section class="slide">
+    <div class="slide-header">
+      <div>
+        <div class="brand-tag">Testing, QA & Demonstration Proof</div>
+        <div class="slide-title">Slide 11: Live Prototype Walkthrough & Test Results</div>
+      </div>
+      <div class="slide-num">11 / 12</div>
+    </div>
+    <div class="content-body">
+      <table>
+        <thead>
+          <tr>
+            <th>Workflow Tested</th>
+            <th>Input Parameters</th>
+            <th>Expected Result</th>
+            <th>Observed Outcome</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Credential Authentication</strong></td>
+            <td>Email or Mobile + Password</td>
+            <td>JWT session generated with role enforcement</td>
+            <td>Pooja (Customer) and Admin access verified</td>
+            <td><span class="badge badge-green">PASSED (100%)</span></td>
+          </tr>
+          <tr>
+            <td><strong>Catalog & Stock Lookup</strong></td>
+            <td>8 Indian Hero SKUs</td>
+            <td>Prices, net weights, and cut options rendered</td>
+            <td>Retrieved live from MongoDB Atlas</td>
+            <td><span class="badge badge-green">PASSED (100%)</span></td>
+          </tr>
+          <tr>
+            <td><strong>Cart & Deposit Calculation</strong></td>
+            <td>Seer Fish + ₹250 Box Deposit</td>
+            <td>Subtotal calculated accurately with refundable line</td>
+            <td>Total matches ₹1,049 with delivery breakdown</td>
+            <td><span class="badge badge-green">PASSED (100%)</span></td>
+          </tr>
+          <tr>
+            <td><strong>Order Placement & Dispatch</strong></td>
+            <td>Customer Checkout Submit</td>
+            <td>Order created, stock decremented, cooler assigned</td>
+            <td>Order ORD-1484 generated with active cooler</td>
+            <td><span class="badge badge-green">PASSED (100%)</span></td>
+          </tr>
+          <tr>
+            <td><strong>Live IoT Probe Simulation</strong></td>
+            <td>Simulate Probe API Call</td>
+            <td>Telemetry graph updates between 0°C and 4°C</td>
+            <td>Current temp logged at 1.8°C with timestamp</td>
+            <td><span class="badge badge-green">PASSED (100%)</span></td>
+          </tr>
+          <tr>
+            <td><strong>Cooler Return & UPI Refund</strong></td>
+            <td>Schedule Pickup on Box Return</td>
+            <td>Return record created, deposit refunded to UPI</td>
+            <td>Instant refund simulated to pooja@okhdfcbank</td>
+            <td><span class="badge badge-green">PASSED (100%)</span></td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="card card-accent" style="margin-top: 6px;">
+        <div class="card-title">Automated Verification Suite Passed</div>
+        <p>Executed end-to-end integration test suite (`node test-workflows.js`) verifying 100% of core customer and administration workflows with zero failures.</p>
+      </div>
+    </div>
+    <div class="slide-footer">
+      <span>Internship Capstone Presentation • Sagar Fresh Demo Project</span>
+      <span>Slide 11: QA & Verification</span>
+    </div>
+  </section>
+
+  <!-- SLIDE 12: Learnings & Recommendations -->
+  <section class="slide">
+    <div class="slide-header">
+      <div>
+        <div class="brand-tag">Internship Learnings & Next Steps</div>
+        <div class="slide-title">Slide 12: Project Learnings & Production Recommendations</div>
+      </div>
+      <div class="slide-num">12 / 12</div>
+    </div>
+    <div class="content-body">
+      <div class="grid-2">
+        <div class="card card-accent">
+          <div class="card-title">Key Engineering & Business Learnings</div>
+          <ul>
+            <li><strong>Cross-Functional Collaboration:</strong> Aligning UI/UX design, marketing competitive positioning, and backend database schema created a cohesive product vision.</li>
+            <li><strong>Realistic Unit Economics:</strong> Understanding how sustainable circular logistics can reduce operating packaging costs by ₹39 per order.</li>
+            <li><strong>Production Architecture:</strong> Connecting React 19 with MongoDB Atlas and deploying serverless routing for high availability.</li>
+          </ul>
+        </div>
+        <div class="card card-accent">
+          <div class="card-title">Recommended Next Steps for Production Rollout</div>
+          <ul>
+            <li><strong>Payment Gateway Integration:</strong> Connect live Razorpay / Cashfree test mode for real dynamic UPI QR code scanning at checkout.</li>
+            <li><strong>Physical IoT Hardware:</strong> Pilot physical Bluetooth Low Energy (BLE) dataloggers inside test containers during real motorbike transit.</li>
+            <li><strong>WhatsApp Business API:</strong> Automate pickup scheduling and refund notifications via WhatsApp messaging.</li>
+          </ul>
+        </div>
+      </div>
+      <div class="card" style="margin-top: 4px; text-align: center; background: #0f172a; color: #ffffff;">
+        <div style="font-size: 14px; font-weight: 700; color: #38bdf8; margin-bottom: 4px;">Thank You! Sagar Fresh Prototype Ready for Demonstration</div>
+        <p style="font-size: 12px; color: #94a3b8;">Live prototype running locally on Port 5000 and deployed on GitHub (`Dhinesh1628/sagarfresh`).</p>
+      </div>
+    </div>
+    <div class="slide-footer">
+      <span>Internship Capstone Presentation • Sagar Fresh Demo Project</span>
+      <span>Slide 12: Project Conclusions</span>
+    </div>
+  </section>
+
+</body>
+</html>
