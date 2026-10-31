@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Sagar Fresh - Brand Guidelines & UI Design System</title>
+  <style>
+    @page {
+      size: A4 portrait;
+      margin: 14mm 16mm;
+    }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
+    }
+    body {
+      background-color: #ffffff;
+      color: #1e293b;
+      font-size: 12.5px;
+      line-height: 1.5;
+    }
+    .page {
+      page-break-after: always;
+      height: 268mm;
+      max-height: 268mm;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      border-bottom: 2px solid #e2e8f0;
+      padding-bottom: 8mm;
+      margin-bottom: 8mm;
+    }
+    .page:last-child {
+      page-break-after: avoid;
+      border-bottom: none;
+      margin-bottom: 0;
+    }
+    /* Headers */
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      padding-bottom: 10px;
+      border-bottom: 2px solid #d11243;
+      margin-bottom: 16px;
+    }
+    .brand-title {
+      font-size: 20px;
+      font-weight: 900;
+      color: #0f172a;
+      letter-spacing: -0.3px;
+    }
+    .doc-subtitle {
+      font-size: 11px;
+      font-weight: 700;
+      color: #d11243;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      margin-bottom: 2px;
+    }
+    .page-indicator {
+      font-size: 11px;
+      font-weight: 700;
+      color: #64748b;
+      background: #f1f5f9;
+      padding: 4px 10px;
+      border-radius: 12px;
+    }
+    /* Layouts */
+    .section-title {
+      font-size: 14px;
+      font-weight: 800;
+      color: #0f172a;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+    .grid-3 {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 12px;
+    }
+    .grid-4 {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr 1fr;
+      gap: 10px;
+    }
+    /* Swatches */
+    .swatch-card {
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      overflow: hidden;
+      background: #ffffff;
+    }
+    .swatch-preview {
+      height: 48px;
+      width: 100%;
+    }
+    .swatch-info {
+      padding: 8px 10px;
+    }
+    .swatch-name {
+      font-size: 11px;
+      font-weight: 700;
+      color: #0f172a;
+    }
+    .swatch-hex {
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-size: 10px;
+      color: #64748b;
+      font-weight: 600;
+      margin-top: 2px;
+    }
+    .swatch-usage {
+      font-size: 9.5px;
+      color: #94a3b8;
+      margin-top: 2px;
+    }
+    /* Cards */
+    .card {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      padding: 12px 14px;
+    }
+    .card-accent {
+      background: #ffffff;
+      border-left: 4px solid #d11243;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+    }
+    /* Tables */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 11px;
+    }
+    th {
+      background: #0f172a;
+      color: #ffffff;
+      text-align: left;
+      padding: 7px 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      font-size: 9.5px;
+      letter-spacing: 0.5px;
+    }
+    td {
+      padding: 6px 10px;
+      border-bottom: 1px solid #e2e8f0;
+      color: #334155;
+    }
+    tr:nth-child(even) td {
+      background: #f8fafc;
+    }
+    /* Badges */
+    .badge {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 10px;
+      font-weight: 700;
+    }
+    .badge-red { background: #fee2e2; color: #991b1b; }
+    .badge-green { background: #dcfce7; color: #166534; }
+    .badge-amber { background: #fef3c7; color: #92400e; }
+    /* Footer */
+    .footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-top: 8px;
+      border-top: 1px solid #e2e8f0;
+      font-size: 9.5px;
+      color: #94a3b8;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- PAGE 1: Brand Overview & Color System -->
+  <section class="page">
+    <div>
+      <div class="header">
+        <div>
+          <div class="doc-subtitle">Sagar Fresh • Design System & UI Specifications</div>
+          <div class="brand-title">Brand Identity & Master Color Palette</div>
+        </div>
+        <div class="page-indicator">Page 01 / 03</div>
+      </div>
+
+      <!-- Identity & Philosophy -->
+      <div class="grid-2" style="margin-bottom: 16px;">
+        <div class="card card-accent">
+          <div class="section-title" style="margin-bottom: 6px;">Brand Identity</div>
+          <p style="margin-bottom: 6px;"><strong>Brand Name:</strong> Sagar Fresh (Tagline: <em>Farm to Fork Fresh</em>)</p>
+          <p style="margin-bottom: 6px;"><strong>Aesthetic Benchmark:</strong> Licious-Grade Premium Freshness. Clean white/gray canvas with bold crimson accents and clinical food safety transparency.</p>
+          <p><strong>Core Tone:</strong> Authentic, appetizing, hygienic, zero-hype, and environmentally accountable.</p>
+        </div>
+        <div class="card card-accent">
+          <div class="section-title" style="margin-bottom: 6px;">Strict Anti-Vibecoding Rule</div>
+          <p style="color: #475569; font-size: 12px; line-height: 1.5;">
+            • <strong>NO</strong> neon/harsh radial gradient backgrounds.<br>
+            • <strong>NO</strong> dark crypto/cyberpunk UI themes.<br>
+            • <strong>NO</strong> liquid glassmorphism or floating translucent orbs.<br>
+            • <strong>YES:</strong> High-contrast crisp typography, real raw meat/fish photography, and transparent Net/Gross weight labeling.
+          </p>
+        </div>
+      </div>
+
+      <!-- Primary Color Swatches -->
+      <div class="section-title">1. Primary & Surface Color Swatches</div>
+      <div class="grid-4" style="margin-bottom: 16px;">
+        <div class="swatch-card">
+          <div class="swatch-preview" style="background: #d11243;"></div>
+          <div class="swatch-info">
+            <div class="swatch-name">Licious Crimson</div>
+            <div class="swatch-hex">#d11243</div>
+            <div class="swatch-usage">Primary buttons, brand mark, active tabs</div>
+          </div>
+        </div>
+        <div class="swatch-card">
+          <div class="swatch-preview" style="background: #b80f3b;"></div>
+          <div class="swatch-info">
+            <div class="swatch-name">Deep Crimson</div>
+            <div class="swatch-hex">#b80f3b</div>
+            <div class="swatch-usage">Button hover state & focused elements</div>
+          </div>
+        </div>
+        <div class="swatch-card">
+          <div class="swatch-preview" style="background: #fff1f2;"></div>
+          <div class="swatch-info">
+            <div class="swatch-name">Soft Rose Tint</div>
+            <div class="swatch-hex">#fff1f2</div>
+            <div class="swatch-usage">Active category pills, light promo badges</div>
+          </div>
+        </div>
+        <div class="swatch-card">
+          <div class="swatch-preview" style="background: #f7f7f9;"></div>
+          <div class="swatch-info">
+            <div class="swatch-name">Warm Canvas</div>
+            <div class="swatch-hex">#f7f7f9</div>
+            <div class="swatch-usage">Entire page application background</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Functional & Text Palette -->
+      <div class="section-title">2. Functional & Text Palette</div>
+      <div class="grid-4" style="margin-bottom: 14px;">
+        <div class="swatch-card">
+          <div class="swatch-preview" style="background: #0f172a;"></div>
+          <div class="swatch-info">
+            <div class="swatch-name">Midnight Slate</div>
+            <div class="swatch-hex">#0f172a</div>
+            <div class="swatch-usage">Headings, titles, prices, top headers</div>
+          </div>
+        </div>
+        <div class="swatch-card">
+          <div class="swatch-preview" style="background: #475569;"></div>
+          <div class="swatch-info">
+            <div class="swatch-name">Charcoal Gray</div>
+            <div class="swatch-hex">#475569</div>
+            <div class="swatch-usage">Body text, product descriptions</div>
+          </div>
+        </div>
+        <div class="swatch-card">
+          <div class="swatch-preview" style="background: #16a34a;"></div>
+          <div class="swatch-info">
+            <div class="swatch-name">Cold-Chain Emerald</div>
+            <div class="swatch-hex">#16a34a</div>
+            <div class="swatch-usage">0°C to 4°C Safe indicator, discounts</div>
+          </div>
+        </div>
+        <div class="swatch-card">
+          <div class="swatch-preview" style="background: #25D366;"></div>
+          <div class="swatch-info">
+            <div class="swatch-name">WhatsApp Green</div>
+            <div class="swatch-hex">#25D366</div>
+            <div class="swatch-usage">Floating WhatsApp quick-order CTA</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" style="font-size: 11px;">
+        <strong>Border & Divider Standard:</strong> Use <code>#e2e8f0</code> (Tailwind <code>border-gray-200</code>) for all card outlines and table rows. Never use stark black or colored outlines.
+      </div>
+    </div>
+
+    <div class="footer">
+      <span>Sagar Fresh Design Handbook • Confidential Team Document</span>
+      <span>Page 1: Color Architecture</span>
+    </div>
+  </section>
+
+  <!-- PAGE 2: Typography & Spacing Hierarchy -->
+  <section class="page">
+    <div>
+      <div class="header">
+        <div>
+          <div class="doc-subtitle">Sagar Fresh • Design System & UI Specifications</div>
+          <div class="brand-title">Typography Scale & Hierarchy Specs</div>
+        </div>
+        <div class="page-indicator">Page 02 / 03</div>
+      </div>
+
+      <div class="card card-accent" style="margin-bottom: 16px;">
+        <div class="section-title" style="margin-bottom: 4px;">Primary Typography Family</div>
+        <p style="font-size: 12px; margin-bottom: 4px;"><strong>System UI / Inter Font Stack:</strong></p>
+        <code style="background: #0f172a; color: #38bdf8; padding: 4px 8px; border-radius: 4px; font-size: 10.5px; display: inline-block;">
+          font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        </code>
+      </div>
+
+      <!-- Typography Spec Table -->
+      <div class="section-title">Typography Scale Reference</div>
+      <table style="margin-bottom: 16px;">
+        <thead>
+          <tr>
+            <th>Role / Element</th>
+            <th>Size (px)</th>
+            <th>Weight</th>
+            <th>Line Height</th>
+            <th>Letter Spacing</th>
+            <th>Color</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Hero Headline</strong></td>
+            <td><strong>32px</strong> (2rem)</td>
+            <td>900 (Black)</td>
+            <td>1.15</td>
+            <td>-0.5px</td>
+            <td>#0f172a</td>
+          </tr>
+          <tr>
+            <td><strong>Section Header (H2)</strong></td>
+            <td><strong>22px</strong> (1.375rem)</td>
+            <td>800 (Extrabold)</td>
+            <td>1.25</td>
+            <td>-0.3px</td>
+            <td>#0f172a</td>
+          </tr>
+          <tr>
+            <td><strong>Subheader / Modal Title (H3)</strong></td>
+            <td><strong>16px</strong> (1rem)</td>
+            <td>700 (Bold)</td>
+            <td>1.35</td>
+            <td>Normal</td>
+            <td>#0f172a</td>
+          </tr>
+          <tr>
+            <td><strong>Product Card Title</strong></td>
+            <td><strong>14px</strong> (0.875rem)</td>
+            <td>700 (Bold)</td>
+            <td>1.30</td>
+            <td>Normal</td>
+            <td>#0f172a</td>
+          </tr>
+          <tr>
+            <td><strong>Body Copy / Description</strong></td>
+            <td><strong>11.5px – 12px</strong></td>
+            <td>400 (Regular)</td>
+            <td>1.50</td>
+            <td>Normal</td>
+            <td>#475569</td>
+          </tr>
+          <tr>
+            <td><strong>Weights / Portions Tag</strong></td>
+            <td><strong>10px</strong></td>
+            <td>600 (Semibold)</td>
+            <td>1.00</td>
+            <td>+0.3px</td>
+            <td>#ffffff (on #000/75)</td>
+          </tr>
+          <tr>
+            <td><strong>Price Display</strong></td>
+            <td><strong>18px</strong></td>
+            <td>800 (Extrabold)</td>
+            <td>1.00</td>
+            <td>Normal</td>
+            <td>#0f172a</td>
+          </tr>
+          <tr>
+            <td><strong>Original MRP (Strikethrough)</strong></td>
+            <td><strong>11px</strong></td>
+            <td>400 (Regular)</td>
+            <td>1.00</td>
+            <td>Strike</td>
+            <td>#94a3b8</td>
+          </tr>
+          <tr>
+            <td><strong>Discount Percentage</strong></td>
+            <td><strong>11px</strong></td>
+            <td>700 (Bold)</td>
+            <td>1.00</td>
+            <td>Normal</td>
+            <td>#16a34a</td>
+          </tr>
+          <tr>
+            <td><strong>Button CTA Text ("ADD")</strong></td>
+            <td><strong>12px</strong></td>
+            <td>700 (Bold)</td>
+            <td>1.00</td>
+            <td>+0.5px (Uppercase)</td>
+            <td>#ffffff</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <!-- Font Weight Rules -->
+      <div class="section-title">Font Weight Usage Rules</div>
+      <div class="grid-3">
+        <div class="card">
+          <div style="font-size: 13px; font-weight: 900; margin-bottom: 4px;">900 / 800 — Black / Extrabold</div>
+          <p style="font-size: 11px; color: #475569;">Reserved strictly for prices, hero headlines, and primary brand badges. Delivers instant visual anchor.</p>
+        </div>
+        <div class="card">
+          <div style="font-size: 13px; font-weight: 700; margin-bottom: 4px;">700 — Bold</div>
+          <p style="font-size: 11px; color: #475569;">Used on Product Titles, action buttons, category names, and section labels.</p>
+        </div>
+        <div class="card">
+          <div style="font-size: 13px; font-weight: 400; margin-bottom: 4px;">400 — Regular</div>
+          <p style="font-size: 11px; color: #475569;">Used on product cut descriptions, origin jetty info, and disclaimers to ensure comfortable reading.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer">
+      <span>Sagar Fresh Design Handbook • Confidential Team Document</span>
+      <span>Page 2: Typography Standards</span>
+    </div>
+  </section>
+
+  <!-- PAGE 3: Component Specifications & Badges -->
+  <section class="page">
+    <div>
+      <div class="header">
+        <div>
+          <div class="doc-subtitle">Sagar Fresh • Design System & UI Specifications</div>
+          <div class="brand-title">Product Card, Hero & Component Specs</div>
+        </div>
+        <div class="page-indicator">Page 03 / 03</div>
+      </div>
+
+      <!-- Product Card Blueprint -->
+      <div class="section-title">1. Product Card Architectural Blueprint</div>
+      <div class="grid-2" style="margin-bottom: 16px;">
+        <div class="card card-accent">
+          <div style="font-weight: 700; font-size: 12px; margin-bottom: 6px;">Container Specs</div>
+          <ul style="font-size: 11px; padding-left: 16px;">
+            <li><strong>Width:</strong> Responsive grid (1-col mobile, 2-col tablet, 4-col desktop).</li>
+            <li><strong>Corner Radius:</strong> <code>rounded-xl</code> = <strong>12px</strong>.</li>
+            <li><strong>Border:</strong> <code>1px solid #e2e8f0</code>. On hover: <code>border-gray-300</code>.</li>
+            <li><strong>Card Padding:</strong> <code>16px</code> (<code>p-4</code>) for content section.</li>
+            <li><strong>Elevation / Shadow:</strong> <code>shadow-2xs</code> (0 1px 2px rgba(0,0,0,0.04)).</li>
+            <li><strong>Background:</strong> Pure White (<code>#ffffff</code>).</li>
+          </ul>
+        </div>
+        <div class="card card-accent">
+          <div style="font-weight: 700; font-size: 12px; margin-bottom: 6px;">Media & Badge Overlays</div>
+          <ul style="font-size: 11px; padding-left: 16px;">
+            <li><strong>Image Aspect Area:</strong> Height <code>192px</code> (<code>h-48</code>), <code>object-cover</code>.</li>
+            <li><strong>ETA Badge (Top-Left):</strong> <code>bg-white/95 text-[10px] font-bold text-gray-800 px-2 py-0.5 rounded shadow-2xs</code>.</li>
+            <li><strong>Weight Tag (Bottom-Left):</strong> <code>bg-black/75 text-[10px] text-white font-medium px-2 py-0.5 rounded</code>. Always format: <em>Net wt: 450g | Gross: 650g</em>.</li>
+            <li><strong>Add Button CTA:</strong> Height <code>32px</code>, <code>bg-[#d11243] text-white rounded-lg font-bold text-xs uppercase px-3.5</code>.</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Hero Banner Carousel Specs -->
+      <div class="section-title">2. Hero Banner Carousel Specs</div>
+      <div class="card" style="margin-bottom: 16px;">
+        <div class="grid-3" style="font-size: 11px;">
+          <div>
+            <strong>Desktop Dimensions:</strong><br>
+            Max width: <code>1200px</code><br>
+            Height: <code>280px – 320px</code><br>
+            Border radius: <code>16px</code> (<code>rounded-2xl</code>)
+          </div>
+          <div>
+            <strong>Mobile Dimensions:</strong><br>
+            Width: <code>100% full-width</code><br>
+            Height: <code>180px – 210px</code><br>
+            Padding: <code>12px</code> margins
+          </div>
+          <div>
+            <strong>Copy Layout:</strong><br>
+            Left 60%: Headline (28px), subhead, Red CTA.<br>
+            Right 40%: Real raw seafood/meat photography on clean background.
+          </div>
+        </div>
+      </div>
+
+      <!-- Trust Badges & Standard Copywriting -->
+      <div class="section-title">3. Standard Quality Badges & Microcopy</div>
+      <div class="grid-4" style="text-align: center; font-size: 10.5px;">
+        <div class="card">
+          <div style="font-weight: 800; color: #0f172a; margin-bottom: 2px;">150+ Quality Checks</div>
+          <div style="color: #64748b;">Bio-security & RO wash</div>
+        </div>
+        <div class="card">
+          <div style="font-weight: 800; color: #16a34a; margin-bottom: 2px;">0°C - 4°C Chilled</div>
+          <div style="color: #64748b;">Never frozen, locks juices</div>
+        </div>
+        <div class="card">
+          <div style="font-weight: 800; color: #d11243; margin-bottom: 2px;">₹250 Refundable</div>
+          <div style="color: #64748b;">Reusable Cold-Gel Box</div>
+        </div>
+        <div class="card">
+          <div style="font-weight: 800; color: #0f172a; margin-bottom: 2px;">90 Mins Delivery</div>
+          <div style="color: #64748b;">Hyperlocal hub dispatch</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer">
+      <span>Sagar Fresh Design Handbook • Created for UI/UX & Marketing Team</span>
+      <span>Page 3: Component Specifications</span>
+    </div>
+  </section>
+
+</body>
+</html>
