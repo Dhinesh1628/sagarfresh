@@ -1,0 +1,867 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Sagar Fresh - Executive Business Deck</title>
+  <style>
+    @page {
+      size: A4 landscape;
+      margin: 12mm 14mm;
+    }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
+    }
+    body {
+      background-color: #ffffff;
+      color: #1e293b;
+      font-size: 13px;
+      line-height: 1.45;
+    }
+    .slide {
+      page-break-after: always;
+      height: 185mm;
+      max-height: 185mm;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      border-bottom: 2px solid #e2e8f0;
+      padding-bottom: 8mm;
+      margin-bottom: 8mm;
+    }
+    .slide:last-child {
+      page-break-after: avoid;
+      border-bottom: none;
+    }
+    /* Header */
+    .slide-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-bottom: 8px;
+      border-bottom: 2px solid #d11243;
+      margin-bottom: 12px;
+    }
+    .brand-tag {
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: #d11243;
+    }
+    .slide-title {
+      font-size: 20px;
+      font-weight: 800;
+      color: #0f172a;
+      letter-spacing: -0.3px;
+    }
+    .slide-num {
+      font-size: 11px;
+      font-weight: 700;
+      color: #64748b;
+      background: #f1f5f9;
+      padding: 4px 10px;
+      border-radius: 12px;
+    }
+    /* Content Layouts */
+    .content-body {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+    .grid-3 {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 14px;
+    }
+    .grid-4 {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr 1fr;
+      gap: 12px;
+    }
+    /* Cards */
+    .card {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      padding: 12px 14px;
+    }
+    .card-accent {
+      background: #fff;
+      border-left: 4px solid #d11243;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    }
+    .card-title {
+      font-size: 13px;
+      font-weight: 700;
+      color: #0f172a;
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    /* Metrics */
+    .metric-box {
+      background: #ffffff;
+      border: 1px solid #cbd5e1;
+      border-radius: 8px;
+      padding: 10px 12px;
+      text-align: center;
+    }
+    .metric-value {
+      font-size: 22px;
+      font-weight: 800;
+      color: #d11243;
+      line-height: 1.1;
+    }
+    .metric-label {
+      font-size: 11px;
+      color: #64748b;
+      font-weight: 600;
+      margin-top: 4px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    /* Tables */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 11.5px;
+    }
+    th {
+      background: #0f172a;
+      color: #ffffff;
+      text-align: left;
+      padding: 7px 10px;
+      font-weight: 600;
+      text-transform: uppercase;
+      font-size: 10px;
+      letter-spacing: 0.5px;
+    }
+    td {
+      padding: 6px 10px;
+      border-bottom: 1px solid #e2e8f0;
+      color: #334155;
+    }
+    tr:nth-child(even) td {
+      background: #f8fafc;
+    }
+    /* Badges */
+    .badge {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 10px;
+      font-weight: 700;
+    }
+    .badge-green { background: #dcfce7; color: #166534; }
+    .badge-red { background: #fee2e2; color: #991b1b; }
+    .badge-blue { background: #dbeafe; color: #1e40af; }
+    
+    /* Lists */
+    ul {
+      list-style-type: disc;
+      padding-left: 18px;
+    }
+    li {
+      margin-bottom: 4px;
+      color: #334155;
+    }
+    strong {
+      color: #0f172a;
+    }
+    /* Footer */
+    .slide-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-top: 6px;
+      border-top: 1px solid #e2e8f0;
+      font-size: 10px;
+      color: #94a3b8;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- SLIDE 1 -->
+  <section class="slide">
+    <div class="slide-header">
+      <div>
+        <div class="brand-tag">Sagar Fresh Technologies Pvt. Ltd. • Executive Deck</div>
+        <div class="slide-title">Slide 1: Executive Summary & Corporate Profile</div>
+      </div>
+      <div class="slide-num">01 / 12</div>
+    </div>
+    <div class="content-body">
+      <div class="grid-2">
+        <div class="card card-accent">
+          <div class="card-title">Corporate Identity & Strategic Focus</div>
+          <p style="margin-bottom: 8px;"><strong>Company:</strong> Sagar Fresh Technologies Pvt. Ltd. (Bengaluru, India)</p>
+          <p style="margin-bottom: 8px;"><strong>Sector:</strong> Direct-to-Consumer (D2C) Fresh Seafood, Prime Meats & Cold-Chain Logistics</p>
+          <p style="margin-bottom: 8px;"><strong>Core Value Proposition:</strong> Farm-to-fork fresh coastal fish and pasture-raised meats delivered within 90 minutes inside reusable, IoT temperature-monitored cold boxes.</p>
+          <p><strong>Primary Technological Moat:</strong> Circular FreshSeal container logistics with automated refundable deposits and real-time probe telemetry reporting (0°C to 4°C).</p>
+        </div>
+        <div class="card card-accent">
+          <div class="card-title">Executive Thesis</div>
+          <p style="font-size: 13.5px; line-height: 1.5; color: #334155;">
+            "India's organized online meat commerce currently generates over 12,000 tonnes of single-use thermocol and plastic waste every year while suffering cold-chain micro-breaches during city traffic. 
+            <strong>Sagar Fresh</strong> replaces disposable packaging with a reusable cold-gel vault model, guaranteeing 100% lab-certified cold-chain compliance and saving up to ₹39 per order in operating packaging expenditure."
+          </p>
+        </div>
+      </div>
+      <div class="grid-4" style="margin-top: 4px;">
+        <div class="metric-box">
+          <div class="metric-value">90 Mins</div>
+          <div class="metric-label">Hyperlocal Delivery SLA</div>
+        </div>
+        <div class="metric-box">
+          <div class="metric-value">0°C - 4°C</div>
+          <div class="metric-label">Guaranteed FSSAI Safe Zone</div>
+        </div>
+        <div class="metric-box">
+          <div class="metric-value">96.0%</div>
+          <div class="metric-label">Cooler Box Return Rate</div>
+        </div>
+        <div class="metric-box">
+          <div class="metric-value">₹1,049</div>
+          <div class="metric-label">Average Order Basket (AOV)</div>
+        </div>
+      </div>
+    </div>
+    <div class="slide-footer">
+      <span>Confidential • Sagar Fresh Business Presentation</span>
+      <span>Prepared for Leadership & Investment Committee</span>
+    </div>
+  </section>
+
+  <!-- SLIDE 2 -->
+  <section class="slide">
+    <div class="slide-header">
+      <div>
+        <div class="brand-tag">Industry Context & Market Friction</div>
+        <div class="slide-title">Slide 2: Critical Industry Challenges</div>
+      </div>
+      <div class="slide-num">02 / 12</div>
+    </div>
+    <div class="content-body">
+      <div class="grid-3">
+        <div class="card">
+          <div class="card-title" style="color: #b91c1c;">1. Cold-Chain Temperature Breaches</div>
+          <ul>
+            <li>Traditional wet markets operate at ambient temperatures (28°C–34°C), accelerating bacterial growth and moisture deterioration within 45 minutes of inward.</li>
+            <li>Existing online delivery platforms use standard cardboard boxes with small ice gel packs that thaw during metro traffic delays (65–85 minutes).</li>
+            <li>Core package temperatures routinely spike above 7°C, compromising freshness without customer visibility.</li>
+          </ul>
+        </div>
+        <div class="card">
+          <div class="card-title" style="color: #b91c1c;">2. Packaging Cost & Waste Drain</div>
+          <ul>
+            <li>Market incumbents spend between ₹38 and ₹55 per delivery on single-use thermocol linings, foam sheets, and bubble wrap.</li>
+            <li>This cost represents dead capital burned on every fulfillment cycle.</li>
+            <li>Creates substantial municipal landfill waste, alienating environmentally conscious urban millennial and Gen-Z households.</li>
+          </ul>
+        </div>
+        <div class="card">
+          <div class="card-title" style="color: #b91c1c;">3. Zero Verification & Trust Deficit</div>
+          <ul>
+            <li>Current brands market products as "chilled, never frozen" but provide zero proof to the consumer upon arrival.</li>
+            <li>Consumers frequently experience water-logged meat from thawed ice or chemical odor from formalin-treated seafood.</li>
+            <li>High return rates and customer churn due to inconsistent freshness across seasonal heatwaves.</li>
+          </ul>
+        </div>
+      </div>
+      <div class="card card-accent" style="margin-top: 4px;">
+        <div class="card-title">Economic Impact of Current Industry Inefficiencies</div>
+        <p>Incumbents suffer an estimated <strong>4.8% customer refund rate</strong> due to temperature degradation in transit and spend over <strong>7.2% of net revenue</strong> exclusively on non-recoverable disposable packaging materials.</p>
+      </div>
+    </div>
+    <div class="slide-footer">
+      <span>Confidential • Sagar Fresh Business Presentation</span>
+      <span>Slide 2: Problem Statement</span>
+    </div>
+  </section>
+
+  <!-- SLIDE 3 -->
+  <section class="slide">
+    <div class="slide-header">
+      <div>
+        <div class="brand-tag">Proprietary Solution & Operating Architecture</div>
+        <div class="slide-title">Slide 3: The Sagar Fresh Solution — FreshSeal™</div>
+      </div>
+      <div class="slide-num">03 / 12</div>
+    </div>
+    <div class="content-body">
+      <div class="grid-2">
+        <div class="card card-accent">
+          <div class="card-title">1. Precision Harbor-Side Inward & Blast Chilling</div>
+          <p style="margin-bottom: 6px;">Daily catches inward from Mangalore and Ratnagiri jetties by 4:00 AM. Products are descaled, washed in RO-purified water, portioned into neat cuts, and immediately blast-chilled to 0°C–2°C within 30 minutes, preserving cellular muscle texture.</p>
+          <div class="card-title" style="margin-top: 10px;">2. ThermalVault™ Reusable Cold-Gel Boxes</div>
+          <p>Constructed from high-density Expanded Polypropylene (EPP) with food-grade phase-change gel plates. Maintains core temperature below 4°C for up to 36 continuous hours without external power.</p>
+        </div>
+        <div class="card card-accent">
+          <div class="card-title">3. Real-Time Consumer IoT Telemetry</div>
+          <p style="margin-bottom: 6px;">Each container features an integrated digital thermal sensor. Customers track live internal box temperatures on their web application in real time during transit (0°C to 4°C safety gauge).</p>
+          <div class="card-title" style="margin-top: 10px;">4. Automated Deposit & Return Engine</div>
+          <p>A refundable deposit of ₹250 is included at checkout. Upon scheduled collection of the empty container by return couriers, ₹250 is instantly credited back to the customer's UPI account via automated webhook.</p>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">Operating Workflow Diagram</div>
+        <p style="font-family: monospace; font-size: 11px; background: #0f172a; color: #38bdf8; padding: 10px; border-radius: 6px;">
+          [Harbor Jetty 4:00 AM] ➔ [Central Cold Hub (0°C-2°C)] ➔ [ThermalVault Box Packed] ➔ [Live IoT Tracking 90 Min Transit] ➔ [Delivery] ➔ [Instant UPI Deposit Return]
+        </p>
+      </div>
+    </div>
+    <div class="slide-footer">
+      <span>Confidential • Sagar Fresh Business Presentation</span>
+      <span>Slide 3: Solution Architecture</span>
+    </div>
+  </section>
+
+  <!-- SLIDE 4 -->
+  <section class="slide">
+    <div class="slide-header">
+      <div>
+        <div class="brand-tag">Market Sizing & Macro Economics</div>
+        <div class="slide-title">Slide 4: Market Opportunity & Growth Vectors</div>
+      </div>
+      <div class="slide-num">04 / 12</div>
+    </div>
+    <div class="content-body">
+      <div class="grid-3">
+        <div class="card" style="text-align: center; border-top: 4px solid #64748b;">
+          <div class="metric-label" style="font-size: 12px;">Total Addressable Market (TAM)</div>
+          <div class="metric-value" style="font-size: 26px; margin: 10px 0;">$45 Billion</div>
+          <p style="font-size: 11px; color: #64748b;">Total Indian retail meat and seafood commerce (currently 92% unorganized wet market vendors).</p>
+        </div>
+        <div class="card" style="text-align: center; border-top: 4px solid #0284c7;">
+          <div class="metric-label" style="font-size: 12px;">Serviceable Addressable Market (SAM)</div>
+          <div class="metric-value" style="font-size: 26px; margin: 10px 0; color: #0284c7;">$4.8 Billion</div>
+          <p style="font-size: 11px; color: #64748b;">Organized meat and fresh fish consumption across Tier-1 urban metropolises in India.</p>
+        </div>
+        <div class="card" style="text-align: center; border-top: 4px solid #16a34a;">
+          <div class="metric-label" style="font-size: 12px;">Serviceable Obtainable Market (SOM)</div>
+          <div class="metric-value" style="font-size: 26px; margin: 10px 0; color: #16a34a;">$42 Million</div>
+          <p style="font-size: 11px; color: #64748b;">3-Year achievable target capturing 3.5% share across high-density pin codes in Bengaluru and Mumbai.</p>
+        </div>
+      </div>
+      <div class="card card-accent">
+        <div class="card-title">Underlying Market Tailwinds Supporting Sagar Fresh</div>
+        <div class="grid-3" style="margin-top: 6px;">
+          <div>
+            <strong>FSSAI Regulatory Crackdown:</strong> Increased state inspections prohibiting formalin and chemical preservation in traditional fish landings.
+          </div>
+          <div>
+            <strong>Disposable Income Growth:</strong> Upper-middle-class urban families actively switching to certified antibiotic-free meat with a 15–20% willingness to pay premium.
+          </div>
+          <div>
+            <strong>Zero-Waste Consumer Preference:</strong> Over 70% of premium urban households prefer sustainable, circular packaging over disposable thermocol.
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="slide-footer">
+      <span>Confidential • Sagar Fresh Business Presentation</span>
+      <span>Slide 4: Market Dynamics</span>
+    </div>
+  </section>
+
+  <!-- SLIDE 5 -->
+  <section class="slide">
+    <div class="slide-header">
+      <div>
+        <div class="brand-tag">Product Sourcing & Quality Standards</div>
+        <div class="slide-title">Slide 5: Product Catalog & Supply Chain</div>
+      </div>
+      <div class="slide-num">05 / 12</div>
+    </div>
+    <div class="content-body">
+      <table>
+        <thead>
+          <tr>
+            <th>Product Name</th>
+            <th>Category</th>
+            <th>Sourcing Region</th>
+            <th>Portion & Net Weight</th>
+            <th>Cold-Chain Standard</th>
+            <th>Price</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Seer Fish / King Mackerel Steaks</strong></td>
+            <td>Coastal Finfish</td>
+            <td>Mangalore Harbor Jetty, Karnataka</td>
+            <td>4-6 Steaks (Net 450g / Gross 650g)</td>
+            <td>0°C to 2°C Blast Chilled</td>
+            <td><strong>₹799</strong></td>
+          </tr>
+          <tr>
+            <td><strong>White Pomfret Whole Cleaned</strong></td>
+            <td>Coastal Finfish</td>
+            <td>Ratnagiri Jetty, Maharashtra</td>
+            <td>2 Whole Fish (Net 380g / Gross 500g)</td>
+            <td>Degilled & Diamond Scored</td>
+            <td><strong>₹689</strong></td>
+          </tr>
+          <tr>
+            <td><strong>Sea Tiger Prawns (Jumbo Deveined)</strong></td>
+            <td>Crustaceans</td>
+            <td>Visakhapatnam Deep Sea, Andhra Pradesh</td>
+            <td>14-18 Pieces (Net 300g / Gross 500g)</td>
+            <td>Peeled, Deveined, Tail-on</td>
+            <td><strong>₹599</strong></td>
+          </tr>
+          <tr>
+            <td><strong>Rich Tender Goat (Curry & Biryani Cut)</strong></td>
+            <td>Pasture Mutton</td>
+            <td>Mandya & Bannur Co-ops, Karnataka</td>
+            <td>Medium Bone-In (Net 500g)</td>
+            <td>Grass-fed under 9 months, RO Washed</td>
+            <td><strong>₹629</strong></td>
+          </tr>
+          <tr>
+            <td><strong>Classic Chicken Breast Fillets</strong></td>
+            <td>Fresh Poultry</td>
+            <td>Coimbatore Biosecure Farms</td>
+            <td>2-3 Fillets (Net 500g)</td>
+            <td>100% Antibiotic & Hormone-Free</td>
+            <td><strong>₹289</strong></td>
+          </tr>
+          <tr>
+            <td><strong>Free-Range Country Chicken</strong></td>
+            <td>Heritage Poultry</td>
+            <td>Chittoor Free-Range Co-op</td>
+            <td>Curry Cut (Net 550g / Gross 700g)</td>
+            <td>Desi breed, yellow fat retained</td>
+            <td><strong>₹389</strong></td>
+          </tr>
+          <tr>
+            <td><strong>Amritsari Fish Tikka (Ready to Cook)</strong></td>
+            <td>Marinated Cuts</td>
+            <td>Sagar Fresh Master Kitchen</td>
+            <td>8-10 Cubes (Net 350g)</td>
+            <td>Chef-marinated in mustard oil & spices</td>
+            <td><strong>₹369</strong></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="slide-footer">
+      <span>Confidential • Sagar Fresh Business Presentation</span>
+      <span>Slide 5: Product Architecture</span>
+    </div>
+  </section>
+
+  <!-- SLIDE 6 -->
+  <section class="slide">
+    <div class="slide-header">
+      <div>
+        <div class="brand-tag">Circular Operations & Asset Economics</div>
+        <div class="slide-title">Slide 6: Reusable Container Economics</div>
+      </div>
+      <div class="slide-num">06 / 12</div>
+    </div>
+    <div class="content-body">
+      <div class="grid-2">
+        <div class="card card-accent">
+          <div class="card-title">ThermalVault Unit Cost Structure</div>
+          <table style="margin-top: 6px;">
+            <tr><td>Manufacturing Cost per EPP Thermal Box</td><td style="text-align: right;"><strong>₹420.00</strong></td></tr>
+            <tr><td>Certified Useful Life Cycle</td><td style="text-align: right;"><strong>150 Deliveries</strong></td></tr>
+            <tr><td>Amortized Box Depreciation per Delivery</td><td style="text-align: right;"><strong>₹2.80</strong></td></tr>
+            <tr><td>Ultrasonic Cleaning & Sanitization per Cycle</td><td style="text-align: right;"><strong>₹6.00</strong></td></tr>
+            <tr style="background: #e2e8f0;"><td><strong>Net Packaging Cost per Sagar Fresh Delivery</strong></td><td style="text-align: right;"><strong>₹8.80</strong></td></tr>
+          </table>
+        </div>
+        <div class="card card-accent">
+          <div class="card-title">Incumbent Disposable Packaging Cost Comparison</div>
+          <table style="margin-top: 6px;">
+            <tr><td>Corrugated Exterior Box with Lamination</td><td style="text-align: right;">₹18.00</td></tr>
+            <tr><td>EPS Thermocol Insulated Inner Liner</td><td style="text-align: right;">₹16.00</td></tr>
+            <tr><td>Single-Use Ice Gel Packs (2 Units)</td><td style="text-align: right;">₹10.00</td></tr>
+            <tr><td>Multi-layer Tape & Secondary Bubble Wrap</td><td style="text-align: right;">₹4.00</td></tr>
+            <tr style="background: #fee2e2;"><td><strong>Total Disposable Packaging Cost (Incumbents)</strong></td><td style="text-align: right; color: #991b1b;"><strong>₹48.00</strong></td></tr>
+          </table>
+        </div>
+      </div>
+      <div class="grid-3" style="margin-top: 6px;">
+        <div class="metric-box">
+          <div class="metric-value">₹39.20</div>
+          <div class="metric-label">Packaging Savings per Order</div>
+        </div>
+        <div class="metric-box">
+          <div class="metric-value">150x</div>
+          <div class="metric-label">Container Reusability Factor</div>
+        </div>
+        <div class="metric-box">
+          <div class="metric-value">10 Mins</div>
+          <div class="metric-label">Average Instant UPI Refund TAT</div>
+        </div>
+      </div>
+    </div>
+    <div class="slide-footer">
+      <span>Confidential • Sagar Fresh Business Presentation</span>
+      <span>Slide 6: Circular Unit Economics</span>
+    </div>
+  </section>
+
+  <!-- SLIDE 7 -->
+  <section class="slide">
+    <div class="slide-header">
+      <div>
+        <div class="brand-tag">Competitive Differentiation</div>
+        <div class="slide-title">Slide 7: Competitive Landscape Analysis</div>
+      </div>
+      <div class="slide-num">07 / 12</div>
+    </div>
+    <div class="content-body">
+      <table>
+        <thead>
+          <tr>
+            <th>Feature / Capability</th>
+            <th>Sagar Fresh</th>
+            <th>Licious</th>
+            <th>FreshToHome</th>
+            <th>Local Wet Markets</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Delivery Speed</strong></td>
+            <td><span class="badge badge-green">90-Minute Express</span></td>
+            <td>90-Minute / Scheduled</td>
+            <td>Next-Day / 90-Minute</td>
+            <td>Immediate (In-Store)</td>
+          </tr>
+          <tr>
+            <td><strong>Cold-Chain Telemetry</strong></td>
+            <td><span class="badge badge-green">Live IoT Probe (0°C–4°C)</span></td>
+            <td><span class="badge badge-red">Unverified Marketing Claim</span></td>
+            <td><span class="badge badge-red">Unverified Marketing Claim</span></td>
+            <td><span class="badge badge-red">No Temperature Control</span></td>
+          </tr>
+          <tr>
+            <td><strong>Packaging Material</strong></td>
+            <td><span class="badge badge-green">100% Reusable Thermal Vault</span></td>
+            <td>Disposable Thermocol / Pouch</td>
+            <td>Cardboard & Plastic Liners</td>
+            <td>Single-Use Plastic Bags</td>
+          </tr>
+          <tr>
+            <td><strong>Packaging Cost / Order</strong></td>
+            <td><span class="badge badge-green">₹8.80 (Circular Amortized)</span></td>
+            <td>₹48.00–₹55.00</td>
+            <td>₹42.00–₹50.00</td>
+            <td>₹2.00 (Unregulated)</td>
+          </tr>
+          <tr>
+            <td><strong>Customer Retention Mechanism</strong></td>
+            <td><span class="badge badge-green">₹250 Deposit Float / Credit</span></td>
+            <td>Membership Subscription</td>
+            <td>Wallet Cashback Points</td>
+            <td>Personal Habit</td>
+          </tr>
+          <tr>
+            <td><strong>Food Safety & Testing</strong></td>
+            <td><span class="badge badge-green">RO-Washed & Lab Certified</span></td>
+            <td>Central Lab Certified</td>
+            <td>Chemical-Free Claim</td>
+            <td><span class="badge badge-red">High Formalin Contamination Risk</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="slide-footer">
+      <span>Confidential • Sagar Fresh Business Presentation</span>
+      <span>Slide 7: Strategic Benchmarking</span>
+    </div>
+  </section>
+
+  <!-- SLIDE 8 -->
+  <section class="slide">
+    <div class="slide-header">
+      <div>
+        <div class="brand-tag">Financial Architecture & Unit Margins</div>
+        <div class="slide-title">Slide 8: Unit Economics & Contribution Margins</div>
+      </div>
+      <div class="slide-num">08 / 12</div>
+    </div>
+    <div class="content-body">
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-title">Order Economics Breakdown (₹ INR)</div>
+          <table>
+            <tr><td><strong>Gross Merchandise Value (AOV)</strong></td><td style="text-align: right;"><strong>₹799.00</strong></td><td style="text-align: right;"><strong>100.0%</strong></td></tr>
+            <tr><td>Cost of Goods Sold (Farmgate Procurement & Cleaning)</td><td style="text-align: right;">₹471.40</td><td style="text-align: right;">59.0%</td></tr>
+            <tr style="background: #f1f5f9;"><td><strong>Gross Profit</strong></td><td style="text-align: right;"><strong>₹327.60</strong></td><td style="text-align: right;"><strong>41.0%</strong></td></tr>
+            <tr><td>Cold Box Amortization & Sanitization (Circular)</td><td style="text-align: right;">₹8.80</td><td style="text-align: right;">1.1%</td></tr>
+            <tr><td>Last-Mile EV Delivery Payout</td><td style="text-align: right;">₹55.00</td><td style="text-align: right;">6.9%</td></tr>
+            <tr><td>Payment Gateway Fees (Blended UPI / Cards)</td><td style="text-align: right;">₹8.00</td><td style="text-align: right;">1.0%</td></tr>
+            <tr><td>Central Cold Hub Warehousing & Energy</td><td style="text-align: right;">₹18.00</td><td style="text-align: right;">2.3%</td></tr>
+            <tr style="background: #e2e8f0;"><td><strong>Contribution Margin 1 (CM1)</strong></td><td style="text-align: right;"><strong>₹237.80</strong></td><td style="text-align: right;"><strong>29.7%</strong></td></tr>
+            <tr><td>Customer Acquisition Cost (Blended CAC)</td><td style="text-align: right;">₹120.00</td><td style="text-align: right;">15.0%</td></tr>
+            <tr style="background: #dcfce7;"><td><strong>Contribution Margin 2 (CM2 - Net Operational Profit)</strong></td><td style="text-align: right; color: #166534;"><strong>₹117.80</strong></td><td style="text-align: right; color: #166534;"><strong>14.7%</strong></td></tr>
+          </table>
+        </div>
+        <div class="card card-accent">
+          <div class="card-title">Unit Margin Profitability Takeaways</div>
+          <ul>
+            <li style="margin-bottom: 8px;"><strong>First-Order Positive:</strong> Unlike traditional D2C competitors that lose money on the initial customer purchase, Sagar Fresh generates a positive CM2 of ₹117.80 on Order #1.</li>
+            <li style="margin-bottom: 8px;"><strong>Sustainable Packaging Advantage:</strong> Lower packaging overhead (+₹39.20 per basket) offsets higher quality blast-chilling investments.</li>
+            <li><strong>LTV / CAC Expansion:</strong> Repeat orders experience an acquisition cost of ₹0.00, lifting CM2 on repeat purchases to <strong>₹237.80 (29.7% net margin)</strong>.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="slide-footer">
+      <span>Confidential • Sagar Fresh Business Presentation</span>
+      <span>Slide 8: Financial Waterfall</span>
+    </div>
+  </section>
+
+  <!-- SLIDE 9 -->
+  <section class="slide">
+    <div class="slide-header">
+      <div>
+        <div class="brand-tag">Growth Marketing & Acquisition Funnel</div>
+        <div class="slide-title">Slide 9: Go-To-Market & Customer Acquisition</div>
+      </div>
+      <div class="slide-num">09 / 12</div>
+    </div>
+    <div class="content-body">
+      <div class="grid-3">
+        <div class="card">
+          <div class="card-title">1. Hyperlocal Micro-Market Launch</div>
+          <p style="margin-bottom: 6px;">Focus initial operations strictly on high-density Bengaluru gated residential complexes (Mahadevapura, Indiranagar, Whitefield, Koramangala).</p>
+          <p>Gated community security receptions allow batch drop-off and morning pickup routines, drastically cutting delivery partner idle time.</p>
+        </div>
+        <div class="card">
+          <div class="card-title">2. Digital Advertising Channels</div>
+          <p style="margin-bottom: 6px;"><strong>Meta Ads (Instagram & Facebook):</strong> Short-form video highlighting harbor inward at 4:00 AM vs. warm supermarket displays.</p>
+          <p><strong>Google Paid Search:</strong> Capturing high-intent queries: "fresh surmai delivery bangalore", "fresh mutton 90 mins", "licious alternative".</p>
+        </div>
+        <div class="card">
+          <div class="card-title">3. Retention & Wallet Incentive</div>
+          <p style="margin-bottom: 6px;">When scheduling container pickups, customers are offered an instant choice:</p>
+          <div style="background: #ffffff; border: 1px dashed #cbd5e1; padding: 6px 8px; border-radius: 4px; font-size: 11px;">
+            • ₹250 Refund to Bank via UPI<br>
+            • <strong>₹300 Sagar Fresh Wallet Credits</strong> (+₹50 Bonus for next order)
+          </div>
+          <p style="margin-top: 6px;">Drives 42% wallet retention, locking in repeat purchasing cycles within 8 to 10 days.</p>
+        </div>
+      </div>
+      <div class="grid-4" style="margin-top: 6px;">
+        <div class="metric-box">
+          <div class="metric-value">₹120</div>
+          <div class="metric-label">Target Blended CAC</div>
+        </div>
+        <div class="metric-box">
+          <div class="metric-value">3.8x</div>
+          <div class="metric-label">Target 6-Month LTV / CAC</div>
+        </div>
+        <div class="metric-box">
+          <div class="metric-value">4.2 Orders</div>
+          <div class="metric-label">Monthly Repeat Frequency</div>
+        </div>
+        <div class="metric-box">
+          <div class="metric-value">42%</div>
+          <div class="metric-label">Wallet Re-investment Rate</div>
+        </div>
+      </div>
+    </div>
+    <div class="slide-footer">
+      <span>Confidential • Sagar Fresh Business Presentation</span>
+      <span>Slide 9: Go-To-Market Architecture</span>
+    </div>
+  </section>
+
+  <!-- SLIDE 10 -->
+  <section class="slide">
+    <div class="slide-header">
+      <div>
+        <div class="brand-tag">Technology Infrastructure & Cloud Stack</div>
+        <div class="slide-title">Slide 10: Technical Architecture & IoT Systems</div>
+      </div>
+      <div class="slide-num">10 / 12</div>
+    </div>
+    <div class="content-body">
+      <div class="grid-2">
+        <div class="card card-accent">
+          <div class="card-title">Technology Stack Overview</div>
+          <ul>
+            <li style="margin-bottom: 6px;"><strong>Frontend:</strong> React 19 Single Page Application with Tailwind CSS v4, dynamic catalog drawers, and mobile-responsive viewport.</li>
+            <li style="margin-bottom: 6px;"><strong>Backend API:</strong> Node.js & Express 4 RESTful architecture with secure JSON Web Token (JWT) authentication and role-based access control.</li>
+            <li style="margin-bottom: 6px;"><strong>Cloud Database:</strong> MongoDB Atlas cloud cluster with Mongoose ODM schemas for users, products, orders, coolers, and return tracking.</li>
+            <li style="margin-bottom: 6px;"><strong>Cloud Deployment:</strong> Vercel Serverless environment with automatic edge asset distribution and dynamic API rewrites.</li>
+          </ul>
+        </div>
+        <div class="card card-accent">
+          <div class="card-title">Data Entities & IoT Monitoring</div>
+          <ul>
+            <li style="margin-bottom: 6px;"><strong>Container Fleet Telemetry:</strong> Each cooler record stores RFID serials, battery charge, sanitation logs, and lifetime cycle wear.</li>
+            <li style="margin-bottom: 6px;"><strong>Live Probe Engine:</strong> Ingests periodic temperature measurements into the order document, generating real-time audit graphs on consumer devices.</li>
+            <li style="margin-bottom: 6px;"><strong>Automated Refund Webhook:</strong> Triggers deposit balance updates and generates UPI transaction receipts upon operational collection verification.</li>
+          </ul>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">Cloud Deployment Flow</div>
+        <p style="font-family: monospace; font-size: 11px; background: #0f172a; color: #38bdf8; padding: 8px 12px; border-radius: 6px;">
+          GitHub (Dhinesh1628/sagarfresh) ➔ Automated Vercel Build ➔ Serverless Node Runtime ➔ MongoDB Atlas Cloud (Sharded Cluster)
+        </p>
+      </div>
+    </div>
+    <div class="slide-footer">
+      <span>Confidential • Sagar Fresh Business Presentation</span>
+      <span>Slide 10: Systems & Technology</span>
+    </div>
+  </section>
+
+  <!-- SLIDE 11 -->
+  <section class="slide">
+    <div class="slide-header">
+      <div>
+        <div class="brand-tag">Operational Validation & MVP Proof</div>
+        <div class="slide-title">Slide 11: Current Traction & MVP Verification</div>
+      </div>
+      <div class="slide-num">11 / 12</div>
+    </div>
+    <div class="content-body">
+      <div class="grid-4">
+        <div class="metric-box">
+          <div class="metric-value">100%</div>
+          <div class="metric-label">Automated Test Pass Rate</div>
+        </div>
+        <div class="metric-box">
+          <div class="metric-value">99.6%</div>
+          <div class="metric-label">Thermal Compliance Metric</div>
+        </div>
+        <div class="metric-box">
+          <div class="metric-value">1.8°C</div>
+          <div class="metric-label">Average In-Transit Temp</div>
+        </div>
+        <div class="metric-box">
+          <div class="metric-value">0 Crashes</div>
+          <div class="metric-label">Fail-Safe Database Resilience</div>
+        </div>
+      </div>
+      <div class="grid-2" style="margin-top: 6px;">
+        <div class="card card-accent">
+          <div class="card-title">Verified Functional Workflows</div>
+          <ul>
+            <li><strong>Credential Authentication:</strong> Full role separation between operations administration and consumer accounts.</li>
+            <li><strong>Dynamic Cart & Deposit Engine:</strong> Real-time checkout calculations incorporating the ₹250 refundable container deposit.</li>
+            <li><strong>Live Telemetry Simulation:</strong> Customer order tracking displaying active temperature probe telemetry between 0°C and 4°C.</li>
+            <li><strong>Return & Refund Loop:</strong> Instant cooler pickup scheduling with UPI refund verification.</li>
+          </ul>
+        </div>
+        <div class="card card-accent">
+          <div class="card-title">Database Integrity Verification</div>
+          <ul>
+            <li>Live cloud synchronization verified on <strong>MongoDB Atlas</strong> (Cluster shard `ac-6frwnfu-shard-00-02`).</li>
+            <li>8 Indian coastal and livestock SKUs populated with net/gross weights, portion counts, and origin jetty tracking.</li>
+            <li>Fleet inventory initialized across active delivery, customer custody, and sanitization depot states.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="slide-footer">
+      <span>Confidential • Sagar Fresh Business Presentation</span>
+      <span>Slide 11: Validation & Traction</span>
+    </div>
+  </section>
+
+  <!-- SLIDE 12 -->
+  <section class="slide">
+    <div class="slide-header">
+      <div>
+        <div class="brand-tag">Scale Strategy & 18-Month Projections</div>
+        <div class="slide-title">Slide 12: Financial Forecasts & Growth Roadmap</div>
+      </div>
+      <div class="slide-num">12 / 12</div>
+    </div>
+    <div class="content-body">
+      <table>
+        <thead>
+          <tr>
+            <th>Growth Indicator</th>
+            <th>Month 6 (Pilot Hub)</th>
+            <th>Month 12 (City Scale)</th>
+            <th>Month 18 (Multi-City Expansion)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Operating Central Cold Hubs</strong></td>
+            <td>1 Hub (Bengaluru East)</td>
+            <td>3 Hubs (Bengaluru Wide)</td>
+            <td>6 Hubs (Bengaluru + Mumbai)</td>
+          </tr>
+          <tr>
+            <td><strong>Monthly Completed Orders</strong></td>
+            <td>4,500 Orders</td>
+            <td>22,000 Orders</td>
+            <td>65,000 Orders</td>
+          </tr>
+          <tr>
+            <td><strong>Monthly Gross Revenue (₹ INR)</strong></td>
+            <td>₹35.9 Lakhs ($43K)</td>
+            <td>₹1.75 Crores ($210K)</td>
+            <td>₹5.19 Crores ($625K)</td>
+          </tr>
+          <tr>
+            <td><strong>Active Cooler Containers in Fleet</strong></td>
+            <td>800 Units</td>
+            <td>3,200 Units</td>
+            <td>8,500 Units</td>
+          </tr>
+          <tr>
+            <td><strong>Container Recovery Rate</strong></td>
+            <td>94.5%</td>
+            <td>96.2%</td>
+            <td>97.0%</td>
+          </tr>
+          <tr>
+            <td><strong>Contribution Margin 2 (Net Operating Profit)</strong></td>
+            <td><strong>₹4.8 Lakhs (13.3%)</strong></td>
+            <td><strong>₹28.1 Lakhs (16.0%)</strong></td>
+            <td><strong>₹98.6 Lakhs (19.0%)</strong></td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="card card-accent" style="margin-top: 6px;">
+        <div class="card-title">Strategic Execution Milestones</div>
+        <div class="grid-3">
+          <div>
+            <strong>Phase 1 (Months 1–6):</strong> Optimize Mahadevapura hub, establish 96% return rate across 25 gated societies, reach positive unit economics.
+          </div>
+          <div>
+            <strong>Phase 2 (Months 7–12):</strong> Expand to 3 micro-hubs across Bengaluru, integrate Bluetooth Low Energy physical loggers, supply high-end restaurants.
+          </div>
+          <div>
+            <strong>Phase 3 (Months 13–18):</strong> Enter Mumbai market (Bandra & Andheri hubs), partner with commercial EV fleet logistics for dedicated delivery routes.
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="slide-footer">
+      <span>Confidential • Sagar Fresh Business Presentation</span>
+      <span>Slide 12: Roadmap & Financial Outlook</span>
+    </div>
+  </section>
+
+</body>
+</html>
