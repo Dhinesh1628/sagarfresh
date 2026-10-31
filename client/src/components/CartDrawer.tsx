@@ -85,11 +85,11 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({ onCheckout }) => {
                   className="p-3 bg-white border border-gray-200 rounded-lg flex gap-3 items-center shadow-2xs"
                 >
                   <img 
-                    src={item.product.image || item.product.imageUrl || 'https://images.unsplash.com/photo-1544551763-46a013bb70d5?auto=format&fit=crop&w=800&q=80'} 
+                    src={item.product.image || item.product.imageUrl || `/images/products/${item.product.id}.jpg`} 
                     alt={item.product.name}
                     className="w-14 h-14 rounded-lg object-cover border border-gray-100 shrink-0" 
                     onError={(e) => {
-                      (e.target as HTMLImageElement).src = 'https://images.unsplash.com/photo-1544551763-46a013bb70d5?auto=format&fit=crop&w=800&q=80';
+                      (e.target as HTMLImageElement).src = `/images/products/${item.product.id}.jpg`;
                     }}
                   />
 

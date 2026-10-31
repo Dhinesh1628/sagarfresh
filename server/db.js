@@ -71,8 +71,8 @@ const INITIAL_DATA = {
       origin: "Mangalore Old Port Jetty, Karnataka",
       cutStyle: "Curry Cut & Tawa Fry Steaks",
       stock: 40,
-      image: "https://images.unsplash.com/photo-1544551763-46a013bb70d5?auto=format&fit=crop&w=800&q=80",
-      imageUrl: "https://images.unsplash.com/photo-1544551763-46a013bb70d5?auto=format&fit=crop&w=800&q=80",
+      image: "/images/products/prod_1.jpg",
+      imageUrl: "/images/products/prod_1.jpg",
       vacuumSealed: true,
       featured: true
     },
@@ -94,8 +94,8 @@ const INITIAL_DATA = {
       origin: "Ratnagiri Jetty, Maharashtra",
       cutStyle: "Whole Cleaned with Diamond Slits",
       stock: 35,
-      image: "https://images.unsplash.com/photo-1534483509719-3feaee7c30da?auto=format&fit=crop&w=800&q=80",
-      imageUrl: "https://images.unsplash.com/photo-1534483509719-3feaee7c30da?auto=format&fit=crop&w=800&q=80",
+      image: "/images/products/prod_2.jpg",
+      imageUrl: "/images/products/prod_2.jpg",
       vacuumSealed: true,
       featured: true
     },
@@ -117,8 +117,8 @@ const INITIAL_DATA = {
       origin: "Visakhapatnam Deep Sea, Andhra Pradesh",
       cutStyle: "Peeled & Deveined (Tail On)",
       stock: 50,
-      image: "https://images.unsplash.com/photo-1565680018434-b513d5e5fd47?auto=format&fit=crop&w=800&q=80",
-      imageUrl: "https://images.unsplash.com/photo-1565680018434-b513d5e5fd47?auto=format&fit=crop&w=800&q=80",
+      image: "/images/products/prod_3.jpg",
+      imageUrl: "/images/products/prod_3.jpg",
       vacuumSealed: true,
       featured: true
     },
@@ -140,8 +140,8 @@ const INITIAL_DATA = {
       origin: "Bannur & Mandya Pastures, Karnataka",
       cutStyle: "Biryani & Rogan Josh Cut",
       stock: 60,
-      image: "https://images.unsplash.com/photo-1607623814075-e51df1bdc82f?auto=format&fit=crop&w=800&q=80",
-      imageUrl: "https://images.unsplash.com/photo-1607623814075-e51df1bdc82f?auto=format&fit=crop&w=800&q=80",
+      image: "/images/products/prod_4.jpg",
+      imageUrl: "/images/products/prod_4.jpg",
       vacuumSealed: true,
       featured: true
     },
@@ -163,7 +163,8 @@ const INITIAL_DATA = {
       origin: "Coimbatore Bio-Secured Poultry Farm",
       cutStyle: "Boneless Breast Fillet",
       stock: 75,
-      image: "https://images.unsplash.com/photo-1604503468506-a8da13d82791?auto=format&fit=crop&w=800&q=80",
+      image: "/images/products/prod_5.jpg",
+      imageUrl: "/images/products/prod_5.jpg",
       vacuumSealed: true,
       featured: true
     },
@@ -185,7 +186,8 @@ const INITIAL_DATA = {
       origin: "Chittoor Free-Range Poultry Co-op",
       cutStyle: "Medium Bone-In Curry Pieces",
       stock: 45,
-      image: "https://images.unsplash.com/photo-1607623814075-e51df1bdc82f?auto=format&fit=crop&w=800&q=80",
+      image: "/images/products/prod_6.jpg",
+      imageUrl: "/images/products/prod_6.jpg",
       vacuumSealed: true,
       featured: false
     },
@@ -207,8 +209,8 @@ const INITIAL_DATA = {
       origin: "Sagar Fresh Master Kitchen",
       cutStyle: "Marinated Boneless Cubes",
       stock: 30,
-      image: "https://images.unsplash.com/photo-1567188040759-fb8a883dc6d8?auto=format&fit=crop&w=800&q=80",
-      imageUrl: "https://images.unsplash.com/photo-1567188040759-fb8a883dc6d8?auto=format&fit=crop&w=800&q=80",
+      image: "/images/products/prod_7.jpg",
+      imageUrl: "/images/products/prod_7.jpg",
       vacuumSealed: true,
       featured: false
     },
@@ -230,8 +232,8 @@ const INITIAL_DATA = {
       origin: "Certified Coastal & Mandya Farm Partners",
       cutStyle: "Curated Feast Selection",
       stock: 20,
-      image: "https://images.unsplash.com/photo-1615141982883-c7ad0e69fd62?auto=format&fit=crop&w=800&q=80",
-      imageUrl: "https://images.unsplash.com/photo-1615141982883-c7ad0e69fd62?auto=format&fit=crop&w=800&q=80",
+      image: "/images/products/prod_8.jpg",
+      imageUrl: "/images/products/prod_8.jpg",
       vacuumSealed: true,
       featured: true
     }

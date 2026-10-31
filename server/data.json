@@ -56,11 +56,11 @@
       "rating": 4.8,
       "reviewsCount": 120,
       "badge": "",
-      "imageUrl": "https://images.unsplash.com/photo-1544551763-46a013bb70d5?auto=format&fit=crop&w=800&q=80",
+      "imageUrl": "/images/products/prod_1.jpg",
       "__v": 0,
       "createdAt": "2026-10-30T19:00:48.193Z",
       "updatedAt": "2026-10-30T19:02:30.906Z",
-      "image": "https://images.unsplash.com/photo-1544551763-46a013bb70d5?auto=format&fit=crop&w=800&q=80"
+      "image": "/images/products/prod_1.jpg"
     },
     {
       "_id": "6ae4e960a752ca05794d5cce",
@@ -84,11 +84,11 @@
       "rating": 4.8,
       "reviewsCount": 120,
       "badge": "",
-      "imageUrl": "https://images.unsplash.com/photo-1534483509719-3feaee7c30da?auto=format&fit=crop&w=800&q=80",
+      "imageUrl": "/images/products/prod_2.jpg",
       "__v": 0,
       "createdAt": "2026-10-30T19:00:48.193Z",
       "updatedAt": "2026-10-30T19:00:48.193Z",
-      "image": "https://images.unsplash.com/photo-1534483509719-3feaee7c30da?auto=format&fit=crop&w=800&q=80"
+      "image": "/images/products/prod_2.jpg"
     },
     {
       "_id": "6ae4e960a752ca05794d5ccf",
@@ -112,11 +112,11 @@
       "rating": 4.8,
       "reviewsCount": 120,
       "badge": "",
-      "imageUrl": "https://images.unsplash.com/photo-1565680018434-b513d5e5fd47?auto=format&fit=crop&w=800&q=80",
+      "imageUrl": "/images/products/prod_3.jpg",
       "__v": 0,
       "createdAt": "2026-10-30T19:00:48.193Z",
       "updatedAt": "2026-10-30T19:00:48.193Z",
-      "image": "https://images.unsplash.com/photo-1565680018434-b513d5e5fd47?auto=format&fit=crop&w=800&q=80"
+      "image": "/images/products/prod_3.jpg"
     },
     {
       "_id": "6ae4e960a752ca05794d5cd0",
@@ -140,11 +140,11 @@
       "rating": 4.8,
       "reviewsCount": 120,
       "badge": "",
-      "imageUrl": "https://images.unsplash.com/photo-1607623814075-e51df1bdc82f?auto=format&fit=crop&w=800&q=80",
+      "imageUrl": "/images/products/prod_4.jpg",
       "__v": 0,
       "createdAt": "2026-10-30T19:00:48.193Z",
       "updatedAt": "2026-10-30T19:00:48.193Z",
-      "image": "https://images.unsplash.com/photo-1607623814075-e51df1bdc82f?auto=format&fit=crop&w=800&q=80"
+      "image": "/images/products/prod_4.jpg"
     },
     {
       "_id": "6ae4e960a752ca05794d5cd1",
@@ -168,11 +168,11 @@
       "rating": 4.8,
       "reviewsCount": 120,
       "badge": "",
-      "imageUrl": "https://images.unsplash.com/photo-1604503468506-a8da13d82791?auto=format&fit=crop&w=800&q=80",
+      "imageUrl": "/images/products/prod_5.jpg",
       "__v": 0,
       "createdAt": "2026-10-30T19:00:48.193Z",
       "updatedAt": "2026-10-30T19:00:48.193Z",
-      "image": "https://images.unsplash.com/photo-1604503468506-a8da13d82791?auto=format&fit=crop&w=800&q=80"
+      "image": "/images/products/prod_5.jpg"
     },
     {
       "_id": "6ae4e960a752ca05794d5cd2",
@@ -196,11 +196,11 @@
       "rating": 4.8,
       "reviewsCount": 120,
       "badge": "",
-      "imageUrl": "https://images.unsplash.com/photo-1587593810167-a84920ea0781?auto=format&fit=crop&w=800&q=80",
+      "imageUrl": "/images/products/prod_6.jpg",
       "__v": 0,
       "createdAt": "2026-10-30T19:00:48.193Z",
       "updatedAt": "2026-10-30T19:00:48.193Z",
-      "image": "https://images.unsplash.com/photo-1587593810167-a84920ea0781?auto=format&fit=crop&w=800&q=80"
+      "image": "/images/products/prod_6.jpg"
     },
     {
       "_id": "6ae4e960a752ca05794d5cd3",
@@ -224,11 +224,11 @@
       "rating": 4.8,
       "reviewsCount": 120,
       "badge": "",
-      "imageUrl": "https://images.unsplash.com/photo-1567188040759-fb8a883dc6d8?auto=format&fit=crop&w=800&q=80",
+      "imageUrl": "/images/products/prod_7.jpg",
       "__v": 0,
       "createdAt": "2026-10-30T19:00:48.193Z",
       "updatedAt": "2026-10-30T19:00:48.193Z",
-      "image": "https://images.unsplash.com/photo-1567188040759-fb8a883dc6d8?auto=format&fit=crop&w=800&q=80"
+      "image": "/images/products/prod_7.jpg"
     },
     {
       "_id": "6ae4e960a752ca05794d5cd4",
@@ -252,11 +252,11 @@
       "rating": 4.8,
       "reviewsCount": 120,
       "badge": "",
-      "imageUrl": "https://images.unsplash.com/photo-1615141982883-c7ad0e69fd62?auto=format&fit=crop&w=800&q=80",
+      "imageUrl": "/images/products/prod_8.jpg",
       "__v": 0,
       "createdAt": "2026-10-30T19:00:48.193Z",
       "updatedAt": "2026-10-30T19:00:48.193Z",
-      "image": "https://images.unsplash.com/photo-1615141982883-c7ad0e69fd62?auto=format&fit=crop&w=800&q=80"
+      "image": "/images/products/prod_8.jpg"
     }
   ],
   "coolers": [

@@ -8,14 +8,14 @@ try {
 } catch (e) {}
 
 const PRODUCT_IMAGES = {
-  prod_1: "https://images.unsplash.com/photo-1544551763-46a013bb70d5?auto=format&fit=crop&w=800&q=80",
-  prod_2: "https://images.unsplash.com/photo-1534483509719-3feaee7c30da?auto=format&fit=crop&w=800&q=80",
-  prod_3: "https://images.unsplash.com/photo-1565680018434-b513d5e5fd47?auto=format&fit=crop&w=800&q=80",
-  prod_4: "https://images.unsplash.com/photo-1607623814075-e51df1bdc82f?auto=format&fit=crop&w=800&q=80",
-  prod_5: "https://images.unsplash.com/photo-1604503468506-a8da13d82791?auto=format&fit=crop&w=800&q=80",
-  prod_6: "https://images.unsplash.com/photo-1587593810167-a84920ea0781?auto=format&fit=crop&w=800&q=80",
-  prod_7: "https://images.unsplash.com/photo-1567188040759-fb8a883dc6d8?auto=format&fit=crop&w=800&q=80",
-  prod_8: "https://images.unsplash.com/photo-1615141982883-c7ad0e69fd62?auto=format&fit=crop&w=800&q=80"
+  prod_1: "/images/products/prod_1.jpg",
+  prod_2: "/images/products/prod_2.jpg",
+  prod_3: "/images/products/prod_3.jpg",
+  prod_4: "/images/products/prod_4.jpg",
+  prod_5: "/images/products/prod_5.jpg",
+  prod_6: "/images/products/prod_6.jpg",
+  prod_7: "/images/products/prod_7.jpg",
+  prod_8: "/images/products/prod_8.jpg"
 };
 
 async function updateImages() {
@@ -35,7 +35,7 @@ async function updateImages() {
     console.log(`Updated ${id}: matched ${res.matchedCount}, modified ${res.modifiedCount}`);
   }
 
-  console.log('Finished updating MongoDB Atlas product images.');
+  console.log('Finished updating MongoDB Atlas product images to local bundle assets.');
   await mongoose.disconnect();
 }
 
