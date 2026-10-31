@@ -71,7 +71,8 @@ const INITIAL_DATA = {
       origin: "Mangalore Old Port Jetty, Karnataka",
       cutStyle: "Curry Cut & Tawa Fry Steaks",
       stock: 40,
-      image: "https://images.unsplash.com/photo-1534422298391-e4f8c172dddb?auto=format&fit=crop&w=800&q=80",
+      image: "https://images.unsplash.com/photo-1544551763-46a013bb70d5?auto=format&fit=crop&w=800&q=80",
+      imageUrl: "https://images.unsplash.com/photo-1544551763-46a013bb70d5?auto=format&fit=crop&w=800&q=80",
       vacuumSealed: true,
       featured: true
     },
@@ -93,7 +94,8 @@ const INITIAL_DATA = {
       origin: "Ratnagiri Jetty, Maharashtra",
       cutStyle: "Whole Cleaned with Diamond Slits",
       stock: 35,
-      image: "https://images.unsplash.com/photo-1519708227418-c8fd9a32b7a2?auto=format&fit=crop&w=800&q=80",
+      image: "https://images.unsplash.com/photo-1534483509719-3feaee7c30da?auto=format&fit=crop&w=800&q=80",
+      imageUrl: "https://images.unsplash.com/photo-1534483509719-3feaee7c30da?auto=format&fit=crop&w=800&q=80",
       vacuumSealed: true,
       featured: true
     },
@@ -116,6 +118,7 @@ const INITIAL_DATA = {
       cutStyle: "Peeled & Deveined (Tail On)",
       stock: 50,
       image: "https://images.unsplash.com/photo-1565680018434-b513d5e5fd47?auto=format&fit=crop&w=800&q=80",
+      imageUrl: "https://images.unsplash.com/photo-1565680018434-b513d5e5fd47?auto=format&fit=crop&w=800&q=80",
       vacuumSealed: true,
       featured: true
     },
@@ -137,7 +140,8 @@ const INITIAL_DATA = {
       origin: "Bannur & Mandya Pastures, Karnataka",
       cutStyle: "Biryani & Rogan Josh Cut",
       stock: 60,
-      image: "https://images.unsplash.com/photo-1603048588665-791ca8aea617?auto=format&fit=crop&w=800&q=80",
+      image: "https://images.unsplash.com/photo-1607623814075-e51df1bdc82f?auto=format&fit=crop&w=800&q=80",
+      imageUrl: "https://images.unsplash.com/photo-1607623814075-e51df1bdc82f?auto=format&fit=crop&w=800&q=80",
       vacuumSealed: true,
       featured: true
     },

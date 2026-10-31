@@ -35,11 +35,11 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
         {/* Left: Image */}
         <div className="md:w-1/2 bg-gray-100 relative h-60 md:h-auto">
           <img 
-            src={product.image || product.imageUrl || 'https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&w=800&q=80'} 
+            src={product.image || product.imageUrl || 'https://images.unsplash.com/photo-1544551763-46a013bb70d5?auto=format&fit=crop&w=800&q=80'} 
             alt={product.name}
             className="w-full h-full object-cover" 
             onError={(e) => {
-              (e.target as HTMLImageElement).src = 'https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&w=800&q=80';
+              (e.target as HTMLImageElement).src = 'https://images.unsplash.com/photo-1544551763-46a013bb70d5?auto=format&fit=crop&w=800&q=80';
             }}
           />
           <div className="absolute top-2 left-2 bg-white px-2 py-0.5 rounded text-[10px] font-bold text-gray-800 shadow-2xs flex items-center gap-1">
