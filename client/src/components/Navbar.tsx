@@ -55,7 +55,7 @@ export const Navbar: React.FC<NavbarProps> = ({
       return;
     }
     if (user.role !== 'admin') {
-      alert('Access Restricted: Admin credentials required to access the Central Operations Hub. Please sign in with an admin account (ops@sagarfresh.in / admin123).');
+      alert('Access Restricted: Admin credentials required to access the Central Operations Hub. Please sign in with an admin account (ops@gomeat.in / admin123).');
       onOpenAuth('admin');
       return;
     }
@@ -100,15 +100,17 @@ export const Navbar: React.FC<NavbarProps> = ({
               onClick={() => setCurrentTab('catalog')} 
               className="flex items-center gap-2 cursor-pointer shrink-0"
             >
-              <div className="w-8 h-8 rounded-lg bg-[#d11243] flex items-center justify-center text-white font-extrabold text-sm tracking-wider shadow-2xs">
-                S
-              </div>
+              <img 
+                src="/images/logo.png" 
+                alt="GoMeat Logo" 
+                className="h-10 w-auto object-contain"
+              />
               <div>
-                <span className="font-black text-lg tracking-tight text-gray-900">
-                  SAGAR<span className="text-[#d11243]">FRESH</span>
+                <span className="font-black text-xl tracking-tight text-gray-900 leading-none block">
+                  Go<span className="text-[#d11243]">Meat</span>
                 </span>
-                <span className="text-[9px] block text-gray-600 font-semibold uppercase tracking-wider -mt-1">
-                  Farm to Fork Fresh
+                <span className="text-[10px] block text-gray-500 font-semibold tracking-tight mt-0.5">
+                  Freshness we can trust.
                 </span>
               </div>
             </div>

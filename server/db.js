@@ -28,12 +28,12 @@ const INITIAL_DATA = {
     {
       id: "usr_admin",
       name: "Rajeshwar Rao (Operations Head)",
-      email: "ops@sagarfresh.in",
+      email: "ops@gomeat.in",
       password: hashPassword("admin123"),
       role: "admin",
       phone: "+91 98450 12890",
       city: "Bengaluru",
-      address: "Sagar Fresh Fulfillment Center, Outer Ring Road, Mahadevapura, Bengaluru 560048",
+      address: "GoMeat Fulfillment Center, Outer Ring Road, Mahadevapura, Bengaluru 560048",
       depositBalance: 0,
       upiId: "ops@icici",
       createdAt: "2026-01-15T08:00:00.000Z"
@@ -206,7 +206,7 @@ const INITIAL_DATA = {
       eta: "⚡ Today in 90 mins",
       chillingMethod: "Chilled Ready to Cook (0°C - 4°C)",
       catchDate: "Fresh Chef Marinade Batch",
-      origin: "Sagar Fresh Master Kitchen",
+      origin: "GoMeat Master Kitchen",
       cutStyle: "Marinated Boneless Cubes",
       stock: 30,
       image: "/images/products/prod_7.jpg",
@@ -405,12 +405,12 @@ class Database {
       if (fs.existsSync(DATA_FILE)) {
         const raw = fs.readFileSync(DATA_FILE, 'utf-8');
         this.data = JSON.parse(raw);
-        console.log('[DB] Loaded Sagar Fresh database from persistence');
+        console.log('[DB] Loaded GoMeat database from persistence');
         return;
       }
       this.data = JSON.parse(JSON.stringify(INITIAL_DATA));
       this.save();
-      console.log('[DB] Initialized Sagar Fresh Licious-grade database');
+      console.log('[DB] Initialized GoMeat database');
     } catch (err) {
       console.error('[DB] Error initializing data:', err);
       this.data = JSON.parse(JSON.stringify(INITIAL_DATA));
@@ -423,7 +423,7 @@ class Database {
     try {
       const prodCount = await Product.countDocuments();
       if (prodCount === 0) {
-        console.log('[MongoDB] Collections empty, auto-seeding Sagar Fresh catalog into MongoDB...');
+        console.log('[MongoDB] Collections empty, auto-seeding GoMeat catalog into MongoDB...');
         await User.insertMany(INITIAL_DATA.users);
         await Product.insertMany(INITIAL_DATA.products);
         await Cooler.insertMany(INITIAL_DATA.coolers);

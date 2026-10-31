@@ -3,7 +3,7 @@ import { MessageCircle, X, ChevronRight, Sparkles, RefreshCw } from 'lucide-reac
 
 export const WhatsAppButton: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const phoneNumber = '919845012890'; // Sagar Fresh Central Hub Desk
+  const phoneNumber = '919845012890'; // GoMeat Central Hub Desk
 
   const handleOpenWhatsApp = (message: string) => {
     const encoded = encodeURIComponent(message);
@@ -18,14 +18,14 @@ export const WhatsAppButton: React.FC = () => {
           {/* Header */}
           <div className="bg-[#128C7E] text-white p-4 flex items-center justify-between">
             <div className="flex items-center gap-2.5">
-              <div className="w-9 h-9 bg-white/20 rounded-full flex items-center justify-center font-bold text-white">
-                SF
+              <div className="w-9 h-9 bg-white rounded-full flex items-center justify-center p-1 shadow-xs">
+                <img src="/images/logo.png" alt="GoMeat" className="w-full h-full object-contain" />
               </div>
               <div>
-                <h4 className="font-bold text-sm leading-tight">Sagar Fresh Support</h4>
+                <h4 className="font-bold text-sm leading-tight">GoMeat Support</h4>
                 <div className="flex items-center gap-1.5 text-[11px] text-emerald-100">
                   <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-                  <span>Online • Harbor Hub Desk</span>
+                  <span>Online • Hub Desk</span>
                 </div>
               </div>
             </div>
@@ -44,7 +44,7 @@ export const WhatsAppButton: React.FC = () => {
             </p>
 
             <button
-              onClick={() => handleOpenWhatsApp("Hello Sagar Fresh, I want to order fresh seafood and meat. Please share today's 4 AM harbor catch availability.")}
+              onClick={() => handleOpenWhatsApp("Hello GoMeat, I want to order fresh seafood and meat. Please share today's 4 AM harbor catch availability.")}
               className="w-full text-left p-2.5 bg-white border border-gray-200 hover:border-[#128C7E] rounded-xl flex items-center justify-between group shadow-2xs hover:bg-emerald-50/40 transition"
             >
               <div className="flex items-center gap-2">
@@ -58,7 +58,7 @@ export const WhatsAppButton: React.FC = () => {
             </button>
 
             <button
-              onClick={() => handleOpenWhatsApp("Hi Sagar Fresh, I have an empty ThermalVault cooler box at my apartment and want to schedule a return for my ₹250 UPI refund.")}
+              onClick={() => handleOpenWhatsApp("Hi GoMeat, I have an empty ThermalVault cooler box at my apartment and want to schedule a return for my ₹250 UPI refund.")}
               className="w-full text-left p-2.5 bg-white border border-gray-200 hover:border-[#128C7E] rounded-xl flex items-center justify-between group shadow-2xs hover:bg-emerald-50/40 transition"
             >
               <div className="flex items-center gap-2">

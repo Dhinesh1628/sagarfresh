@@ -21,7 +21,7 @@ const CartContext = createContext<CartContextType | undefined>(undefined);
 export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [items, setItems] = useState<CartItem[]>(() => {
     try {
-      const saved = localStorage.getItem('sagar_cart');
+      const saved = localStorage.getItem('gomeat_cart') || localStorage.getItem('sagar_cart');
       return saved ? JSON.parse(saved) : [];
     } catch {
       return [];
@@ -31,7 +31,7 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [isCartOpen, setIsCartOpen] = useState<boolean>(false);
 
   useEffect(() => {
-    localStorage.setItem('sagar_cart', JSON.stringify(items));
+    localStorage.setItem('gomeat_cart', JSON.stringify(items));
   }, [items]);
 
   const addItem = (product: Product, quantity = 1, selectedCutStyle?: string) => {

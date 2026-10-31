@@ -16,7 +16,7 @@ export const LegalModal: React.FC<LegalModalProps> = ({ type, onClose }) => {
       <div className="relative w-full max-w-2xl bg-slate-900 border border-slate-700 rounded-lg shadow-xl p-6 text-slate-200 z-10 max-h-[85vh] overflow-y-auto">
         <div className="flex items-center justify-between pb-3 border-b border-slate-800">
           <h2 className="text-base font-semibold text-white">
-            {type === 'tos' ? 'Terms of Service - Sagar Cuts India' : 'Privacy Policy - Sagar Cuts India'}
+            {type === 'tos' ? 'Terms of Service - GoMeat India' : 'Privacy Policy - GoMeat India'}
           </h2>
           <button onClick={onClose} className="text-slate-400 hover:text-white p-1">
             <X className="w-5 h-5" />
@@ -53,7 +53,7 @@ export const LegalModal: React.FC<LegalModalProps> = ({ type, onClose }) => {
               <strong>3. Payment Security:</strong> We do not store debit/credit card numbers or UPI PINs. Transactions are processed through RBI-licensed payment gateways.
             </p>
             <p>
-              <strong>4. Account Deletion & Rights:</strong> Under the Digital Personal Data Protection Act (DPDP), you can request complete erasure of your profile and address history by contacting support@sagarcuts.in.
+              <strong>4. Account Deletion & Rights:</strong> Under the Digital Personal Data Protection Act (DPDP), you can request complete erasure of your profile and address history by contacting support@gomeat.in.
             </p>
           </div>
         )}

@@ -37,7 +37,7 @@ const orderSchema = new mongoose.Schema({
   upiTransactionId: { type: String, default: '' },
   coolerId: { type: String, required: true },
   coolerRfid: { type: String, default: '' },
-  hubOrigin: { type: String, default: 'Sagar Fresh Central Cold Hub, Mahadevapura' },
+  hubOrigin: { type: String, default: 'GoMeat Central Cold Hub, Mahadevapura' },
   currentTemp: { type: Number, default: 1.8 },
   temperatureLog: [tempLogSchema],
   deliveryPartner: {

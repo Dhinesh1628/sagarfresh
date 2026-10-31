@@ -423,7 +423,7 @@ export const AdminDashboardPage: React.FC = () => {
 
           <div className="relative w-full max-w-lg bg-white border border-gray-200 rounded-xl p-5 text-gray-800 z-10 space-y-3 text-xs shadow-2xl">
             <div className="flex justify-between items-center pb-2 border-b border-gray-100">
-              <h3 className="font-extrabold text-gray-900 text-sm">Add Fresh Cut to Sagar Fresh</h3>
+              <h3 className="font-extrabold text-gray-900 text-sm">Add Fresh Cut to GoMeat Catalog</h3>
               <button onClick={() => setShowAddProductModal(false)} className="text-gray-400 hover:text-gray-600">&times;</button>
             </div>
 

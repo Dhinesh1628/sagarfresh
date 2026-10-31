@@ -245,7 +245,7 @@ export const CatalogPage: React.FC<CatalogPageProps> = ({
       {/* Licious-Style 4 Pillar Quality Badges */}
       <div className="bg-white rounded-xl border border-gray-200 p-6 shadow-2xs">
         <h3 className="font-extrabold text-sm text-gray-900 mb-4 text-center">
-          The Sagar Fresh Promise (Farm to Fork Integrity)
+          The GoMeat Promise (Farm to Fork Integrity)
         </h3>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
           <div className="p-3 rounded-lg bg-gray-50 border border-gray-100">

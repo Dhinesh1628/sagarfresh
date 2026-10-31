@@ -35,7 +35,7 @@ const REVIEWS: Review[] = [
     productPurchased: 'Rich Tender Goat (Biryani & Curry Cut)',
     rating: 5,
     date: 'Yesterday',
-    comment: 'Finally a meat brand that does not give you 10 layers of non-recyclable plastic and melted ice bags! The Mandya goat meat was fresh, pink, and bone-dust free. Cooked in 3 whistles with authentic village aroma. Sagar Fresh is officially my Sunday meat staple over Licious.',
+    comment: 'Finally a meat brand that does not give you 10 layers of non-recyclable plastic and melted ice bags! The Mandya goat meat was fresh, pink, and bone-dust free. Cooked in 3 whistles with authentic village aroma. GoMeat is officially my Sunday meat staple over Licious.',
     verifiedBuyer: true,
     avatarBg: 'bg-rose-600'
   },
@@ -159,7 +159,7 @@ export const CustomerReviewsSection: React.FC = () => {
 
             <div className="mt-3 pt-2.5 border-t border-gray-200/60 flex items-center justify-between text-[10px] text-gray-400">
               <span className="flex items-center gap-1 text-emerald-700 font-medium">
-                <ThumbsUp className="w-3 h-3" /> Recommends Sagar Fresh
+                <ThumbsUp className="w-3 h-3" /> Recommends GoMeat
               </span>
               <span>Delivered in 90 Mins</span>
             </div>

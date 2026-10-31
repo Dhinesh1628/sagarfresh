@@ -99,7 +99,7 @@ const MainApp: React.FC = () => {
           ) : (
             <div className="bg-white rounded-xl border border-gray-200 p-8 text-center max-w-md mx-auto my-12 space-y-3">
               <h3 className="font-bold text-gray-900 text-sm">Operations Admin Authentication Required</h3>
-              <p className="text-xs text-gray-500">Access to the Central Hub Operations Control Room requires verified administrator credentials (ops@sagarfresh.in / admin123).</p>
+              <p className="text-xs text-gray-500">Access to the Central Hub Operations Control Room requires verified administrator credentials (ops@gomeat.in / admin123).</p>
               <button
                 onClick={() => handleOpenAuth('admin')}
                 className="px-4 py-2 bg-gray-900 hover:bg-black text-white rounded-lg font-bold text-xs cursor-pointer shadow-xs"
@@ -118,12 +118,15 @@ const MainApp: React.FC = () => {
             
             <div className="space-y-3">
               <div className="flex items-center gap-2">
-                <div className="w-7 h-7 rounded-lg bg-[#d11243] flex items-center justify-center font-black text-xs text-white">
-                  S
+                <img src="/images/logo.png" alt="GoMeat" className="h-8 w-auto object-contain" />
+                <div>
+                  <span className="font-black text-sm text-gray-900 tracking-tight block">
+                    Go<span className="text-[#d11243]">Meat</span>
+                  </span>
+                  <span className="text-[10px] text-gray-500 font-medium block -mt-0.5">
+                    Freshness we can trust.
+                  </span>
                 </div>
-                <span className="font-black text-sm text-gray-900 tracking-tight">
-                  SAGAR<span className="text-[#d11243]">FRESH</span>
-                </span>
               </div>
               <p className="text-[11px] text-gray-500 leading-relaxed">
                 India's finest cold-chain fresh meat & coastal seafood brand. Delivered farm-to-fork in reusable insulated cold-gel boxes at 0°C to 4°C with zero thermocol waste.
@@ -192,7 +195,7 @@ const MainApp: React.FC = () => {
 
           <div className="border-t border-gray-100 pt-5 flex flex-col sm:flex-row items-center justify-between text-[11px] text-gray-400 gap-2">
             <div>
-              © 2026 Sagar Fresh Cold Chain Private Limited. All rights reserved.
+              © 2026 GoMeat Technologies Private Limited. All rights reserved.
             </div>
             <div>
               Fulfillment Depot: Outer Ring Road, Mahadevapura, Bengaluru 560048

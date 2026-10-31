@@ -33,7 +33,7 @@ if (!process.env.VERCEL) {
 
 // Health & Database Status check
 app.get('/api/health', (req, res) => {
-  res.json({ status: 'ok', name: 'Sagar Fresh API', uptime: process.uptime() });
+  res.json({ status: 'ok', name: 'GoMeat API', uptime: process.uptime() });
 });
 
 app.get('/api/db/status', (req, res) => {
@@ -52,7 +52,7 @@ app.get('/api/db/status', (req, res) => {
 });
 
 app.get('/api', (req, res) => {
-  res.json({ status: 'ok', name: 'Sagar Fresh API', uptime: process.uptime() });
+  res.json({ status: 'ok', name: 'GoMeat API', uptime: process.uptime() });
 });
 
 // Middleware
@@ -134,10 +134,14 @@ app.post('/api/auth/login', (req, res) => {
     return res.status(400).json({ error: 'Please enter your email or mobile number, and password' });
   }
 
-  // Find user by email or by phone number match
+  // Find user by email (supports ops@gomeat.in and legacy ops@sagarfresh.in) or by phone number match
   const cleanPhone = input.replace(/[^0-9]/g, '');
   const user = db.get('users').find(u => {
-    if (u.email && u.email.toLowerCase() === input) return true;
+    if (u.email) {
+      const uEmail = u.email.toLowerCase();
+      if (uEmail === input) return true;
+      if ((input === 'ops@gomeat.in' && uEmail === 'ops@sagarfresh.in') || (input === 'ops@sagarfresh.in' && uEmail === 'ops@gomeat.in')) return true;
+    }
     if (cleanPhone && cleanPhone.length >= 10 && u.phone) {
       const uPhoneClean = u.phone.replace(/[^0-9]/g, '');
       return uPhoneClean.endsWith(cleanPhone) || cleanPhone.endsWith(uPhoneClean);
@@ -603,7 +607,7 @@ if (!process.env.VERCEL && isDirectRun) {
   });
 
   app.listen(PORT, () => {
-    console.log(`[Sagar Cuts API] Running on port ${PORT}`);
+    console.log(`[GoMeat API] Running on port ${PORT}`);
   });
 }
 

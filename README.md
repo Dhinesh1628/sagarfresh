@@ -1,8 +1,9 @@
-# Sagar Fresh (सागर फ्रेश)
+# GoMeat
 
-> **Farm-to-Fork Indian D2C Fresh Meat & Coastal Seafood Platform with Circular Reusable Cold-Box Logistics**
+> **Freshness we can trust.**
+> *Farm-to-Fork Indian D2C Fresh Meat & Coastal Seafood Platform with Circular Reusable Cold-Box Logistics*
 
-Modeled after modern fresh delivery platforms like Licious.in, Sagar Fresh brings high-integrity cold-chain meat and seafood to Indian households while eliminating single-use thermocol waste through a circular packaging loop.
+Modeled after modern fresh delivery platforms like Licious.in, GoMeat brings high-integrity cold-chain meat and seafood to Indian households while eliminating single-use thermocol waste through a circular packaging loop.
 
 ---
 
@@ -76,7 +77,7 @@ Open your browser to:
 | Role | Username / Identifier | Password | Access Rights |
 | :--- | :--- | :--- | :--- |
 | **Customer (Pooja Sundaram)** | `pooja.sundaram@gmail.com` *(or `9876543210`)* | `customer123` | Browse cuts, custom butchery styles, cart & checkout, live temperature tracking, and box returns with ₹250 UPI refunds. |
-| **Operations Admin (Rajeshwar Rao)** | `ops@sagarfresh.in` | `admin123` | Central Hub operations, dispatch management, cooler fleet inventory, return approvals, and catalog inventory CRUD. |
+| **Operations Admin (Rajeshwar Rao)** | `ops@gomeat.in` *(or `ops@sagarfresh.in`)* | `admin123` | Central Hub operations, dispatch management, cooler fleet inventory, return approvals, and catalog inventory CRUD. |
 
 ---
 
