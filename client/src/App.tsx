@@ -10,6 +10,7 @@ import { CartDrawer } from './components/CartDrawer';
 import { CheckoutModal } from './components/CheckoutModal';
 import { AuthModal } from './components/AuthModal';
 import { LegalModal } from './components/LegalModals';
+import { WhatsAppButton } from './components/WhatsAppButton';
 import type { Order } from './types';
 
 const MainApp: React.FC = () => {
@@ -223,6 +224,9 @@ const MainApp: React.FC = () => {
         type={legalModalType}
         onClose={() => setLegalModalType(null)}
       />
+
+      {/* Floating WhatsApp Quick Order & Support Button */}
+      <WhatsAppButton />
 
     </div>
   );

@@ -4,6 +4,7 @@ import type { Product } from '../types';
 import { api } from '../api';
 import { useCart } from '../context/CartContext';
 import { ProductDetailModal } from '../components/ProductDetailModal';
+import { CustomerReviewsSection } from '../components/CustomerReviewsSection';
 
 interface CatalogPageProps {
   onNavigateToReturns: () => void;
@@ -265,6 +266,9 @@ export const CatalogPage: React.FC<CatalogPageProps> = ({
           </div>
         </div>
       </div>
+
+      {/* Verified Customer Reviews & Google Rating Section */}
+      <CustomerReviewsSection />
 
       <ProductDetailModal
         product={inspectingProduct}

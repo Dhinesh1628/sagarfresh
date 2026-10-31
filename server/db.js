@@ -203,7 +203,8 @@ const INITIAL_DATA = {
       origin: "Sagar Fresh Master Kitchen",
       cutStyle: "Marinated Boneless Cubes",
       stock: 30,
-      image: "https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&w=800&q=80",
+      image: "https://images.unsplash.com/photo-1567188040759-fb8a883dc6d8?auto=format&fit=crop&w=800&q=80",
+      imageUrl: "https://images.unsplash.com/photo-1567188040759-fb8a883dc6d8?auto=format&fit=crop&w=800&q=80",
       vacuumSealed: true,
       featured: false
     },
@@ -225,7 +226,8 @@ const INITIAL_DATA = {
       origin: "Certified Coastal & Mandya Farm Partners",
       cutStyle: "Curated Feast Selection",
       stock: 20,
-      image: "https://images.unsplash.com/photo-1555939594-58d7cb561ad1?auto=format&fit=crop&w=800&q=80",
+      image: "https://images.unsplash.com/photo-1615141982883-c7ad0e69fd62?auto=format&fit=crop&w=800&q=80",
+      imageUrl: "https://images.unsplash.com/photo-1615141982883-c7ad0e69fd62?auto=format&fit=crop&w=800&q=80",
       vacuumSealed: true,
       featured: true
     }
