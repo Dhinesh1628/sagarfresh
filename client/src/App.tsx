@@ -117,16 +117,12 @@ const MainApp: React.FC = () => {
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
             
             <div className="space-y-3">
-              <div className="flex items-center gap-2">
-                <img src="/images/logo.png" alt="GoMeat" className="h-8 w-auto object-contain" />
-                <div>
-                  <span className="font-black text-sm text-gray-900 tracking-tight block">
-                    Go<span className="text-[#d11243]">Meat</span>
-                  </span>
-                  <span className="text-[10px] text-gray-500 font-medium block -mt-0.5">
-                    Freshness we can trust.
-                  </span>
-                </div>
+              <div className="flex items-center">
+                <img 
+                  src="/images/logo.png" 
+                  alt="GoMeat - Freshness we can trust." 
+                  className="h-9 w-auto object-contain" 
+                />
               </div>
               <p className="text-[11px] text-gray-500 leading-relaxed">
                 India's finest cold-chain fresh meat & coastal seafood brand. Delivered farm-to-fork in reusable insulated cold-gel boxes at 0°C to 4°C with zero thermocol waste.

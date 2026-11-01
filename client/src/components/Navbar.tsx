@@ -98,21 +98,13 @@ export const Navbar: React.FC<NavbarProps> = ({
           <div className="flex items-center gap-5">
             <div 
               onClick={() => setCurrentTab('catalog')} 
-              className="flex items-center gap-2 cursor-pointer shrink-0"
+              className="flex items-center cursor-pointer shrink-0 py-1"
             >
               <img 
                 src="/images/logo.png" 
-                alt="GoMeat Logo" 
-                className="h-10 w-auto object-contain"
+                alt="GoMeat - Freshness we can trust." 
+                className="h-10 sm:h-11 w-auto object-contain hover:opacity-95 transition" 
               />
-              <div>
-                <span className="font-black text-xl tracking-tight text-gray-900 leading-none block">
-                  Go<span className="text-[#d11243]">Meat</span>
-                </span>
-                <span className="text-[10px] block text-gray-500 font-semibold tracking-tight mt-0.5">
-                  Freshness we can trust.
-                </span>
-              </div>
             </div>
 
             {/* Location Selector */}
