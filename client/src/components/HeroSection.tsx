@@ -39,41 +39,53 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
             <div className="relative z-10 grid grid-cols-12 gap-8 items-center">
               {/* Left Copy (7 cols) */}
               <div className="col-span-7 space-y-4">
-                {/* Assurance Pill */}
-                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-black/25 backdrop-blur-md border border-white/20 text-xs font-semibold text-rose-100">
-                  <span className="relative flex h-2 w-2">
-                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                    <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-400"></span>
+                {/* Assurance Pill from Figma */}
+                <div className="flex flex-wrap items-center gap-2 text-xs font-semibold text-rose-100">
+                  <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-black/30 backdrop-blur-md border border-white/20">
+                    <span className="relative flex h-2 w-2">
+                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                      <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-400"></span>
+                    </span>
+                    <span>IOT PROBE: 1.8°C CORE TEMP</span>
                   </span>
-                  <Zap className="w-3.5 h-3.5 text-amber-300" />
-                  <span>Express 90-Min Delivery</span>
-                  <span className="text-white/40">•</span>
-                  <ThermometerSnowflake className="w-3.5 h-3.5 text-cyan-200" />
-                  <span>0°C to 4°C FreshSeal™</span>
+
+                  <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-950/40 text-emerald-300 backdrop-blur-md border border-emerald-400/30">
+                    <Zap className="w-3.5 h-3.5 text-amber-300" />
+                    <span>Landed 04:10 AM - Mangalore Dock</span>
+                  </span>
                 </div>
 
-                {/* Slogan & Main Headline */}
+                {/* Slogan & Main Headline from Figma */}
                 <div className="space-y-1">
-                  <div className="text-xs uppercase font-extrabold tracking-widest text-rose-200">
-                    Freshness we can trust.
-                  </div>
                   <h1 className="text-3xl lg:text-4xl font-black tracking-tight leading-tight text-white">
-                    India's Purest Cold-Chain Meat & Coastal Seafood
+                    0°–4°C Catch from the Malabar Coast
                   </h1>
                 </div>
 
-                {/* Description */}
+                {/* Description from Figma */}
                 <p className="text-sm text-rose-100/90 leading-relaxed max-w-xl font-normal">
-                  Daily 4:00 AM harbor catches, bio-secured farm chicken, and pasture-grazed tender mutton. Delivered chilled in reusable <strong>ThermalVault</strong> boxes with ₹250 refundable security deposit.
+                  Wild Surmai (Seer Fish) and pristine White Pomfret, dock-transferred directly onto calibrated seawater ice slurry. Zero ammonia, zero chemical wash, unmatched freshness.
                 </p>
 
-                {/* Dual CTA Buttons */}
+                {/* Additional Micro Badges from Figma */}
+                <div className="flex items-center gap-3 text-xs text-rose-200">
+                  <span className="flex items-center gap-1 bg-black/20 px-2.5 py-1 rounded-lg border border-white/10">
+                    <CheckCircle className="w-3.5 h-3.5 text-emerald-400" />
+                    <span>Formalin Tested Negative</span>
+                  </span>
+                  <span className="flex items-center gap-1 bg-black/20 px-2.5 py-1 rounded-lg border border-white/10">
+                    <Clock className="w-3.5 h-3.5 text-cyan-300" />
+                    <span>Under 14h Net-to-Door</span>
+                  </span>
+                </div>
+
+                {/* Dual CTA Buttons from Figma */}
                 <div className="flex flex-wrap items-center gap-3 pt-2">
                   <button
                     onClick={onExploreCuts}
                     className="px-6 py-3 rounded-xl bg-white hover:bg-rose-50 text-[#b80f3b] font-black text-xs uppercase tracking-wider flex items-center gap-2 shadow-lg hover:shadow-xl hover:scale-[1.02] transition cursor-pointer"
                   >
-                    <span>Shop Today's Fresh Cuts</span>
+                    <span>Explore Fresh Catch</span>
                     <ArrowRight className="w-4 h-4" />
                   </button>
 
@@ -82,7 +94,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
                     className="px-5 py-3 rounded-xl bg-black/25 hover:bg-black/35 text-white font-bold text-xs tracking-wide flex items-center gap-2 border border-white/25 backdrop-blur-xs transition cursor-pointer"
                   >
                     <RotateCcw className="w-4 h-4 text-emerald-300" />
-                    <span>Return Box for ₹250 Refund</span>
+                    <span>View Hub Telemetry Log</span>
                   </button>
                 </div>
 
