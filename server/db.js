@@ -31,7 +31,7 @@ const INITIAL_DATA = {
       email: "ops@gomeat.in",
       password: hashPassword("admin123"),
       role: "admin",
-      phone: "+91 98450 12890",
+      phone: "+91 90000 00000",
       city: "Bengaluru",
       address: "GoMeat Fulfillment Center, Outer Ring Road, Mahadevapura, Bengaluru 560048",
       depositBalance: 0,

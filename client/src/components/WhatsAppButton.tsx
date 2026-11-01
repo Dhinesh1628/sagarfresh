@@ -5,11 +5,17 @@ import { WhatsAppChatbotModal } from './WhatsAppChatbotModal';
 export const WhatsAppButton: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isChatbotOpen, setIsChatbotOpen] = useState(false);
-  const phoneNumber = '919845012890'; // GoMeat Central Hub Desk
+  const phoneNumber = ''; // No hardcoded personal number - uses WhatsApp text dispatch or in-app AI bot
 
   const handleOpenWhatsAppDirect = (message: string) => {
     const encoded = encodeURIComponent(message);
-    window.open(`https://wa.me/${phoneNumber}?text=${encoded}`, '_blank');
+    if (phoneNumber) {
+      window.open(`https://wa.me/${phoneNumber}?text=${encoded}`, '_blank');
+    } else {
+      // If no business number is configured, open the GoMeat AI Chatbot directly!
+      setIsChatbotOpen(true);
+      setIsMenuOpen(false);
+    }
   };
 
   return (
