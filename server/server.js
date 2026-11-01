@@ -7,6 +7,7 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import { db } from './db.js';
 import { connectMongoDB, getMongoStatus } from './mongo.js';
+import whatsappWebhookRouter from './routes/whatsappWebhook.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -24,6 +25,9 @@ connectMongoDB().then(connected => {
 
 app.use(cors());
 app.use(express.json());
+
+// WhatsApp Cloud API Webhook & AI Chatbot Router
+app.use('/api', whatsappWebhookRouter);
 
 // Serve static frontend in production
 const clientDist = path.join(__dirname, '../client/dist');

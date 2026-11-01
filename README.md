@@ -12,6 +12,11 @@ Modeled after modern fresh delivery platforms like Licious.in, GoMeat brings hig
 - **Farm-to-Fork Cold Chain**: Strict 0°C to 4°C temperature regulation across procurement, processing, and delivery.
 - **Zero-Thermocol Packaging Loop**: Orders arrive in food-grade insulated EPP cold boxes with phase-change gel bricks holding 0°C to 4°C for 36 hours.
 - **₹250 Refundable Security Deposit**: Collected at checkout; 100% credited back to the customer's UPI ID upon doorstep box pickup.
+- **AI WhatsApp Commerce Bot**: 24/7 intelligent butcher & cold-chain assistant that answers customer inquiries directly on WhatsApp (or via the interactive web simulator):
+  - Inward 4:00 AM harbor seafood availability (Surmai, Pomfret, Prawns)
+  - Real-time catalog pricing & stock lookup
+  - Reusable box return & ₹250 instant UPI refund instructions
+  - Live core cold-chain temperature telemetry & order tracking
 - **Live IoT Temperature Sensor Telemetry**: Embedded core probe sensors stream internal box temperatures in real time.
 - **Authentic Indian Regional Cuts**:
   - *Fish & Seafood*: Malabar Seer Fish (Surmai), White Pomfret (Safed Paplet), Sea Tiger Prawns (Jumbo Cleaned & Deveined).
