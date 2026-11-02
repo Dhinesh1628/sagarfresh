@@ -67,26 +67,26 @@ const REVIEWS: Review[] = [
 
 export const CustomerReviewsSection: React.FC = () => {
   return (
-    <section className="mt-10 bg-white rounded-2xl border border-gray-200 p-6 md:p-8 shadow-xs">
+    <section className="mt-10 bg-white dark:bg-slate-900 rounded-2xl border border-gray-200 dark:border-slate-800 p-6 md:p-8 shadow-xs">
       {/* Header & Google Rating Summary */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 pb-6 border-b border-gray-100">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 pb-6 border-b border-gray-100 dark:border-slate-800">
         <div>
-          <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-800 text-[11px] font-bold uppercase tracking-wider mb-2">
-            <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" />
+          <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-50 dark:bg-emerald-950/50 text-emerald-800 dark:text-emerald-300 text-[11px] font-bold uppercase tracking-wider mb-2 border border-emerald-200 dark:border-emerald-800">
+            <ShieldCheck className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" />
             <span>100% Verified Customer Experience</span>
           </div>
-          <h2 className="text-xl md:text-2xl font-black text-gray-900 tracking-tight">
+          <h2 className="text-xl md:text-2xl font-black text-gray-900 dark:text-white tracking-tight">
             Loved by 45,000+ Meat & Seafood Lovers
           </h2>
-          <p className="text-xs text-gray-500 mt-1">
+          <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
             Real feedback from households across Bengaluru & Mumbai ordering fresh harbor catch and pasture mutton.
           </p>
         </div>
 
         {/* Google Reviews Badge */}
-        <div className="flex items-center gap-4 bg-gray-50 p-3.5 rounded-xl border border-gray-200 shrink-0">
-          <div className="text-center pr-4 border-r border-gray-200">
-            <div className="flex items-center justify-center gap-1 text-2xl font-black text-gray-900">
+        <div className="flex items-center gap-4 bg-gray-50 dark:bg-slate-800/80 p-3.5 rounded-xl border border-gray-200 dark:border-slate-700 shrink-0">
+          <div className="text-center pr-4 border-r border-gray-200 dark:border-slate-700">
+            <div className="flex items-center justify-center gap-1 text-2xl font-black text-gray-900 dark:text-white">
               4.8 <span className="text-amber-500 text-lg">★</span>
             </div>
             <div className="flex gap-0.5 mt-0.5 justify-center">
@@ -96,12 +96,12 @@ export const CustomerReviewsSection: React.FC = () => {
             </div>
           </div>
           <div>
-            <div className="text-xs font-bold text-gray-900 flex items-center gap-1">
+            <div className="text-xs font-bold text-gray-900 dark:text-white flex items-center gap-1">
               <span>Google Reviews</span>
               <CheckCircle className="w-3.5 h-3.5 fill-blue-500 text-white" />
             </div>
-            <div className="text-[11px] text-gray-500">Based on 1,480+ Ratings</div>
-            <div className="text-[10px] text-emerald-600 font-semibold mt-0.5">99.4% Positive Sentiment</div>
+            <div className="text-[11px] text-gray-500 dark:text-gray-400">Based on 1,480+ Ratings</div>
+            <div className="text-[10px] text-emerald-600 dark:text-emerald-400 font-semibold mt-0.5">99.4% Positive Sentiment</div>
           </div>
         </div>
       </div>
@@ -111,7 +111,7 @@ export const CustomerReviewsSection: React.FC = () => {
         {REVIEWS.map((review) => (
           <div 
             key={review.id}
-            className="p-4 bg-gray-50/70 rounded-xl border border-gray-200 hover:border-gray-300 transition flex flex-col justify-between"
+            className="p-4 bg-gray-50/70 dark:bg-slate-800/60 rounded-xl border border-gray-200 dark:border-slate-700 hover:border-gray-300 dark:hover:border-slate-600 transition flex flex-col justify-between card-light-hover"
           >
             <div>
               {/* Reviewer Header */}
@@ -121,15 +121,15 @@ export const CustomerReviewsSection: React.FC = () => {
                     {review.name.split(' ').map(n => n[0]).join('')}
                   </div>
                   <div>
-                    <div className="font-bold text-xs text-gray-900 flex items-center gap-1.5">
+                    <div className="font-bold text-xs text-gray-900 dark:text-white flex items-center gap-1.5">
                       <span>{review.name}</span>
                       {review.verifiedBuyer && (
-                        <span className="inline-flex items-center gap-0.5 text-[10px] font-medium text-emerald-700 bg-emerald-100/70 px-1.5 py-0.2 rounded-full">
+                        <span className="inline-flex items-center gap-0.5 text-[10px] font-medium text-emerald-700 dark:text-emerald-300 bg-emerald-100/70 dark:bg-emerald-950/60 px-1.5 py-0.2 rounded-full border border-emerald-200 dark:border-emerald-800">
                           <CheckCircle className="w-2.5 h-2.5" /> Verified
                         </span>
                       )}
                     </div>
-                    <div className="flex items-center gap-1 text-[10px] text-gray-500">
+                    <div className="flex items-center gap-1 text-[10px] text-gray-500 dark:text-gray-400">
                       <MapPin className="w-2.5 h-2.5 text-gray-400" />
                       <span>{review.locality}, {review.city}</span>
                     </div>
@@ -147,18 +147,18 @@ export const CustomerReviewsSection: React.FC = () => {
               </div>
 
               {/* Product Badge */}
-              <div className="inline-block bg-white border border-gray-200 px-2 py-0.5 rounded text-[10px] text-gray-700 font-medium mb-2.5 shadow-2xs">
-                Bought: <span className="font-bold text-[#d11243]">{review.productPurchased}</span>
+              <div className="inline-block bg-white dark:bg-slate-700 border border-gray-200 dark:border-slate-600 px-2 py-0.5 rounded text-[10px] text-gray-700 dark:text-gray-200 font-medium mb-2.5 shadow-2xs">
+                Bought: <span className="font-bold text-[#d11243] dark:text-rose-400">{review.productPurchased}</span>
               </div>
 
               {/* Review Text */}
-              <p className="text-xs text-gray-600 leading-relaxed italic">
+              <p className="text-xs text-gray-600 dark:text-gray-300 leading-relaxed italic">
                 "{review.comment}"
               </p>
             </div>
 
-            <div className="mt-3 pt-2.5 border-t border-gray-200/60 flex items-center justify-between text-[10px] text-gray-400">
-              <span className="flex items-center gap-1 text-emerald-700 font-medium">
+            <div className="mt-3 pt-2.5 border-t border-gray-200/60 dark:border-slate-700/60 flex items-center justify-between text-[10px] text-gray-400">
+              <span className="flex items-center gap-1 text-emerald-700 dark:text-emerald-400 font-medium">
                 <ThumbsUp className="w-3 h-3" /> Recommends GoMeat
               </span>
               <span>Delivered in 90 Mins</span>
@@ -168,22 +168,22 @@ export const CustomerReviewsSection: React.FC = () => {
       </div>
 
       {/* Trust Highlights Strip */}
-      <div className="mt-6 pt-5 border-t border-gray-100 grid grid-cols-2 md:grid-cols-4 gap-3 text-center">
-        <div className="p-2.5 bg-rose-50/50 rounded-lg border border-rose-100">
-          <div className="font-extrabold text-sm text-[#d11243]">0°C to 4°C</div>
-          <div className="text-[10px] text-gray-600 mt-0.5">Never Thawed or Refrozen</div>
+      <div className="mt-6 pt-5 border-t border-gray-100 dark:border-slate-800 grid grid-cols-2 md:grid-cols-4 gap-3 text-center">
+        <div className="p-2.5 bg-rose-50/50 dark:bg-rose-950/30 rounded-lg border border-rose-100 dark:border-rose-900/40">
+          <div className="font-extrabold text-sm text-[#d11243] dark:text-rose-400">0°C to 4°C</div>
+          <div className="text-[10px] text-gray-600 dark:text-gray-400 mt-0.5">Never Thawed or Refrozen</div>
         </div>
-        <div className="p-2.5 bg-emerald-50/50 rounded-lg border border-emerald-100">
-          <div className="font-extrabold text-sm text-emerald-800">₹250 UPI Refund</div>
-          <div className="text-[10px] text-gray-600 mt-0.5">Instant Deposit Reversal</div>
+        <div className="p-2.5 bg-emerald-50/50 dark:bg-emerald-950/30 rounded-lg border border-emerald-100 dark:border-emerald-900/40">
+          <div className="font-extrabold text-sm text-emerald-800 dark:text-emerald-400">₹250 UPI Refund</div>
+          <div className="text-[10px] text-gray-600 dark:text-gray-400 mt-0.5">Instant Deposit Reversal</div>
         </div>
-        <div className="p-2.5 bg-amber-50/50 rounded-lg border border-amber-100">
-          <div className="font-extrabold text-sm text-amber-800">100% RO Washed</div>
-          <div className="text-[10px] text-gray-600 mt-0.5">No Formalin / Chemicals</div>
+        <div className="p-2.5 bg-amber-50/50 dark:bg-amber-950/30 rounded-lg border border-amber-100 dark:border-amber-900/40">
+          <div className="font-extrabold text-sm text-amber-800 dark:text-amber-400">100% RO Washed</div>
+          <div className="text-[10px] text-gray-600 dark:text-gray-400 mt-0.5">No Formalin / Chemicals</div>
         </div>
-        <div className="p-2.5 bg-indigo-50/50 rounded-lg border border-indigo-100">
-          <div className="font-extrabold text-sm text-indigo-800">Zero Thermocol</div>
-          <div className="text-[10px] text-gray-600 mt-0.5">100% Reusable Cold Vault</div>
+        <div className="p-2.5 bg-indigo-50/50 dark:bg-indigo-950/30 rounded-lg border border-indigo-100 dark:border-indigo-900/40">
+          <div className="font-extrabold text-sm text-indigo-800 dark:text-indigo-400">Zero Thermocol</div>
+          <div className="text-[10px] text-gray-600 dark:text-gray-400 mt-0.5">100% Reusable Cold Vault</div>
         </div>
       </div>
     </section>

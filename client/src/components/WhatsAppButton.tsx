@@ -87,7 +87,7 @@ export const WhatsAppButton: React.FC<WhatsAppButtonProps> = ({
 
         {/* Quick WhatsApp Action Menu */}
         {isMenuOpen && (
-          <div className="mb-2 w-80 bg-white rounded-2xl shadow-2xl border border-gray-200 overflow-hidden text-gray-800 animate-in fade-in slide-in-from-bottom-3 duration-200">
+          <div className="mb-2 w-80 bg-white dark:bg-slate-900 rounded-2xl shadow-2xl border border-gray-200 dark:border-slate-800 overflow-hidden text-gray-800 dark:text-gray-100 animate-in fade-in slide-in-from-bottom-3 duration-200">
             <div className="bg-[#128C7E] text-white p-3.5 flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <div className="w-8 h-8 bg-white rounded-full flex items-center justify-center p-0.5 shadow-xs">
@@ -109,16 +109,16 @@ export const WhatsAppButton: React.FC<WhatsAppButtonProps> = ({
               </button>
             </div>
 
-            <div className="p-3 space-y-2 bg-gray-50 text-xs">
+            <div className="p-3 space-y-2 bg-gray-50 dark:bg-slate-800/80 text-xs">
               <button
                 onClick={() => handleOpenWhatsAppDirect("Hello GoMeat, I want to order fresh seafood and meat. Please share today's harbor catch.")}
-                className="w-full text-left p-2.5 bg-white border border-gray-200 hover:border-[#128C7E] rounded-xl flex items-center justify-between group shadow-2xs hover:bg-emerald-50/40 transition cursor-pointer"
+                className="w-full text-left p-2.5 bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 hover:border-[#128C7E] dark:hover:border-[#128C7E] rounded-xl flex items-center justify-between group shadow-2xs hover:bg-emerald-50/40 dark:hover:bg-emerald-950/40 transition cursor-pointer"
               >
                 <div className="flex items-center gap-2">
                   <Sparkles className="w-4 h-4 text-[#128C7E]" />
                   <div>
-                    <div className="font-bold text-gray-900 text-[11px]">Order via WhatsApp</div>
-                    <div className="text-[10px] text-gray-500">90-min chilled delivery slots</div>
+                    <div className="font-bold text-gray-900 dark:text-white text-[11px]">Order via WhatsApp</div>
+                    <div className="text-[10px] text-gray-500 dark:text-gray-400">90-min chilled delivery slots</div>
                   </div>
                 </div>
                 <ExternalLink className="w-3.5 h-3.5 text-gray-400 group-hover:text-[#128C7E]" />
@@ -126,13 +126,13 @@ export const WhatsAppButton: React.FC<WhatsAppButtonProps> = ({
 
               <button
                 onClick={() => handleOpenWhatsAppDirect("Hi GoMeat, I want to return my ThermalVault cooler box for my ₹250 UPI refund.")}
-                className="w-full text-left p-2.5 bg-white border border-gray-200 hover:border-[#128C7E] rounded-xl flex items-center justify-between group shadow-2xs hover:bg-emerald-50/40 transition cursor-pointer"
+                className="w-full text-left p-2.5 bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 hover:border-[#128C7E] dark:hover:border-[#128C7E] rounded-xl flex items-center justify-between group shadow-2xs hover:bg-emerald-50/40 dark:hover:bg-emerald-950/40 transition cursor-pointer"
               >
                 <div className="flex items-center gap-2">
-                  <RefreshCw className="w-4 h-4 text-amber-600" />
+                  <RefreshCw className="w-4 h-4 text-amber-600 dark:text-amber-400" />
                   <div>
-                    <div className="font-bold text-gray-900 text-[11px]">Return Cold Box (₹250 Refund)</div>
-                    <div className="text-[10px] text-gray-500">Doorstep pickup & instant reversal</div>
+                    <div className="font-bold text-gray-900 dark:text-white text-[11px]">Return Cold Box (₹250 Refund)</div>
+                    <div className="text-[10px] text-gray-500 dark:text-gray-400">Doorstep pickup & instant reversal</div>
                   </div>
                 </div>
                 <ExternalLink className="w-3.5 h-3.5 text-gray-400 group-hover:text-[#128C7E]" />

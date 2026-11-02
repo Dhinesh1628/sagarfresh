@@ -72,36 +72,36 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, defaultRo
     <div className="fixed inset-0 z-50 overflow-y-auto flex items-center justify-center p-4">
       <div onClick={onClose} className="fixed inset-0 bg-black/60 backdrop-blur-xs" />
 
-      <div className="relative w-full max-w-md bg-white border border-gray-200 rounded-xl shadow-2xl p-6 text-gray-800 z-10 space-y-4 text-xs">
+      <div className="relative w-full max-w-md bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-800 rounded-xl shadow-2xl p-6 text-gray-800 dark:text-gray-100 z-10 space-y-4 text-xs">
         
         {/* Header */}
-        <div className="flex items-center justify-between pb-3 border-b border-gray-100">
+        <div className="flex items-center justify-between pb-3 border-b border-gray-100 dark:border-slate-800">
           <div>
-            <h2 className="text-base font-extrabold text-gray-950">
+            <h2 className="text-base font-extrabold text-gray-950 dark:text-white">
               {mode === 'login' ? 'Sign In to GoMeat' : 'Create an Account'}
             </h2>
-            <p className="text-[11px] text-gray-500 mt-0.5">
+            <p className="text-[11px] text-gray-500 dark:text-gray-400 mt-0.5">
               Enter your registered login details to proceed
             </p>
           </div>
-          <button onClick={onClose} className="p-1 text-gray-400 hover:text-gray-600">
+          <button onClick={onClose} className="p-1 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200">
             <X className="w-5 h-5" />
           </button>
         </div>
 
         {error && (
-          <div className="p-3 rounded-lg bg-red-50 border border-red-200 text-red-700 text-xs flex items-center gap-2">
-            <AlertCircle className="w-4 h-4 text-red-600 shrink-0" />
+          <div className="p-3 rounded-lg bg-red-50 dark:bg-red-950/50 border border-red-200 dark:border-red-900 text-red-700 dark:text-red-300 text-xs flex items-center gap-2">
+            <AlertCircle className="w-4 h-4 text-red-600 dark:text-red-400 shrink-0" />
             <span>{error}</span>
           </div>
         )}
 
         {/* Mode switcher tabs */}
-        <div className="flex bg-gray-100 rounded-lg p-1 border border-gray-200 font-bold">
+        <div className="flex bg-gray-100 dark:bg-slate-800 rounded-lg p-1 border border-gray-200 dark:border-slate-700 font-bold">
           <button
             onClick={() => { setMode('login'); setError(null); }}
             className={`flex-1 py-1.5 rounded-md text-center cursor-pointer transition ${
-              mode === 'login' ? 'bg-white text-gray-950 shadow-2xs' : 'text-gray-500 hover:text-gray-900'
+              mode === 'login' ? 'bg-white dark:bg-slate-700 text-gray-950 dark:text-white shadow-2xs' : 'text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white'
             }`}
           >
             Login with Credentials
@@ -109,7 +109,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, defaultRo
           <button
             onClick={() => { setMode('register'); setError(null); }}
             className={`flex-1 py-1.5 rounded-md text-center cursor-pointer transition ${
-              mode === 'register' ? 'bg-white text-gray-950 shadow-2xs' : 'text-gray-500 hover:text-gray-900'
+              mode === 'register' ? 'bg-white dark:bg-slate-700 text-gray-950 dark:text-white shadow-2xs' : 'text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white'
             }`}
           >
             New Registration
@@ -120,7 +120,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, defaultRo
         {mode === 'login' ? (
           <form onSubmit={handleLogin} className="space-y-3.5">
             <div>
-              <label className="block text-gray-700 font-bold mb-1">
+              <label className="block text-gray-700 dark:text-gray-300 font-bold mb-1">
                 Email Address or 10-Digit Mobile Number
               </label>
               <div className="relative">
@@ -131,13 +131,13 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, defaultRo
                   value={loginIdentifier}
                   onChange={(e) => setLoginIdentifier(e.target.value)}
                   placeholder="e.g. pooja.sundaram@gmail.com or 9876543210"
-                  className="w-full pl-9 pr-3 py-2 rounded-lg bg-gray-50 border border-gray-200 text-gray-900 focus:bg-white focus:outline-none focus:border-[#d11243]"
+                  className="w-full pl-9 pr-3 py-2 rounded-lg bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 text-gray-900 dark:text-white focus:outline-none focus:border-[#d11243]"
                 />
               </div>
             </div>
 
             <div>
-              <label className="block text-gray-700 font-bold mb-1">
+              <label className="block text-gray-700 dark:text-gray-300 font-bold mb-1">
                 Password
               </label>
               <div className="relative">
@@ -148,21 +148,21 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, defaultRo
                   value={loginPassword}
                   onChange={(e) => setLoginPassword(e.target.value)}
                   placeholder="Enter your password"
-                  className="w-full pl-9 pr-3 py-2 rounded-lg bg-gray-50 border border-gray-200 text-gray-900 focus:bg-white focus:outline-none focus:border-[#d11243]"
+                  className="w-full pl-9 pr-3 py-2 rounded-lg bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 text-gray-900 dark:text-white focus:outline-none focus:border-[#d11243]"
                 />
               </div>
             </div>
 
             {/* Credential Reference Box (Shows credentials so user knows what to type!) */}
-            <div className="p-3 rounded-lg bg-gray-50 border border-gray-200 text-[11px] space-y-1 text-gray-600">
-              <span className="font-bold text-gray-800 block">Registered Account Credentials:</span>
+            <div className="p-3 rounded-lg bg-gray-50 dark:bg-slate-800/80 border border-gray-200 dark:border-slate-700 text-[11px] space-y-1 text-gray-600 dark:text-gray-300">
+              <span className="font-bold text-gray-800 dark:text-gray-200 block">Registered Account Credentials:</span>
               <div className="flex justify-between items-center py-0.5">
                 <span>Customer (Pooja):</span>
-                <span className="font-mono text-gray-900 font-semibold">pooja.sundaram@gmail.com / customer123</span>
+                <span className="font-mono text-gray-900 dark:text-white font-semibold">pooja.sundaram@gmail.com / customer123</span>
               </div>
               <div className="flex justify-between items-center py-0.5">
                 <span>Hub Admin (Rajeshwar):</span>
-                <span className="font-mono text-[#d11243] font-semibold">ops@gomeat.in / admin123</span>
+                <span className="font-mono text-[#d11243] dark:text-rose-400 font-semibold">ops@gomeat.in / admin123</span>
               </div>
             </div>
 
@@ -178,60 +178,60 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, defaultRo
           /* Register Form */
           <form onSubmit={handleRegister} className="space-y-3">
             <div>
-              <label className="block text-gray-700 font-bold mb-1">Full Name</label>
+              <label className="block text-gray-700 dark:text-gray-300 font-bold mb-1">Full Name</label>
               <input
                 type="text"
                 required
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 placeholder="e.g. Ananya Sen"
-                className="w-full px-3 py-2 rounded-lg bg-gray-50 border border-gray-200 text-gray-900 focus:bg-white focus:outline-none focus:border-[#d11243]"
+                className="w-full px-3 py-2 rounded-lg bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 text-gray-900 dark:text-white focus:outline-none focus:border-[#d11243]"
               />
             </div>
 
             <div>
-              <label className="block text-gray-700 font-bold mb-1">Email</label>
+              <label className="block text-gray-700 dark:text-gray-300 font-bold mb-1">Email</label>
               <input
                 type="email"
                 required
                 value={regEmail}
                 onChange={(e) => setRegEmail(e.target.value)}
                 placeholder="ananya@gmail.com"
-                className="w-full px-3 py-2 rounded-lg bg-gray-50 border border-gray-200 text-gray-900 focus:bg-white focus:outline-none focus:border-[#d11243]"
+                className="w-full px-3 py-2 rounded-lg bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 text-gray-900 dark:text-white focus:outline-none focus:border-[#d11243]"
               />
             </div>
 
             <div>
-              <label className="block text-gray-700 font-bold mb-1">Password</label>
+              <label className="block text-gray-700 dark:text-gray-300 font-bold mb-1">Password</label>
               <input
                 type="password"
                 required
                 value={regPassword}
                 onChange={(e) => setRegPassword(e.target.value)}
                 placeholder="••••••••"
-                className="w-full px-3 py-2 rounded-lg bg-gray-50 border border-gray-200 text-gray-900 focus:bg-white focus:outline-none focus:border-[#d11243]"
+                className="w-full px-3 py-2 rounded-lg bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 text-gray-900 dark:text-white focus:outline-none focus:border-[#d11243]"
               />
             </div>
 
             <div>
-              <label className="block text-gray-700 font-bold mb-1">10-Digit Mobile Number</label>
+              <label className="block text-gray-700 dark:text-gray-300 font-bold mb-1">10-Digit Mobile Number</label>
               <input
                 type="text"
                 value={phone}
                 onChange={(e) => setPhone(e.target.value)}
                 placeholder="+91 98765 43210"
-                className="w-full px-3 py-2 rounded-lg bg-gray-50 border border-gray-200 text-gray-900 focus:bg-white focus:outline-none focus:border-[#d11243]"
+                className="w-full px-3 py-2 rounded-lg bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 text-gray-900 dark:text-white focus:outline-none focus:border-[#d11243]"
               />
             </div>
 
             <div>
-              <label className="block text-gray-700 font-bold mb-1">Delivery Address</label>
+              <label className="block text-gray-700 dark:text-gray-300 font-bold mb-1">Delivery Address</label>
               <input
                 type="text"
                 value={address}
                 onChange={(e) => setAddress(e.target.value)}
                 placeholder="Flat / Building Name, Locality"
-                className="w-full px-3 py-2 rounded-lg bg-gray-50 border border-gray-200 text-gray-900 focus:bg-white focus:outline-none focus:border-[#d11243]"
+                className="w-full px-3 py-2 rounded-lg bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 text-gray-900 dark:text-white focus:outline-none focus:border-[#d11243]"
               />
             </div>
 
@@ -247,11 +247,11 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, defaultRo
 
         {/* Google OAuth Section */}
         <div className="relative flex py-2 items-center my-3">
-          <div className="flex-grow border-t border-gray-200"></div>
-          <span className="flex-shrink mx-3 text-[10px] uppercase tracking-wider text-gray-500 font-bold">
+          <div className="flex-grow border-t border-gray-200 dark:border-slate-700"></div>
+          <span className="flex-shrink mx-3 text-[10px] uppercase tracking-wider text-gray-500 dark:text-gray-400 font-bold">
             Or Continue With
           </span>
-          <div className="flex-grow border-t border-gray-200"></div>
+          <div className="flex-grow border-t border-gray-200 dark:border-slate-700"></div>
         </div>
 
         <div className="w-full flex justify-center">

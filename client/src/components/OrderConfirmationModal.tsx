@@ -63,36 +63,36 @@ export const OrderConfirmationModal: React.FC<OrderConfirmationModalProps> = ({
       <div onClick={onClose} className="fixed inset-0 bg-black/70 backdrop-blur-xs transition-opacity" />
 
       {/* Modal Container */}
-      <div className="relative w-full max-w-2xl bg-white border border-gray-200 rounded-3xl shadow-2xl p-5 sm:p-8 text-gray-900 z-10 max-h-[92vh] overflow-y-auto">
+      <div className="relative w-full max-w-2xl bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-800 rounded-3xl shadow-2xl p-5 sm:p-8 text-gray-900 dark:text-gray-100 z-10 max-h-[92vh] overflow-y-auto">
         
         {/* Close Button */}
         <button 
           onClick={onClose} 
-          className="absolute top-4 right-4 w-8 h-8 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center text-gray-500 hover:text-gray-900 transition"
+          className="absolute top-4 right-4 w-8 h-8 rounded-full bg-gray-100 dark:bg-slate-800 hover:bg-gray-200 dark:hover:bg-slate-700 flex items-center justify-center text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white transition"
         >
           <X className="w-4 h-4" />
         </button>
 
         {/* Celebratory Banner */}
-        <div className="text-center space-y-2 pb-5 border-b border-gray-100">
-          <div className="w-16 h-16 rounded-full bg-emerald-100 border-4 border-emerald-50 text-emerald-600 flex items-center justify-center mx-auto shadow-inner animate-bounce">
+        <div className="text-center space-y-2 pb-5 border-b border-gray-100 dark:border-slate-800">
+          <div className="w-16 h-16 rounded-full bg-emerald-100 dark:bg-emerald-950/60 border-4 border-emerald-50 dark:border-emerald-900/50 text-emerald-600 dark:text-emerald-400 flex items-center justify-center mx-auto shadow-inner animate-bounce">
             <CheckCircle2 className="w-9 h-9" />
           </div>
           <div>
-            <span className="px-3 py-1 rounded-full bg-emerald-50 text-emerald-800 text-xs font-black border border-emerald-200 tracking-wide uppercase">
+            <span className="px-3 py-1 rounded-full bg-emerald-50 dark:bg-emerald-950/50 text-emerald-800 dark:text-emerald-300 text-xs font-black border border-emerald-200 dark:border-emerald-800 tracking-wide uppercase">
               Order Confirmed & Sealed
             </span>
-            <h1 className="text-xl sm:text-2xl font-black text-gray-950 mt-2">
+            <h1 className="text-xl sm:text-2xl font-black text-gray-950 dark:text-white mt-2">
               Order #{currentOrder.id} Placed Successfully!
             </h1>
-            <p className="text-xs text-gray-500 mt-1 max-w-md mx-auto">
+            <p className="text-xs text-gray-500 dark:text-gray-400 mt-1 max-w-md mx-auto">
               Your cuts are packed inside insulated ThermalVault™ Box <strong>{currentOrder.coolerId}</strong> with real-time temperature tracking.
             </p>
           </div>
         </div>
 
         {/* Live Cold-Chain Sensor Card (Figma Frame 5 Telemetry) */}
-        <div className="mt-5 p-4 sm:p-5 rounded-2xl bg-slate-900 text-white shadow-xl space-y-4">
+        <div className="mt-5 p-4 sm:p-5 rounded-2xl bg-slate-900 dark:bg-slate-950 text-white shadow-xl space-y-4 border border-slate-800">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
               <div className="w-3 h-3 rounded-full bg-emerald-400 animate-ping" />
@@ -111,7 +111,7 @@ export const OrderConfirmationModal: React.FC<OrderConfirmationModalProps> = ({
           </div>
 
           {/* Temperature & Cold Status readout */}
-          <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 bg-slate-800/80 p-3.5 rounded-xl border border-slate-700">
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 bg-slate-800/80 dark:bg-slate-900/90 p-3.5 rounded-xl border border-slate-700 dark:border-slate-800">
             <div>
               <span className="text-[10px] uppercase text-gray-400 font-bold block">Internal Cold Box</span>
               <div className="flex items-baseline gap-1 mt-0.5">
@@ -165,18 +165,18 @@ export const OrderConfirmationModal: React.FC<OrderConfirmationModalProps> = ({
         </div>
 
         {/* Courier & Delivery Partner Details */}
-        <div className="mt-4 p-3.5 bg-gray-50 rounded-2xl border border-gray-200 text-xs flex items-center justify-between">
+        <div className="mt-4 p-3.5 bg-gray-50 dark:bg-slate-800/70 rounded-2xl border border-gray-200 dark:border-slate-700 text-xs flex items-center justify-between">
           <div className="space-y-0.5">
             <span className="text-[10px] text-gray-400 uppercase font-bold">Assigned Cold Courier Partner</span>
-            <div className="font-bold text-gray-950">{currentOrder.deliveryExecutive || 'Ramesh Kumar (EV Cold Courier #12)'}</div>
-            <div className="text-[11px] text-emerald-700 font-semibold flex items-center gap-1">
+            <div className="font-bold text-gray-950 dark:text-white">{currentOrder.deliveryExecutive || 'Ramesh Kumar (EV Cold Courier #12)'}</div>
+            <div className="text-[11px] text-emerald-700 dark:text-emerald-400 font-semibold flex items-center gap-1">
               <span>Vaccinated & Cold-Chain Protocol Trained</span>
             </div>
           </div>
           <button 
             type="button"
             onClick={() => alert('Connecting to your delivery partner...')}
-            className="px-3 py-1.5 rounded-lg bg-gray-900 hover:bg-black text-white text-[11px] font-bold flex items-center gap-1.5 transition"
+            className="px-3 py-1.5 rounded-lg bg-gray-900 dark:bg-slate-700 hover:bg-black dark:hover:bg-slate-600 text-white text-[11px] font-bold flex items-center gap-1.5 transition"
           >
             <Phone className="w-3 h-3" />
             <span>Call Courier</span>
@@ -184,33 +184,33 @@ export const OrderConfirmationModal: React.FC<OrderConfirmationModalProps> = ({
         </div>
 
         {/* Delivery Address & Order Items Breakdown */}
-        <div className="mt-4 p-3.5 bg-gray-50 rounded-2xl border border-gray-200 text-xs space-y-2">
+        <div className="mt-4 p-3.5 bg-gray-50 dark:bg-slate-800/70 rounded-2xl border border-gray-200 dark:border-slate-700 text-xs space-y-2">
           <div className="flex items-start gap-2">
             <MapPin className="w-4 h-4 text-[#d11243] shrink-0 mt-0.5" />
             <div className="flex-1">
-              <span className="font-bold text-gray-900">Delivering To:</span>
-              <p className="text-gray-600 mt-0.5 leading-snug">{currentOrder.deliveryAddress}</p>
+              <span className="font-bold text-gray-900 dark:text-white">Delivering To:</span>
+              <p className="text-gray-600 dark:text-gray-300 mt-0.5 leading-snug">{currentOrder.deliveryAddress}</p>
             </div>
           </div>
 
-          <div className="border-t border-gray-200 pt-2 flex justify-between font-semibold text-gray-700">
+          <div className="border-t border-gray-200 dark:border-slate-700 pt-2 flex justify-between font-semibold text-gray-700 dark:text-gray-300">
             <span>{currentOrder.items.length} Fresh Cuts in Box</span>
-            <span>Paid: <strong className="text-gray-950 font-black">₹{currentOrder.total}</strong></span>
+            <span>Paid: <strong className="text-gray-950 dark:text-white font-black">₹{currentOrder.total}</strong></span>
           </div>
         </div>
 
         {/* ₹250 Refundable Cooler Box Callout & 1-Click Return Trigger */}
-        <div className="mt-4 p-4 rounded-2xl bg-sky-50 border border-sky-200 text-xs space-y-2.5">
+        <div className="mt-4 p-4 rounded-2xl bg-sky-50 dark:bg-sky-950/40 border border-sky-200 dark:border-sky-800/70 text-xs space-y-2.5">
           <div className="flex items-start justify-between">
-            <div className="flex items-center gap-1.5 font-black text-sky-950">
-              <RotateCcw className="w-4 h-4 text-sky-700" />
+            <div className="flex items-center gap-1.5 font-black text-sky-950 dark:text-sky-200">
+              <RotateCcw className="w-4 h-4 text-sky-700 dark:text-sky-400" />
               <span>₹250 Cooler Box Deposit Refund Guarantee</span>
             </div>
-            <span className="px-2 py-0.5 rounded bg-emerald-100 text-emerald-800 text-[10px] font-extrabold">
+            <span className="px-2 py-0.5 rounded bg-emerald-100 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300 text-[10px] font-extrabold border border-emerald-200 dark:border-emerald-800">
               ₹250 Protected
             </span>
           </div>
-          <p className="text-[11px] text-sky-900 leading-relaxed">
+          <p className="text-[11px] text-sky-900 dark:text-sky-300 leading-relaxed">
             Your ThermalVault cooler maintains 0°C–4°C for up to 4 hours. You can return it to the courier immediately after taking your meat, or schedule a 1-click doorstep pickup anytime for an instant ₹250 UPI refund.
           </p>
           <div className="flex gap-2 pt-1">
@@ -242,7 +242,7 @@ export const OrderConfirmationModal: React.FC<OrderConfirmationModalProps> = ({
           
           <button
             onClick={onClose}
-            className="py-3 px-5 rounded-xl bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold text-xs transition cursor-pointer"
+            className="py-3 px-5 rounded-xl bg-gray-100 dark:bg-slate-800 hover:bg-gray-200 dark:hover:bg-slate-700 text-gray-700 dark:text-gray-200 font-bold text-xs transition cursor-pointer"
           >
             Continue Shopping
           </button>

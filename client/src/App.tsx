@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { ThemeProvider } from './context/ThemeContext';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import { CartProvider, useCart } from './context/CartContext';
 import { Navbar } from './components/Navbar';
@@ -128,8 +129,15 @@ const MainApp: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#f7f7f9] text-gray-800 flex flex-col font-sans selection:bg-[#d11243] selection:text-white">
+    <div className="min-h-screen bg-[#f7f7f9] dark:bg-[#080c14] text-gray-800 dark:text-gray-100 flex flex-col font-sans selection:bg-[#d11243] selection:text-white transition-colors duration-300 relative">
       
+      {/* Radiant Ambient Light Effects */}
+      <div className="light-glow-ambient" aria-hidden="true">
+        <div className="light-glow-orb-1" />
+        <div className="light-glow-orb-2" />
+        <div className="light-glow-orb-3" />
+      </div>
+
       {/* Top Navbar */}
       <Navbar
         currentTab={currentTab}
@@ -199,7 +207,7 @@ const MainApp: React.FC = () => {
       </main>
 
       {/* Footer */}
-      <footer className="border-t border-gray-200 bg-white mt-16 text-xs text-gray-600">
+      <footer className="border-t border-gray-200 dark:border-slate-800 bg-white dark:bg-slate-950 mt-16 text-xs text-gray-600 dark:text-gray-400 transition-colors">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-8">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
             
@@ -211,10 +219,10 @@ const MainApp: React.FC = () => {
                   className="h-9 w-auto object-contain" 
                 />
               </div>
-              <p className="text-[11px] text-gray-500 leading-relaxed">
+              <p className="text-[11px] text-gray-500 dark:text-gray-400 leading-relaxed">
                 India's finest cold-chain fresh meat & coastal seafood brand. Delivered farm-to-fork in reusable insulated cold-gel boxes at 0°C to 4°C with zero thermocol waste.
               </p>
-              <div className="text-[10px] text-gray-400 space-y-0.5 pt-1">
+              <div className="text-[10px] text-gray-400 dark:text-gray-500 space-y-0.5 pt-1">
                 <div>FSSAI Central Lic. No: 11224333000491</div>
                 <div>FSSC 22000 Certified Cold-Chain Processing</div>
                 <div>GSTIN: 29AAECS4912J1Z8</div>
@@ -222,8 +230,8 @@ const MainApp: React.FC = () => {
             </div>
 
             <div>
-              <h4 className="text-gray-900 font-bold mb-3">Popular Categories</h4>
-              <ul className="space-y-1.5 text-gray-600 text-[11px]">
+              <h4 className="text-gray-900 dark:text-white font-bold mb-3">Popular Categories</h4>
+              <ul className="space-y-1.5 text-gray-600 dark:text-gray-400 text-[11px]">
                 <li>Daily Harbor Fish & Seafood (Surmai, Pomfret)</li>
                 <li>Bio-Secured Farm Fresh Chicken</li>
                 <li>Pasture-Grazed Young Tender Mutton</li>
@@ -233,8 +241,8 @@ const MainApp: React.FC = () => {
             </div>
 
             <div>
-              <h4 className="text-gray-900 font-bold mb-3">Reusable Box Initiative</h4>
-              <ul className="space-y-1.5 text-gray-600 text-[11px]">
+              <h4 className="text-gray-900 dark:text-white font-bold mb-3">Reusable Box Initiative</h4>
+              <ul className="space-y-1.5 text-gray-600 dark:text-gray-400 text-[11px]">
                 <li>₹250 Refundable Security Deposit</li>
                 <li>EPP Insulated Box with Ice Gel Packs</li>
                 <li>Maintains 0°C - 4°C for up to 36 Hours</li>
@@ -243,15 +251,15 @@ const MainApp: React.FC = () => {
             </div>
 
             <div>
-              <h4 className="text-gray-900 font-bold mb-3">Customer & Legal</h4>
+              <h4 className="text-gray-900 dark:text-white font-bold mb-3">Customer & Legal</h4>
               <ul className="space-y-1.5 text-[11px]">
                 <li>
-                  <button onClick={() => handleOpenLegalModal('tos')} className="text-gray-600 hover:text-[#d11243] cursor-pointer">
+                  <button onClick={() => handleOpenLegalModal('tos')} className="text-gray-600 dark:text-gray-400 hover:text-[#d11243] cursor-pointer">
                     Terms of Service & Box Deposit Policy
                   </button>
                 </li>
                 <li>
-                  <button onClick={() => handleOpenLegalModal('privacy')} className="text-gray-600 hover:text-[#d11243] cursor-pointer">
+                  <button onClick={() => handleOpenLegalModal('privacy')} className="text-gray-600 dark:text-gray-400 hover:text-[#d11243] cursor-pointer">
                     Privacy Policy (DPDP Compliance)
                   </button>
                 </li>
@@ -259,7 +267,7 @@ const MainApp: React.FC = () => {
                   <button onClick={() => {
                     if (!user) handleOpenAuth('customer');
                     else handleTabChange('coolers');
-                  }} className="text-gray-600 hover:text-[#d11243] cursor-pointer">
+                  }} className="text-gray-600 dark:text-gray-400 hover:text-[#d11243] cursor-pointer">
                     Doorstep Box Collection
                   </button>
                 </li>
@@ -267,7 +275,7 @@ const MainApp: React.FC = () => {
                   <button onClick={() => {
                     if (user?.role === 'admin') handleTabChange('admin');
                     else handleOpenAuth('admin');
-                  }} className="text-gray-600 hover:text-[#d11243] cursor-pointer">
+                  }} className="text-gray-600 dark:text-gray-400 hover:text-[#d11243] cursor-pointer">
                     Hub Fulfillment Operations
                   </button>
                 </li>
@@ -276,7 +284,7 @@ const MainApp: React.FC = () => {
 
           </div>
 
-          <div className="border-t border-gray-100 pt-5 flex flex-col sm:flex-row items-center justify-between text-[11px] text-gray-400 gap-2">
+          <div className="border-t border-gray-100 dark:border-slate-800 pt-5 flex flex-col sm:flex-row items-center justify-between text-[11px] text-gray-400 dark:text-gray-500 gap-2">
             <div>
               © 2026 GoMeat Technologies Private Limited. All rights reserved.
             </div>
@@ -340,10 +348,12 @@ const MainApp: React.FC = () => {
 
 export default function App() {
   return (
-    <AuthProvider>
-      <CartProvider>
-        <MainApp />
-      </CartProvider>
-    </AuthProvider>
+    <ThemeProvider>
+      <AuthProvider>
+        <CartProvider>
+          <MainApp />
+        </CartProvider>
+      </AuthProvider>
+    </ThemeProvider>
   );
 }

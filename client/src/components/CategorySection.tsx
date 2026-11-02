@@ -100,13 +100,13 @@ export const CategorySection: React.FC<CategorySectionProps> = ({
     <section className="space-y-3">
       {/* Section Header */}
       <div className="flex items-center justify-between">
-        <h2 className="text-lg md:text-xl font-black text-gray-900 tracking-tight">
+        <h2 className="text-lg md:text-xl font-black text-gray-900 dark:text-white tracking-tight">
           Explore Categories
         </h2>
 
         <button
           onClick={onViewAllSpecs}
-          className="text-xs font-bold text-emerald-700 hover:text-emerald-800 hover:underline flex items-center gap-1 cursor-pointer"
+          className="text-xs font-bold text-emerald-700 dark:text-emerald-400 hover:text-emerald-800 hover:underline flex items-center gap-1 cursor-pointer"
         >
           <span>View All Product Specs</span>
           <ArrowRight className="w-3.5 h-3.5" />
@@ -123,10 +123,10 @@ export const CategorySection: React.FC<CategorySectionProps> = ({
             <button
               key={cat.id}
               onClick={() => onSelectCategory(cat.value)}
-              className={`rounded-2xl p-4 text-left transition-all duration-200 cursor-pointer flex flex-col justify-between relative overflow-hidden group ${
+              className={`rounded-2xl p-4 text-left transition-all duration-200 cursor-pointer flex flex-col justify-between relative overflow-hidden group card-light-hover ${
                 isSelected
-                  ? 'bg-[#d11243] text-white shadow-md shadow-rose-900/20 ring-2 ring-[#d11243] ring-offset-2'
-                  : 'bg-white hover:bg-gray-50/80 text-gray-800 border border-gray-200/90 shadow-2xs hover:shadow-xs hover:border-gray-300'
+                  ? 'bg-[#d11243] text-white shadow-md shadow-rose-900/30 ring-2 ring-[#d11243] ring-offset-2 dark:ring-offset-slate-900'
+                  : 'bg-white dark:bg-slate-900 hover:bg-gray-50/80 dark:hover:bg-slate-800 text-gray-800 dark:text-gray-200 border border-gray-200/90 dark:border-slate-800 shadow-2xs hover:shadow-xs hover:border-gray-300 dark:hover:border-slate-700'
               }`}
             >
               {/* Icon Container */}
@@ -135,7 +135,7 @@ export const CategorySection: React.FC<CategorySectionProps> = ({
                   className={`w-10 h-10 rounded-xl flex items-center justify-center transition ${
                     isSelected
                       ? 'bg-white/20 text-white'
-                      : `${cat.iconBg} ${cat.iconColor} group-hover:scale-105`
+                      : `${cat.iconBg} ${cat.iconColor} dark:bg-slate-800 dark:text-rose-400 group-hover:scale-105`
                   }`}
                 >
                   <Icon className="w-5 h-5" />
@@ -146,7 +146,7 @@ export const CategorySection: React.FC<CategorySectionProps> = ({
               <div className="space-y-1">
                 <div
                   className={`font-black text-sm tracking-tight leading-tight ${
-                    isSelected ? 'text-white' : 'text-gray-950'
+                    isSelected ? 'text-white' : 'text-gray-950 dark:text-white'
                   }`}
                 >
                   {cat.name}
@@ -154,7 +154,7 @@ export const CategorySection: React.FC<CategorySectionProps> = ({
 
                 <div
                   className={`text-[11px] font-medium leading-tight ${
-                    isSelected ? 'text-rose-100' : 'text-gray-500'
+                    isSelected ? 'text-rose-100' : 'text-gray-500 dark:text-gray-400'
                   }`}
                 >
                   {cat.subtitle}
@@ -166,7 +166,7 @@ export const CategorySection: React.FC<CategorySectionProps> = ({
                     className={`inline-block px-2 py-0.5 rounded-md text-[10px] font-bold tracking-tight ${
                       isSelected
                         ? 'bg-white/20 text-white'
-                        : 'bg-gray-100 text-gray-600 group-hover:bg-gray-200/70'
+                        : 'bg-gray-100 dark:bg-slate-800 text-gray-600 dark:text-gray-300 group-hover:bg-gray-200/70 dark:group-hover:bg-slate-700'
                     }`}
                   >
                     {cat.tag}

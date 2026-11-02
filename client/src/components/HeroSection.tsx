@@ -152,18 +152,18 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
           </div>
         ) : (
           /* Variant V1: Clean Studio White Card (Also in Figma) */
-          <div className="bg-white text-gray-900 p-8 lg:p-10 border border-gray-200">
+          <div className="bg-white dark:bg-slate-900 text-gray-900 dark:text-gray-100 p-8 lg:p-10 border border-gray-200 dark:border-slate-800">
             <div className="grid grid-cols-12 gap-8 items-center">
               <div className="col-span-7 space-y-4">
-                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-rose-50 border border-rose-200 text-xs font-bold text-[#d11243]">
-                  <Zap className="w-3.5 h-3.5 text-[#d11243]" />
+                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-rose-50 dark:bg-rose-950/50 border border-rose-200 dark:border-rose-800 text-xs font-bold text-[#d11243] dark:text-rose-400">
+                  <Zap className="w-3.5 h-3.5 text-[#d11243] dark:text-rose-400" />
                   <span>Farm to Fork Fresh • 90-Min Express Dispatch</span>
                 </div>
-                <h1 className="text-3xl lg:text-4xl font-black text-gray-950 tracking-tight leading-tight">
+                <h1 className="text-3xl lg:text-4xl font-black text-gray-950 dark:text-white tracking-tight leading-tight">
                   Freshness We Can Trust, <br />
-                  <span className="text-[#d11243]">Delivered Chilled to Your Door</span>
+                  <span className="text-[#d11243] dark:text-rose-400">Delivered Chilled to Your Door</span>
                 </h1>
-                <p className="text-sm text-gray-600 leading-relaxed max-w-xl">
+                <p className="text-sm text-gray-600 dark:text-gray-300 leading-relaxed max-w-xl">
                   Order fresh harbor catch Surmai, Pomfret, and tender pasture mutton safely packed in reusable ThermalVault boxes with instant ₹250 UPI return refunds.
                 </p>
                 <div className="flex items-center gap-3 pt-2">
@@ -176,16 +176,16 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
                   </button>
                   <button
                     onClick={onNavigateToReturns}
-                    className="px-5 py-3 rounded-xl bg-gray-100 hover:bg-gray-200 text-gray-800 font-bold text-xs tracking-wide flex items-center gap-2 border border-gray-300 transition cursor-pointer"
+                    className="px-5 py-3 rounded-xl bg-gray-100 dark:bg-slate-800 hover:bg-gray-200 dark:hover:bg-slate-700 text-gray-800 dark:text-gray-200 font-bold text-xs tracking-wide flex items-center gap-2 border border-gray-300 dark:border-slate-700 transition cursor-pointer"
                   >
-                    <RotateCcw className="w-4 h-4 text-gray-600" />
+                    <RotateCcw className="w-4 h-4 text-gray-600 dark:text-gray-400" />
                     <span>Return Cold Box (₹250 Refund)</span>
                   </button>
                 </div>
               </div>
 
               <div className="col-span-5 relative">
-                <div className="rounded-2xl overflow-hidden border border-gray-200 shadow-xl bg-gray-50">
+                <div className="rounded-2xl overflow-hidden border border-gray-200 dark:border-slate-700 shadow-xl bg-gray-50 dark:bg-slate-800">
                   <img
                     src="/images/hero_banner_meat.jpg"
                     alt="Fresh butcher cuts"
@@ -289,21 +289,21 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
       {/* ======================================================== */}
       {/* 3. REUSABLE BOX RETURN BANNER (ThermalVault QR in Figma) */}
       {/* ======================================================== */}
-      <div className="bg-white rounded-2xl border border-gray-200 p-4 sm:p-5 shadow-2xs flex flex-col md:flex-row items-center justify-between gap-4">
+      <div className="bg-white dark:bg-slate-900 rounded-2xl border border-gray-200 dark:border-slate-800 p-4 sm:p-5 shadow-2xs flex flex-col md:flex-row items-center justify-between gap-4">
         <div className="flex items-start sm:items-center gap-3.5">
-          <div className="w-12 h-12 rounded-xl bg-emerald-50 border border-emerald-200 flex items-center justify-center text-emerald-700 shrink-0">
+          <div className="w-12 h-12 rounded-xl bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-200 dark:border-emerald-800 flex items-center justify-center text-emerald-700 dark:text-emerald-400 shrink-0">
             <QrCode className="w-6 h-6" />
           </div>
           <div>
             <div className="flex flex-wrap items-center gap-2">
-              <span className="font-extrabold text-sm text-gray-900">
+              <span className="font-extrabold text-sm text-gray-900 dark:text-white">
                 ThermalVault Reusable Box Initiative
               </span>
-              <span className="px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 text-[10px] font-black tracking-wide border border-emerald-300">
+              <span className="px-2 py-0.5 rounded-full bg-emerald-100 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300 text-[10px] font-black tracking-wide border border-emerald-300 dark:border-emerald-800">
                 ₹250 REFUNDABLE DEPOSIT
               </span>
             </div>
-            <p className="text-xs text-gray-500 mt-1 leading-relaxed">
+            <p className="text-xs text-gray-500 dark:text-gray-400 mt-1 leading-relaxed">
               Maintains 0°C to 4°C for 36 hours with zero thermocol waste. Hand back the empty cooler box to our delivery partner for an instant ₹250 refund to your UPI ID.
             </p>
           </div>
@@ -311,7 +311,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
 
         <button
           onClick={onNavigateToReturns}
-          className="w-full md:w-auto px-4 py-2.5 bg-emerald-700 hover:bg-emerald-800 text-white rounded-xl text-xs font-extrabold flex items-center justify-center gap-2 shadow-xs transition shrink-0 cursor-pointer"
+          className="w-full md:w-auto px-4 py-2.5 bg-emerald-700 dark:bg-emerald-600 hover:bg-emerald-800 dark:hover:bg-emerald-500 text-white rounded-xl text-xs font-extrabold flex items-center justify-center gap-2 shadow-xs transition shrink-0 cursor-pointer"
         >
           <RotateCcw className="w-3.5 h-3.5" />
           <span>Schedule Box Return</span>

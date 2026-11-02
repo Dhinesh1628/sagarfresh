@@ -118,32 +118,32 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
       <div onClick={onClose} className="fixed inset-0 bg-black/65 backdrop-blur-xs transition-opacity" />
 
       {/* Modal Container */}
-      <div className="relative w-full max-w-2xl bg-white border border-gray-200 rounded-2xl shadow-2xl p-5 sm:p-7 text-gray-900 z-10 max-h-[92vh] overflow-y-auto">
+      <div className="relative w-full max-w-2xl bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-800 rounded-2xl shadow-2xl p-5 sm:p-7 text-gray-900 dark:text-gray-100 z-10 max-h-[92vh] overflow-y-auto">
         
         {/* Header */}
-        <div className="flex items-center justify-between pb-4 border-b border-gray-100">
+        <div className="flex items-center justify-between pb-4 border-b border-gray-100 dark:border-slate-800">
           <div>
             <div className="flex items-center gap-2">
-              <h2 className="text-lg font-black text-gray-950">Checkout & Delivery Details</h2>
-              <span className="px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-800 text-[10px] font-extrabold border border-emerald-200">
+              <h2 className="text-lg font-black text-gray-950 dark:text-white">Checkout & Delivery Details</h2>
+              <span className="px-2 py-0.5 rounded-full bg-emerald-50 dark:bg-emerald-950/50 text-emerald-800 dark:text-emerald-300 text-[10px] font-extrabold border border-emerald-200 dark:border-emerald-800">
                 0°C - 4°C FreshSeal
               </span>
             </div>
-            <p className="text-xs text-gray-500 mt-0.5">
+            <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
               Delivering to {selectedCity} in reusable ThermalVault™ cold box
             </p>
           </div>
           <button 
             onClick={onClose} 
-            className="w-8 h-8 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center text-gray-400 hover:text-gray-700 transition"
+            className="w-8 h-8 rounded-full bg-gray-100 dark:bg-slate-800 hover:bg-gray-200 dark:hover:bg-slate-700 flex items-center justify-center text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 transition"
           >
             <X className="w-4 h-4" />
           </button>
         </div>
 
         {error && (
-          <div className="mt-4 p-3 rounded-xl bg-red-50 border border-red-200 text-red-700 text-xs flex items-center gap-2">
-            <AlertCircle className="w-4 h-4 text-red-600 shrink-0" />
+          <div className="mt-4 p-3 rounded-xl bg-red-50 dark:bg-red-950/50 border border-red-200 dark:border-red-900 text-red-700 dark:text-red-300 text-xs flex items-center gap-2">
+            <AlertCircle className="w-4 h-4 text-red-600 dark:text-red-400 shrink-0" />
             <span>{error}</span>
           </div>
         )}
@@ -153,11 +153,11 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
           {/* Section 1: Delivery Slot Picker (Figma Step 4) */}
           <div className="space-y-3">
             <div className="flex items-center justify-between">
-              <label className="text-xs font-black uppercase text-gray-900 flex items-center gap-1.5">
+              <label className="text-xs font-black uppercase text-gray-900 dark:text-white flex items-center gap-1.5">
                 <Clock className="w-3.5 h-3.5 text-[#d11243]" />
                 <span>1. Select Delivery Slot</span>
               </label>
-              <span className="text-[11px] font-semibold text-emerald-700">Guaranteed Fresh</span>
+              <span className="text-[11px] font-semibold text-emerald-700 dark:text-emerald-400">Guaranteed Fresh</span>
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -166,12 +166,12 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
                 onClick={() => setSlotMode('express')}
                 className={`p-3.5 rounded-xl border cursor-pointer transition relative ${
                   slotMode === 'express'
-                    ? 'border-[#d11243] bg-rose-50/70 ring-1 ring-[#d11243]'
-                    : 'border-gray-200 bg-white hover:border-gray-300'
+                    ? 'border-[#d11243] bg-rose-50/70 dark:bg-rose-950/40 ring-1 ring-[#d11243]'
+                    : 'border-gray-200 dark:border-slate-800 bg-white dark:bg-slate-800/80 hover:border-gray-300 dark:hover:border-slate-700'
                 }`}
               >
                 <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-1.5 font-black text-xs text-gray-950">
+                  <div className="flex items-center gap-1.5 font-black text-xs text-gray-950 dark:text-white">
                     <Zap className="w-4 h-4 fill-amber-500 text-amber-500" />
                     <span>⚡ Express 90 Mins Delivery</span>
                   </div>
@@ -179,7 +179,7 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
                     Recommended
                   </span>
                 </div>
-                <p className="text-[11px] text-gray-500 mt-1 leading-snug">
+                <p className="text-[11px] text-gray-500 dark:text-gray-400 mt-1 leading-snug">
                   Packed immediately from local cold hub. Arrives at your doorstep in under 90 minutes.
                 </p>
               </div>
@@ -189,18 +189,18 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
                 onClick={() => setSlotMode('scheduled')}
                 className={`p-3.5 rounded-xl border cursor-pointer transition relative ${
                   slotMode === 'scheduled'
-                    ? 'border-[#d11243] bg-rose-50/70 ring-1 ring-[#d11243]'
-                    : 'border-gray-200 bg-white hover:border-gray-300'
+                    ? 'border-[#d11243] bg-rose-50/70 dark:bg-rose-950/40 ring-1 ring-[#d11243]'
+                    : 'border-gray-200 dark:border-slate-800 bg-white dark:bg-slate-800/80 hover:border-gray-300 dark:hover:border-slate-700'
                 }`}
               >
                 <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-1.5 font-bold text-xs text-gray-950">
-                    <Calendar className="w-4 h-4 text-gray-600" />
+                  <div className="flex items-center gap-1.5 font-bold text-xs text-gray-950 dark:text-white">
+                    <Calendar className="w-4 h-4 text-gray-600 dark:text-gray-300" />
                     <span>📅 Choose Scheduled Slot</span>
                   </div>
-                  <span className="text-[10px] font-bold text-gray-500">Flexible</span>
+                  <span className="text-[10px] font-bold text-gray-500 dark:text-gray-400">Flexible</span>
                 </div>
-                <p className="text-[11px] text-gray-500 mt-1 leading-snug">
+                <p className="text-[11px] text-gray-500 dark:text-gray-400 mt-1 leading-snug">
                   Select a convenient morning, afternoon, or evening window for seamless delivery.
                 </p>
               </div>
@@ -208,7 +208,7 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
 
             {/* If Scheduled, Show Day & Slot Picker */}
             {slotMode === 'scheduled' && (
-              <div className="p-3.5 bg-gray-50 rounded-xl border border-gray-200 space-y-3">
+              <div className="p-3.5 bg-gray-50 dark:bg-slate-800/60 rounded-xl border border-gray-200 dark:border-slate-700 space-y-3">
                 <div className="flex gap-2">
                   {(['Today', 'Tomorrow'] as const).map(day => (
                     <button
@@ -217,8 +217,8 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
                       onClick={() => setScheduledDay(day)}
                       className={`px-3 py-1.5 rounded-lg text-xs font-bold transition ${
                         scheduledDay === day
-                          ? 'bg-gray-950 text-white'
-                          : 'bg-white border border-gray-200 text-gray-700 hover:bg-gray-100'
+                          ? 'bg-gray-950 dark:bg-rose-600 text-white'
+                          : 'bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-slate-700'
                       }`}
                     >
                       {day}
@@ -233,12 +233,12 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
                       onClick={() => setSelectedSlotTime(`${slot.time} (${slot.label})`)}
                       className={`p-2.5 rounded-lg border text-left cursor-pointer text-xs transition ${
                         selectedSlotTime.startsWith(slot.time)
-                          ? 'border-[#d11243] bg-white font-bold text-gray-950 ring-1 ring-[#d11243]'
-                          : 'border-gray-200 bg-white text-gray-700 hover:border-gray-300'
+                          ? 'border-[#d11243] bg-white dark:bg-slate-800 font-bold text-gray-950 dark:text-white ring-1 ring-[#d11243]'
+                          : 'border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800/80 text-gray-700 dark:text-gray-300 hover:border-gray-300 dark:hover:border-slate-600'
                       }`}
                     >
-                      <div className="font-bold text-gray-900">{slot.time}</div>
-                      <div className="text-[10px] text-gray-500">{slot.label}</div>
+                      <div className="font-bold text-gray-900 dark:text-white">{slot.time}</div>
+                      <div className="text-[10px] text-gray-500 dark:text-gray-400">{slot.label}</div>
                     </div>
                   ))}
                 </div>
@@ -249,7 +249,7 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
           {/* Section 2: Delivery Address (Figma Step 4) */}
           <div className="space-y-3">
             <div className="flex items-center justify-between">
-              <label className="text-xs font-black uppercase text-gray-900 flex items-center gap-1.5">
+              <label className="text-xs font-black uppercase text-gray-900 dark:text-white flex items-center gap-1.5">
                 <MapPin className="w-3.5 h-3.5 text-[#d11243]" />
                 <span>2. Delivery Address</span>
               </label>
@@ -268,7 +268,7 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
                       className={`px-2 py-0.5 rounded-md text-[10px] font-bold flex items-center gap-1 transition ${
                         addressType === item.id
                           ? 'bg-[#d11243] text-white'
-                          : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                          : 'bg-gray-100 dark:bg-slate-800 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-slate-700'
                       }`}
                     >
                       <Icon className="w-3 h-3" />
@@ -281,7 +281,7 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <div>
-                <label className="block text-gray-600 text-[11px] font-bold mb-1">
+                <label className="block text-gray-600 dark:text-gray-300 text-[11px] font-bold mb-1">
                   Flat / House / Villa Number
                 </label>
                 <input
@@ -289,13 +289,13 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
                   value={flatNo}
                   onChange={(e) => setFlatNo(e.target.value)}
                   placeholder="e.g. Flat 402, Block B"
-                  className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-xs font-medium focus:outline-none focus:border-[#d11243]"
+                  className="w-full px-3 py-2 bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-lg text-xs font-medium text-gray-900 dark:text-white focus:outline-none focus:border-[#d11243]"
                   required
                 />
               </div>
 
               <div>
-                <label className="block text-gray-600 text-[11px] font-bold mb-1">
+                <label className="block text-gray-600 dark:text-gray-300 text-[11px] font-bold mb-1">
                   Apartment / Society / Building Name
                 </label>
                 <input
@@ -303,13 +303,13 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
                   value={building}
                   onChange={(e) => setBuilding(e.target.value)}
                   placeholder="e.g. Alpine Eco Apartments"
-                  className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-xs font-medium focus:outline-none focus:border-[#d11243]"
+                  className="w-full px-3 py-2 bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-lg text-xs font-medium text-gray-900 dark:text-white focus:outline-none focus:border-[#d11243]"
                   required
                 />
               </div>
 
               <div>
-                <label className="block text-gray-600 text-[11px] font-bold mb-1">
+                <label className="block text-gray-600 dark:text-gray-300 text-[11px] font-bold mb-1">
                   Street / Area / Landmark
                 </label>
                 <input
@@ -317,25 +317,25 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
                   value={street}
                   onChange={(e) => setStreet(e.target.value)}
                   placeholder="e.g. Outer Ring Road, Doddanekkundi"
-                  className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-xs font-medium focus:outline-none focus:border-[#d11243]"
+                  className="w-full px-3 py-2 bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-lg text-xs font-medium text-gray-900 dark:text-white focus:outline-none focus:border-[#d11243]"
                   required
                 />
               </div>
 
               <div className="grid grid-cols-2 gap-2">
                 <div>
-                  <label className="block text-gray-600 text-[11px] font-bold mb-1">
+                  <label className="block text-gray-600 dark:text-gray-300 text-[11px] font-bold mb-1">
                     City
                   </label>
                   <input
                     type="text"
                     value={selectedCity}
                     disabled
-                    className="w-full px-3 py-2 bg-gray-100 border border-gray-200 rounded-lg text-xs font-bold text-gray-700"
+                    className="w-full px-3 py-2 bg-gray-100 dark:bg-slate-800/50 border border-gray-200 dark:border-slate-700 rounded-lg text-xs font-bold text-gray-700 dark:text-gray-300"
                   />
                 </div>
                 <div>
-                  <label className="block text-gray-600 text-[11px] font-bold mb-1">
+                  <label className="block text-gray-600 dark:text-gray-300 text-[11px] font-bold mb-1">
                     Pincode
                   </label>
                   <input
@@ -343,7 +343,7 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
                     value={pincode}
                     onChange={(e) => setPincode(e.target.value)}
                     maxLength={6}
-                    className="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-xs font-medium focus:outline-none focus:border-[#d11243]"
+                    className="w-full px-3 py-2 bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-lg text-xs font-medium text-gray-900 dark:text-white focus:outline-none focus:border-[#d11243]"
                     required
                   />
                 </div>
@@ -351,7 +351,7 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
             </div>
 
             <div>
-              <label className="block text-gray-600 text-[11px] font-bold mb-1">
+              <label className="block text-gray-600 dark:text-gray-300 text-[11px] font-bold mb-1">
                 Contact Phone Number
               </label>
               <div className="relative">
@@ -361,7 +361,7 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
                   value={phone}
                   onChange={(e) => setPhone(e.target.value)}
                   placeholder="+91 98765 43210"
-                  className="w-full pl-8 pr-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-xs font-medium focus:outline-none focus:border-[#d11243]"
+                  className="w-full pl-8 pr-3 py-2 bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-lg text-xs font-medium text-gray-900 dark:text-white focus:outline-none focus:border-[#d11243]"
                   required
                 />
               </div>
@@ -369,7 +369,7 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
 
             {/* Delivery Instructions Chips */}
             <div className="space-y-1.5">
-              <label className="block text-gray-600 text-[11px] font-bold">
+              <label className="block text-gray-600 dark:text-gray-300 text-[11px] font-bold">
                 Delivery Instructions for Rider
               </label>
               <div className="flex flex-wrap gap-1.5">
@@ -380,8 +380,8 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
                     onClick={() => setInstructionTag(opt)}
                     className={`px-2.5 py-1 rounded-lg text-[10px] font-semibold transition ${
                       instructionTag === opt
-                        ? 'bg-gray-900 text-white'
-                        : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                        ? 'bg-gray-900 dark:bg-rose-600 text-white'
+                        : 'bg-gray-100 dark:bg-slate-800 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-slate-700'
                     }`}
                   >
                     {opt}
@@ -393,7 +393,7 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
 
           {/* Section 3: Payment Method (Figma Step 4) */}
           <div className="space-y-3">
-            <label className="text-xs font-black uppercase text-gray-900 flex items-center gap-1.5">
+            <label className="text-xs font-black uppercase text-gray-900 dark:text-white flex items-center gap-1.5">
               <CreditCard className="w-3.5 h-3.5 text-[#d11243]" />
               <span>3. Payment Method</span>
             </label>
@@ -409,19 +409,19 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
                   onClick={() => setPaymentMethod(opt.id as any)}
                   className={`p-3 rounded-xl border text-center cursor-pointer transition ${
                     paymentMethod === opt.id
-                      ? 'border-[#d11243] bg-rose-50/70 ring-1 ring-[#d11243]'
-                      : 'border-gray-200 bg-white hover:border-gray-300'
+                      ? 'border-[#d11243] bg-rose-50/70 dark:bg-rose-950/40 ring-1 ring-[#d11243]'
+                      : 'border-gray-200 dark:border-slate-800 bg-white dark:bg-slate-800/80 hover:border-gray-300 dark:hover:border-slate-700'
                   }`}
                 >
-                  <span className="block font-bold text-xs text-gray-950">{opt.label}</span>
-                  <span className="text-[10px] font-extrabold text-[#d11243] mt-0.5 block">{opt.badge}</span>
+                  <span className="block font-bold text-xs text-gray-950 dark:text-white">{opt.label}</span>
+                  <span className="text-[10px] font-extrabold text-[#d11243] dark:text-rose-400 mt-0.5 block">{opt.badge}</span>
                 </div>
               ))}
             </div>
 
             {paymentMethod === 'upi' && (
-              <div className="p-3 bg-gray-50 rounded-xl border border-gray-200 space-y-2">
-                <span className="block text-[11px] font-bold text-gray-700">Select UPI App:</span>
+              <div className="p-3 bg-gray-50 dark:bg-slate-800/60 rounded-xl border border-gray-200 dark:border-slate-700 space-y-2">
+                <span className="block text-[11px] font-bold text-gray-700 dark:text-gray-300">Select UPI App:</span>
                 <div className="flex gap-2">
                   {[
                     { id: 'gpay', label: 'Google Pay' },
@@ -435,7 +435,7 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
                       className={`px-3 py-1.5 rounded-lg text-xs font-bold transition ${
                         upiApp === app.id
                           ? 'bg-emerald-700 text-white shadow-xs'
-                          : 'bg-white border border-gray-200 text-gray-800 hover:bg-gray-100'
+                          : 'bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 text-gray-800 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-slate-700'
                       }`}
                     >
                       {app.label}
@@ -447,34 +447,34 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
           </div>
 
           {/* Section 4: Final Summary & Cold Box Deposit Transparency */}
-          <div className="p-3.5 bg-gray-50 rounded-xl border border-gray-200 space-y-2">
-            <div className="flex justify-between text-gray-600">
+          <div className="p-3.5 bg-gray-50 dark:bg-slate-800/70 rounded-xl border border-gray-200 dark:border-slate-700 space-y-2">
+            <div className="flex justify-between text-gray-600 dark:text-gray-300">
               <span>Items Subtotal:</span>
-              <span className="font-bold text-gray-900">₹{subtotal}</span>
+              <span className="font-bold text-gray-900 dark:text-white">₹{subtotal}</span>
             </div>
-            <div className="flex justify-between text-gray-600">
+            <div className="flex justify-between text-gray-600 dark:text-gray-300">
               <span>ThermalVault Cooler Deposit:</span>
-              <span className="font-bold text-emerald-700">₹{coolerDeposit} (100% Refundable)</span>
+              <span className="font-bold text-emerald-700 dark:text-emerald-400">₹{coolerDeposit} (100% Refundable)</span>
             </div>
             {couponDiscount > 0 && (
-              <div className="flex justify-between text-emerald-700 font-bold">
+              <div className="flex justify-between text-emerald-700 dark:text-emerald-400 font-bold">
                 <span>Coupon ({couponCode}):</span>
                 <span>-₹{couponDiscount}</span>
               </div>
             )}
-            <div className="flex justify-between text-gray-600">
+            <div className="flex justify-between text-gray-600 dark:text-gray-300">
               <span>Delivery Fee:</span>
-              <span>{shippingFee === 0 ? <strong className="text-emerald-700">FREE</strong> : `₹${shippingFee}`}</span>
+              <span>{shippingFee === 0 ? <strong className="text-emerald-700 dark:text-emerald-400">FREE</strong> : `₹${shippingFee}`}</span>
             </div>
-            <div className="border-t border-gray-200 pt-2 flex justify-between items-center text-sm font-black text-gray-950">
+            <div className="border-t border-gray-200 dark:border-slate-700 pt-2 flex justify-between items-center text-sm font-black text-gray-950 dark:text-white">
               <span>Final Total:</span>
-              <span className="text-lg font-black text-[#d11243]">₹{total}</span>
+              <span className="text-lg font-black text-[#d11243] dark:text-rose-400">₹{total}</span>
             </div>
           </div>
 
           {/* Guarantee Pill */}
-          <div className="flex items-center gap-2 p-2.5 rounded-lg bg-emerald-50 border border-emerald-200 text-emerald-900 text-[11px]">
-            <ShieldCheck className="w-4 h-4 text-emerald-700 shrink-0" />
+          <div className="flex items-center gap-2 p-2.5 rounded-lg bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800/80 text-emerald-900 dark:text-emerald-300 text-[11px]">
+            <ShieldCheck className="w-4 h-4 text-emerald-700 dark:text-emerald-400 shrink-0" />
             <span>
               <strong>Freshness Guarantee:</strong> 0°C to 4°C continuous cold-chain monitor. If temperature exceeds 4°C at delivery, 100% money back guaranteed.
             </span>

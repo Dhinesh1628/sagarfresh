@@ -174,24 +174,24 @@ export const OrderTrackingPage: React.FC<OrderTrackingPageProps> = ({ onNavigate
     <div className="space-y-6 pb-20 max-w-6xl mx-auto">
       
       {/* Top Header */}
-      <div className="bg-white p-5 rounded-2xl border border-gray-200 shadow-2xs flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div className="bg-white dark:bg-slate-900 p-5 rounded-2xl border border-gray-200 dark:border-slate-800 shadow-2xs flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <div className="flex flex-wrap items-center gap-2.5">
-            <h1 className="text-lg sm:text-xl font-black text-gray-950 flex items-center gap-2">
-              <Navigation className="w-5 h-5 text-[#d11243]" />
+            <h1 className="text-lg sm:text-xl font-black text-gray-950 dark:text-white flex items-center gap-2">
+              <Navigation className="w-5 h-5 text-[#d11243] dark:text-rose-500" />
               <span>Live Cold-Chain Tracking & Map</span>
             </h1>
-            <span className="px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-800 text-[11px] font-black border border-emerald-200 flex items-center gap-1">
+            <span className="px-2.5 py-0.5 rounded-full bg-emerald-50 dark:bg-emerald-950/50 text-emerald-800 dark:text-emerald-300 text-[11px] font-black border border-emerald-200 dark:border-emerald-800 flex items-center gap-1">
               <span className="w-2 h-2 rounded-full bg-emerald-500 animate-ping" />
               <span>0°C - 4°C Active Cold Chain</span>
             </span>
             {isDemoOrder && (
-              <span className="px-2 py-0.5 rounded-full bg-amber-50 text-amber-800 text-[10px] font-bold border border-amber-200">
+              <span className="px-2 py-0.5 rounded-full bg-amber-50 dark:bg-amber-950/50 text-amber-800 dark:text-amber-300 text-[10px] font-bold border border-amber-200 dark:border-amber-800">
                 Interactive Preview Order
               </span>
             )}
           </div>
-          <p className="text-xs text-gray-500 mt-1">
+          <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
             Real-time IoT core telemetry inside your reusable ThermalVault™ insulated cold box
           </p>
         </div>
@@ -208,7 +208,7 @@ export const OrderTrackingPage: React.FC<OrderTrackingPageProps> = ({ onNavigate
           
           <button
             onClick={fetchOrders}
-            className="px-3.5 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 text-xs font-bold rounded-xl cursor-pointer flex items-center gap-1.5 transition"
+            className="px-3.5 py-2 bg-gray-100 dark:bg-slate-800 hover:bg-gray-200 dark:hover:bg-slate-700 text-gray-700 dark:text-gray-200 text-xs font-bold rounded-xl cursor-pointer flex items-center gap-1.5 transition"
           >
             <RefreshCw className="w-3.5 h-3.5" />
             <span>Refresh</span>
@@ -222,10 +222,10 @@ export const OrderTrackingPage: React.FC<OrderTrackingPageProps> = ({ onNavigate
         {/* Left Column: Orders List (Desktop 4 cols) */}
         <div className="lg:col-span-4 space-y-3">
           <div className="flex items-center justify-between">
-            <h3 className="text-xs font-black uppercase tracking-wider text-gray-500">
+            <h3 className="text-xs font-black uppercase tracking-wider text-gray-500 dark:text-gray-400">
               Your Cold Box Orders ({orders.length})
             </h3>
-            <span className="text-[11px] text-emerald-700 font-bold">100% Chilled</span>
+            <span className="text-[11px] text-emerald-700 dark:text-emerald-400 font-bold">100% Chilled</span>
           </div>
 
           <div className="space-y-2.5 max-h-[600px] overflow-y-auto pr-1">
@@ -240,38 +240,38 @@ export const OrderTrackingPage: React.FC<OrderTrackingPageProps> = ({ onNavigate
                   }}
                   className={`p-4 rounded-2xl border text-xs cursor-pointer transition relative ${
                     isSelected
-                      ? 'bg-rose-50/70 border-[#d11243] ring-1 ring-[#d11243] shadow-sm'
-                      : 'bg-white border-gray-200 hover:border-gray-300 shadow-2xs'
+                      ? 'bg-rose-50/70 dark:bg-rose-950/40 border-[#d11243] ring-1 ring-[#d11243] shadow-sm'
+                      : 'bg-white dark:bg-slate-900 border-gray-200 dark:border-slate-800 hover:border-gray-300 dark:hover:border-slate-700 shadow-2xs'
                   }`}
                 >
                   <div className="flex justify-between items-start">
                     <div>
                       <div className="flex items-center gap-1.5">
-                        <span className="font-black text-sm text-gray-950">#{ord.id}</span>
+                        <span className="font-black text-sm text-gray-950 dark:text-white">#{ord.id}</span>
                         {ord.id === 'ORD-84920' && (
-                          <span className="px-1.5 py-0.2 bg-amber-100 text-amber-900 rounded text-[9px] font-bold">
+                          <span className="px-1.5 py-0.2 bg-amber-100 dark:bg-amber-950/60 text-amber-900 dark:text-amber-300 rounded text-[9px] font-bold border border-amber-200 dark:border-amber-800">
                             Live Demo
                           </span>
                         )}
                       </div>
-                      <span className="text-[11px] text-gray-500 block mt-0.5">
+                      <span className="text-[11px] text-gray-500 dark:text-gray-400 block mt-0.5">
                         {ord.items.length} Fresh Cut(s) • ₹{ord.total}
                       </span>
                     </div>
 
-                    <span className="px-2 py-0.5 rounded-full text-[10px] font-black bg-white text-[#d11243] border border-rose-200 shadow-2xs">
+                    <span className="px-2 py-0.5 rounded-full text-[10px] font-black bg-white dark:bg-slate-800 text-[#d11243] dark:text-rose-400 border border-rose-200 dark:border-rose-900/60 shadow-2xs">
                       {ord.status}
                     </span>
                   </div>
 
-                  <div className="mt-3 pt-2.5 border-t border-gray-100 flex items-center justify-between text-[11px]">
-                    <div className="flex items-center gap-1 text-gray-600">
+                  <div className="mt-3 pt-2.5 border-t border-gray-100 dark:border-slate-800 flex items-center justify-between text-[11px]">
+                    <div className="flex items-center gap-1 text-gray-600 dark:text-gray-400">
                       <span>Box:</span>
-                      <strong className="text-gray-900 font-mono">{ord.coolerId}</strong>
+                      <strong className="text-gray-900 dark:text-gray-200 font-mono">{ord.coolerId}</strong>
                     </div>
 
-                    <div className="flex items-center gap-1 text-emerald-700 font-black">
-                      <Thermometer className="w-3.5 h-3.5 text-emerald-600" />
+                    <div className="flex items-center gap-1 text-emerald-700 dark:text-emerald-400 font-black">
+                      <Thermometer className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" />
                       <span>{ord.liveTemp}°C (Safe)</span>
                     </div>
                   </div>
@@ -281,22 +281,22 @@ export const OrderTrackingPage: React.FC<OrderTrackingPageProps> = ({ onNavigate
           </div>
 
           {/* Cooler Box Return Prompt Card */}
-          <div className="p-4 bg-sky-50/80 border border-sky-200 rounded-2xl text-xs space-y-2 shadow-2xs">
+          <div className="p-4 bg-sky-50/80 dark:bg-sky-950/40 border border-sky-200 dark:border-sky-800/70 rounded-2xl text-xs space-y-2 shadow-2xs">
             <div className="flex items-center justify-between">
-              <div className="flex items-center gap-1.5 font-black text-sky-950">
-                <RotateCcw className="w-4 h-4 text-sky-700" />
+              <div className="flex items-center gap-1.5 font-black text-sky-950 dark:text-sky-200">
+                <RotateCcw className="w-4 h-4 text-sky-700 dark:text-sky-400" />
                 <span>₹250 Reusable Box Refund</span>
               </div>
-              <span className="px-2 py-0.5 rounded bg-emerald-100 text-emerald-800 text-[10px] font-black">
+              <span className="px-2 py-0.5 rounded bg-emerald-100 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300 text-[10px] font-black border border-emerald-200 dark:border-emerald-800">
                 Active Deposit
               </span>
             </div>
-            <p className="text-[11px] text-sky-900 leading-relaxed">
+            <p className="text-[11px] text-sky-900 dark:text-sky-300 leading-relaxed">
               When empty, return to courier or request a free 1-click doorstep pickup in the app for an instant ₹250 UPI refund.
             </p>
             <button
               onClick={onNavigateToReturns}
-              className="w-full py-2 bg-sky-700 hover:bg-sky-800 text-white rounded-xl font-bold text-xs cursor-pointer transition shadow-xs"
+              className="w-full py-2 bg-sky-700 dark:bg-sky-600 hover:bg-sky-800 dark:hover:bg-sky-500 text-white rounded-xl font-bold text-xs cursor-pointer transition shadow-xs"
             >
               Go to Box Returns &rarr;
             </button>
@@ -307,26 +307,26 @@ export const OrderTrackingPage: React.FC<OrderTrackingPageProps> = ({ onNavigate
         <div className="lg:col-span-8 space-y-5">
           
           {/* Live Delivery Map Simulator Widget (Figma Live Tracking Visual) */}
-          <div className="bg-white rounded-3xl border border-gray-200 overflow-hidden shadow-sm">
-            <div className="p-4 border-b border-gray-100 flex flex-wrap items-center justify-between gap-2 bg-gray-50/70">
+          <div className="bg-white dark:bg-slate-900 rounded-3xl border border-gray-200 dark:border-slate-800 overflow-hidden shadow-sm">
+            <div className="p-4 border-b border-gray-100 dark:border-slate-800 flex flex-wrap items-center justify-between gap-2 bg-gray-50/70 dark:bg-slate-800/60">
               <div className="flex items-center gap-2">
                 <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-ping" />
-                <span className="text-xs font-black uppercase tracking-wider text-gray-900">
+                <span className="text-xs font-black uppercase tracking-wider text-gray-900 dark:text-white">
                   Live Courier GPS Route
                 </span>
-                <span className="text-gray-300">•</span>
-                <span className="text-xs font-extrabold text-[#d11243]">
+                <span className="text-gray-300 dark:text-gray-600">•</span>
+                <span className="text-xs font-extrabold text-[#d11243] dark:text-rose-400">
                   ⚡ Arriving in 22 - 28 Mins
                 </span>
               </div>
               
-              <div className="text-[11px] font-semibold text-gray-500">
-                Speed: <strong className="text-gray-900 font-mono">28 km/h</strong> (Cold EV Courier)
+              <div className="text-[11px] font-semibold text-gray-500 dark:text-gray-400">
+                Speed: <strong className="text-gray-900 dark:text-white font-mono">28 km/h</strong> (Cold EV Courier)
               </div>
             </div>
 
             {/* Simulated Live Route Canvas / Visual Graphic */}
-            <div className="relative h-64 sm:h-72 bg-slate-900 p-6 flex flex-col justify-between overflow-hidden">
+            <div className="relative h-64 sm:h-72 bg-slate-900 dark:bg-slate-950 p-6 flex flex-col justify-between overflow-hidden">
               {/* Map grid lines background */}
               <div 
                 className="absolute inset-0 opacity-15"
@@ -355,7 +355,7 @@ export const OrderTrackingPage: React.FC<OrderTrackingPageProps> = ({ onNavigate
               </svg>
 
               {/* Top Depot Marker */}
-              <div className="relative z-10 flex items-center gap-2 self-start bg-slate-800/95 border border-slate-700 px-3 py-1.5 rounded-xl shadow-lg backdrop-blur-md">
+              <div className="relative z-10 flex items-center gap-2 self-start bg-slate-800/95 dark:bg-slate-900/95 border border-slate-700 dark:border-slate-800 px-3 py-1.5 rounded-xl shadow-lg backdrop-blur-md">
                 <div className="w-3 h-3 rounded-full bg-rose-500 ring-4 ring-rose-950" />
                 <div>
                   <span className="text-[10px] text-gray-400 font-bold uppercase block">Depot Hub</span>
@@ -378,7 +378,7 @@ export const OrderTrackingPage: React.FC<OrderTrackingPageProps> = ({ onNavigate
               </div>
 
               {/* Bottom Customer Destination Marker */}
-              <div className="relative z-10 flex items-center gap-2 self-end bg-slate-800/95 border border-slate-700 px-3.5 py-1.5 rounded-xl shadow-lg backdrop-blur-md">
+              <div className="relative z-10 flex items-center gap-2 self-end bg-slate-800/95 dark:bg-slate-900/95 border border-slate-700 dark:border-slate-800 px-3.5 py-1.5 rounded-xl shadow-lg backdrop-blur-md">
                 <div className="w-3 h-3 rounded-full bg-emerald-400 ring-4 ring-emerald-950 animate-ping" />
                 <div>
                   <span className="text-[10px] text-gray-400 font-bold uppercase block">Destination</span>
@@ -475,20 +475,20 @@ export const OrderTrackingPage: React.FC<OrderTrackingPageProps> = ({ onNavigate
           </div>
 
           {/* Assigned Delivery Courier Partner Card */}
-          <div className="bg-white p-4 sm:p-5 rounded-3xl border border-gray-200 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div className="bg-white dark:bg-slate-900 p-4 sm:p-5 rounded-3xl border border-gray-200 dark:border-slate-800 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div className="flex items-center gap-3.5">
-              <div className="w-12 h-12 rounded-2xl bg-gray-100 border border-gray-200 flex items-center justify-center text-xl shrink-0">
+              <div className="w-12 h-12 rounded-2xl bg-gray-100 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 flex items-center justify-center text-xl shrink-0">
                 🛵
               </div>
               <div>
                 <span className="text-[10px] text-gray-400 uppercase font-bold tracking-wider">
                   Assigned Delivery Partner
                 </span>
-                <div className="font-black text-sm text-gray-950">
+                <div className="font-black text-sm text-gray-950 dark:text-white">
                   {currentOrder.deliveryExecutive || 'Ramesh Kumar (EV Cold Fleet #12)'}
                 </div>
-                <div className="text-[11px] text-emerald-700 font-semibold flex items-center gap-1.5 mt-0.5">
-                  <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" />
+                <div className="text-[11px] text-emerald-700 dark:text-emerald-400 font-semibold flex items-center gap-1.5 mt-0.5">
+                  <ShieldCheck className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" />
                   <span>Vaccinated • Cold-Chain Protocol Trained</span>
                 </div>
               </div>
@@ -498,7 +498,7 @@ export const OrderTrackingPage: React.FC<OrderTrackingPageProps> = ({ onNavigate
               <button 
                 type="button"
                 onClick={() => alert('Calling Ramesh Kumar at +91 94481 02911...')}
-                className="flex-1 sm:flex-none px-3.5 py-2 bg-gray-900 hover:bg-black text-white text-xs font-bold rounded-xl flex items-center justify-center gap-1.5 transition"
+                className="flex-1 sm:flex-none px-3.5 py-2 bg-gray-900 dark:bg-slate-800 hover:bg-black dark:hover:bg-slate-700 text-white text-xs font-bold rounded-xl flex items-center justify-center gap-1.5 transition"
               >
                 <Phone className="w-3.5 h-3.5" />
                 <span>Call Courier</span>
@@ -516,62 +516,62 @@ export const OrderTrackingPage: React.FC<OrderTrackingPageProps> = ({ onNavigate
           </div>
 
           {/* Cuts Breakdown inside this Cold Box */}
-          <div className="bg-white p-5 rounded-3xl border border-gray-200 shadow-sm space-y-3">
+          <div className="bg-white dark:bg-slate-900 p-5 rounded-3xl border border-gray-200 dark:border-slate-800 shadow-sm space-y-3">
             <div className="flex items-center justify-between">
-              <h4 className="text-xs font-black uppercase tracking-wider text-gray-950 flex items-center gap-1.5">
-                <Package className="w-3.5 h-3.5 text-[#d11243]" />
+              <h4 className="text-xs font-black uppercase tracking-wider text-gray-950 dark:text-white flex items-center gap-1.5">
+                <Package className="w-3.5 h-3.5 text-[#d11243] dark:text-rose-500" />
                 <span>Packed Cuts in this ThermalVault ({currentOrder.items.length})</span>
               </h4>
-              <span className="text-xs font-bold text-gray-500">
-                Paid: <strong className="text-gray-950 font-black">₹{currentOrder.total}</strong>
+              <span className="text-xs font-bold text-gray-500 dark:text-gray-400">
+                Paid: <strong className="text-gray-950 dark:text-white font-black">₹{currentOrder.total}</strong>
               </span>
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               {currentOrder.items.map((it, idx) => (
-                <div key={idx} className="p-3 bg-gray-50 rounded-2xl border border-gray-200 flex items-center justify-between text-xs">
+                <div key={idx} className="p-3 bg-gray-50 dark:bg-slate-800/80 rounded-2xl border border-gray-200 dark:border-slate-700 flex items-center justify-between text-xs">
                   <div className="space-y-0.5">
-                    <div className="font-extrabold text-gray-950">{it.name}</div>
-                    <div className="text-[11px] text-gray-500">
+                    <div className="font-extrabold text-gray-950 dark:text-white">{it.name}</div>
+                    <div className="text-[11px] text-gray-500 dark:text-gray-400">
                       {it.quantity} x {it.unit} {it.netWeight ? `(Net: ${it.netWeight})` : ''}
                     </div>
                     {it.cutStyle && (
-                      <span className="inline-block text-[10px] font-bold text-[#d11243]">
+                      <span className="inline-block text-[10px] font-bold text-[#d11243] dark:text-rose-400">
                         Cut: {it.cutStyle}
                       </span>
                     )}
                   </div>
-                  <span className="font-black text-sm text-gray-950">₹{it.price * it.quantity}</span>
+                  <span className="font-black text-sm text-gray-950 dark:text-white">₹{it.price * it.quantity}</span>
                 </div>
               ))}
             </div>
           </div>
 
           {/* Telemetry Log Table */}
-          <div className="bg-white p-5 rounded-3xl border border-gray-200 shadow-sm space-y-3">
+          <div className="bg-white dark:bg-slate-900 p-5 rounded-3xl border border-gray-200 dark:border-slate-800 shadow-sm space-y-3">
             <div className="flex items-center justify-between">
-              <h4 className="text-xs font-black uppercase tracking-wider text-gray-950 flex items-center gap-1.5">
-                <Clock className="w-3.5 h-3.5 text-gray-500" />
+              <h4 className="text-xs font-black uppercase tracking-wider text-gray-950 dark:text-white flex items-center gap-1.5">
+                <Clock className="w-3.5 h-3.5 text-gray-500 dark:text-gray-400" />
                 <span>Continuous Cold Chain Audit Log</span>
               </h4>
-              <span className="text-[11px] text-emerald-700 font-bold">100% Compliant</span>
+              <span className="text-[11px] text-emerald-700 dark:text-emerald-400 font-bold">100% Compliant</span>
             </div>
 
             <div className="overflow-x-auto">
               <table className="w-full text-left text-xs">
-                <thead className="bg-gray-50 text-gray-500 border-b border-gray-200 text-[11px] uppercase">
+                <thead className="bg-gray-50 dark:bg-slate-800/80 text-gray-500 dark:text-gray-400 border-b border-gray-200 dark:border-slate-700 text-[11px] uppercase">
                   <tr>
                     <th className="py-2.5 px-3">Time</th>
                     <th className="py-2.5 px-3">IoT Probe</th>
                     <th className="py-2.5 px-3">Event / Location</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-gray-100 text-[11px]">
+                <tbody className="divide-y divide-gray-100 dark:divide-slate-800 text-[11px]">
                   {currentOrder.tempLog?.map((l, idx) => (
-                    <tr key={idx} className="hover:bg-gray-50">
-                      <td className="py-2.5 px-3 font-mono text-gray-500 whitespace-nowrap">{l.time}</td>
-                      <td className="py-2.5 px-3 font-mono text-emerald-700 font-bold whitespace-nowrap">{l.temp}°C</td>
-                      <td className="py-2.5 px-3 text-gray-700 font-medium">{l.event}</td>
+                    <tr key={idx} className="hover:bg-gray-50 dark:hover:bg-slate-800/50">
+                      <td className="py-2.5 px-3 font-mono text-gray-500 dark:text-gray-400 whitespace-nowrap">{l.time}</td>
+                      <td className="py-2.5 px-3 font-mono text-emerald-700 dark:text-emerald-400 font-bold whitespace-nowrap">{l.temp}°C</td>
+                      <td className="py-2.5 px-3 text-gray-700 dark:text-gray-300 font-medium">{l.event}</td>
                     </tr>
                   ))}
                 </tbody>
