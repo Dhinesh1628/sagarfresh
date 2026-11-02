@@ -151,14 +151,15 @@ export const CatalogPage: React.FC<CatalogPageProps> = ({
             return (
               <div
                 key={product.id}
-                className="bg-white rounded-xl border border-gray-200 hover:border-gray-300 shadow-2xs hover:shadow-xs transition flex flex-col justify-between overflow-hidden"
+                onClick={() => handleOpenProductDetail(product)}
+                className="group bg-white rounded-2xl border border-gray-200 hover:border-[#d11243]/50 shadow-2xs hover:shadow-lg transition-all duration-200 flex flex-col justify-between overflow-hidden cursor-pointer"
               >
                 {/* Image & Badges */}
                 <div className="relative h-48 bg-gray-100 overflow-hidden">
                   <img
                     src={product.image || product.imageUrl || `/images/products/${product.id}.jpg`}
                     alt={product.name}
-                    className="w-full h-full object-cover"
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                     loading="lazy"
                     onError={(e) => {
                       (e.target as HTMLImageElement).src = `/images/products/${product.id}.jpg`;
@@ -177,12 +178,20 @@ export const CatalogPage: React.FC<CatalogPageProps> = ({
                       Net wt: {product.netWeight} {product.grossWeight ? `| Gross: ${product.grossWeight}` : ''}
                     </div>
                   )}
+
+                  {/* Click to Customize Pill on Hover */}
+                  <div className="absolute inset-0 bg-black/25 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                    <span className="px-3 py-1.5 rounded-full bg-white/95 text-gray-900 font-extrabold text-[11px] shadow-md flex items-center gap-1.5">
+                      <Eye className="w-3.5 h-3.5 text-[#d11243]" />
+                      <span>View Cuts & Details</span>
+                    </span>
+                  </div>
                 </div>
 
                 {/* Details */}
                 <div className="p-4 flex-1 flex flex-col justify-between space-y-3">
                   <div>
-                    <h3 className="font-bold text-sm text-gray-900 leading-snug line-clamp-1">
+                    <h3 className="font-bold text-sm text-gray-900 leading-snug line-clamp-1 group-hover:text-[#d11243] transition-colors">
                       {product.name}
                     </h3>
                     <p className="text-[11px] text-gray-500 line-clamp-2 mt-1 leading-relaxed">
@@ -213,18 +222,24 @@ export const CatalogPage: React.FC<CatalogPageProps> = ({
                       )}
                     </div>
 
-                    <div className="flex items-center gap-1.5">
+                    <div className="flex items-center gap-1.5" onClick={(e) => e.stopPropagation()}>
                       <button
-                        onClick={() => handleOpenProductDetail(product)}
-                        className="p-2 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-600 cursor-pointer"
-                        title="View details"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleOpenProductDetail(product);
+                        }}
+                        className="p-2 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-600 cursor-pointer transition"
+                        title="View details & custom cuts"
                       >
                         <Eye className="w-3.5 h-3.5" />
                       </button>
 
                       {qty === 0 ? (
                         <button
-                          onClick={() => addItem(product, 1)}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            addItem(product, 1);
+                          }}
                           className="px-3.5 py-1.5 rounded-lg bg-[#d11243] hover:bg-[#b80f3b] text-white font-bold text-xs uppercase cursor-pointer shadow-2xs transition"
                         >
                           Add
@@ -232,14 +247,20 @@ export const CatalogPage: React.FC<CatalogPageProps> = ({
                       ) : (
                         <div className="flex items-center border border-[#d11243] rounded-lg bg-white">
                           <button
-                            onClick={() => updateQuantity(product.id, qty - 1)}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              updateQuantity(product.id, qty - 1);
+                            }}
                             className="p-1 text-[#d11243] hover:bg-rose-50 rounded-l"
                           >
                             <Minus className="w-3.5 h-3.5" />
                           </button>
                           <span className="px-2 text-xs font-bold text-[#d11243]">{qty}</span>
                           <button
-                            onClick={() => updateQuantity(product.id, qty + 1)}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              updateQuantity(product.id, qty + 1);
+                            }}
                             className="p-1 text-[#d11243] hover:bg-rose-50 rounded-r"
                           >
                             <Plus className="w-3.5 h-3.5" />

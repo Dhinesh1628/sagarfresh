@@ -90,7 +90,7 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
   ];
 
   return (
-    <div className="fixed inset-0 z-50 overflow-y-auto flex items-center justify-center p-3 sm:p-5">
+    <div className="fixed inset-0 z-60 overflow-y-auto flex items-center justify-center p-3 sm:p-5">
       {/* Backdrop */}
       <div 
         onClick={onClose} 
