@@ -11,10 +11,11 @@ import { CheckoutModal } from './components/CheckoutModal';
 import { AuthModal } from './components/AuthModal';
 import { LegalModal } from './components/LegalModals';
 import { WhatsAppButton } from './components/WhatsAppButton';
+import { GlassmorphicLoginGate } from './components/GlassmorphicLoginGate';
 import type { Order } from './types';
 
 const MainApp: React.FC = () => {
-  const { user } = useAuth();
+  const { user, loading } = useAuth();
   const [currentTab, setCurrentTab] = useState<'catalog' | 'tracking' | 'coolers' | 'admin'>('catalog');
   const [selectedCity, setSelectedCity] = useState('Bengaluru');
   const [searchQuery, setSearchQuery] = useState('');
@@ -22,6 +23,7 @@ const MainApp: React.FC = () => {
   const [authRoleHint, setAuthRoleHint] = useState<'customer' | 'admin'>('customer');
   const [isCheckoutOpen, setIsCheckoutOpen] = useState(false);
   const [legalModalType, setLegalModalType] = useState<'tos' | 'privacy' | null>(null);
+  const [isGuestUnlocked, setIsGuestUnlocked] = useState(false);
 
   const handleOrderSuccess = (_newOrder: Order) => {
     setCurrentTab('tracking');
@@ -39,6 +41,15 @@ const MainApp: React.FC = () => {
     }
     setIsCheckoutOpen(true);
   };
+
+  // If not logged in and hasn't unlocked as guest, show the full-screen scenic glassmorphic login gate
+  if (!loading && !user && !isGuestUnlocked) {
+    return (
+      <GlassmorphicLoginGate 
+        onUnlockGuest={() => setIsGuestUnlocked(true)} 
+      />
+    );
+  }
 
   return (
     <div className="min-h-screen bg-[#f7f7f9] text-gray-800 flex flex-col font-sans selection:bg-[#d11243] selection:text-white">
@@ -211,11 +222,12 @@ const MainApp: React.FC = () => {
         selectedCity={selectedCity}
       />
 
-      {/* Auth Modal with explicit credential inputs */}
-      <AuthModal
+      {/* Glassmorphic Login / Register Modal */}
+      <GlassmorphicLoginGate
         isOpen={isAuthOpen}
-        onClose={() => setIsAuthOpen(false)}
-        defaultRoleHint={authRoleHint}
+        isModalMode={true}
+        onCloseModal={() => setIsAuthOpen(false)}
+        onUnlockGuest={() => setIsAuthOpen(false)}
       />
 
       {/* Legal Modals */}
