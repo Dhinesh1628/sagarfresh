@@ -150,13 +150,7 @@ export const Navbar: React.FC<NavbarProps> = ({
           <div className="flex items-center gap-2 sm:gap-3">
             
             <button
-              onClick={() => {
-                if (!user) {
-                  onOpenAuth('customer');
-                } else {
-                  setCurrentTab('coolers');
-                }
-              }}
+              onClick={() => setCurrentTab('coolers')}
               className={`hidden sm:flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-semibold cursor-pointer transition ${
                 currentTab === 'coolers' 
                   ? 'bg-rose-50 text-[#d11243] border border-rose-200' 
@@ -173,20 +167,15 @@ export const Navbar: React.FC<NavbarProps> = ({
             </button>
 
             <button
-              onClick={() => {
-                if (!user) {
-                  onOpenAuth('customer');
-                } else {
-                  setCurrentTab('tracking');
-                }
-              }}
-              className={`hidden sm:inline-block px-2.5 py-1.5 rounded-lg text-xs font-semibold cursor-pointer transition ${
+              onClick={() => setCurrentTab('tracking')}
+              className={`hidden sm:flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-semibold cursor-pointer transition ${
                 currentTab === 'tracking' 
-                  ? 'bg-rose-50 text-[#d11243] border border-rose-200' 
+                  ? 'bg-rose-50 text-[#d11243] border border-rose-200 shadow-2xs font-bold' 
                   : 'text-gray-600 hover:text-gray-900 hover:bg-gray-100'
               }`}
             >
-              Live Tracking
+              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+              <span>Live Tracking</span>
             </button>
 
             <button
@@ -368,18 +357,17 @@ export const Navbar: React.FC<NavbarProps> = ({
           </button>
           <button
             onClick={() => { 
-              if (!user) onOpenAuth('customer');
-              else setCurrentTab('tracking'); 
+              setCurrentTab('tracking'); 
               setMobileMenuOpen(false); 
             }}
-            className="w-full text-left py-2 px-3 rounded-lg bg-gray-50 text-gray-800 font-semibold"
+            className="w-full text-left py-2 px-3 rounded-lg bg-gray-50 text-gray-800 font-semibold flex items-center justify-between"
           >
-            Live Tracking
+            <span>Live Tracking & Telemetry</span>
+            <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
           </button>
           <button
             onClick={() => { 
-              if (!user) onOpenAuth('customer');
-              else setCurrentTab('coolers'); 
+              setCurrentTab('coolers'); 
               setMobileMenuOpen(false); 
             }}
             className="w-full text-left py-2 px-3 rounded-lg bg-rose-50 text-[#d11243] font-semibold"
