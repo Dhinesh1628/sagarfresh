@@ -141,8 +141,8 @@ export const WhatsAppButton: React.FC<WhatsAppButtonProps> = ({
           </div>
         )}
 
-        {/* DUAL FLOATING ACTIONS: 1. Chat with AI Butcher, 2. Chat on WhatsApp */}
-        <div className="flex items-center gap-2">
+        {/* DUAL FLOATING ACTIONS: 1. Chat with AI Butcher, 2. Order via WhatsApp */}
+        <div className="flex flex-wrap items-center justify-end gap-2.5">
           
           {/* PRIMARY FLOATING BUTTON: "Chat with AI Butcher" */}
           <button
@@ -169,14 +169,25 @@ export const WhatsAppButton: React.FC<WhatsAppButtonProps> = ({
             </div>
           </button>
 
-          {/* SECONDARY FLOATING BUTTON: "Chat on WhatsApp" */}
+          {/* SECONDARY FLOATING BUTTON: "Order via WhatsApp" (Prominent visible pill) */}
           <button
             onClick={() => setIsMenuOpen(!isMenuOpen)}
-            className="flex items-center justify-center bg-[#25D366] hover:bg-[#20ba59] text-white w-11 h-11 rounded-full shadow-lg hover:shadow-xl hover:scale-105 active:scale-95 transition-all duration-200 cursor-pointer"
-            aria-label="Chat on WhatsApp"
-            title="Chat on WhatsApp"
+            className="group flex items-center gap-2 bg-[#25D366] hover:bg-[#20ba59] text-white pl-3.5 pr-4 py-2.5 rounded-full shadow-xl hover:shadow-2xl hover:scale-102 active:scale-95 transition-all duration-200 cursor-pointer"
+            aria-label="Order via WhatsApp"
           >
-            <MessageCircle className="w-5 h-5 fill-white text-[#25D366]" />
+            <span className="relative flex h-2.5 w-2.5">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-white opacity-75"></span>
+              <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-white"></span>
+            </span>
+            <MessageCircle className="w-4 h-4 fill-white text-[#25D366]" />
+            <div className="flex flex-col text-left">
+              <span className="font-extrabold text-xs text-white tracking-tight">
+                Order via WhatsApp
+              </span>
+              <span className="text-[9px] text-emerald-100 font-medium leading-none">
+                Express 90-min delivery
+              </span>
+            </div>
           </button>
 
         </div>
