@@ -131,10 +131,14 @@ export const api = {
 
   // Orders
   async createOrder(orderData: {
-    items: { productId: string; quantity: number }[];
+    items: { productId: string; quantity: number; selectedCutStyle?: string }[];
     deliveryAddress: string;
     deliverySlot: string;
     deliveryNotes?: string;
+    paymentMethod?: string;
+    city?: string;
+    couponCode?: string | null;
+    couponDiscount?: number;
   }): Promise<Order> {
     const res = await fetch(`${API_BASE}/orders`, {
       method: 'POST',

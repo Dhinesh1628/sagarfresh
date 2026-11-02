@@ -73,6 +73,8 @@ export interface Order {
   city: string;
   items: OrderItem[];
   subtotal: number;
+  discountAmount?: number;
+  couponCode?: string;
   coolerDeposit: number;
   shippingFee: number;
   total: number;

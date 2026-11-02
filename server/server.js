@@ -262,7 +262,7 @@ app.delete('/api/products/:id', authenticate, requireAdmin, (req, res) => {
 // ==========================================
 
 app.post('/api/orders', authenticate, (req, res) => {
-  const { items, deliveryAddress, deliverySlot, deliveryNotes, paymentMethod, city } = req.body;
+  const { items, deliveryAddress, deliverySlot, deliveryNotes, paymentMethod, city, couponCode, couponDiscount } = req.body;
 
   if (!items || !items.length) {
     return res.status(400).json({ error: 'Please add at least one cut to your cold box' });
@@ -291,14 +291,15 @@ app.post('/api/orders', authenticate, (req, res) => {
       unit: prod.unit,
       netWeight: prod.netWeight,
       chillingMethod: prod.chillingMethod,
-      cutStyle: prod.cutStyle,
+      cutStyle: item.selectedCutStyle || prod.cutStyle,
       image: prod.image
     });
   }
 
+  const discount = Math.min(parseInt(couponDiscount || 0, 10), subtotal);
   const COOLER_DEPOSIT = 250;
   const shippingFee = subtotal >= 799 ? 0 : 40;
-  const total = subtotal + COOLER_DEPOSIT + shippingFee;
+  const total = Math.max(0, subtotal - discount + COOLER_DEPOSIT + shippingFee);
 
   let assignedCooler = db.get('coolers').find(c => c.status === 'available');
   if (!assignedCooler) {
@@ -344,6 +345,8 @@ app.post('/api/orders', authenticate, (req, res) => {
     city: city || req.user.city || 'Bengaluru',
     items: processedItems,
     subtotal,
+    discountAmount: discount || 0,
+    couponCode: couponCode || null,
     coolerDeposit: COOLER_DEPOSIT,
     shippingFee,
     total,

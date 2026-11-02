@@ -271,21 +271,26 @@ export const OrderTrackingPage: React.FC<OrderTrackingPageProps> = ({ onNavigate
                   </div>
                 </div>
 
-                {/* Return Prompt */}
-                {selectedOrder.status === 'Delivered' && (
-                  <div className="p-4 bg-emerald-50/60 border border-emerald-200 rounded-lg flex flex-col sm:flex-row items-center justify-between gap-3 text-xs">
-                    <div>
-                      <span className="font-extrabold text-emerald-950 block">Delivered in Reusable Cold Box ({selectedOrder.coolerId})</span>
-                      <span className="text-emerald-800 text-[11px]">Schedule a free doorstep pickup anytime to get your ₹250 security deposit refunded via UPI.</span>
+                {/* Return Prompt & ₹250 Refundable Cooler Box Notice */}
+                <div className="p-4 bg-sky-50/70 border border-sky-200 rounded-xl flex flex-col sm:flex-row items-center justify-between gap-3 text-xs">
+                  <div>
+                    <div className="flex items-center gap-1.5 font-extrabold text-sky-950">
+                      <span>❄️ ThermalVault Reusable Cold Box ({selectedOrder.coolerId})</span>
+                      <span className="px-1.5 py-0.2 bg-emerald-100 text-emerald-800 text-[10px] rounded font-black">
+                        ₹250 Deposit Active
+                      </span>
                     </div>
-                    <button
-                      onClick={onNavigateToReturns}
-                      className="px-4 py-2 bg-[#d11243] hover:bg-[#b80f3b] text-white rounded-lg font-bold text-xs cursor-pointer shrink-0"
-                    >
-                      Return Box for ₹250
-                    </button>
+                    <span className="text-sky-800 text-[11px] block mt-0.5">
+                      Hand back to the courier at delivery or request 1-click doorstep collection in the app to get ₹250 refunded directly to your UPI ID.
+                    </span>
                   </div>
-                )}
+                  <button
+                    onClick={onNavigateToReturns}
+                    className="px-4 py-2.5 bg-sky-700 hover:bg-sky-800 text-white rounded-xl font-extrabold text-xs cursor-pointer shrink-0 transition shadow-xs"
+                  >
+                    Schedule Cooler Return (₹250)
+                  </button>
+                </div>
 
               </div>
             </div>

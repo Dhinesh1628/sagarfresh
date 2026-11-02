@@ -8,6 +8,7 @@ import { CoolerReturnsPage } from './pages/CoolerReturnsPage';
 import { AdminDashboardPage } from './pages/AdminDashboardPage';
 import { CartDrawer } from './components/CartDrawer';
 import { CheckoutModal } from './components/CheckoutModal';
+import { OrderConfirmationModal } from './components/OrderConfirmationModal';
 import { LegalModal } from './components/LegalModals';
 import { WhatsAppButton } from './components/WhatsAppButton';
 import { GlassmorphicLoginGate } from './components/GlassmorphicLoginGate';
@@ -24,6 +25,8 @@ const MainApp: React.FC = () => {
   const [isAuthOpen, setIsAuthOpen] = useState(false);
   const [authRoleHint, setAuthRoleHint] = useState<'customer' | 'admin'>('customer');
   const [isCheckoutOpen, setIsCheckoutOpen] = useState(false);
+  const [confirmedOrder, setConfirmedOrder] = useState<Order | null>(null);
+  const [isConfirmationOpen, setIsConfirmationOpen] = useState(false);
   const [legalModalType, setLegalModalType] = useState<'tos' | 'privacy' | null>(null);
   const [isAiButcherOpen, setIsAiButcherOpen] = useState(false);
 
@@ -42,6 +45,10 @@ const MainApp: React.FC = () => {
       }
       if (isAuthOpen) {
         setIsAuthOpen(false);
+        return;
+      }
+      if (isConfirmationOpen) {
+        setIsConfirmationOpen(false);
         return;
       }
       if (isCheckoutOpen) {
@@ -68,7 +75,7 @@ const MainApp: React.FC = () => {
 
     window.addEventListener('popstate', handlePopState);
     return () => window.removeEventListener('popstate', handlePopState);
-  }, [isAiButcherOpen, isAuthOpen, isCheckoutOpen, legalModalType, isCartOpen, currentTab, setIsCartOpen]);
+  }, [isAiButcherOpen, isAuthOpen, isCheckoutOpen, isConfirmationOpen, legalModalType, isCartOpen, currentTab, setIsCartOpen]);
 
   // Tab switching with history push
   const handleTabChange = (tab: 'catalog' | 'tracking' | 'coolers' | 'admin') => {
@@ -114,8 +121,10 @@ const MainApp: React.FC = () => {
     setIsAiButcherOpen(false);
   };
 
-  const handleOrderSuccess = (_newOrder: Order) => {
-    handleTabChange('tracking');
+  const handleOrderSuccess = (newOrder: Order) => {
+    setConfirmedOrder(newOrder);
+    window.history.pushState({ type: 'modal', name: 'order-confirmation' }, '');
+    setIsConfirmationOpen(true);
   };
 
   return (
@@ -287,6 +296,21 @@ const MainApp: React.FC = () => {
         onClose={handleCloseCheckout}
         onOrderSuccess={handleOrderSuccess}
         selectedCity={selectedCity}
+      />
+
+      {/* Order Confirmation & Telemetry Modal (Figma Step 5) */}
+      <OrderConfirmationModal
+        order={confirmedOrder}
+        isOpen={isConfirmationOpen}
+        onClose={() => setIsConfirmationOpen(false)}
+        onViewLiveTelemetry={() => {
+          setIsConfirmationOpen(false);
+          handleTabChange('tracking');
+        }}
+        onNavigateToReturns={() => {
+          setIsConfirmationOpen(false);
+          handleTabChange('coolers');
+        }}
       />
 
       {/* Glassmorphic Login / Register Modal (Prompted only on Checkout or Sign In click) */}

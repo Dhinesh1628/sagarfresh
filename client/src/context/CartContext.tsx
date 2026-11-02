@@ -12,6 +12,10 @@ interface CartContextType {
   subtotal: number;
   coolerDeposit: number;
   shippingFee: number;
+  couponCode: string | null;
+  couponDiscount: number;
+  applyCoupon: (code: string) => { success: boolean; message: string };
+  removeCoupon: () => void;
   total: number;
   totalItems: number;
 }
@@ -29,10 +33,44 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
   });
 
   const [isCartOpen, setIsCartOpen] = useState<boolean>(false);
+  const [couponCode, setCouponCode] = useState<string | null>(null);
+  const [couponDiscount, setCouponDiscount] = useState<number>(0);
 
   useEffect(() => {
     localStorage.setItem('gomeat_cart', JSON.stringify(items));
   }, [items]);
+
+  const applyCoupon = (code: string): { success: boolean; message: string } => {
+    const clean = code.trim().toUpperCase();
+    if (!clean) return { success: false, message: 'Please enter a coupon code' };
+    
+    if (clean === 'FRESH50') {
+      setCouponCode('FRESH50');
+      setCouponDiscount(50);
+      return { success: true, message: '₹50 discount applied with FRESH50!' };
+    } else if (clean === 'FIRSTORDER' || clean === 'FIRSTMEAT') {
+      if (subtotal < 399) {
+        return { success: false, message: 'Min order of ₹399 required for FIRSTORDER' };
+      }
+      setCouponCode(clean);
+      setCouponDiscount(100);
+      return { success: true, message: '₹100 discount applied on your first order!' };
+    } else if (clean === 'COLDCHAIN' || clean === 'FRESH100') {
+      if (subtotal < 499) {
+        return { success: false, message: 'Min order of ₹499 required for this coupon' };
+      }
+      setCouponCode(clean);
+      setCouponDiscount(75);
+      return { success: true, message: '₹75 cold-chain bonus discount applied!' };
+    } else {
+      return { success: false, message: 'Invalid or expired coupon code. Try FRESH50 or FIRSTORDER.' };
+    }
+  };
+
+  const removeCoupon = () => {
+    setCouponCode(null);
+    setCouponDiscount(0);
+  };
 
   const addItem = (product: Product, quantity = 1, selectedCutStyle?: string) => {
     setItems(prev => {
@@ -67,6 +105,8 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const clearCart = () => {
     setItems([]);
+    setCouponCode(null);
+    setCouponDiscount(0);
   };
 
   const subtotal = items.reduce((sum, item) => sum + item.product.price * item.quantity, 0);
@@ -75,7 +115,8 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const coolerDeposit = items.length > 0 ? 250 : 0;
   // Free delivery threshold: ₹799
   const shippingFee = items.length === 0 ? 0 : (subtotal >= 799 ? 0 : 40);
-  const total = subtotal + coolerDeposit + shippingFee;
+  const effectiveDiscount = Math.min(couponDiscount, subtotal);
+  const total = Math.max(0, subtotal - effectiveDiscount + coolerDeposit + shippingFee);
   const totalItems = items.reduce((sum, item) => sum + item.quantity, 0);
 
   return (
@@ -91,6 +132,10 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
         subtotal,
         coolerDeposit,
         shippingFee,
+        couponCode,
+        couponDiscount: effectiveDiscount,
+        applyCoupon,
+        removeCoupon,
         total,
         totalItems
       }}
