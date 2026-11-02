@@ -6,10 +6,7 @@ export async function verifyGoogleIdToken(idToken) {
     throw new Error('Google ID token is required');
   }
 
-  const clientId = process.env.GOOGLE_CLIENT_ID;
-  if (!clientId || clientId.trim() === '') {
-    throw new Error('GOOGLE_CLIENT_ID is not configured on the backend server. Please add GOOGLE_CLIENT_ID to your environment variables.');
-  }
+  const clientId = process.env.GOOGLE_CLIENT_ID || process.env.VITE_GOOGLE_CLIENT_ID || '938924164898-ch4lvils61jkqp39cfl23pn2rkgrfggp.apps.googleusercontent.com';
 
   const client = new OAuth2Client(clientId);
 
