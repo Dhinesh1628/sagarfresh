@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { X, Trash2, Plus, Minus, ArrowRight, ShieldCheck, Zap } from 'lucide-react';
 import { useCart } from '../context/CartContext';
 
@@ -19,6 +19,12 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({ onCheckout }) => {
     shippingFee, 
     total 
   } = useCart();
+
+  useEffect(() => {
+    if (isCartOpen) {
+      window.history.pushState({ modal: 'cart' }, '');
+    }
+  }, [isCartOpen]);
 
   if (!isCartOpen) return null;
 

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import { CartProvider, useCart } from './context/CartContext';
 import { Navbar } from './components/Navbar';
@@ -8,30 +8,83 @@ import { CoolerReturnsPage } from './pages/CoolerReturnsPage';
 import { AdminDashboardPage } from './pages/AdminDashboardPage';
 import { CartDrawer } from './components/CartDrawer';
 import { CheckoutModal } from './components/CheckoutModal';
-import { AuthModal } from './components/AuthModal';
 import { LegalModal } from './components/LegalModals';
 import { WhatsAppButton } from './components/WhatsAppButton';
 import { GlassmorphicLoginGate } from './components/GlassmorphicLoginGate';
 import type { Order } from './types';
 
 const MainApp: React.FC = () => {
-  const { user, loading } = useAuth();
+  const { user } = useAuth();
+  const { isCartOpen, setIsCartOpen } = useCart();
   const [currentTab, setCurrentTab] = useState<'catalog' | 'tracking' | 'coolers' | 'admin'>('catalog');
   const [selectedCity, setSelectedCity] = useState('Bengaluru');
   const [searchQuery, setSearchQuery] = useState('');
+  
+  // Modals and Overlays
   const [isAuthOpen, setIsAuthOpen] = useState(false);
   const [authRoleHint, setAuthRoleHint] = useState<'customer' | 'admin'>('customer');
   const [isCheckoutOpen, setIsCheckoutOpen] = useState(false);
   const [legalModalType, setLegalModalType] = useState<'tos' | 'privacy' | null>(null);
-  const [isGuestUnlocked, setIsGuestUnlocked] = useState(false);
+  const [isAiButcherOpen, setIsAiButcherOpen] = useState(false);
 
-  const handleOrderSuccess = (_newOrder: Order) => {
-    setCurrentTab('tracking');
+  // Synchronize browser history so pressing "Back" retreats by 1 step instead of exiting the website
+  useEffect(() => {
+    // Baseline state on initial load
+    if (!window.history.state) {
+      window.history.replaceState({ type: 'tab', tab: 'catalog' }, '', window.location.hash || '/');
+    }
+
+    const handlePopState = () => {
+      // Step 1: If any overlay or modal is active, dismiss it (retreats 1 step)
+      if (isAiButcherOpen) {
+        setIsAiButcherOpen(false);
+        return;
+      }
+      if (isAuthOpen) {
+        setIsAuthOpen(false);
+        return;
+      }
+      if (isCheckoutOpen) {
+        setIsCheckoutOpen(false);
+        return;
+      }
+      if (legalModalType) {
+        setLegalModalType(null);
+        return;
+      }
+      if (isCartOpen) {
+        setIsCartOpen(false);
+        return;
+      }
+
+      // Step 2: If on a sub-tab (Live Tracking, Coolers, Hub Ops), return to Catalog homepage
+      const hash = window.location.hash.replace('#', '') as any;
+      if (hash && ['catalog', 'tracking', 'coolers', 'admin'].includes(hash)) {
+        setCurrentTab(hash);
+      } else {
+        setCurrentTab('catalog');
+      }
+    };
+
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
+  }, [isAiButcherOpen, isAuthOpen, isCheckoutOpen, legalModalType, isCartOpen, currentTab, setIsCartOpen]);
+
+  // Tab switching with history push
+  const handleTabChange = (tab: 'catalog' | 'tracking' | 'coolers' | 'admin') => {
+    if (tab === currentTab) return;
+    window.history.pushState({ type: 'tab', tab }, '', tab === 'catalog' ? '/' : `#${tab}`);
+    setCurrentTab(tab);
   };
 
   const handleOpenAuth = (roleHint?: 'customer' | 'admin') => {
     setAuthRoleHint(roleHint || 'customer');
+    window.history.pushState({ type: 'modal', name: 'auth' }, '');
     setIsAuthOpen(true);
+  };
+
+  const handleCloseAuth = () => {
+    setIsAuthOpen(false);
   };
 
   const handleProceedToCheckout = () => {
@@ -39,17 +92,31 @@ const MainApp: React.FC = () => {
       handleOpenAuth('customer');
       return;
     }
+    window.history.pushState({ type: 'modal', name: 'checkout' }, '');
     setIsCheckoutOpen(true);
   };
 
-  // If not logged in and hasn't unlocked as guest, show the full-screen scenic glassmorphic login gate
-  if (!loading && !user && !isGuestUnlocked) {
-    return (
-      <GlassmorphicLoginGate 
-        onUnlockGuest={() => setIsGuestUnlocked(true)} 
-      />
-    );
-  }
+  const handleCloseCheckout = () => {
+    setIsCheckoutOpen(false);
+  };
+
+  const handleOpenLegalModal = (type: 'tos' | 'privacy') => {
+    window.history.pushState({ type: 'modal', name: 'legal' }, '');
+    setLegalModalType(type);
+  };
+
+  const handleOpenAiButcher = () => {
+    window.history.pushState({ type: 'modal', name: 'ai-butcher' }, '');
+    setIsAiButcherOpen(true);
+  };
+
+  const handleCloseAiButcher = () => {
+    setIsAiButcherOpen(false);
+  };
+
+  const handleOrderSuccess = (_newOrder: Order) => {
+    handleTabChange('tracking');
+  };
 
   return (
     <div className="min-h-screen bg-[#f7f7f9] text-gray-800 flex flex-col font-sans selection:bg-[#d11243] selection:text-white">
@@ -57,7 +124,7 @@ const MainApp: React.FC = () => {
       {/* Top Navbar */}
       <Navbar
         currentTab={currentTab}
-        setCurrentTab={(tab) => setCurrentTab(tab as any)}
+        setCurrentTab={(tab) => handleTabChange(tab as any)}
         onOpenAuth={handleOpenAuth}
         selectedCity={selectedCity}
         setSelectedCity={setSelectedCity}
@@ -71,7 +138,7 @@ const MainApp: React.FC = () => {
           <CatalogPage 
             onNavigateToReturns={() => {
               if (!user) handleOpenAuth('customer');
-              else setCurrentTab('coolers');
+              else handleTabChange('coolers');
             }}
             selectedCity={selectedCity}
             searchQuery={searchQuery}
@@ -82,7 +149,7 @@ const MainApp: React.FC = () => {
           <OrderTrackingPage 
             onNavigateToReturns={() => {
               if (!user) handleOpenAuth('customer');
-              else setCurrentTab('coolers');
+              else handleTabChange('coolers');
             }}
           />
         )}
@@ -170,26 +237,26 @@ const MainApp: React.FC = () => {
               <h4 className="text-gray-900 font-bold mb-3">Customer & Legal</h4>
               <ul className="space-y-1.5 text-[11px]">
                 <li>
-                  <button onClick={() => setLegalModalType('tos')} className="text-gray-600 hover:text-[#d11243] cursor-pointer">
+                  <button onClick={() => handleOpenLegalModal('tos')} className="text-gray-600 hover:text-[#d11243] cursor-pointer">
                     Terms of Service & Box Deposit Policy
                   </button>
                 </li>
                 <li>
-                  <button onClick={() => setLegalModalType('privacy')} className="text-gray-600 hover:text-[#d11243] cursor-pointer">
+                  <button onClick={() => handleOpenLegalModal('privacy')} className="text-gray-600 hover:text-[#d11243] cursor-pointer">
                     Privacy Policy (DPDP Compliance)
                   </button>
                 </li>
                 <li>
                   <button onClick={() => {
                     if (!user) handleOpenAuth('customer');
-                    else setCurrentTab('coolers');
+                    else handleTabChange('coolers');
                   }} className="text-gray-600 hover:text-[#d11243] cursor-pointer">
                     Doorstep Box Collection
                   </button>
                 </li>
                 <li>
                   <button onClick={() => {
-                    if (user?.role === 'admin') setCurrentTab('admin');
+                    if (user?.role === 'admin') handleTabChange('admin');
                     else handleOpenAuth('admin');
                   }} className="text-gray-600 hover:text-[#d11243] cursor-pointer">
                     Hub Fulfillment Operations
@@ -217,17 +284,17 @@ const MainApp: React.FC = () => {
       {/* Checkout Modal */}
       <CheckoutModal
         isOpen={isCheckoutOpen}
-        onClose={() => setIsCheckoutOpen(false)}
+        onClose={handleCloseCheckout}
         onOrderSuccess={handleOrderSuccess}
         selectedCity={selectedCity}
       />
 
-      {/* Glassmorphic Login / Register Modal */}
+      {/* Glassmorphic Login / Register Modal (Prompted only on Checkout or Sign In click) */}
       <GlassmorphicLoginGate
         isOpen={isAuthOpen}
         isModalMode={true}
-        onCloseModal={() => setIsAuthOpen(false)}
-        onUnlockGuest={() => setIsAuthOpen(false)}
+        onCloseModal={handleCloseAuth}
+        onUnlockGuest={handleCloseAuth}
       />
 
       {/* Legal Modals */}
@@ -236,8 +303,12 @@ const MainApp: React.FC = () => {
         onClose={() => setLegalModalType(null)}
       />
 
-      {/* Floating WhatsApp Quick Order & Support Button */}
-      <WhatsAppButton />
+      {/* Floating AI Butcher & WhatsApp Concierge */}
+      <WhatsAppButton 
+        isChatbotOpen={isAiButcherOpen}
+        onOpenChatbot={handleOpenAiButcher}
+        onCloseChatbot={handleCloseAiButcher}
+      />
 
     </div>
   );

@@ -27,6 +27,21 @@ export const CatalogPage: React.FC<CatalogPageProps> = ({
 
   const { items, addItem, updateQuantity } = useCart();
 
+  const handleOpenProductDetail = (product: Product) => {
+    window.history.pushState({ modal: 'product-detail' }, '');
+    setInspectingProduct(product);
+  };
+
+  useEffect(() => {
+    const handlePopState = () => {
+      if (inspectingProduct) {
+        setInspectingProduct(null);
+      }
+    };
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
+  }, [inspectingProduct]);
+
   const handleScrollToCatalog = () => {
     catalogGridRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
   };
@@ -200,7 +215,7 @@ export const CatalogPage: React.FC<CatalogPageProps> = ({
 
                     <div className="flex items-center gap-1.5">
                       <button
-                        onClick={() => setInspectingProduct(product)}
+                        onClick={() => handleOpenProductDetail(product)}
                         className="p-2 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-600 cursor-pointer"
                         title="View details"
                       >
