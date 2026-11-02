@@ -9,6 +9,10 @@ export interface User {
   depositBalance?: number;
   activeCoolersCount?: number;
   upiId?: string;
+  avatar?: string;
+  googleId?: string;
+  authProvider?: 'local' | 'google';
+  emailVerified?: boolean;
 }
 
 export interface Product {

@@ -8,6 +8,7 @@ import { fileURLToPath } from 'url';
 import { db } from './db.js';
 import { connectMongoDB, getMongoStatus } from './mongo.js';
 import whatsappWebhookRouter from './routes/whatsappWebhook.js';
+import { handleGoogleAuth } from './routes/googleAuth.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -96,8 +97,11 @@ const createToken = (user) => {
 };
 
 // ==========================================
-// 1. AUTHENTICATION (Real Login with Email / Phone & Password)
+// 1. AUTHENTICATION (Google OAuth 2.0 & Email/Password)
 // ==========================================
+
+// Google Sign-In & Sign-Up endpoint with official Google token verification
+app.post('/api/auth/google', (req, res) => handleGoogleAuth(req, res, createToken));
 
 app.post('/api/auth/register', (req, res) => {
   const { name, email, password, phone, address, city, upiId } = req.body;

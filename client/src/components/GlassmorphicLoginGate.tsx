@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { User as UserIcon, Lock, Mail, Phone, MapPin, Eye, EyeOff, Sparkles, Shield, ArrowRight, Check } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
+import { GoogleSignInButton } from './GoogleSignInButton';
 
 interface GlassmorphicLoginGateProps {
   onUnlockGuest: () => void;
@@ -354,6 +355,26 @@ export const GlassmorphicLoginGate: React.FC<GlassmorphicLoginGateProps> = ({
               </button>
             </form>
           )}
+
+          {/* Divider */}
+          <div className="relative flex py-2 items-center my-3">
+            <div className="flex-grow border-t border-white/20"></div>
+            <span className="flex-shrink mx-3 text-[10px] uppercase tracking-wider text-slate-300 font-bold">
+              Or Continue With
+            </span>
+            <div className="flex-grow border-t border-white/20"></div>
+          </div>
+
+          {/* Genuine Google OAuth Button */}
+          <div className="w-full flex justify-center">
+            <GoogleSignInButton
+              text={mode === 'login' ? 'continue_with' : 'signup_with'}
+              onSuccess={() => {
+                if (onCloseModal) onCloseModal();
+              }}
+              onError={(err) => setError(err)}
+            />
+          </div>
 
           {/* Quick 1-Click Demo Fill Credentials Chips */}
           <div className="mt-5 pt-4 border-t border-white/15 space-y-2">

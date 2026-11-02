@@ -212,9 +212,18 @@ export const Navbar: React.FC<NavbarProps> = ({
                   onClick={() => setUserDropdownOpen(!userDropdownOpen)}
                   className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg hover:bg-gray-100 text-xs font-semibold text-gray-800 border border-gray-200 cursor-pointer"
                 >
-                  <div className="w-5 h-5 rounded-full bg-[#d11243] text-white flex items-center justify-center font-bold text-[10px]">
-                    {user.name.charAt(0)}
-                  </div>
+                  {user.avatar ? (
+                    <img 
+                      src={user.avatar} 
+                      alt={user.name} 
+                      className="w-5 h-5 rounded-full object-cover border border-gray-300"
+                      referrerPolicy="no-referrer"
+                    />
+                  ) : (
+                    <div className="w-5 h-5 rounded-full bg-[#d11243] text-white flex items-center justify-center font-bold text-[10px]">
+                      {user.name.charAt(0)}
+                    </div>
+                  )}
                   <span className="hidden sm:inline truncate max-w-[90px]">{user.name.split(' ')[0]}</span>
                   <span className="text-[10px] px-1 py-0.2 bg-gray-100 text-gray-500 rounded font-normal uppercase">
                     {user.role}
@@ -227,8 +236,32 @@ export const Navbar: React.FC<NavbarProps> = ({
                     className="absolute right-0 mt-1 w-60 rounded-lg bg-white border border-gray-200 shadow-xl py-2 z-50 text-xs text-gray-700"
                   >
                     <div className="px-3 py-2 border-b border-gray-100">
-                      <p className="font-bold text-gray-900">{user.name}</p>
-                      <p className="text-gray-500 text-[11px] truncate">{user.email}</p>
+                      <div className="flex items-center gap-2 mb-1">
+                        {user.avatar ? (
+                          <img 
+                            src={user.avatar} 
+                            alt={user.name} 
+                            className="w-7 h-7 rounded-full object-cover border border-gray-200 shadow-2xs" 
+                            referrerPolicy="no-referrer"
+                          />
+                        ) : (
+                          <div className="w-7 h-7 rounded-full bg-[#d11243] text-white flex items-center justify-center font-bold text-xs">
+                            {user.name.charAt(0)}
+                          </div>
+                        )}
+                        <div className="overflow-hidden">
+                          <p className="font-bold text-gray-900 truncate">{user.name}</p>
+                          <p className="text-gray-500 text-[10px] truncate">{user.email}</p>
+                        </div>
+                      </div>
+                      {user.authProvider === 'google' && (
+                        <div className="mt-1 inline-flex items-center gap-1 px-1.5 py-0.5 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-700 text-[10px] font-semibold">
+                          <svg className="w-3 h-3 text-emerald-600" viewBox="0 0 20 20" fill="currentColor">
+                            <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z" clipRule="evenodd" />
+                          </svg>
+                          <span>Verified with Google</span>
+                        </div>
+                      )}
                       <p className="text-gray-600 text-[11px] mt-1">
                         Role: <strong className="text-gray-900 uppercase font-semibold">{user.role}</strong>
                       </p>

@@ -12,6 +12,19 @@ const getHeaders = () => {
 
 export const api = {
   // Auth
+  async googleLogin(credential: string): Promise<{ user: User; token: string }> {
+    const res = await fetch(`${API_BASE}/auth/google`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ credential })
+    });
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      throw new Error(err.error || 'Google authentication failed. Please try again.');
+    }
+    return res.json();
+  },
+
   async login(email: string, password: string) {
     const res = await fetch(`${API_BASE}/auth/login`, {
       method: 'POST',

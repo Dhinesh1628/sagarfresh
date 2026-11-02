@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { X, AlertCircle, Lock, Mail, Phone, MapPin, User as UserIcon } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
+import { GoogleSignInButton } from './GoogleSignInButton';
 
 interface AuthModalProps {
   isOpen: boolean;
@@ -243,6 +244,23 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, defaultRo
             </button>
           </form>
         )}
+
+        {/* Google OAuth Section */}
+        <div className="relative flex py-2 items-center my-3">
+          <div className="flex-grow border-t border-gray-200"></div>
+          <span className="flex-shrink mx-3 text-[10px] uppercase tracking-wider text-gray-500 font-bold">
+            Or Continue With
+          </span>
+          <div className="flex-grow border-t border-gray-200"></div>
+        </div>
+
+        <div className="w-full flex justify-center">
+          <GoogleSignInButton
+            text={mode === 'login' ? 'continue_with' : 'signup_with'}
+            onSuccess={onClose}
+            onError={(err) => setError(err)}
+          />
+        </div>
 
       </div>
     </div>

@@ -7,6 +7,7 @@ interface AuthContextType {
   token: string | null;
   loading: boolean;
   login: (email: string, password: string) => Promise<void>;
+  googleLogin: (credential: string) => Promise<void>;
   register: (data: { name: string; email: string; password: string; phone?: string; address?: string }) => Promise<void>;
   logout: () => void;
   refreshUser: () => Promise<void>;
@@ -49,6 +50,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     setUser(data.user);
   };
 
+  const googleLogin = async (credential: string) => {
+    const data = await api.googleLogin(credential);
+    localStorage.setItem('frost_token', data.token);
+    setToken(data.token);
+    setUser(data.user);
+  };
+
   const register = async (data: { name: string; email: string; password: string; phone?: string; address?: string }) => {
     const res = await api.register(data);
     localStorage.setItem('frost_token', res.token);
@@ -69,6 +77,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         token,
         loading,
         login,
+        googleLogin,
         register,
         logout,
         refreshUser
