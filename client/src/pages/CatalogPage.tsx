@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Eye, Plus, Minus, Zap, ShieldCheck } from 'lucide-react';
+import { Eye, Plus, Minus, Zap, ShieldCheck, Heart, ArrowUpDown, Filter, CheckCircle2 } from 'lucide-react';
 import type { Product } from '../types';
 import { api } from '../api';
 import { useCart } from '../context/CartContext';
@@ -23,9 +23,43 @@ export const CatalogPage: React.FC<CatalogPageProps> = ({
   const [loading, setLoading] = useState(true);
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [inspectingProduct, setInspectingProduct] = useState<Product | null>(null);
+  const [sortBy, setSortBy] = useState<'featured' | 'price-asc' | 'price-desc' | 'discount'>('featured');
+  const [priceBudget, setPriceBudget] = useState<'all' | 'under300' | 'under500' | 'above500'>('all');
+  const [wishlist, setWishlist] = useState<string[]>([]);
+  const [toastMessage, setToastMessage] = useState<string | null>(null);
   const catalogGridRef = useRef<HTMLDivElement>(null);
 
   const { items, addItem, updateQuantity } = useCart();
+
+  // Load wishlist from localStorage
+  useEffect(() => {
+    try {
+      const saved = localStorage.getItem('gomeat_wishlist');
+      if (saved) setWishlist(JSON.parse(saved));
+    } catch (e) {}
+  }, []);
+
+  const toggleWishlist = (productId: string, productName: string, e: React.MouseEvent) => {
+    e.stopPropagation();
+    let updated: string[];
+    const exists = wishlist.includes(productId);
+    if (exists) {
+      updated = wishlist.filter(id => id !== productId);
+      showToast(`Removed "${productName}" from wishlist`);
+    } else {
+      updated = [...wishlist, productId];
+      showToast(`Added "${productName}" to wishlist ❤️`);
+    }
+    setWishlist(updated);
+    try {
+      localStorage.setItem('gomeat_wishlist', JSON.stringify(updated));
+    } catch (e) {}
+  };
+
+  const showToast = (msg: string) => {
+    setToastMessage(msg);
+    setTimeout(() => setToastMessage(null), 3000);
+  };
 
   const handleOpenProductDetail = (product: Product) => {
     window.history.pushState({ modal: 'product-detail' }, '');
@@ -65,30 +99,49 @@ export const CatalogPage: React.FC<CatalogPageProps> = ({
     fetchProducts();
   }, [selectedCategory, searchQuery]);
 
-  const categories = [
-    { label: 'All Cuts', value: 'All' },
-    { label: 'Fish & Seafood', value: 'Fish & Seafood' },
-    { label: 'Tender Mutton', value: 'Tender Mutton' },
-    { label: 'Fresh Chicken', value: 'Fresh Chicken' },
-    { label: 'Ready to Cook', value: 'Ready to Cook' },
-    { label: 'Combo Box', value: 'Combo Box' }
-  ];
-
   const getItemQuantity = (productId: string) => {
     const item = items.find(i => i.product.id === productId);
     return item ? item.quantity : 0;
   };
 
+  // Filter products by price budget
+  const filteredProducts = products.filter(p => {
+    if (priceBudget === 'under300') return p.price < 300;
+    if (priceBudget === 'under500') return p.price <= 500;
+    if (priceBudget === 'above500') return p.price > 500;
+    return true;
+  });
+
+  // Sort products
+  const sortedProducts = [...filteredProducts].sort((a, b) => {
+    if (sortBy === 'price-asc') return a.price - b.price;
+    if (sortBy === 'price-desc') return b.price - a.price;
+    if (sortBy === 'discount') {
+      const discA = a.mrp ? (a.mrp - a.price) / a.mrp : 0;
+      const discB = b.mrp ? (b.mrp - b.price) / b.mrp : 0;
+      return discB - discA;
+    }
+    return 0; // featured
+  });
+
   return (
-    <div className="space-y-6 pb-16">
+    <div className="space-y-6 pb-16 relative">
       
-      {/* Figma-Inspired Dual Desktop & Mobile Hero Section */}
+      {/* Toast Notification */}
+      {toastMessage && (
+        <div className="fixed bottom-6 right-6 z-50 bg-gray-900/95 dark:bg-white/95 text-white dark:text-gray-900 px-4 py-2.5 rounded-2xl shadow-2xl text-xs font-bold flex items-center gap-2 border border-white/20 dark:border-gray-800 animate-bounce">
+          <CheckCircle2 className="w-4 h-4 text-emerald-400 dark:text-emerald-600 shrink-0" />
+          <span>{toastMessage}</span>
+        </div>
+      )}
+
+      {/* Hero Section */}
       <HeroSection 
         onExploreCuts={handleScrollToCatalog}
         onNavigateToReturns={onNavigateToReturns}
       />
 
-      {/* Explore Categories Section (Matching Figma layout) */}
+      {/* Explore Categories Section */}
       <div ref={catalogGridRef} className="scroll-mt-24 space-y-4">
         <CategorySection
           selectedCategory={selectedCategory}
@@ -96,7 +149,7 @@ export const CatalogPage: React.FC<CatalogPageProps> = ({
           onViewAllSpecs={handleScrollToCatalog}
         />
 
-        {/* FreshSeal 0°C to 4°C Assurance Strip (from Figma layout) */}
+        {/* FreshSeal 0°C to 4°C Assurance Strip */}
         <div className="bg-white dark:bg-slate-900 rounded-2xl border border-gray-200 dark:border-slate-800 p-3.5 sm:p-4 shadow-2xs flex flex-col md:flex-row items-start md:items-center justify-between gap-4 transition-colors">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-xl bg-rose-50 dark:bg-rose-950/70 border border-rose-100 dark:border-rose-900 flex items-center justify-center text-[#d11243] dark:text-rose-400 font-black text-sm shrink-0 shadow-[0_0_12px_rgba(225,29,67,0.15)]">
@@ -124,6 +177,48 @@ export const CatalogPage: React.FC<CatalogPageProps> = ({
             Return Empty Box for ₹250 Refund
           </button>
         </div>
+
+        {/* Sorting, Price Budget Filters & Results Count Bar (Module 8) */}
+        <div className="bg-white dark:bg-slate-900 p-3 rounded-2xl border border-gray-200 dark:border-slate-800 shadow-2xs flex flex-wrap items-center justify-between gap-3 text-xs">
+          {/* Price Budget Pills */}
+          <div className="flex items-center gap-1.5 overflow-x-auto">
+            <span className="text-gray-400 font-bold text-[11px] mr-1 hidden sm:inline">Budget:</span>
+            {[
+              { id: 'all', label: 'All Prices' },
+              { id: 'under300', label: 'Under ₹300' },
+              { id: 'under500', label: 'Under ₹500' },
+              { id: 'above500', label: '₹500+' }
+            ].map(b => (
+              <button
+                key={b.id}
+                onClick={() => setPriceBudget(b.id as any)}
+                className={`px-3 py-1 rounded-xl font-bold text-xs cursor-pointer transition whitespace-nowrap ${
+                  priceBudget === b.id
+                    ? 'bg-[#d11243] text-white shadow-2xs'
+                    : 'bg-gray-100 dark:bg-slate-800 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-slate-700'
+                }`}
+              >
+                {b.label}
+              </button>
+            ))}
+          </div>
+
+          {/* Sort Selector */}
+          <div className="flex items-center gap-2 ml-auto">
+            <ArrowUpDown className="w-3.5 h-3.5 text-gray-400" />
+            <span className="text-gray-500 dark:text-gray-400 font-semibold text-[11px]">Sort:</span>
+            <select
+              value={sortBy}
+              onChange={(e) => setSortBy(e.target.value as any)}
+              className="px-2.5 py-1 rounded-xl bg-gray-100 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 text-gray-800 dark:text-gray-200 font-bold text-xs focus:outline-none focus:border-[#d11243] cursor-pointer"
+            >
+              <option value="featured">Featured Fresh Cuts</option>
+              <option value="price-asc">Price: Low to High</option>
+              <option value="price-desc">Price: High to Low</option>
+              <option value="discount">Highest Discount</option>
+            </select>
+          </div>
+        </div>
       </div>
 
       {/* Products Grid */}
@@ -138,15 +233,16 @@ export const CatalogPage: React.FC<CatalogPageProps> = ({
             </div>
           ))}
         </div>
-      ) : products.length === 0 ? (
+      ) : sortedProducts.length === 0 ? (
         <div className="p-12 text-center bg-white dark:bg-slate-900 rounded-2xl border border-gray-200 dark:border-slate-800 text-xs text-gray-500 dark:text-gray-400">
-          No cuts match your current filter.
+          No cuts match your selected filters.
         </div>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
-          {products.map((product) => {
+          {sortedProducts.map((product) => {
             const qty = getItemQuantity(product.id);
             const discountPct = product.mrp ? Math.round(((product.mrp - product.price) / product.mrp) * 100) : 0;
+            const isWishlisted = wishlist.includes(product.id);
 
             return (
               <div
@@ -171,6 +267,15 @@ export const CatalogPage: React.FC<CatalogPageProps> = ({
                     <Zap className="w-2.5 h-2.5 fill-amber-500 text-amber-500" />
                     <span>{product.eta || '⚡ Today in 90 mins'}</span>
                   </div>
+
+                  {/* Wishlist Heart Button */}
+                  <button
+                    onClick={(e) => toggleWishlist(product.id, product.name, e)}
+                    className="absolute top-2 right-2 w-7 h-7 rounded-full bg-white/90 dark:bg-slate-900/90 backdrop-blur-xs flex items-center justify-center text-gray-600 dark:text-gray-300 hover:text-[#d11243] dark:hover:text-rose-400 shadow-2xs transition z-10 cursor-pointer"
+                    title={isWishlisted ? 'Remove from Wishlist' : 'Add to Wishlist'}
+                  >
+                    <Heart className={`w-3.5 h-3.5 ${isWishlisted ? 'fill-[#d11243] text-[#d11243]' : ''}`} />
+                  </button>
 
                   {/* Net weight tag */}
                   {product.netWeight && (
@@ -239,6 +344,7 @@ export const CatalogPage: React.FC<CatalogPageProps> = ({
                           onClick={(e) => {
                             e.stopPropagation();
                             addItem(product, 1);
+                            showToast(`Added 1x ${product.name} to Cart`);
                           }}
                           className="px-3.5 py-1.5 rounded-lg bg-[#d11243] hover:bg-[#b80f3b] text-white font-bold text-xs uppercase cursor-pointer shadow-2xs transition"
                         >
@@ -251,7 +357,7 @@ export const CatalogPage: React.FC<CatalogPageProps> = ({
                               e.stopPropagation();
                               updateQuantity(product.id, qty - 1);
                             }}
-                            className="p-1 text-[#d11243] hover:bg-rose-50 dark:hover:bg-rose-950/60 rounded-l"
+                            className="p-1 text-[#d11243] hover:bg-rose-50 dark:hover:bg-rose-950/60 rounded-l cursor-pointer"
                           >
                             <Minus className="w-3.5 h-3.5" />
                           </button>
@@ -261,7 +367,7 @@ export const CatalogPage: React.FC<CatalogPageProps> = ({
                               e.stopPropagation();
                               updateQuantity(product.id, qty + 1);
                             }}
-                            className="p-1 text-[#d11243] hover:bg-rose-50 dark:hover:bg-rose-950/60 rounded-r"
+                            className="p-1 text-[#d11243] hover:bg-rose-50 dark:hover:bg-rose-950/60 rounded-r cursor-pointer"
                           >
                             <Plus className="w-3.5 h-3.5" />
                           </button>

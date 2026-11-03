@@ -164,14 +164,14 @@
       "catchDate": "Daily Morning Farm Batch",
       "origin": "Coimbatore Bio-Secured Poultry Farm",
       "cutStyle": "Boneless Breast Fillet",
-      "stock": 75,
+      "stock": 71,
       "rating": 4.8,
       "reviewsCount": 120,
       "badge": "",
       "imageUrl": "/images/products/prod_5.jpg",
       "__v": 0,
       "createdAt": "2026-10-30T19:00:48.193Z",
-      "updatedAt": "2026-10-30T19:00:48.193Z",
+      "updatedAt": "2026-11-03T07:43:50.619Z",
       "image": "/images/products/prod_5.jpg"
     },
     {
@@ -261,6 +261,20 @@
   ],
   "coolers": [
     {
+      "id": "BOX-BLR-643",
+      "qrCode": "SAGAR-BOX-BLR-643",
+      "model": "ThermalVault 18L - Reusable EPP Cold-Gel Box",
+      "status": "assigned",
+      "currentOrderId": "GOM-623840",
+      "currentUserId": "guest_0c97693c",
+      "currentUserName": "Customer",
+      "cyclesUsed": 1,
+      "lastSanitizedDate": "2026-11-03",
+      "depositAmount": 250,
+      "maxHoldingHours": 36,
+      "assignedHub": "Bengaluru Regional Hub Depot"
+    },
+    {
       "_id": "6ae4e9c6d3dfa1be68125774",
       "id": "BOX-BLR-983",
       "qrCode": "SAGAR-BOX-BLR-983",
@@ -280,6 +294,127 @@
     }
   ],
   "orders": [
+    {
+      "id": "GOM-623840",
+      "orderNumber": "GOM-623840",
+      "userId": "guest_0c97693c",
+      "customerName": "Customer",
+      "customerEmail": "customer@gomeat.in",
+      "customerPhone": "+91 98765 43210",
+      "deliveryAddress": {
+        "fullName": "Test Cancel",
+        "mobile": "9999999999",
+        "email": "cancel@example.com",
+        "line1": "Flat 12",
+        "city": "Bengaluru",
+        "pincode": "560001"
+      },
+      "city": "Bengaluru",
+      "items": [
+        {
+          "productId": "prod_6",
+          "name": "Country Chicken / Nati Koli (Curry Cut)",
+          "price": 389,
+          "quantity": 1,
+          "unit": "600g",
+          "netWeight": "550g",
+          "cutStyle": "Medium Bone-In Curry Pieces",
+          "image": "/images/products/prod_6.jpg"
+        }
+      ],
+      "subtotal": 389,
+      "discountAmount": 0,
+      "couponCode": null,
+      "coolerDeposit": 250,
+      "shippingFee": 40,
+      "total": 679,
+      "totalAmount": 679,
+      "status": "Blast-Chilling",
+      "orderStatus": "PENDING",
+      "paymentMethod": "razorpay",
+      "paymentStatus": "PENDING",
+      "razorpayOrderId": "order_test_e83739af38bd42",
+      "razorpayPaymentId": "",
+      "razorpaySignature": "",
+      "coolerId": "BOX-BLR-643",
+      "coolerModel": "ThermalVault 18L - Reusable EPP Cold-Gel Box",
+      "coldBoxRefundStatus": "NOT_REQUESTED",
+      "liveTemp": 0.8,
+      "deliveryExecutive": "Sunil Gowda (EV Delivery #14)",
+      "tempLog": [
+        {
+          "time": "13:15",
+          "temp": 0.8,
+          "event": "Order Confirmed. Chilled cut locked inside BOX-BLR-643."
+        }
+      ],
+      "deliverySlot": "Today, Express in 90 Mins",
+      "trackingCode": "SAGAR-TRK-8538",
+      "createdAt": "2026-11-03T07:45:57.389Z",
+      "deliveryNotes": ""
+    },
+    {
+      "id": "GOM-280363",
+      "orderNumber": "GOM-280363",
+      "userId": "guest_e6154139",
+      "customerName": "Customer",
+      "customerEmail": "customer@gomeat.in",
+      "customerPhone": "+91 98765 43210",
+      "deliveryAddress": {
+        "fullName": "Dinesh Kandukuri",
+        "mobile": "9741288301",
+        "email": "dinesh@example.com",
+        "line1": "Flat 402, Alpine Eco",
+        "city": "Bengaluru",
+        "pincode": "560037"
+      },
+      "city": "Bengaluru",
+      "items": [
+        {
+          "productId": "prod_5",
+          "name": "Fresh Chicken Breast (Boneless Fillets)",
+          "price": 289,
+          "quantity": 2,
+          "unit": "450g",
+          "netWeight": "450g",
+          "cutStyle": "Boneless Breast Fillet",
+          "image": "/images/products/prod_5.jpg"
+        }
+      ],
+      "subtotal": 578,
+      "discountAmount": 0,
+      "couponCode": null,
+      "coolerDeposit": 250,
+      "shippingFee": 40,
+      "total": 868,
+      "totalAmount": 868,
+      "status": "Order Confirmed",
+      "orderStatus": "CONFIRMED",
+      "paymentMethod": "razorpay",
+      "paymentStatus": "PAID",
+      "razorpayOrderId": "order_test_b5d671d7000740",
+      "razorpayPaymentId": "pay_test_984321",
+      "razorpaySignature": "test_signature",
+      "coolerId": "BOX-BLR-293",
+      "coolerModel": "ThermalVault 18L - Reusable EPP Cold-Gel Box",
+      "coldBoxRefundStatus": "REFUNDED",
+      "liveTemp": 0.8,
+      "deliveryExecutive": "Sunil Gowda (EV Delivery #14)",
+      "tempLog": [
+        {
+          "time": "13:14",
+          "temp": 0.8,
+          "event": "Payment of ₹868 received via Razorpay (pay_test_984321). Order confirmed."
+        }
+      ],
+      "deliverySlot": "Today, Express in 90 Mins",
+      "trackingCode": "SAGAR-TRK-4979",
+      "createdAt": "2026-11-03T07:43:27.579Z",
+      "deliveryNotes": "",
+      "refundId": "rfnd_df866178967e41",
+      "refundTxnId": "rfnd_df866178967e41",
+      "refundProcessedAt": "2026-11-03T07:45:15.478Z"
+    },
     {
       "id": "ORD-1484",
       "userId": "usr_customer",

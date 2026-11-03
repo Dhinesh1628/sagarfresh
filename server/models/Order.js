@@ -5,46 +5,110 @@ const orderItemSchema = new mongoose.Schema({
   name: { type: String, required: true },
   price: { type: Number, required: true },
   quantity: { type: Number, required: true },
-  cutStyle: { type: String },
-  unit: { type: String },
-  imageUrl: { type: String }
+  cutStyle: { type: String, default: 'Standard Curry Cut' },
+  unit: { type: String, default: '500g' },
+  netWeight: { type: String, default: '450g' },
+  imageUrl: { type: String, default: '' },
+  image: { type: String, default: '' }
 }, { _id: false });
 
 const tempLogSchema = new mongoose.Schema({
   time: { type: String, required: true },
-  temp: { type: Number, required: true }
+  temp: { type: Number, required: true },
+  event: { type: String, default: '' }
 }, { _id: false });
 
 const orderSchema = new mongoose.Schema({
   id: { type: String, required: true, unique: true },
+  orderNumber: { type: String, required: true, unique: true },
   userId: { type: String, required: true },
-  userName: { type: String, required: true },
-  userPhone: { type: String, required: true },
+  customerName: { type: String, required: true },
+  customerEmail: { type: String, required: true },
+  customerPhone: { type: String, required: true },
   items: [orderItemSchema],
+  
+  // Pricing breakdown
   subtotal: { type: Number, required: true },
+  discountAmount: { type: Number, default: 0 },
+  couponCode: { type: String, default: null },
   coolerDeposit: { type: Number, default: 250 },
   deliveryFee: { type: Number, default: 0 },
+  total: { type: Number, required: true },
   totalAmount: { type: Number, required: true },
-  status: {
-    type: String,
-    enum: ['Blast-Chilling', 'Packed in Reusable Cooler', 'Out for Delivery (Chilled)', 'Delivered', 'Cancelled'],
-    default: 'Blast-Chilling'
-  },
+
+  // Delivery & Address details
   deliveryAddress: { type: String, required: true },
-  deliverySlot: { type: String, default: 'Within 90 Mins' },
-  etaMinutes: { type: Number, default: 35 },
-  paymentMethod: { type: String, default: 'UPI' },
-  upiTransactionId: { type: String, default: '' },
+  addressDetails: {
+    fullName: { type: String },
+    phone: { type: String },
+    email: { type: String },
+    flatNo: { type: String },
+    building: { type: String },
+    street: { type: String },
+    city: { type: String, default: 'Bengaluru' },
+    state: { type: String, default: 'Karnataka' },
+    pincode: { type: String },
+    instructions: { type: String }
+  },
+  deliverySlot: { type: String, default: '⚡ Express Delivery in 90 Mins' },
+  city: { type: String, default: 'Bengaluru' },
+  deliveryNotes: { type: String, default: '' },
+
+  // Order Pipeline Status (Independent from Payment Status)
+  orderStatus: {
+    type: String,
+    enum: [
+      'PENDING',
+      'CONFIRMED',
+      'PREPARING',
+      'QUALITY_CHECK',
+      'PACKED',
+      'OUT_FOR_DELIVERY',
+      'DELIVERED',
+      'CANCELLED'
+    ],
+    default: 'CONFIRMED'
+  },
+  // Legacy status string for backward compatibility with existing views
+  status: { type: String, default: 'Order Confirmed' },
+
+  // Payment Tracking
+  paymentMethod: { type: String, enum: ['razorpay', 'cod', 'UPI (Google Pay / PhonePe)', 'Credit / Debit Card'], default: 'razorpay' },
+  paymentStatus: {
+    type: String,
+    enum: ['PENDING', 'PAID', 'FAILED', 'REFUNDED'],
+    default: 'PENDING'
+  },
+  razorpayOrderId: { type: String, default: '' },
+  razorpayPaymentId: { type: String, default: '' },
+  razorpaySignature: { type: String, default: '' },
+  paymentDetails: {
+    method: { type: String },
+    bank: { type: String },
+    wallet: { type: String },
+    vpa: { type: String },
+    paidAt: { type: Date }
+  },
+
+  // Cold-Box & Deposit Management
   coolerId: { type: String, required: true },
-  coolerRfid: { type: String, default: '' },
-  hubOrigin: { type: String, default: 'GoMeat Central Cold Hub, Mahadevapura' },
-  currentTemp: { type: Number, default: 1.8 },
+  coolerModel: { type: String, default: 'ThermalVault 18L - Reusable EPP Cold-Gel Box' },
+  coldBoxRefundStatus: {
+    type: String,
+    enum: ['NOT_REQUESTED', 'REQUESTED', 'APPROVED', 'REFUND_PROCESSING', 'REFUNDED', 'REJECTED'],
+    default: 'NOT_REQUESTED'
+  },
+  refundId: { type: String, default: '' },
+  refundTxnId: { type: String, default: '' },
+  refundProcessedAt: { type: Date },
+
+  // Cold-Chain Telemetry
+  liveTemp: { type: Number, default: 1.8 },
+  tempLog: [tempLogSchema],
   temperatureLog: [tempLogSchema],
-  deliveryPartner: {
-    name: { type: String, default: 'Raghavendra M.' },
-    phone: { type: String, default: '+91 98440 22319' },
-    vehicle: { type: String, default: 'EV Insulated Delivery Pod' }
-  }
+  trackingCode: { type: String, default: '' },
+  etaMinutes: { type: Number, default: 35 },
+  deliveryExecutive: { type: String, default: 'Sunil Gowda (EV Delivery #14)' }
 }, {
   timestamps: true,
   strict: false

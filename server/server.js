@@ -8,6 +8,7 @@ import { fileURLToPath } from 'url';
 import { db } from './db.js';
 import { connectMongoDB, getMongoStatus } from './mongo.js';
 import whatsappWebhookRouter from './routes/whatsappWebhook.js';
+import paymentsRouter from './routes/payments.js';
 import { handleGoogleAuth } from './routes/googleAuth.js';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -25,7 +26,15 @@ connectMongoDB().then(connected => {
 });
 
 app.use(cors());
-app.use(express.json());
+// Raw body retention for cryptographic Webhook signature verification
+app.use(express.json({
+  verify: (req, res, buf) => {
+    req.rawBody = buf.toString();
+  }
+}));
+
+// Razorpay Payments Router
+app.use('/api/payments', paymentsRouter);
 
 // WhatsApp Cloud API Webhook & AI Chatbot Router
 app.use('/api', whatsappWebhookRouter);
@@ -174,6 +183,25 @@ app.get('/api/auth/me', authenticate, (req, res) => {
     activeCoolersCount: activeCoolers.length,
     activeCoolers
   });
+});
+
+app.patch('/api/auth/profile', authenticate, (req, res) => {
+  const { name, phone, address, city, upiId, savedAddresses } = req.body;
+  const updates = {};
+  if (name) updates.name = name;
+  if (phone) updates.phone = phone;
+  if (address) updates.address = address;
+  if (city) updates.city = city;
+  if (upiId) updates.upiId = upiId;
+  if (savedAddresses) updates.savedAddresses = savedAddresses;
+
+  const updated = db.update('users', req.user.id, updates);
+  if (!updated) {
+    return res.status(404).json({ error: 'User not found' });
+  }
+
+  const { password: _, ...safeUser } = updated;
+  res.json(safeUser);
 });
 
 // ==========================================
@@ -404,7 +432,7 @@ app.get('/api/orders/:id', authenticate, (req, res) => {
 });
 
 app.patch('/api/orders/:id/status', authenticate, requireAdmin, (req, res) => {
-  const { status, note } = req.body;
+  const { status, orderStatus, note } = req.body;
   const order = db.findById('orders', req.params.id);
   if (!order) {
     return res.status(404).json({ error: 'Order not found' });
@@ -413,13 +441,23 @@ app.patch('/api/orders/:id/status', authenticate, requireAdmin, (req, res) => {
   const now = new Date();
   const timeStr = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
 
+  const resolvedOrderStatus = orderStatus || (
+    status === 'Delivered' ? 'DELIVERED' :
+    status === 'Out for Delivery' ? 'OUT_FOR_DELIVERY' :
+    status === 'Packed' || status === 'Cold Box Packed' ? 'PACKED' :
+    status === 'Quality Check' ? 'QUALITY_CHECK' :
+    status === 'Preparing' ? 'PREPARING' :
+    status === 'Cancelled' ? 'CANCELLED' :
+    status === 'Confirmed' ? 'CONFIRMED' : order.orderStatus
+  );
+
   let newTemp = order.liveTemp;
-  if (status === 'Out for Delivery') {
+  if (resolvedOrderStatus === 'OUT_FOR_DELIVERY' || status === 'Out for Delivery') {
     newTemp = 1.2;
     if (order.coolerId) {
       db.update('coolers', order.coolerId, { status: 'in_transit' });
     }
-  } else if (status === 'Delivered') {
+  } else if (resolvedOrderStatus === 'DELIVERED' || status === 'Delivered') {
     newTemp = 1.8;
     if (order.coolerId) {
       db.update('coolers', order.coolerId, { status: 'with_customer' });
@@ -431,17 +469,62 @@ app.patch('/api/orders/:id/status', authenticate, requireAdmin, (req, res) => {
     {
       time: timeStr,
       temp: newTemp,
-      event: note || `Order status updated to: ${status}`
+      event: note || `Order status updated to: ${status || resolvedOrderStatus}`
     }
   ];
 
   const updatedOrder = db.update('orders', order.id, {
-    status,
+    status: status || resolvedOrderStatus,
+    orderStatus: resolvedOrderStatus,
     liveTemp: newTemp,
     tempLog: updatedLog
   });
 
   res.json(updatedOrder);
+});
+
+// Customer Order Cancellation (Only allowed before order is PACKED)
+app.post('/api/orders/:id/cancel', authenticate, (req, res) => {
+  const order = db.findById('orders', req.params.id);
+  if (!order) {
+    return res.status(404).json({ error: 'Order not found' });
+  }
+
+  if (req.user.role !== 'admin' && order.userId !== req.user.id) {
+    return res.status(403).json({ error: 'Access denied' });
+  }
+
+  const nonCancellable = ['PACKED', 'OUT_FOR_DELIVERY', 'DELIVERED', 'CANCELLED'];
+  if (nonCancellable.includes(order.orderStatus)) {
+    return res.status(400).json({ 
+      error: `Order cannot be cancelled in '${order.orderStatus}' stage. Please contact concierge support.` 
+    });
+  }
+
+  // Restore inventory
+  for (const item of order.items) {
+    const prod = db.findById('products', item.productId);
+    if (prod) {
+      db.update('products', prod.id, { stock: prod.stock + item.quantity });
+    }
+  }
+
+  // Release cooler
+  if (order.coolerId) {
+    db.update('coolers', order.coolerId, {
+      status: 'available',
+      currentOrderId: null,
+      currentUserId: null
+    });
+  }
+
+  const updated = db.update('orders', order.id, {
+    orderStatus: 'CANCELLED',
+    status: 'Cancelled',
+    paymentStatus: order.paymentStatus === 'PAID' ? 'REFUND_PENDING' : order.paymentStatus
+  });
+
+  res.json({ success: true, message: 'Order cancelled successfully', order: updated });
 });
 
 app.post('/api/orders/:id/simulate-temp', authenticate, (req, res) => {

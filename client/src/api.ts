@@ -129,6 +129,95 @@ export const api = {
     if (!res.ok) throw new Error('Failed to delete product');
   },
 
+  // Payments & Razorpay
+  async createPaymentOrder(orderData: {
+    items: { productId: string; quantity: number; selectedCutStyle?: string }[];
+    deliveryAddress?: string;
+    addressDetails?: any;
+    deliverySlot?: string;
+    deliveryNotes?: string;
+    paymentMethod?: 'razorpay' | 'cod';
+    city?: string;
+    couponCode?: string | null;
+    couponDiscount?: number;
+  }) {
+    const res = await fetch(`${API_BASE}/payments/create-order`, {
+      method: 'POST',
+      headers: getHeaders(),
+      body: JSON.stringify(orderData)
+    });
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      throw new Error(err.error || 'Failed to initialize payment');
+    }
+    return res.json();
+  },
+
+  async verifyPayment(verificationData: {
+    razorpay_order_id: string;
+    razorpay_payment_id: string;
+    razorpay_signature?: string;
+    orderId: string;
+    isTestSimulation?: boolean;
+  }): Promise<{ success: boolean; message: string; order: Order }> {
+    const res = await fetch(`${API_BASE}/payments/verify`, {
+      method: 'POST',
+      headers: getHeaders(),
+      body: JSON.stringify(verificationData)
+    });
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      throw new Error(err.error || 'Payment signature verification failed');
+    }
+    return res.json();
+  },
+
+  async getPaymentStatus(orderId: string) {
+    const res = await fetch(`${API_BASE}/payments/status/${orderId}`, {
+      headers: getHeaders()
+    });
+    if (!res.ok) throw new Error('Failed to fetch payment status');
+    return res.json();
+  },
+
+  async refundColdBox(orderId: string, notes?: string) {
+    const res = await fetch(`${API_BASE}/payments/refund-coldbox`, {
+      method: 'POST',
+      headers: getHeaders(),
+      body: JSON.stringify({ orderId, notes })
+    });
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      throw new Error(err.error || 'Cold-box refund failed');
+    }
+    return res.json();
+  },
+
+  async cancelOrder(orderId: string): Promise<{ success: boolean; message: string; order: Order }> {
+    const res = await fetch(`${API_BASE}/orders/${orderId}/cancel`, {
+      method: 'POST',
+      headers: getHeaders()
+    });
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      throw new Error(err.error || 'Failed to cancel order');
+    }
+    return res.json();
+  },
+
+  async updateProfile(profileData: Partial<User>): Promise<User> {
+    const res = await fetch(`${API_BASE}/auth/profile`, {
+      method: 'PATCH',
+      headers: getHeaders(),
+      body: JSON.stringify(profileData)
+    });
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      throw new Error(err.error || 'Failed to update profile');
+    }
+    return res.json();
+  },
+
   // Orders
   async createOrder(orderData: {
     items: { productId: string; quantity: number; selectedCutStyle?: string }[];

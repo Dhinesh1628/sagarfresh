@@ -5,6 +5,7 @@ import { CartProvider, useCart } from './context/CartContext';
 import { Navbar } from './components/Navbar';
 import { CatalogPage } from './pages/CatalogPage';
 import { OrderTrackingPage } from './pages/OrderTrackingPage';
+import { CustomerDashboardPage } from './pages/CustomerDashboardPage';
 import { CoolerReturnsPage } from './pages/CoolerReturnsPage';
 import { AdminDashboardPage } from './pages/AdminDashboardPage';
 import { CartDrawer } from './components/CartDrawer';
@@ -18,7 +19,7 @@ import type { Order } from './types';
 const MainApp: React.FC = () => {
   const { user } = useAuth();
   const { isCartOpen, setIsCartOpen } = useCart();
-  const [currentTab, setCurrentTab] = useState<'catalog' | 'tracking' | 'coolers' | 'admin'>('catalog');
+  const [currentTab, setCurrentTab] = useState<'catalog' | 'tracking' | 'dashboard' | 'coolers' | 'admin'>('catalog');
   const [selectedCity, setSelectedCity] = useState('Bengaluru');
   const [searchQuery, setSearchQuery] = useState('');
   
@@ -65,9 +66,9 @@ const MainApp: React.FC = () => {
         return;
       }
 
-      // Step 2: If on a sub-tab (Live Tracking, Coolers, Hub Ops), return to Catalog homepage
+      // Step 2: If on a sub-tab (Live Tracking, Dashboard, Coolers, Hub Ops), return to Catalog homepage
       const hash = window.location.hash.replace('#', '') as any;
-      if (hash && ['catalog', 'tracking', 'coolers', 'admin'].includes(hash)) {
+      if (hash && ['catalog', 'tracking', 'dashboard', 'coolers', 'admin'].includes(hash)) {
         setCurrentTab(hash);
       } else {
         setCurrentTab('catalog');
@@ -79,7 +80,7 @@ const MainApp: React.FC = () => {
   }, [isAiButcherOpen, isAuthOpen, isCheckoutOpen, isConfirmationOpen, legalModalType, isCartOpen, currentTab, setIsCartOpen]);
 
   // Tab switching with history push
-  const handleTabChange = (tab: 'catalog' | 'tracking' | 'coolers' | 'admin') => {
+  const handleTabChange = (tab: 'catalog' | 'tracking' | 'dashboard' | 'coolers' | 'admin') => {
     if (tab === currentTab) return;
     window.history.pushState({ type: 'tab', tab }, '', tab === 'catalog' ? '/' : `#${tab}`);
     setCurrentTab(tab);
@@ -169,6 +170,30 @@ const MainApp: React.FC = () => {
               else handleTabChange('coolers');
             }}
           />
+        )}
+
+        {currentTab === 'dashboard' && (
+          user ? (
+            <CustomerDashboardPage 
+              onNavigateToTracking={(orderId) => {
+                handleTabChange('tracking');
+              }}
+              onNavigateToCatalog={() => {
+                handleTabChange('catalog');
+              }}
+            />
+          ) : (
+            <div className="bg-white dark:bg-slate-900 rounded-2xl border border-gray-200 dark:border-slate-800 p-8 text-center max-w-md mx-auto my-12 space-y-3">
+              <h3 className="font-bold text-gray-900 dark:text-white text-sm">Please Sign In to Access Customer Dashboard</h3>
+              <p className="text-xs text-gray-500 dark:text-gray-400">View previous orders, track live parcels, download invoices, and manage cold-box refunds.</p>
+              <button
+                onClick={() => handleOpenAuth('customer')}
+                className="px-4 py-2 bg-[#d11243] hover:bg-[#b80f3b] text-white rounded-lg font-bold text-xs cursor-pointer shadow-xs"
+              >
+                Sign In to Dashboard
+              </button>
+            </div>
+          )
         )}
 
         {currentTab === 'coolers' && (

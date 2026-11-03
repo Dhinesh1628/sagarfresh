@@ -10,14 +10,17 @@ import {
   MessageSquare, 
   RotateCcw, 
   Clock, 
-  Navigation, 
   Package, 
   Activity, 
-  ChevronRight,
-  Sparkles
+  AlertCircle,
+  Truck,
+  Box,
+  CreditCard,
+  FileText
 } from 'lucide-react';
 import type { Order } from '../types';
 import { api } from '../api';
+import { generateAndPrintInvoice } from '../utils/invoiceGenerator';
 
 interface OrderTrackingPageProps {
   onNavigateToReturns: () => void;
@@ -29,12 +32,12 @@ export const OrderTrackingPage: React.FC<OrderTrackingPageProps> = ({ onNavigate
   const [loading, setLoading] = useState(true);
   const [simulatingSensor, setSimulatingSensor] = useState(false);
   const [liveTemp, setLiveTemp] = useState<number>(2.3);
-  const [riderProgress, setRiderProgress] = useState<number>(68); // percentage along route
   const [isDemoOrder, setIsDemoOrder] = useState<boolean>(false);
 
-  // Default Demo Order if no real orders exist yet (allows first-time users to explore)
+  // Fallback demo order for previewing when database has 0 customer orders
   const demoOrder: Order = {
     id: 'ORD-84920',
+    orderNumber: 'GM-20261102-84920',
     userId: 'demo-user',
     customerName: 'Dinesh Kandukuri',
     customerEmail: 'dinesh@example.com',
@@ -69,7 +72,11 @@ export const OrderTrackingPage: React.FC<OrderTrackingPageProps> = ({ onNavigate
     coolerDeposit: 250,
     shippingFee: 0,
     total: 1247,
+    orderStatus: 'OUT_FOR_DELIVERY',
     status: 'Out for Delivery',
+    paymentStatus: 'PAID',
+    paymentMethod: 'Razorpay Online (UPI)',
+    razorpayPaymentId: 'pay_P1r9demo84920',
     coolerId: 'BOX-BLR-412',
     coolerModel: 'ThermalVault 18L - Reusable EPP Cold-Gel Box',
     liveTemp: 2.3,
@@ -82,7 +89,6 @@ export const OrderTrackingPage: React.FC<OrderTrackingPageProps> = ({ onNavigate
     ],
     deliverySlot: '⚡ Express Delivery in 90 Mins (Live EV Courier)',
     trackingCode: 'SAGAR-TRK-84920',
-    paymentMethod: 'UPI (Google Pay)',
     createdAt: new Date().toISOString(),
     deliveryNotes: 'Leave with building security or ring Flat 402 doorbell.'
   };
@@ -97,7 +103,6 @@ export const OrderTrackingPage: React.FC<OrderTrackingPageProps> = ({ onNavigate
         setLiveTemp(data[0].liveTemp || 2.1);
         setIsDemoOrder(false);
       } else {
-        // Fallback to rich interactive demo order
         setOrders([demoOrder]);
         setSelectedOrder(demoOrder);
         setLiveTemp(demoOrder.liveTemp);
@@ -123,11 +128,9 @@ export const OrderTrackingPage: React.FC<OrderTrackingPageProps> = ({ onNavigate
     setSimulatingSensor(true);
     try {
       if (isDemoOrder || !selectedOrder) {
-        // Local simulation jitter between 1.4°C and 2.9°C
         setTimeout(() => {
           const newT = Number((1.5 + Math.random() * 1.4).toFixed(1));
           setLiveTemp(newT);
-          setRiderProgress(prev => Math.min(95, prev + 6));
           if (selectedOrder) {
             const now = new Date();
             const timeStr = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')} ${now.getHours() >= 12 ? 'PM' : 'AM'}`;
@@ -156,43 +159,153 @@ export const OrderTrackingPage: React.FC<OrderTrackingPageProps> = ({ onNavigate
     }
   };
 
-  const stages = [
-    { title: 'Order Confirmed', time: '07:15 AM', desc: 'Precision cut trimmed & weighed' },
-    { title: 'Cold Box Packed', time: '07:30 AM', desc: 'Packed at 0.8°C with gel ice' },
-    { title: 'Out for Delivery', time: '07:45 AM', desc: 'EV courier on road (In Transit)' },
-    { title: 'Delivered', time: 'ETA 08:25 AM', desc: 'Handover & box verification' }
+  // Module 5 required exact 6-stage visual pipeline:
+  // Order Confirmed -> Preparing Your Order -> Quality Check -> Packed in Cold Box -> Out for Delivery -> Delivered
+  const timelineStages = [
+    { 
+      key: 'CONFIRMED', 
+      title: 'Order Confirmed', 
+      timeEst: '0 - 10 mins',
+      desc: 'Order verified by hub dispatcher and queued for custom butchery.' 
+    },
+    { 
+      key: 'PREPARING', 
+      title: 'Preparing Your Order', 
+      timeEst: '10 - 25 mins',
+      desc: 'Master butchers precision trimming, portioning & vacuum-sealing fresh cuts.' 
+    },
+    { 
+      key: 'QUALITY_CHECK', 
+      title: 'Quality Check', 
+      timeEst: '25 - 35 mins',
+      desc: 'Certified 150-point FSSAI inspection, digital weigh-in & 0°C temperature check.' 
+    },
+    { 
+      key: 'PACKED', 
+      title: 'Packed in Cold Box', 
+      timeEst: '35 - 50 mins',
+      desc: 'Packed in sanitized ThermalVault™ EPP cold box with frozen food-grade ice gels.' 
+    },
+    { 
+      key: 'OUT_FOR_DELIVERY', 
+      title: 'Out for Delivery', 
+      timeEst: '50 - 75 mins',
+      desc: 'Assigned to EV cold-chain partner heading toward your delivery address.' 
+    },
+    { 
+      key: 'DELIVERED', 
+      title: 'Delivered', 
+      timeEst: 'Within 90 mins',
+      desc: 'Delivered cold & fresh to your doorstep. ₹250 refundable box deposit logged.' 
+    }
   ];
 
   const currentOrder = selectedOrder || demoOrder;
-  const currentStageIndex = currentOrder.status === 'Delivered' 
-    ? 3 
-    : currentOrder.status === 'Out for Delivery' 
-    ? 2 
-    : 1;
+
+  const getStageIndex = (order: Order): number => {
+    const rawStatus = (order.orderStatus || order.status || '').toUpperCase().replace(/[\s-]/g, '_');
+    if (rawStatus === 'DELIVERED') return 5;
+    if (rawStatus === 'OUT_FOR_DELIVERY') return 4;
+    if (rawStatus === 'PACKED' || rawStatus === 'PACKED_IN_COLD_BOX') return 3;
+    if (rawStatus === 'QUALITY_CHECK') return 2;
+    if (rawStatus === 'PREPARING' || rawStatus === 'PREPARING_YOUR_ORDER') return 1;
+    return 0; // CONFIRMED or PENDING
+  };
+
+  const isCancelled = (currentOrder.orderStatus || currentOrder.status || '').toUpperCase() === 'CANCELLED';
+  const currentStageIndex = isCancelled ? -1 : getStageIndex(currentOrder);
+
+  // Status notification text
+  const getStatusNotification = (order: Order) => {
+    if (isCancelled) {
+      return {
+        badge: 'Order Cancelled',
+        color: 'rose',
+        message: 'This order was cancelled. If paid online, your Razorpay refund of ₹' + order.total + ' will reflect in your account within 3-5 business days.'
+      };
+    }
+    switch (currentStageIndex) {
+      case 0:
+        return {
+          badge: 'Confirmed & Queued',
+          color: 'blue',
+          message: 'Your order has been confirmed. Our Bengaluru fulfillment depot has initiated butchery prep.'
+        };
+      case 1:
+        return {
+          badge: 'In Preparation',
+          color: 'amber',
+          message: 'Master butchers are carving and trimming your fresh cuts to exact specification.'
+        };
+      case 2:
+        return {
+          badge: 'Quality Screening',
+          color: 'amber',
+          message: 'Zero-antibiotic verification, microbial assay & digital temperature audit in progress.'
+        };
+      case 3:
+        return {
+          badge: 'ThermalVault Packed',
+          color: 'emerald',
+          message: 'Sealed inside reusable EPP box at 0.8°C with sub-zero ice gel packs. Digital seal engaged.'
+        };
+      case 4:
+        return {
+          badge: 'On the Way',
+          color: 'emerald',
+          message: 'Courier partner is en route to your doorstep in an insulated EV cold-chain vehicle.'
+        };
+      case 5:
+        return {
+          badge: 'Delivered Fresh',
+          color: 'emerald',
+          message: 'Package delivered! Enjoy your fresh meal. Hand back the box anytime for an instant ₹250 UPI refund.'
+        };
+      default:
+        return {
+          badge: 'Processing',
+          color: 'gray',
+          message: 'Cold chain dispatch is active.'
+        };
+    }
+  };
+
+  const notification = getStatusNotification(currentOrder);
+
+  // Calculate delivery ETA
+  const calculateEta = (createdAt?: string) => {
+    const start = createdAt ? new Date(createdAt) : new Date();
+    const etaDate = new Date(start.getTime() + 90 * 60 * 1000);
+    const hours = etaDate.getHours();
+    const mins = String(etaDate.getMinutes()).padStart(2, '0');
+    const ampm = hours >= 12 ? 'PM' : 'AM';
+    const formattedHours = hours % 12 || 12;
+    return `Today by ${formattedHours}:${mins} ${ampm} (Within 90 mins)`;
+  };
 
   return (
     <div className="space-y-6 pb-20 max-w-6xl mx-auto">
       
       {/* Top Header */}
-      <div className="bg-white dark:bg-slate-900 p-5 rounded-2xl border border-gray-200 dark:border-slate-800 shadow-2xs flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div className="bg-white dark:bg-slate-900 p-5 rounded-3xl border border-gray-200 dark:border-slate-800 shadow-2xs flex flex-col md:flex-row md:items-center justify-between gap-4 transition-colors">
         <div>
           <div className="flex flex-wrap items-center gap-2.5">
             <h1 className="text-lg sm:text-xl font-black text-gray-950 dark:text-white flex items-center gap-2">
-              <Navigation className="w-5 h-5 text-[#d11243] dark:text-rose-500" />
-              <span>Live Cold-Chain Tracking & Map</span>
+              <Truck className="w-5 h-5 text-[#d11243] dark:text-rose-500" />
+              <span>Status-Based Order Tracking & Cold Chain</span>
             </h1>
-            <span className="px-2.5 py-0.5 rounded-full bg-emerald-50 dark:bg-emerald-950/50 text-emerald-800 dark:text-emerald-300 text-[11px] font-black border border-emerald-200 dark:border-emerald-800 flex items-center gap-1">
+            <span className="px-2.5 py-0.5 rounded-full bg-emerald-50 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300 text-[11px] font-black border border-emerald-200 dark:border-emerald-800 flex items-center gap-1">
               <span className="w-2 h-2 rounded-full bg-emerald-500 animate-ping" />
-              <span>0°C - 4°C Active Cold Chain</span>
+              <span>0°C - 4°C Verified FreshChain</span>
             </span>
             {isDemoOrder && (
-              <span className="px-2 py-0.5 rounded-full bg-amber-50 dark:bg-amber-950/50 text-amber-800 dark:text-amber-300 text-[10px] font-bold border border-amber-200 dark:border-amber-800">
-                Interactive Preview Order
+              <span className="px-2 py-0.5 rounded-full bg-amber-50 dark:bg-amber-950/60 text-amber-800 dark:text-amber-300 text-[10px] font-bold border border-amber-200 dark:border-amber-800">
+                Live Interactive Demo
               </span>
             )}
           </div>
           <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-            Real-time IoT core telemetry inside your reusable ThermalVault™ insulated cold box
+            Status-based milestones, verified packaging integrity and live temperature monitoring
           </p>
         </div>
 
@@ -203,7 +316,7 @@ export const OrderTrackingPage: React.FC<OrderTrackingPageProps> = ({ onNavigate
             className="px-3.5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold rounded-xl cursor-pointer flex items-center gap-1.5 transition shadow-xs disabled:opacity-50"
           >
             <Activity className={`w-3.5 h-3.5 ${simulatingSensor ? 'animate-spin' : ''}`} />
-            <span>{simulatingSensor ? 'Reading Sensor...' : 'Ping Cold Probe'}</span>
+            <span>{simulatingSensor ? 'Testing Probe...' : 'Ping Cold Probe'}</span>
           </button>
           
           <button
@@ -216,21 +329,22 @@ export const OrderTrackingPage: React.FC<OrderTrackingPageProps> = ({ onNavigate
         </div>
       </div>
 
-      {/* Main Grid: Orders Selector & Live Tracking Map / Telemetry */}
+      {/* Main Grid: Orders Selector & Detailed Tracking View */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
         
         {/* Left Column: Orders List (Desktop 4 cols) */}
         <div className="lg:col-span-4 space-y-3">
           <div className="flex items-center justify-between">
             <h3 className="text-xs font-black uppercase tracking-wider text-gray-500 dark:text-gray-400">
-              Your Cold Box Orders ({orders.length})
+              Your Orders ({orders.length})
             </h3>
-            <span className="text-[11px] text-emerald-700 dark:text-emerald-400 font-bold">100% Chilled</span>
+            <span className="text-[11px] text-emerald-700 dark:text-emerald-400 font-bold">Cold Chain Protected</span>
           </div>
 
-          <div className="space-y-2.5 max-h-[600px] overflow-y-auto pr-1">
+          <div className="space-y-2.5 max-h-[640px] overflow-y-auto pr-1">
             {orders.map((ord) => {
               const isSelected = currentOrder.id === ord.id;
+              const ordStatus = ord.orderStatus || ord.status || 'PENDING';
               return (
                 <div
                   key={ord.id}
@@ -247,10 +361,12 @@ export const OrderTrackingPage: React.FC<OrderTrackingPageProps> = ({ onNavigate
                   <div className="flex justify-between items-start">
                     <div>
                       <div className="flex items-center gap-1.5">
-                        <span className="font-black text-sm text-gray-950 dark:text-white">#{ord.id}</span>
+                        <span className="font-black text-sm text-gray-950 dark:text-white">
+                          #{ord.orderNumber || ord.id}
+                        </span>
                         {ord.id === 'ORD-84920' && (
                           <span className="px-1.5 py-0.2 bg-amber-100 dark:bg-amber-950/60 text-amber-900 dark:text-amber-300 rounded text-[9px] font-bold border border-amber-200 dark:border-amber-800">
-                            Live Demo
+                            Demo
                           </span>
                         )}
                       </div>
@@ -259,8 +375,14 @@ export const OrderTrackingPage: React.FC<OrderTrackingPageProps> = ({ onNavigate
                       </span>
                     </div>
 
-                    <span className="px-2 py-0.5 rounded-full text-[10px] font-black bg-white dark:bg-slate-800 text-[#d11243] dark:text-rose-400 border border-rose-200 dark:border-rose-900/60 shadow-2xs">
-                      {ord.status}
+                    <span className={`px-2 py-0.5 rounded-full text-[10px] font-black border shadow-2xs ${
+                      ordStatus === 'DELIVERED'
+                        ? 'bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 border-emerald-200 dark:border-emerald-800'
+                        : ordStatus === 'CANCELLED'
+                        ? 'bg-red-50 dark:bg-red-950/60 text-red-700 dark:text-red-300 border-red-200 dark:border-red-800'
+                        : 'bg-rose-50 dark:bg-rose-950/60 text-[#d11243] dark:text-rose-400 border-rose-200 dark:border-rose-900'
+                    }`}>
+                      {ordStatus.replace(/_/g, ' ')}
                     </span>
                   </div>
 
@@ -272,7 +394,7 @@ export const OrderTrackingPage: React.FC<OrderTrackingPageProps> = ({ onNavigate
 
                     <div className="flex items-center gap-1 text-emerald-700 dark:text-emerald-400 font-black">
                       <Thermometer className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" />
-                      <span>{ord.liveTemp}°C (Safe)</span>
+                      <span>{ord.liveTemp || 2.1}°C (Optimal)</span>
                     </div>
                   </div>
                 </div>
@@ -280,145 +402,170 @@ export const OrderTrackingPage: React.FC<OrderTrackingPageProps> = ({ onNavigate
             })}
           </div>
 
-          {/* Cooler Box Return Prompt Card */}
+          {/* Reusable Cold Box System Card */}
           <div className="p-4 bg-sky-50/80 dark:bg-sky-950/40 border border-sky-200 dark:border-sky-800/70 rounded-2xl text-xs space-y-2 shadow-2xs">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-1.5 font-black text-sky-950 dark:text-sky-200">
                 <RotateCcw className="w-4 h-4 text-sky-700 dark:text-sky-400" />
-                <span>₹250 Reusable Box Refund</span>
+                <span>₹250 Refundable Box Deposit</span>
               </div>
               <span className="px-2 py-0.5 rounded bg-emerald-100 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300 text-[10px] font-black border border-emerald-200 dark:border-emerald-800">
-                Active Deposit
+                Safe Deposit
               </span>
             </div>
             <p className="text-[11px] text-sky-900 dark:text-sky-300 leading-relaxed">
-              When empty, return to courier or request a free 1-click doorstep pickup in the app for an instant ₹250 UPI refund.
+              Every GoMeat delivery includes a ₹250 refundable deposit for the sanitized ThermalVault cold box. Return anytime for an instant 100% refund.
             </p>
             <button
               onClick={onNavigateToReturns}
               className="w-full py-2 bg-sky-700 dark:bg-sky-600 hover:bg-sky-800 dark:hover:bg-sky-500 text-white rounded-xl font-bold text-xs cursor-pointer transition shadow-xs"
             >
-              Go to Box Returns &rarr;
+              Manage Box Returns & Refunds &rarr;
             </button>
           </div>
         </div>
 
-        {/* Right Column: Live Map, IoT Telemetry Gauge & Progress (Desktop 8 cols) */}
+        {/* Right Column: Visual Timeline, Status Notifications & Full Order Details */}
         <div className="lg:col-span-8 space-y-5">
           
-          {/* Live Delivery Map Simulator Widget (Figma Live Tracking Visual) */}
-          <div className="bg-white dark:bg-slate-900 rounded-3xl border border-gray-200 dark:border-slate-800 overflow-hidden shadow-sm">
-            <div className="p-4 border-b border-gray-100 dark:border-slate-800 flex flex-wrap items-center justify-between gap-2 bg-gray-50/70 dark:bg-slate-800/60">
-              <div className="flex items-center gap-2">
-                <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-ping" />
-                <span className="text-xs font-black uppercase tracking-wider text-gray-900 dark:text-white">
-                  Live Courier GPS Route
-                </span>
-                <span className="text-gray-300 dark:text-gray-600">•</span>
-                <span className="text-xs font-extrabold text-[#d11243] dark:text-rose-400">
-                  ⚡ Arriving in 22 - 28 Mins
-                </span>
+          {/* Delivery Status Notification Banner */}
+          <div className="p-4 sm:p-5 rounded-3xl bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-800 shadow-sm flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+            <div className="flex items-start gap-3">
+              <div className="w-10 h-10 rounded-2xl bg-rose-50 dark:bg-rose-950/60 border border-rose-200 dark:border-rose-900/60 flex items-center justify-center text-[#d11243] shrink-0 mt-0.5">
+                <Truck className="w-5 h-5" />
               </div>
-              
-              <div className="text-[11px] font-semibold text-gray-500 dark:text-gray-400">
-                Speed: <strong className="text-gray-900 dark:text-white font-mono">28 km/h</strong> (Cold EV Courier)
+              <div>
+                <div className="flex items-center gap-2">
+                  <span className="px-2 py-0.5 rounded-full bg-rose-100 dark:bg-rose-950 text-[#d11243] dark:text-rose-400 font-extrabold text-[10px] uppercase">
+                    {notification.badge}
+                  </span>
+                  <span className="text-xs font-bold text-gray-500 dark:text-gray-400">
+                    Order #{currentOrder.orderNumber || currentOrder.id}
+                  </span>
+                </div>
+                <p className="text-xs font-semibold text-gray-900 dark:text-gray-100 mt-1">
+                  {notification.message}
+                </p>
               </div>
             </div>
 
-            {/* Simulated Live Route Canvas / Visual Graphic */}
-            <div className="relative h-64 sm:h-72 bg-slate-900 dark:bg-slate-950 p-6 flex flex-col justify-between overflow-hidden">
-              {/* Map grid lines background */}
-              <div 
-                className="absolute inset-0 opacity-15"
-                style={{
-                  backgroundImage: 'radial-gradient(#fff 1px, transparent 1px), radial-gradient(#fff 1px, #0f172a 1px)',
-                  backgroundSize: '24px 24px',
-                  backgroundPosition: '0 0, 12px 12px'
-                }}
-              />
-
-              {/* Simulated Road Paths (SVG) */}
-              <svg className="absolute inset-0 w-full h-full" xmlns="http://www.w3.org/2000/svg">
-                {/* Secondary roads */}
-                <path d="M 0,140 Q 200,90 400,160 T 800,100" fill="none" stroke="#334155" strokeWidth="3" opacity="0.4" />
-                <path d="M 100,280 Q 300,180 500,220 T 900,140" fill="none" stroke="#334155" strokeWidth="2" opacity="0.3" />
-                
-                {/* Main active courier delivery route */}
-                <path 
-                  d="M 60,60 C 160,60 220,180 340,180 C 460,180 520,100 680,110 C 760,115 820,190 920,190" 
-                  fill="none" 
-                  stroke="#d11243" 
-                  strokeWidth="5" 
-                  strokeDasharray="8 6"
-                  className="animate-pulse"
-                />
-              </svg>
-
-              {/* Top Depot Marker */}
-              <div className="relative z-10 flex items-center gap-2 self-start bg-slate-800/95 dark:bg-slate-900/95 border border-slate-700 dark:border-slate-800 px-3 py-1.5 rounded-xl shadow-lg backdrop-blur-md">
-                <div className="w-3 h-3 rounded-full bg-rose-500 ring-4 ring-rose-950" />
-                <div>
-                  <span className="text-[10px] text-gray-400 font-bold uppercase block">Depot Hub</span>
-                  <span className="text-xs font-black text-white">Indiranagar Cold Hub Depot #04</span>
-                </div>
-              </div>
-
-              {/* Moving Courier Scooter Icon positioned on the path */}
-              <div 
-                className="absolute z-20 flex flex-col items-center transition-all duration-700"
-                style={{ left: `${riderProgress}%`, top: '42%' }}
-              >
-                <div className="px-2.5 py-1 rounded-lg bg-emerald-500 text-slate-950 font-black text-[10px] shadow-lg flex items-center gap-1 mb-1 animate-bounce">
-                  <Zap className="w-3 h-3 fill-current" />
-                  <span>Ramesh Kumar (1.8 km)</span>
-                </div>
-                <div className="w-10 h-10 rounded-2xl bg-[#d11243] text-white flex items-center justify-center shadow-2xl ring-4 ring-rose-400/30">
-                  <Navigation className="w-5 h-5 fill-current rotate-45" />
-                </div>
-              </div>
-
-              {/* Bottom Customer Destination Marker */}
-              <div className="relative z-10 flex items-center gap-2 self-end bg-slate-800/95 dark:bg-slate-900/95 border border-slate-700 dark:border-slate-800 px-3.5 py-1.5 rounded-xl shadow-lg backdrop-blur-md">
-                <div className="w-3 h-3 rounded-full bg-emerald-400 ring-4 ring-emerald-950 animate-ping" />
-                <div>
-                  <span className="text-[10px] text-gray-400 font-bold uppercase block">Destination</span>
-                  <span className="text-xs font-black text-white">Your Doorstep (Doddanekkundi)</span>
-                </div>
-              </div>
-
-              {/* Bottom Telemetry Floating Pill */}
-              <div className="absolute bottom-3 left-4 z-10 bg-black/80 backdrop-blur-md px-3 py-1.5 rounded-xl border border-white/10 text-white flex items-center gap-3 text-xs">
-                <div className="flex items-center gap-1.5 font-bold text-emerald-400">
-                  <Thermometer className="w-3.5 h-3.5" />
-                  <span>Internal Box: {liveTemp}°C</span>
-                </div>
-                <span className="text-gray-500">|</span>
-                <span className="text-gray-300 font-medium">EPP Ice-Gel Seal Intact</span>
-              </div>
+            <div className="bg-gray-50 dark:bg-slate-800 px-3.5 py-2 rounded-2xl border border-gray-200 dark:border-slate-700 shrink-0 text-right">
+              <span className="text-[10px] text-gray-400 uppercase font-bold block">Estimated Arrival</span>
+              <span className="text-xs font-black text-gray-950 dark:text-white">
+                {calculateEta(currentOrder.createdAt)}
+              </span>
             </div>
           </div>
 
-          {/* High-Tech IoT Cold-Chain Telemetry Card */}
+          {/* Module 5: Exact 6-Stage Visual Timeline */}
+          <div className="bg-white dark:bg-slate-900 p-6 sm:p-7 rounded-3xl border border-gray-200 dark:border-slate-800 shadow-sm space-y-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <h3 className="text-sm font-black text-gray-950 dark:text-white uppercase tracking-wider flex items-center gap-2">
+                  <Clock className="w-4 h-4 text-[#d11243]" />
+                  <span>Order Pipeline Progression</span>
+                </h3>
+                <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
+                  Real-time status updates reflecting verified depot operations
+                </p>
+              </div>
+
+              <button
+                onClick={() => generateAndPrintInvoice(currentOrder)}
+                className="px-3 py-1.5 rounded-xl border border-gray-200 dark:border-slate-700 bg-gray-50 dark:bg-slate-800 text-gray-700 dark:text-gray-200 hover:text-black hover:border-gray-400 font-bold text-xs flex items-center gap-1.5 cursor-pointer shadow-2xs"
+              >
+                <FileText className="w-3.5 h-3.5 text-[#d11243]" />
+                <span>Print Tax Invoice</span>
+              </button>
+            </div>
+
+            {/* Stepper Grid */}
+            <div className="relative">
+              {/* Progress Line */}
+              <div className="hidden sm:block absolute top-5 left-8 right-8 h-1 bg-gray-200 dark:bg-slate-800 -z-0">
+                <div 
+                  className="h-full bg-emerald-500 transition-all duration-500"
+                  style={{
+                    width: isCancelled 
+                      ? '0%' 
+                      : `${Math.min(100, (currentStageIndex / (timelineStages.length - 1)) * 100)}%`
+                  }}
+                />
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-6 gap-4 relative z-10">
+                {timelineStages.map((st, idx) => {
+                  const isPassed = !isCancelled && idx <= currentStageIndex;
+                  const isCurrent = !isCancelled && idx === currentStageIndex;
+
+                  return (
+                    <div key={st.key} className="flex sm:flex-col items-start sm:items-center text-left sm:text-center gap-3 sm:gap-2">
+                      <div className={`w-10 h-10 rounded-full flex items-center justify-center font-black text-xs shrink-0 transition-all ${
+                        isCurrent
+                          ? 'bg-emerald-500 text-slate-950 ring-4 ring-emerald-400/30 shadow-lg scale-110'
+                          : isPassed
+                          ? 'bg-emerald-600 text-white'
+                          : 'bg-gray-100 dark:bg-slate-800 text-gray-400 dark:text-gray-500 border border-gray-200 dark:border-slate-700'
+                      }`}>
+                        {isPassed && !isCurrent ? (
+                          <CheckCircle2 className="w-5 h-5 text-white" />
+                        ) : (
+                          <span>{idx + 1}</span>
+                        )}
+                      </div>
+
+                      <div className="space-y-0.5">
+                        <div className={`text-xs font-black leading-snug ${
+                          isCurrent 
+                            ? 'text-emerald-600 dark:text-emerald-400 font-extrabold' 
+                            : isPassed 
+                            ? 'text-gray-900 dark:text-white' 
+                            : 'text-gray-400 dark:text-gray-500'
+                        }`}>
+                          {st.title}
+                        </div>
+                        <div className="text-[10px] text-gray-500 dark:text-gray-400 font-mono">
+                          {st.timeEst}
+                        </div>
+                        <div className="text-[10px] text-gray-500 dark:text-gray-400 leading-tight hidden lg:block mt-1">
+                          {st.desc}
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+
+            {isCancelled && (
+              <div className="p-3.5 bg-rose-50 dark:bg-rose-950/60 border border-rose-200 dark:border-rose-900 rounded-2xl flex items-center gap-2.5 text-xs text-rose-800 dark:text-rose-200">
+                <AlertCircle className="w-4 h-4 text-rose-600 shrink-0" />
+                <span>This order was cancelled. Restocked in cold storage. Payment refund initiated to customer source account.</span>
+              </div>
+            )}
+          </div>
+
+          {/* Cold-Chain IoT Telemetry Card */}
           <div className="bg-slate-950 text-white p-5 sm:p-6 rounded-3xl border border-slate-800 shadow-xl space-y-5">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <div className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-ping" />
                 <span className="text-xs font-black uppercase tracking-wider text-emerald-400">
-                  IoT Cold-Chain Telemetry Protocol (Box: {currentOrder.coolerId})
+                  ThermalVault™ IoT Telemetry • Box #{currentOrder.coolerId}
                 </span>
               </div>
               <span className="px-2.5 py-0.5 rounded-full bg-emerald-950 text-emerald-400 border border-emerald-800 text-[10px] font-extrabold">
-                FSSAI 0°C - 4°C FreshSeal Certified
+                FSSAI 0°C - 4°C Certified Safe
               </span>
             </div>
 
-            {/* Digital Readout Gauges */}
+            {/* Readout Gauges */}
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
               <div className="p-3.5 rounded-2xl bg-slate-900 border border-slate-800 space-y-1">
                 <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">Internal Cold Box</span>
                 <div className="flex items-baseline gap-1.5">
                   <span className="text-3xl font-black font-mono text-emerald-400">{liveTemp}°C</span>
-                  <span className="text-xs text-gray-400">Target: 0°C–4°C</span>
+                  <span className="text-xs text-gray-400">Safe Target: 0°C–4°C</span>
                 </div>
                 <div className="text-[11px] text-emerald-400 font-semibold flex items-center gap-1">
                   <CheckCircle2 className="w-3 h-3" />
@@ -427,49 +574,19 @@ export const OrderTrackingPage: React.FC<OrderTrackingPageProps> = ({ onNavigate
               </div>
 
               <div className="p-3.5 rounded-2xl bg-slate-900 border border-slate-800 space-y-1">
-                <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">FreshSeal Integrity</span>
-                <div className="text-base font-extrabold text-white mt-1">Digital Seal Active</div>
+                <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">Thermal Seal Integrity</span>
+                <div className="text-base font-extrabold text-white mt-1">EPP Digital Seal Active</div>
                 <div className="text-[11px] text-gray-400">
-                  Lock ID: <span className="font-mono text-gray-300">#FS-84920</span>
+                  Sub-zero gel bricks keep cuts fresh for up to 6 hours
                 </div>
               </div>
 
               <div className="p-3.5 rounded-2xl bg-slate-900 border border-slate-800 space-y-1">
-                <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">Reusable Box Security</span>
-                <div className="text-base font-extrabold text-emerald-400 mt-1">₹250 Deposit Logged</div>
-                <div className="text-[11px] text-gray-400">Instant UPI refund upon return</div>
-              </div>
-            </div>
-
-            {/* Stepper Timeline */}
-            <div className="pt-2 border-t border-slate-800">
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-center">
-                {stages.map((st, idx) => {
-                  const isPassed = idx <= currentStageIndex;
-                  const isCurrent = idx === currentStageIndex;
-                  return (
-                    <div key={st.title} className="space-y-1.5">
-                      <div className={`w-8 h-8 rounded-full mx-auto flex items-center justify-center text-xs font-black transition ${
-                        isCurrent 
-                          ? 'bg-emerald-500 text-slate-950 ring-4 ring-emerald-500/30' 
-                          : isPassed 
-                          ? 'bg-emerald-700 text-white' 
-                          : 'bg-slate-800 text-gray-500'
-                      }`}>
-                        {idx + 1}
-                      </div>
-                      <div className={`text-xs font-extrabold ${isCurrent ? 'text-emerald-400' : isPassed ? 'text-white' : 'text-gray-500'}`}>
-                        {st.title}
-                      </div>
-                      <div className="text-[10px] text-gray-400 font-mono">
-                        {st.time}
-                      </div>
-                      <div className="text-[10px] text-gray-500 hidden sm:block leading-tight">
-                        {st.desc}
-                      </div>
-                    </div>
-                  );
-                })}
+                <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">Refundable Packaging</span>
+                <div className="text-base font-extrabold text-emerald-400 mt-1">₹250 Deposit Recorded</div>
+                <div className="text-[11px] text-gray-400">
+                  100% refundable upon handover to delivery partner
+                </div>
               </div>
             </div>
           </div>
@@ -497,8 +614,8 @@ export const OrderTrackingPage: React.FC<OrderTrackingPageProps> = ({ onNavigate
             <div className="flex items-center gap-2">
               <button 
                 type="button"
-                onClick={() => alert('Calling Ramesh Kumar at +91 94481 02911...')}
-                className="flex-1 sm:flex-none px-3.5 py-2 bg-gray-900 dark:bg-slate-800 hover:bg-black dark:hover:bg-slate-700 text-white text-xs font-bold rounded-xl flex items-center justify-center gap-1.5 transition"
+                onClick={() => alert('Connecting to delivery partner Ramesh Kumar (+91 94481 02911)...')}
+                className="flex-1 sm:flex-none px-3.5 py-2 bg-gray-900 dark:bg-slate-800 hover:bg-black dark:hover:bg-slate-700 text-white text-xs font-bold rounded-xl flex items-center justify-center gap-1.5 transition cursor-pointer"
               >
                 <Phone className="w-3.5 h-3.5" />
                 <span>Call Courier</span>
@@ -506,8 +623,8 @@ export const OrderTrackingPage: React.FC<OrderTrackingPageProps> = ({ onNavigate
               
               <button
                 type="button"
-                onClick={() => alert('Opening WhatsApp chat with delivery partner...')}
-                className="px-3.5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold rounded-xl flex items-center justify-center gap-1.5 transition"
+                onClick={() => alert('Opening WhatsApp chat with delivery fleet manager...')}
+                className="px-3.5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold rounded-xl flex items-center justify-center gap-1.5 transition cursor-pointer"
               >
                 <MessageSquare className="w-3.5 h-3.5" />
                 <span>WhatsApp</span>
@@ -515,18 +632,19 @@ export const OrderTrackingPage: React.FC<OrderTrackingPageProps> = ({ onNavigate
             </div>
           </div>
 
-          {/* Cuts Breakdown inside this Cold Box */}
-          <div className="bg-white dark:bg-slate-900 p-5 rounded-3xl border border-gray-200 dark:border-slate-800 shadow-sm space-y-3">
-            <div className="flex items-center justify-between">
+          {/* Order Details & Summary Snapshot */}
+          <div className="bg-white dark:bg-slate-900 p-5 rounded-3xl border border-gray-200 dark:border-slate-800 shadow-sm space-y-4">
+            <div className="flex items-center justify-between border-b border-gray-100 dark:border-slate-800 pb-3">
               <h4 className="text-xs font-black uppercase tracking-wider text-gray-950 dark:text-white flex items-center gap-1.5">
                 <Package className="w-3.5 h-3.5 text-[#d11243] dark:text-rose-500" />
-                <span>Packed Cuts in this ThermalVault ({currentOrder.items.length})</span>
+                <span>Order Summary Snapshot ({currentOrder.items.length} items)</span>
               </h4>
-              <span className="text-xs font-bold text-gray-500 dark:text-gray-400">
-                Paid: <strong className="text-gray-950 dark:text-white font-black">₹{currentOrder.total}</strong>
+              <span className="text-xs font-extrabold text-[#d11243] dark:text-rose-400">
+                Paid: ₹{currentOrder.total} ({currentOrder.paymentMethod || 'Razorpay'})
               </span>
             </div>
 
+            {/* Items List */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               {currentOrder.items.map((it, idx) => (
                 <div key={idx} className="p-3 bg-gray-50 dark:bg-slate-800/80 rounded-2xl border border-gray-200 dark:border-slate-700 flex items-center justify-between text-xs">
@@ -545,9 +663,56 @@ export const OrderTrackingPage: React.FC<OrderTrackingPageProps> = ({ onNavigate
                 </div>
               ))}
             </div>
+
+            {/* Financial Ledger & Address */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-3 border-t border-gray-100 dark:border-slate-800 text-xs">
+              {/* Delivery Address Details */}
+              <div className="p-3.5 bg-gray-50 dark:bg-slate-800/50 rounded-2xl border border-gray-200 dark:border-slate-700 space-y-1">
+                <span className="text-[10px] text-gray-400 font-bold uppercase tracking-wider flex items-center gap-1">
+                  <MapPin className="w-3 h-3 text-[#d11243]" />
+                  <span>Delivery Address Snapshot</span>
+                </span>
+                <p className="font-bold text-gray-900 dark:text-white">{currentOrder.customerName}</p>
+                <p className="text-gray-600 dark:text-gray-400 text-[11px] leading-relaxed">
+                  {currentOrder.deliveryAddress}
+                </p>
+                {currentOrder.deliveryNotes && (
+                  <p className="text-[10px] text-amber-700 dark:text-amber-400 italic pt-1">
+                    Note: "{currentOrder.deliveryNotes}"
+                  </p>
+                )}
+              </div>
+
+              {/* Price Breakdown */}
+              <div className="p-3.5 bg-gray-50 dark:bg-slate-800/50 rounded-2xl border border-gray-200 dark:border-slate-700 space-y-1.5">
+                <div className="flex justify-between text-gray-600 dark:text-gray-400 text-xs">
+                  <span>Subtotal:</span>
+                  <span className="font-bold text-gray-900 dark:text-white">₹{currentOrder.subtotal}</span>
+                </div>
+                <div className="flex justify-between text-gray-600 dark:text-gray-400 text-xs">
+                  <span>Cold-Box Deposit (Refundable):</span>
+                  <span className="font-bold text-emerald-700 dark:text-emerald-400">₹{currentOrder.coolerDeposit || 250}</span>
+                </div>
+                <div className="flex justify-between text-gray-600 dark:text-gray-400 text-xs">
+                  <span>Chilled Express Delivery:</span>
+                  <span className="font-bold text-emerald-700 dark:text-emerald-400">
+                    {currentOrder.shippingFee === 0 ? 'FREE' : `₹${currentOrder.shippingFee}`}
+                  </span>
+                </div>
+                <div className="pt-2 border-t border-gray-200 dark:border-slate-700 flex justify-between font-black text-sm">
+                  <span className="text-gray-950 dark:text-white">Total Payable:</span>
+                  <span className="text-[#d11243] dark:text-rose-400">₹{currentOrder.total}</span>
+                </div>
+                {currentOrder.razorpayPaymentId && (
+                  <div className="text-[10px] text-gray-400 font-mono pt-1">
+                    Razorpay ID: {currentOrder.razorpayPaymentId}
+                  </div>
+                )}
+              </div>
+            </div>
           </div>
 
-          {/* Telemetry Log Table */}
+          {/* Audit Telemetry Log */}
           <div className="bg-white dark:bg-slate-900 p-5 rounded-3xl border border-gray-200 dark:border-slate-800 shadow-sm space-y-3">
             <div className="flex items-center justify-between">
               <h4 className="text-xs font-black uppercase tracking-wider text-gray-950 dark:text-white flex items-center gap-1.5">

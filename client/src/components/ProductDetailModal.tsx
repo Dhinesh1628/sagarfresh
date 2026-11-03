@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { X, Plus, Minus, Zap, ShieldCheck, Star, Award, CheckCircle2, ChevronRight, HelpCircle } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { X, Plus, Minus, Zap, ShieldCheck, Star, Award, CheckCircle2, ChevronRight, HelpCircle, Heart } from 'lucide-react';
 import type { Product } from '../types';
 import { useCart } from '../context/CartContext';
 
@@ -49,6 +49,33 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
   const [selectedImageIndex, setSelectedImageIndex] = useState<number>(0);
   const [quantity, setQuantity] = useState<number>(1);
   const [showWeightExplanation, setShowWeightExplanation] = useState<boolean>(false);
+  const [isWishlisted, setIsWishlisted] = useState<boolean>(false);
+
+  useEffect(() => {
+    try {
+      const saved = localStorage.getItem('gomeat_wishlist');
+      if (saved && product) {
+        const arr = JSON.parse(saved);
+        setIsWishlisted(arr.includes(product.id));
+      }
+    } catch (e) {}
+  }, [product]);
+
+  const toggleWishlist = () => {
+    try {
+      const saved = localStorage.getItem('gomeat_wishlist');
+      const arr: string[] = saved ? JSON.parse(saved) : [];
+      let updated: string[];
+      if (arr.includes(product.id)) {
+        updated = arr.filter(id => id !== product.id);
+        setIsWishlisted(false);
+      } else {
+        updated = [...arr, product.id];
+        setIsWishlisted(true);
+      }
+      localStorage.setItem('gomeat_wishlist', JSON.stringify(updated));
+    } catch (e) {}
+  };
 
   const existingItem = items.find(i => i.product.id === product.id);
   const discountPct = product.mrp ? Math.round(((product.mrp - product.price) / product.mrp) * 100) : 0;
@@ -112,12 +139,21 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
               <span>{product.eta || '⚡ 90 Mins Express'}</span>
             </div>
           </div>
-          <button 
-            onClick={onClose} 
-            className="w-8 h-8 rounded-full bg-gray-100 dark:bg-slate-800 hover:bg-gray-200 dark:hover:bg-slate-700 flex items-center justify-center text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition"
-          >
-            <X className="w-4 h-4" />
-          </button>
+          <div className="flex items-center gap-2">
+            <button
+              onClick={toggleWishlist}
+              className="w-8 h-8 rounded-full bg-gray-100 dark:bg-slate-800 hover:bg-gray-200 dark:hover:bg-slate-700 flex items-center justify-center text-gray-500 dark:text-gray-400 hover:text-[#d11243] dark:hover:text-rose-400 transition cursor-pointer"
+              title={isWishlisted ? 'Remove from Wishlist' : 'Add to Wishlist'}
+            >
+              <Heart className={`w-4 h-4 ${isWishlisted ? 'fill-[#d11243] text-[#d11243]' : ''}`} />
+            </button>
+            <button 
+              onClick={onClose} 
+              className="w-8 h-8 rounded-full bg-gray-100 dark:bg-slate-800 hover:bg-gray-200 dark:hover:bg-slate-700 flex items-center justify-center text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition cursor-pointer"
+            >
+              <X className="w-4 h-4" />
+            </button>
+          </div>
         </div>
 
         {/* Scrollable Body */}

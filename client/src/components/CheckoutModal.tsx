@@ -1,5 +1,24 @@
-import React, { useState } from 'react';
-import { X, MapPin, Clock, CreditCard, AlertCircle, Zap, ShieldCheck, Check, Calendar, Phone, Home, Briefcase, Building } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { 
+  X, 
+  MapPin, 
+  Clock, 
+  CreditCard, 
+  AlertCircle, 
+  Zap, 
+  ShieldCheck, 
+  Calendar, 
+  Phone, 
+  Home, 
+  Briefcase, 
+  Building,
+  CheckCircle2,
+  Lock,
+  ArrowRight,
+  RefreshCw,
+  Info,
+  Banknote
+} from 'lucide-react';
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
 import { api } from '../api';
@@ -12,6 +31,12 @@ interface CheckoutModalProps {
   selectedCity: string;
 }
 
+declare global {
+  interface Window {
+    Razorpay?: any;
+  }
+}
+
 export const CheckoutModal: React.FC<CheckoutModalProps> = ({
   isOpen,
   onClose,
@@ -21,27 +46,62 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
   const { items, subtotal, coolerDeposit, shippingFee, couponCode, couponDiscount, total, clearCart } = useCart();
   const { user, refreshUser } = useAuth();
 
+  // Contact Info State
+  const [fullName, setFullName] = useState(user?.name || '');
+  const [email, setEmail] = useState(user?.email || '');
+  const [phone, setPhone] = useState(user?.phone || '+91 98765 43210');
+
   // Address State
   const [addressType, setAddressType] = useState<'home' | 'work' | 'other'>('home');
   const [flatNo, setFlatNo] = useState('Flat 402, Tower B');
   const [building, setBuilding] = useState('Alpine Eco Apartments');
   const [street, setStreet] = useState('Outer Ring Road, Doddanekkundi');
+  const [city, setCity] = useState(selectedCity || 'Bengaluru');
+  const [state, setState] = useState('Karnataka');
   const [pincode, setPincode] = useState('560037');
-  const [phone, setPhone] = useState(user?.phone || '+91 98765 43210');
 
   // Delivery Slot State
   const [slotMode, setSlotMode] = useState<'express' | 'scheduled'>('express');
   const [scheduledDay, setScheduledDay] = useState<'Today' | 'Tomorrow'>('Today');
   const [selectedSlotTime, setSelectedSlotTime] = useState('05:30 PM - 08:00 PM (Evening)');
 
-  // Instructions & Payment
+  // Instructions & Payment Method
   const [instructionTag, setInstructionTag] = useState<string>('Leave with security guard');
   const [customNotes, setCustomNotes] = useState('');
-  const [paymentMethod, setPaymentMethod] = useState<'upi' | 'card' | 'cod'>('upi');
-  const [upiApp, setUpiApp] = useState<'gpay' | 'phonepe' | 'paytm' | 'other'>('gpay');
+  const [paymentMethod, setPaymentMethod] = useState<'razorpay' | 'cod'>('razorpay');
 
+  // Processing & Verification States
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [verifyingPayment, setVerifyingPayment] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [paymentFailedModal, setPaymentFailedModal] = useState<{ reason: string; orderId?: string } | null>(null);
+
+  // Sync with user data if user logs in or profile changes
+  useEffect(() => {
+    if (user) {
+      if (!fullName) setFullName(user.name || '');
+      if (!email) setEmail(user.email || '');
+      if (user.phone) setPhone(user.phone);
+      if (user.address) setStreet(user.address);
+      if (user.city) setCity(user.city);
+    }
+  }, [user]);
+
+  // Load Razorpay Checkout Script dynamically
+  const loadRazorpayScript = (): Promise<boolean> => {
+    return new Promise((resolve) => {
+      if (window.Razorpay) {
+        resolve(true);
+        return;
+      }
+      const script = document.createElement('script');
+      script.src = 'https://checkout.razorpay.com/v1/checkout.js';
+      script.async = true;
+      script.onload = () => resolve(true);
+      script.onerror = () => resolve(false);
+      document.body.appendChild(script);
+    });
+  };
 
   if (!isOpen) return null;
 
@@ -54,60 +114,204 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
 
   const deliveryInstructionOptions = [
     'Leave with security guard',
-    'Do not ring bell (Sleeping baby)',
+    'Do not ring bell (Baby sleeping)',
     'Call upon arrival at gate',
     'Contactless box drop-off at doorstep'
   ];
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!flatNo.trim() || !building.trim() || !street.trim()) {
-      setError('Please provide complete delivery address with flat/house number.');
-      return;
+  const validateForm = (): boolean => {
+    if (!fullName.trim()) {
+      setError('Please enter your full name');
+      return false;
     }
+    if (!email.trim() || !email.includes('@')) {
+      setError('Please provide a valid email address for invoice and tracking');
+      return false;
+    }
+    const cleanPhone = phone.replace(/[^0-9]/g, '');
+    if (cleanPhone.length < 10) {
+      setError('Please enter a valid 10-digit mobile number');
+      return false;
+    }
+    if (!flatNo.trim() || !building.trim() || !street.trim()) {
+      setError('Please complete the delivery address with flat/house number and building name');
+      return false;
+    }
+    const cleanPin = pincode.replace(/[^0-9]/g, '');
+    if (cleanPin.length !== 6) {
+      setError('Please enter a valid 6-digit postal pincode');
+      return false;
+    }
+    return true;
+  };
+
+  const handleCheckoutSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!validateForm()) return;
 
     setIsSubmitting(true);
     setError(null);
+    setPaymentFailedModal(null);
+
+    const fullAddress = `${flatNo}, ${building}, ${street}, ${city}, ${state} - ${pincode} (${addressType.toUpperCase()})`;
+    const computedSlot = slotMode === 'express'
+      ? '⚡ Express Delivery in 90 Mins (Live EV Chilled Courier)'
+      : `${scheduledDay}, ${selectedSlotTime}`;
+
+    const finalNotes = customNotes.trim() 
+      ? `${instructionTag}. Notes: ${customNotes.trim()}`
+      : instructionTag;
+
+    const addressDetails = {
+      fullName: fullName.trim(),
+      email: email.trim(),
+      phone: phone.trim(),
+      flatNo: flatNo.trim(),
+      building: building.trim(),
+      street: street.trim(),
+      city: city.trim(),
+      state: state.trim(),
+      pincode: pincode.trim(),
+      instructions: finalNotes
+    };
+
+    const orderPayload = {
+      items: items.map(item => ({
+        productId: item.product.id,
+        quantity: item.quantity,
+        selectedCutStyle: item.selectedCutStyle
+      })),
+      deliveryAddress: fullAddress,
+      addressDetails,
+      deliverySlot: computedSlot,
+      deliveryNotes: finalNotes,
+      city,
+      couponCode: couponCode || null,
+      couponDiscount: couponDiscount || 0,
+      paymentMethod
+    };
 
     try {
-      const fullAddress = `${flatNo}, ${building}, ${street}, ${selectedCity} - ${pincode} (${addressType.toUpperCase()})`;
-      const computedSlot = slotMode === 'express'
-        ? '⚡ Express Delivery in 90 Mins (Live EV Chilled Courier)'
-        : `${scheduledDay}, ${selectedSlotTime}`;
+      // 1. Create Order on backend (server calculates prices using MongoDB product records)
+      const res = await api.createPaymentOrder(orderPayload);
 
-      const finalNotes = customNotes.trim() 
-        ? `${instructionTag}. Notes: ${customNotes.trim()}`
-        : instructionTag;
+      // A) Handle Cash on Delivery
+      if (paymentMethod === 'cod' || res.isCod) {
+        clearCart();
+        await refreshUser();
+        onOrderSuccess(res.order);
+        onClose();
+        return;
+      }
 
-      const paymentLabel = paymentMethod === 'upi'
-        ? `UPI (${upiApp.toUpperCase()})`
-        : paymentMethod === 'card'
-        ? 'Credit / Debit Card'
-        : 'Cash / UPI on Delivery (COD)';
+      // B) Handle Razorpay Online Payment
+      const isScriptLoaded = await loadRazorpayScript();
+      if (!isScriptLoaded && !res.isDemoKey) {
+        throw new Error('Failed to load secure Razorpay checkout gateway. Please check your connection.');
+      }
 
-      const orderPayload = {
-        items: items.map(item => ({
-          productId: item.product.id,
-          quantity: item.quantity,
-          selectedCutStyle: item.selectedCutStyle
-        })),
-        deliveryAddress: fullAddress,
-        deliverySlot: computedSlot,
-        deliveryNotes: finalNotes,
-        paymentMethod: paymentLabel,
-        city: selectedCity,
-        couponCode: couponCode || null,
-        couponDiscount: couponDiscount || 0
-      };
+      // If Razorpay window exists and real keys, open Standard Checkout Modal
+      if (window.Razorpay && !res.isDemoKey) {
+        const options = {
+          key: res.keyId,
+          amount: res.amount,
+          currency: res.currency,
+          name: 'GoMeat',
+          description: `Order #${res.orderNumber} - 0°C to 4°C Fresh Cuts`,
+          image: '/images/logo.png',
+          order_id: res.razorpayOrderId,
+          prefill: {
+            name: fullName,
+            email,
+            contact: phone
+          },
+          theme: {
+            color: '#d11243'
+          },
+          modal: {
+            ondismiss: () => {
+              setIsSubmitting(false);
+              setPaymentFailedModal({
+                reason: 'Payment was cancelled or closed before completion. You can retry with Razorpay or switch to Cash on Delivery.',
+                orderId: res.orderId
+              });
+            }
+          },
+          handler: async (response: any) => {
+            // NEVER trust frontend callbacks alone! Verify actual signature and capture status with backend!
+            setVerifyingPayment(true);
+            try {
+              const verifyRes = await api.verifyPayment({
+                razorpay_order_id: response.razorpay_order_id,
+                razorpay_payment_id: response.razorpay_payment_id,
+                razorpay_signature: response.razorpay_signature,
+                orderId: res.orderId
+              });
 
-      const newOrder = await api.createOrder(orderPayload);
-      clearCart();
-      await refreshUser();
-      onOrderSuccess(newOrder);
-      onClose();
+              if (verifyRes.success) {
+                clearCart();
+                await refreshUser();
+                onOrderSuccess(verifyRes.order);
+                onClose();
+              } else {
+                throw new Error(verifyRes.message || 'Signature verification failed.');
+              }
+            } catch (vErr: any) {
+              setPaymentFailedModal({
+                reason: vErr.message || 'Payment signature could not be verified by GoMeat security server.',
+                orderId: res.orderId
+              });
+            } finally {
+              setVerifyingPayment(false);
+              setIsSubmitting(false);
+            }
+          }
+        };
+
+        const rzp = new window.Razorpay(options);
+        rzp.on('payment.failed', (resp: any) => {
+          setIsSubmitting(false);
+          setPaymentFailedModal({
+            reason: resp.error?.description || 'Your bank declined the transaction. Please try another card, UPI ID, or netbanking account.',
+            orderId: res.orderId
+          });
+        });
+        rzp.open();
+      } else {
+        // Test Simulation Mode (when running test mode without live banking credentials)
+        setVerifyingPayment(true);
+        const testPaymentId = `pay_test_${Math.floor(10000000 + Math.random() * 90000000)}`;
+        
+        // Simulating realistic payment gateway verification delay (800ms)
+        setTimeout(async () => {
+          try {
+            const verifyRes = await api.verifyPayment({
+              razorpay_order_id: res.razorpayOrderId,
+              razorpay_payment_id: testPaymentId,
+              razorpay_signature: 'VALID_RAZORPAY_TEST_SIGNATURE',
+              orderId: res.orderId,
+              isTestSimulation: true
+            });
+
+            clearCart();
+            await refreshUser();
+            onOrderSuccess(verifyRes.order);
+            onClose();
+          } catch (tErr: any) {
+            setPaymentFailedModal({
+              reason: tErr.message || 'Payment verification simulation encountered an issue.',
+              orderId: res.orderId
+            });
+          } finally {
+            setVerifyingPayment(false);
+            setIsSubmitting(false);
+          }
+        }, 800);
+      }
+
     } catch (err: any) {
-      setError(err.message || 'Error completing checkout. Please try again.');
-    } finally {
+      console.error('Checkout error:', err);
+      setError(err.message || 'Error processing checkout. Please try again.');
       setIsSubmitting(false);
     }
   };
@@ -115,7 +319,7 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
   return (
     <div className="fixed inset-0 z-50 overflow-y-auto flex items-center justify-center p-3 sm:p-5">
       {/* Backdrop */}
-      <div onClick={onClose} className="fixed inset-0 bg-black/65 backdrop-blur-xs transition-opacity" />
+      <div onClick={onClose} className="fixed inset-0 bg-black/70 backdrop-blur-xs transition-opacity" />
 
       {/* Modal Container */}
       <div className="relative w-full max-w-2xl bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-800 rounded-2xl shadow-2xl p-5 sm:p-7 text-gray-900 dark:text-gray-100 z-10 max-h-[92vh] overflow-y-auto">
@@ -124,13 +328,14 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
         <div className="flex items-center justify-between pb-4 border-b border-gray-100 dark:border-slate-800">
           <div>
             <div className="flex items-center gap-2">
-              <h2 className="text-lg font-black text-gray-950 dark:text-white">Checkout & Delivery Details</h2>
-              <span className="px-2 py-0.5 rounded-full bg-emerald-50 dark:bg-emerald-950/50 text-emerald-800 dark:text-emerald-300 text-[10px] font-extrabold border border-emerald-200 dark:border-emerald-800">
-                0°C - 4°C FreshSeal
+              <h2 className="text-lg font-black text-gray-950 dark:text-white">Secure Checkout & Delivery Details</h2>
+              <span className="px-2 py-0.5 rounded-full bg-emerald-50 dark:bg-emerald-950/50 text-emerald-800 dark:text-emerald-300 text-[10px] font-extrabold border border-emerald-200 dark:border-emerald-800 flex items-center gap-1">
+                <Lock className="w-3 h-3 text-emerald-600" />
+                <span>256-Bit SSL Encrypted</span>
               </span>
             </div>
             <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
-              Delivering to {selectedCity} in reusable ThermalVault™ cold box
+              Delivering to {city} in reusable ThermalVault™ cold box maintaining 0°C–4°C
             </p>
           </div>
           <button 
@@ -141,6 +346,7 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
           </button>
         </div>
 
+        {/* Error Callout */}
         {error && (
           <div className="mt-4 p-3 rounded-xl bg-red-50 dark:bg-red-950/50 border border-red-200 dark:border-red-900 text-red-700 dark:text-red-300 text-xs flex items-center gap-2">
             <AlertCircle className="w-4 h-4 text-red-600 dark:text-red-400 shrink-0" />
@@ -148,14 +354,109 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
           </div>
         )}
 
-        <form onSubmit={handleSubmit} className="mt-5 space-y-6 text-xs">
+        {/* Payment Failed / Retry Callout */}
+        {paymentFailedModal && (
+          <div className="mt-4 p-4 rounded-xl bg-amber-50 dark:bg-amber-950/50 border border-amber-300 dark:border-amber-800 text-xs space-y-2">
+            <div className="flex items-center gap-2 text-amber-900 dark:text-amber-200 font-extrabold">
+              <AlertCircle className="w-4 h-4 text-amber-600" />
+              <span>Payment Not Completed</span>
+            </div>
+            <p className="text-amber-800 dark:text-amber-300 text-[11px] leading-relaxed">
+              {paymentFailedModal.reason}
+            </p>
+            <div className="flex gap-2 pt-1">
+              <button
+                type="button"
+                onClick={handleCheckoutSubmit}
+                className="px-3.5 py-1.5 rounded-lg bg-gray-900 dark:bg-white text-white dark:text-gray-900 font-bold text-xs flex items-center gap-1.5 hover:opacity-90 cursor-pointer shadow-xs"
+              >
+                <RefreshCw className="w-3.5 h-3.5" />
+                <span>Retry Payment</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  setPaymentMethod('cod');
+                  setPaymentFailedModal(null);
+                }}
+                className="px-3.5 py-1.5 rounded-lg bg-emerald-700 text-white font-bold text-xs flex items-center gap-1 hover:bg-emerald-800 cursor-pointer"
+              >
+                <Banknote className="w-3.5 h-3.5" />
+                <span>Switch to Cash on Delivery</span>
+              </button>
+            </div>
+          </div>
+        )}
+
+        {/* Verifying Overlay */}
+        {verifyingPayment && (
+          <div className="my-6 p-6 rounded-2xl bg-slate-900 text-white text-center space-y-3">
+            <div className="w-12 h-12 rounded-full border-4 border-emerald-400 border-t-transparent animate-spin mx-auto" />
+            <h4 className="font-extrabold text-sm text-white">Verifying Payment Signature with Razorpay...</h4>
+            <p className="text-xs text-gray-400 max-w-sm mx-auto">
+              Confirming transaction status with the banking network. Please do not close or refresh this tab.
+            </p>
+          </div>
+        )}
+
+        <form onSubmit={handleCheckoutSubmit} className="mt-5 space-y-6 text-xs">
           
-          {/* Section 1: Delivery Slot Picker (Figma Step 4) */}
+          {/* Section 1: Customer Contact Details */}
+          <div className="space-y-3">
+            <label className="text-xs font-black uppercase text-gray-900 dark:text-white flex items-center gap-1.5">
+              <span>1. Customer Contact Details</span>
+            </label>
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+              <div>
+                <label className="block text-gray-600 dark:text-gray-300 text-[11px] font-bold mb-1">
+                  Full Name *
+                </label>
+                <input
+                  type="text"
+                  required
+                  value={fullName}
+                  onChange={(e) => setFullName(e.target.value)}
+                  placeholder="e.g. Pooja Sundaram"
+                  className="w-full px-3 py-2 bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-lg text-xs font-medium text-gray-900 dark:text-white focus:outline-none focus:border-[#d11243]"
+                />
+              </div>
+
+              <div>
+                <label className="block text-gray-600 dark:text-gray-300 text-[11px] font-bold mb-1">
+                  Email Address (For Invoice) *
+                </label>
+                <input
+                  type="email"
+                  required
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="e.g. pooja@example.com"
+                  className="w-full px-3 py-2 bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-lg text-xs font-medium text-gray-900 dark:text-white focus:outline-none focus:border-[#d11243]"
+                />
+              </div>
+
+              <div>
+                <label className="block text-gray-600 dark:text-gray-300 text-[11px] font-bold mb-1">
+                  Mobile Number *
+                </label>
+                <input
+                  type="tel"
+                  required
+                  value={phone}
+                  onChange={(e) => setPhone(e.target.value)}
+                  placeholder="+91 98765 43210"
+                  className="w-full px-3 py-2 bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-lg text-xs font-medium text-gray-900 dark:text-white focus:outline-none focus:border-[#d11243]"
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* Section 2: Delivery Slot Picker */}
           <div className="space-y-3">
             <div className="flex items-center justify-between">
               <label className="text-xs font-black uppercase text-gray-900 dark:text-white flex items-center gap-1.5">
                 <Clock className="w-3.5 h-3.5 text-[#d11243]" />
-                <span>1. Select Delivery Slot</span>
+                <span>2. Select Delivery Slot</span>
               </label>
               <span className="text-[11px] font-semibold text-emerald-700 dark:text-emerald-400">Guaranteed Fresh</span>
             </div>
@@ -206,7 +507,6 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
               </div>
             </div>
 
-            {/* If Scheduled, Show Day & Slot Picker */}
             {slotMode === 'scheduled' && (
               <div className="p-3.5 bg-gray-50 dark:bg-slate-800/60 rounded-xl border border-gray-200 dark:border-slate-700 space-y-3">
                 <div className="flex gap-2">
@@ -246,12 +546,12 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
             )}
           </div>
 
-          {/* Section 2: Delivery Address (Figma Step 4) */}
+          {/* Section 3: Delivery Address */}
           <div className="space-y-3">
             <div className="flex items-center justify-between">
               <label className="text-xs font-black uppercase text-gray-900 dark:text-white flex items-center gap-1.5">
                 <MapPin className="w-3.5 h-3.5 text-[#d11243]" />
-                <span>2. Delivery Address</span>
+                <span>3. Delivery Address</span>
               </label>
               <div className="flex gap-1.5">
                 {[
@@ -282,93 +582,88 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <div>
                 <label className="block text-gray-600 dark:text-gray-300 text-[11px] font-bold mb-1">
-                  Flat / House / Villa Number
+                  Flat / House / Villa Number *
                 </label>
                 <input
                   type="text"
+                  required
                   value={flatNo}
                   onChange={(e) => setFlatNo(e.target.value)}
                   placeholder="e.g. Flat 402, Block B"
                   className="w-full px-3 py-2 bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-lg text-xs font-medium text-gray-900 dark:text-white focus:outline-none focus:border-[#d11243]"
-                  required
                 />
               </div>
 
               <div>
                 <label className="block text-gray-600 dark:text-gray-300 text-[11px] font-bold mb-1">
-                  Apartment / Society / Building Name
+                  Apartment / Building Name *
                 </label>
                 <input
                   type="text"
+                  required
                   value={building}
                   onChange={(e) => setBuilding(e.target.value)}
                   placeholder="e.g. Alpine Eco Apartments"
                   className="w-full px-3 py-2 bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-lg text-xs font-medium text-gray-900 dark:text-white focus:outline-none focus:border-[#d11243]"
-                  required
                 />
               </div>
 
               <div>
                 <label className="block text-gray-600 dark:text-gray-300 text-[11px] font-bold mb-1">
-                  Street / Area / Landmark
+                  Street / Area / Landmark *
                 </label>
                 <input
                   type="text"
+                  required
                   value={street}
                   onChange={(e) => setStreet(e.target.value)}
                   placeholder="e.g. Outer Ring Road, Doddanekkundi"
                   className="w-full px-3 py-2 bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-lg text-xs font-medium text-gray-900 dark:text-white focus:outline-none focus:border-[#d11243]"
-                  required
                 />
               </div>
 
-              <div className="grid grid-cols-2 gap-2">
+              <div className="grid grid-cols-3 gap-2">
                 <div>
                   <label className="block text-gray-600 dark:text-gray-300 text-[11px] font-bold mb-1">
                     City
                   </label>
                   <input
                     type="text"
-                    value={selectedCity}
-                    disabled
-                    className="w-full px-3 py-2 bg-gray-100 dark:bg-slate-800/50 border border-gray-200 dark:border-slate-700 rounded-lg text-xs font-bold text-gray-700 dark:text-gray-300"
+                    value={city}
+                    onChange={(e) => setCity(e.target.value)}
+                    className="w-full px-2.5 py-2 bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-lg text-xs font-bold text-gray-800 dark:text-gray-200"
                   />
                 </div>
                 <div>
                   <label className="block text-gray-600 dark:text-gray-300 text-[11px] font-bold mb-1">
-                    Pincode
+                    State
                   </label>
                   <input
                     type="text"
+                    value={state}
+                    onChange={(e) => setState(e.target.value)}
+                    className="w-full px-2.5 py-2 bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-lg text-xs font-bold text-gray-800 dark:text-gray-200"
+                  />
+                </div>
+                <div>
+                  <label className="block text-gray-600 dark:text-gray-300 text-[11px] font-bold mb-1">
+                    Pincode *
+                  </label>
+                  <input
+                    type="text"
+                    required
+                    maxLength={6}
                     value={pincode}
                     onChange={(e) => setPincode(e.target.value)}
-                    maxLength={6}
-                    className="w-full px-3 py-2 bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-lg text-xs font-medium text-gray-900 dark:text-white focus:outline-none focus:border-[#d11243]"
-                    required
+                    placeholder="560037"
+                    className="w-full px-2.5 py-2 bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-lg text-xs font-medium text-gray-900 dark:text-white focus:outline-none focus:border-[#d11243]"
                   />
                 </div>
               </div>
             </div>
 
-            <div>
-              <label className="block text-gray-600 dark:text-gray-300 text-[11px] font-bold mb-1">
-                Contact Phone Number
-              </label>
-              <div className="relative">
-                <Phone className="w-3.5 h-3.5 text-gray-400 absolute left-3 top-2.5" />
-                <input
-                  type="tel"
-                  value={phone}
-                  onChange={(e) => setPhone(e.target.value)}
-                  placeholder="+91 98765 43210"
-                  className="w-full pl-8 pr-3 py-2 bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-lg text-xs font-medium text-gray-900 dark:text-white focus:outline-none focus:border-[#d11243]"
-                  required
-                />
-              </div>
-            </div>
-
-            {/* Delivery Instructions Chips */}
-            <div className="space-y-1.5">
+            {/* Delivery Instructions */}
+            <div className="space-y-1.5 pt-1">
               <label className="block text-gray-600 dark:text-gray-300 text-[11px] font-bold">
                 Delivery Instructions for Rider
               </label>
@@ -391,105 +686,132 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
             </div>
           </div>
 
-          {/* Section 3: Payment Method (Figma Step 4) */}
+          {/* Section 4: Payment Method Selection */}
           <div className="space-y-3">
             <label className="text-xs font-black uppercase text-gray-900 dark:text-white flex items-center gap-1.5">
               <CreditCard className="w-3.5 h-3.5 text-[#d11243]" />
-              <span>3. Payment Method</span>
+              <span>4. Select Payment Method</span>
             </label>
 
-            <div className="grid grid-cols-3 gap-2.5">
-              {[
-                { id: 'upi', label: 'UPI (GPay/PhonePe)', badge: 'Instant' },
-                { id: 'card', label: 'Cards / NetBanking', badge: 'Secure' },
-                { id: 'cod', label: 'Cash on Delivery', badge: 'Pay at Door' }
-              ].map(opt => (
-                <div
-                  key={opt.id}
-                  onClick={() => setPaymentMethod(opt.id as any)}
-                  className={`p-3 rounded-xl border text-center cursor-pointer transition ${
-                    paymentMethod === opt.id
-                      ? 'border-[#d11243] bg-rose-50/70 dark:bg-rose-950/40 ring-1 ring-[#d11243]'
-                      : 'border-gray-200 dark:border-slate-800 bg-white dark:bg-slate-800/80 hover:border-gray-300 dark:hover:border-slate-700'
-                  }`}
-                >
-                  <span className="block font-bold text-xs text-gray-950 dark:text-white">{opt.label}</span>
-                  <span className="text-[10px] font-extrabold text-[#d11243] dark:text-rose-400 mt-0.5 block">{opt.badge}</span>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              {/* Online Payment (Razorpay) */}
+              <div
+                onClick={() => setPaymentMethod('razorpay')}
+                className={`p-3.5 rounded-xl border cursor-pointer transition relative ${
+                  paymentMethod === 'razorpay'
+                    ? 'border-[#d11243] bg-rose-50/70 dark:bg-rose-950/40 ring-1 ring-[#d11243]'
+                    : 'border-gray-200 dark:border-slate-800 bg-white dark:bg-slate-800/80 hover:border-gray-300 dark:hover:border-slate-700'
+                }`}
+              >
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2 font-black text-xs text-gray-950 dark:text-white">
+                    <Zap className="w-4 h-4 fill-emerald-500 text-emerald-500" />
+                    <span>Razorpay Online Gateway</span>
+                  </div>
+                  <span className="text-[10px] font-extrabold bg-emerald-600 text-white px-2 py-0.5 rounded-full">
+                    Instant & Secure
+                  </span>
                 </div>
-              ))}
-            </div>
-
-            {paymentMethod === 'upi' && (
-              <div className="p-3 bg-gray-50 dark:bg-slate-800/60 rounded-xl border border-gray-200 dark:border-slate-700 space-y-2">
-                <span className="block text-[11px] font-bold text-gray-700 dark:text-gray-300">Select UPI App:</span>
-                <div className="flex gap-2">
-                  {[
-                    { id: 'gpay', label: 'Google Pay' },
-                    { id: 'phonepe', label: 'PhonePe' },
-                    { id: 'paytm', label: 'Paytm' }
-                  ].map(app => (
-                    <button
-                      key={app.id}
-                      type="button"
-                      onClick={() => setUpiApp(app.id as any)}
-                      className={`px-3 py-1.5 rounded-lg text-xs font-bold transition ${
-                        upiApp === app.id
-                          ? 'bg-emerald-700 text-white shadow-xs'
-                          : 'bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 text-gray-800 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-slate-700'
-                      }`}
-                    >
-                      {app.label}
-                    </button>
-                  ))}
+                <p className="text-[11px] text-gray-600 dark:text-gray-300 mt-1.5">
+                  UPI (GPay / PhonePe / Paytm), Credit & Debit Cards, NetBanking, and Wallets.
+                </p>
+                <div className="flex items-center gap-2 mt-2 pt-2 border-t border-gray-200/60 dark:border-slate-700/60 text-[10px] text-gray-500 dark:text-gray-400">
+                  <Lock className="w-3 h-3 text-emerald-600" />
+                  <span>Razorpay Standard Checkout Verified</span>
                 </div>
               </div>
-            )}
+
+              {/* Cash / Pay on Delivery */}
+              <div
+                onClick={() => setPaymentMethod('cod')}
+                className={`p-3.5 rounded-xl border cursor-pointer transition relative ${
+                  paymentMethod === 'cod'
+                    ? 'border-[#d11243] bg-rose-50/70 dark:bg-rose-950/40 ring-1 ring-[#d11243]'
+                    : 'border-gray-200 dark:border-slate-800 bg-white dark:bg-slate-800/80 hover:border-gray-300 dark:hover:border-slate-700'
+                }`}
+              >
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2 font-bold text-xs text-gray-950 dark:text-white">
+                    <Banknote className="w-4 h-4 text-amber-500" />
+                    <span>Cash on Delivery (COD)</span>
+                  </div>
+                  <span className="text-[10px] font-bold text-gray-500">Pay at Door</span>
+                </div>
+                <p className="text-[11px] text-gray-500 dark:text-gray-400 mt-1.5">
+                  Pay via Cash or UPI QR scan directly to the cold-courier partner upon box inspection.
+                </p>
+                <div className="flex items-center gap-2 mt-2 pt-2 border-t border-gray-200/60 dark:border-slate-700/60 text-[10px] text-gray-500 dark:text-gray-400">
+                  <Info className="w-3 h-3 text-amber-600" />
+                  <span>Exact cash or UPI recommended</span>
+                </div>
+              </div>
+            </div>
           </div>
 
-          {/* Section 4: Final Summary & Cold Box Deposit Transparency */}
+          {/* Section 5: Order Summary & Cold Box Deposit Transparency */}
           <div className="p-3.5 bg-gray-50 dark:bg-slate-800/70 rounded-xl border border-gray-200 dark:border-slate-700 space-y-2">
             <div className="flex justify-between text-gray-600 dark:text-gray-300">
-              <span>Items Subtotal:</span>
+              <span>Fresh Cuts Subtotal ({items.length} items):</span>
               <span className="font-bold text-gray-900 dark:text-white">₹{subtotal}</span>
             </div>
+            
+            {/* Refundable Cold Box line item */}
             <div className="flex justify-between text-gray-600 dark:text-gray-300">
-              <span>ThermalVault Cooler Deposit:</span>
-              <span className="font-bold text-emerald-700 dark:text-emerald-400">₹{coolerDeposit} (100% Refundable)</span>
+              <span className="flex items-center gap-1">
+                <span>❄️ ThermalVault™ Eco-Cooler Deposit:</span>
+              </span>
+              <span className="font-bold text-emerald-700 dark:text-emerald-400">
+                +₹{coolerDeposit} (100% Refundable)
+              </span>
             </div>
+
             {couponDiscount > 0 && (
               <div className="flex justify-between text-emerald-700 dark:text-emerald-400 font-bold">
-                <span>Coupon ({couponCode}):</span>
+                <span>Coupon Applied ({couponCode}):</span>
                 <span>-₹{couponDiscount}</span>
               </div>
             )}
+            
             <div className="flex justify-between text-gray-600 dark:text-gray-300">
-              <span>Delivery Fee:</span>
+              <span>Chilled Express Delivery:</span>
               <span>{shippingFee === 0 ? <strong className="text-emerald-700 dark:text-emerald-400">FREE</strong> : `₹${shippingFee}`}</span>
             </div>
+            
             <div className="border-t border-gray-200 dark:border-slate-700 pt-2 flex justify-between items-center text-sm font-black text-gray-950 dark:text-white">
-              <span>Final Total:</span>
-              <span className="text-lg font-black text-[#d11243] dark:text-rose-400">₹{total}</span>
+              <span>Final Total Payable:</span>
+              <span className="text-xl font-black text-[#d11243] dark:text-rose-400">₹{total}</span>
             </div>
           </div>
 
-          {/* Guarantee Pill */}
+          {/* Freshness & Refund Guarantee Notice */}
           <div className="flex items-center gap-2 p-2.5 rounded-lg bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800/80 text-emerald-900 dark:text-emerald-300 text-[11px]">
             <ShieldCheck className="w-4 h-4 text-emerald-700 dark:text-emerald-400 shrink-0" />
             <span>
-              <strong>Freshness Guarantee:</strong> 0°C to 4°C continuous cold-chain monitor. If temperature exceeds 4°C at delivery, 100% money back guaranteed.
+              <strong>0°C to 4°C Guarantee:</strong> Hand over the box to the courier or schedule a 1-click doorstep pickup in your dashboard anytime for an instant ₹250 refund!
             </span>
           </div>
 
-          {/* Submit Action Button */}
+          {/* Action CTA Button */}
           <button
             type="submit"
-            disabled={isSubmitting}
+            disabled={isSubmitting || verifyingPayment}
             className="w-full py-3.5 px-4 rounded-xl bg-[#d11243] hover:bg-[#b80f3b] text-white font-black text-sm flex items-center justify-center gap-2 cursor-pointer shadow-md hover:shadow-lg transition disabled:opacity-50"
           >
-            {isSubmitting ? (
-              <span>Packing Cold Box & Placing Order...</span>
+            {isSubmitting || verifyingPayment ? (
+              <span className="flex items-center gap-2">
+                <RefreshCw className="w-4 h-4 animate-spin" />
+                <span>{verifyingPayment ? 'Verifying with Razorpay...' : 'Initiating Secure Gateway...'}</span>
+              </span>
+            ) : paymentMethod === 'razorpay' ? (
+              <span className="flex items-center gap-2">
+                <span>Pay Now with Razorpay • ₹{total}</span>
+                <ArrowRight className="w-4 h-4" />
+              </span>
             ) : (
-              <span>Place Order • ₹{total}</span>
+              <span className="flex items-center gap-2">
+                <span>Confirm Order (Pay ₹{total} on Delivery)</span>
+                <ArrowRight className="w-4 h-4" />
+              </span>
             )}
           </button>
 

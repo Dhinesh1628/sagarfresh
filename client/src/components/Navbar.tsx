@@ -154,6 +154,20 @@ export const Navbar: React.FC<NavbarProps> = ({
           <div className="flex items-center gap-2 sm:gap-2.5">
             
             <button
+              onClick={() => {
+                if (!user) onOpenAuth('customer');
+                else setCurrentTab('dashboard');
+              }}
+              className={`hidden md:flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-semibold cursor-pointer transition ${
+                currentTab === 'dashboard' 
+                  ? 'bg-rose-50 dark:bg-rose-950/60 text-[#d11243] dark:text-rose-400 border border-rose-200 dark:border-rose-900 shadow-2xs font-bold' 
+                  : 'text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-slate-800'
+              }`}
+            >
+              <span>My Orders</span>
+            </button>
+
+            <button
               onClick={() => setCurrentTab('coolers')}
               className={`hidden sm:flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-semibold cursor-pointer transition ${
                 currentTab === 'coolers' 
@@ -278,6 +292,14 @@ export const Navbar: React.FC<NavbarProps> = ({
                     </div>
 
                     <button
+                      onClick={() => setCurrentTab('dashboard')}
+                      className="w-full text-left px-3 py-2 hover:bg-gray-50 dark:hover:bg-slate-800 hover:text-[#d11243] dark:hover:text-rose-400 font-bold flex items-center justify-between cursor-pointer"
+                    >
+                      <span>My Account & Orders</span>
+                      <span className="px-1.5 py-0.2 bg-rose-50 dark:bg-rose-950/60 text-[#d11243] dark:text-rose-400 rounded text-[10px] font-semibold">Dashboard</span>
+                    </button>
+
+                    <button
                       onClick={() => setCurrentTab('coolers')}
                       className="w-full text-left px-3 py-2 hover:bg-gray-50 dark:hover:bg-slate-800 hover:text-[#d11243] dark:hover:text-rose-400 cursor-pointer"
                     >
@@ -386,6 +408,17 @@ export const Navbar: React.FC<NavbarProps> = ({
             className="w-full text-left py-2 px-3 rounded-lg bg-gray-50 dark:bg-slate-800 text-gray-800 dark:text-gray-200 font-semibold"
           >
             Fresh Cuts Catalog
+          </button>
+          <button
+            onClick={() => { 
+              if (!user) onOpenAuth('customer');
+              else setCurrentTab('dashboard'); 
+              setMobileMenuOpen(false); 
+            }}
+            className="w-full text-left py-2 px-3 rounded-lg bg-gray-50 dark:bg-slate-800 text-gray-800 dark:text-gray-200 font-semibold flex items-center justify-between"
+          >
+            <span>My Orders & Account</span>
+            <span className="text-[10px] px-1.5 py-0.5 rounded bg-rose-100 dark:bg-rose-950 text-[#d11243] font-bold">Dashboard</span>
           </button>
           <button
             onClick={() => { 

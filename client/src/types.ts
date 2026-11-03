@@ -58,35 +58,81 @@ export interface OrderItem {
   quantity: number;
   unit: string;
   netWeight?: string;
-  chillingMethod: string;
+  chillingMethod?: string;
   cutStyle?: string;
   image?: string;
+  imageUrl?: string;
 }
+
+export interface AddressDetails {
+  fullName?: string;
+  phone?: string;
+  email?: string;
+  flatNo?: string;
+  building?: string;
+  street?: string;
+  city?: string;
+  state?: string;
+  pincode?: string;
+  instructions?: string;
+}
+
+export type OrderPipelineStatus = 
+  | 'PENDING'
+  | 'CONFIRMED'
+  | 'PREPARING'
+  | 'QUALITY_CHECK'
+  | 'PACKED'
+  | 'OUT_FOR_DELIVERY'
+  | 'DELIVERED'
+  | 'CANCELLED';
+
+export type PaymentStatus = 'PENDING' | 'PAID' | 'FAILED' | 'REFUNDED' | 'REFUND_PENDING';
+
+export type ColdBoxRefundStatus = 
+  | 'NOT_REQUESTED'
+  | 'REQUESTED'
+  | 'APPROVED'
+  | 'REFUND_PROCESSING'
+  | 'REFUNDED'
+  | 'REJECTED';
 
 export interface Order {
   id: string;
+  orderNumber?: string;
   userId: string;
   customerName: string;
   customerEmail: string;
   customerPhone: string;
   deliveryAddress: string;
+  addressDetails?: AddressDetails;
   city: string;
   items: OrderItem[];
   subtotal: number;
   discountAmount?: number;
-  couponCode?: string;
+  couponCode?: string | null;
   coolerDeposit: number;
   shippingFee: number;
   total: number;
-  status: 'Cold Box Packed' | 'Out for Delivery' | 'Delivered' | 'Cancelled';
+  totalAmount?: number;
+  status: string;
+  orderStatus?: OrderPipelineStatus;
+  paymentMethod: string;
+  paymentStatus?: PaymentStatus;
+  razorpayOrderId?: string;
+  razorpayPaymentId?: string;
+  razorpaySignature?: string;
   coolerId: string;
   coolerModel: string;
+  coldBoxRefundStatus?: ColdBoxRefundStatus;
+  refundId?: string;
+  refundTxnId?: string;
+  refundProcessedAt?: string;
   liveTemp: number;
   deliveryExecutive?: string;
   tempLog: TempLogEntry[];
   deliverySlot: string;
   trackingCode: string;
-  paymentMethod: string;
   createdAt: string;
   deliveryNotes?: string;
   coolerDetails?: Cooler;
