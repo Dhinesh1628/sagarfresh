@@ -87,6 +87,65 @@ export const LocationSelectorModal: React.FC<LocationSelectorModalProps> = ({
   const [gpsNotice, setGpsNotice] = useState<string | null>(null);
   const [isManualFormOpen, setIsManualFormOpen] = useState(false);
 
+  // Live Swiggy/Zomato-style Places Search Autocomplete
+  const [livePlaces, setLivePlaces] = useState<{
+    id: string;
+    name: string;
+    area: string;
+    city: string;
+    pincode: string;
+    street: string;
+    formattedAddress: string;
+  }[]>([]);
+  const [isSearchingPlaces, setIsSearchingPlaces] = useState(false);
+
+  // Debounced search for places/apartments/colonies across India using OpenStreetMap Nominatim
+  useEffect(() => {
+    if (!searchQuery.trim() || searchQuery.trim().length < 2) {
+      setLivePlaces([]);
+      setIsSearchingPlaces(false);
+      return;
+    }
+
+    const timer = setTimeout(async () => {
+      setIsSearchingPlaces(true);
+      try {
+        const queryWithCountry = `${searchQuery.trim()}, India`;
+        const res = await fetch(
+          `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(queryWithCountry)}&countrycodes=in&addressdetails=1&limit=6`
+        );
+        if (res.ok) {
+          const list = await res.json();
+          const mapped = list.map((item: any) => {
+            const addr = item.address || {};
+            const itemCity = addr.city || addr.town || addr.municipality || addr.state_district || selectedCity || 'Hyderabad';
+            const itemArea = addr.suburb || addr.neighbourhood || addr.residential || addr.road || item.name;
+            const itemPin = addr.postcode || '';
+            const itemRoad = addr.road || '';
+            const shortName = item.name || itemArea || itemCity;
+
+            return {
+              id: `place_${item.place_id || Math.random()}`,
+              name: shortName,
+              area: itemArea,
+              city: itemCity,
+              pincode: itemPin,
+              street: itemRoad || itemArea,
+              formattedAddress: item.display_name
+            };
+          });
+          setLivePlaces(mapped);
+        }
+      } catch (err) {
+        console.warn('Live places search error:', err);
+      } finally {
+        setIsSearchingPlaces(false);
+      }
+    }, 350);
+
+    return () => clearTimeout(timer);
+  }, [searchQuery, selectedCity]);
+
   // Manual Form State
   const [manualTag, setManualTag] = useState<'Home' | 'Work' | 'Other'>('Home');
   const [flatNo, setFlatNo] = useState(currentAddress?.flatNo || '');
@@ -160,12 +219,11 @@ export const LocationSelectorModal: React.FC<LocationSelectorModalProps> = ({
     );
   });
 
-  // Bulletproof IP / Network Fallback when GPS is blocked, disabled or timed out
+  // Fallback to IP-based Geolocation if hardware GPS is not available or timed out
   const fallbackIpLocation = async () => {
     try {
-      setGpsNotice('Connecting to network telemetry to detect location...');
+      setGpsNotice('Acquiring location telemetry from network...');
       
-      // Try BigDataCloud reverse geocode client (detects exact locality, city and state)
       const res = await fetch('https://api.bigdatacloud.net/data/reverse-geocode-client?localityLanguage=en');
       if (res.ok) {
         const data = await res.json();
@@ -189,53 +247,17 @@ export const LocationSelectorModal: React.FC<LocationSelectorModalProps> = ({
 
         onSelectAddress(newAddr);
         onCityChange(cityDetected);
-        setGpsNotice(`✓ Automatically Detected: ${localityDetected}, ${cityDetected}`);
+        setGpsNotice(`✓ Detected Locality: ${localityDetected}, ${cityDetected}`);
         setIsDetectingGps(false);
         setTimeout(() => {
           onClose();
-        }, 800);
+        }, 900);
         return;
       }
     } catch (e) {
-      console.warn('BigDataCloud fallback error, trying ipwhois...', e);
+      console.warn('Network location fallback error:', e);
     }
 
-    try {
-      // Second fallback: ipwhois
-      const res2 = await fetch('https://ipwhois.app/json/');
-      if (res2.ok) {
-        const data2 = await res2.json();
-        const cityDetected = data2.city || 'Hyderabad';
-        const stateDetected = data2.region || 'Telangana';
-        const pinDetected = cityDetected.toLowerCase().includes('hyderabad') ? '500033' : '560038';
-
-        const newAddr: DeliveryAddress = {
-          id: `addr_ip_${Date.now()}`,
-          tag: 'Home',
-          flatNo: 'Current Location',
-          building: `${data2.isp || 'Broadband'} Network`,
-          street: `${cityDetected} Center`,
-          area: cityDetected,
-          city: cityDetected,
-          state: stateDetected,
-          pincode: pinDetected,
-          formattedAddress: `${cityDetected}, ${stateDetected} ${pinDetected}`
-        };
-
-        onSelectAddress(newAddr);
-        onCityChange(cityDetected);
-        setGpsNotice(`✓ Detected: ${cityDetected}, ${stateDetected}`);
-        setIsDetectingGps(false);
-        setTimeout(() => {
-          onClose();
-        }, 800);
-        return;
-      }
-    } catch (e2) {
-      console.error('All IP location fallbacks failed:', e2);
-    }
-
-    // Safe fallback to active city
     setIsDetectingGps(false);
     const fallbackCity = selectedCity || 'Hyderabad';
     const fallbackArea = fallbackCity === 'Hyderabad' ? 'Jubilee Hills' : 'Indiranagar';
@@ -253,110 +275,135 @@ export const LocationSelectorModal: React.FC<LocationSelectorModalProps> = ({
     };
     onSelectAddress(fallbackAddr);
     onCityChange(fallbackCity);
-    setGpsNotice(`✓ Set to ${fallbackArea}, ${fallbackCity}`);
+    setGpsNotice(`✓ Set Location: ${fallbackArea}, ${fallbackCity}`);
     setTimeout(() => {
       onClose();
-    }, 800);
+    }, 900);
   };
 
-  // Handle GPS detection with high speed and automatic fallback
-  const handleDetectLocation = () => {
+  // Handle GPS detection matching Swiggy & Zomato high-accuracy standards
+  const handleDetectLocation = async () => {
     setIsDetectingGps(true);
-    setGpsNotice('Detecting live location coordinates...');
+    setGpsNotice('Requesting GPS coordinates... Please click "Allow" on your browser prompt.');
 
     if (!navigator.geolocation) {
       fallbackIpLocation();
       return;
     }
 
-    let resolved = false;
-
-    // Safety timeout: if browser prompt is slow or ignored for 4s, auto-fallback to IP location
-    const safetyTimer = setTimeout(() => {
-      if (!resolved) {
-        resolved = true;
-        fallbackIpLocation();
-      }
-    }, 4000);
+    // Check Permissions API if supported in browser
+    if ('permissions' in navigator) {
+      try {
+        const perm = await (navigator.permissions as any).query({ name: 'geolocation' });
+        if (perm.state === 'denied') {
+          setGpsNotice('⚠️ Location access is blocked in your browser. Click the lock/site icon (🔒) in your address bar, switch Location to "Allow", and click GPS Detect again, or search your area below.');
+          setIsDetectingGps(false);
+          return;
+        }
+      } catch (e) {}
+    }
 
     navigator.geolocation.getCurrentPosition(
       async (pos) => {
-        if (resolved) return;
-        resolved = true;
-        clearTimeout(safetyTimer);
-
         const lat = pos.coords.latitude;
         const lon = pos.coords.longitude;
+        const accuracy = Math.round(pos.coords.accuracy || 15);
+        setGpsNotice(`✓ GPS Acquired (±${accuracy}m accuracy). Resolving doorstep street & colony...`);
 
         try {
-          // Reverse-geocode coordinates to actual street and locality
-          const res = await fetch(`https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${lat}&longitude=${lon}&localityLanguage=en`);
+          // Reverse-geocode coordinates using OpenStreetMap Nominatim for exact street, colony & pincode
+          const res = await fetch(`https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${lat}&lon=${lon}&zoom=18&addressdetails=1`);
           if (res.ok) {
             const data = await res.json();
-            const cityDetected = data.city || data.principalSubdivision || selectedCity || 'Hyderabad';
-            const localityDetected = data.locality || data.principalSubdivision || cityDetected;
-            const stateDetected = data.principalSubdivision || 'Telangana';
-            const pinDetected = data.postcode || (cityDetected.toLowerCase().includes('hyderabad') ? '500033' : '560038');
+            const addr = data.address || {};
+            const detectedRoad = addr.road || addr.pedestrian || '';
+            const detectedArea = addr.suburb || addr.neighbourhood || addr.residential || addr.village || addr.city_district || 'Current Location';
+            const detectedCity = addr.city || addr.town || addr.municipality || addr.state_district || selectedCity || 'Hyderabad';
+            const detectedState = addr.state || 'Telangana';
+            const detectedPin = addr.postcode || (detectedCity.toLowerCase().includes('hyderabad') ? '500033' : '560038');
+
+            const fullFormatted = data.display_name || [detectedRoad, detectedArea, detectedCity, detectedState, detectedPin].filter(Boolean).join(', ');
 
             const newAddr: DeliveryAddress = {
               id: `addr_gps_${Date.now()}`,
               tag: 'Home',
               flatNo: 'Current Location',
-              building: `GPS (${lat.toFixed(3)}, ${lon.toFixed(3)})`,
-              street: `${localityDetected}, ${cityDetected}`,
-              area: localityDetected,
-              city: cityDetected,
-              state: stateDetected,
-              pincode: pinDetected,
-              formattedAddress: `${localityDetected}, ${cityDetected}, ${stateDetected} ${pinDetected}`
+              building: detectedRoad || detectedArea,
+              street: detectedRoad ? `${detectedRoad}, ${detectedArea}` : detectedArea,
+              area: detectedArea,
+              city: detectedCity,
+              state: detectedState,
+              pincode: detectedPin,
+              formattedAddress: fullFormatted
             };
 
             onSelectAddress(newAddr);
-            onCityChange(cityDetected);
-            setGpsNotice(`✓ GPS Location Detected: ${localityDetected}, ${cityDetected}`);
+            onCityChange(detectedCity);
+            setGpsNotice(`✓ Exact Doorstep Location: ${detectedRoad ? detectedRoad + ', ' : ''}${detectedArea}, ${detectedCity} ${detectedPin ? `(${detectedPin})` : ''}`);
             setIsDetectingGps(false);
             setTimeout(() => {
               onClose();
-            }, 800);
+            }, 900);
             return;
           }
         } catch (err) {
-          console.warn('Reverse geocode error:', err);
+          console.warn('Nominatim reverse geocode error, trying BigDataCloud...', err);
         }
 
-        // Standard GPS fallback
-        const detectedCity = selectedCity || 'Hyderabad';
-        const detectedArea = detectedCity === 'Hyderabad' ? 'Jubilee Hills' : 'Indiranagar';
-        const detectedPin = detectedCity === 'Hyderabad' ? '500033' : '560038';
+        // Secondary reverse geocode via BigDataCloud
+        try {
+          const res2 = await fetch(`https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${lat}&longitude=${lon}&localityLanguage=en`);
+          if (res2.ok) {
+            const data2 = await res2.json();
+            const detectedCity = data2.city || data2.principalSubdivision || selectedCity || 'Hyderabad';
+            const detectedArea = data2.locality || data2.principalSubdivision || detectedCity;
+            const detectedState = data2.principalSubdivision || 'Telangana';
+            const detectedPin = data2.postcode || '500033';
 
-        const newAddr: DeliveryAddress = {
-          id: `addr_gps_${Date.now()}`,
-          tag: 'Home',
-          flatNo: 'Current Location',
-          building: `GPS (${lat.toFixed(4)}, ${lon.toFixed(4)})`,
-          street: detectedArea,
-          area: detectedArea,
-          city: detectedCity,
-          pincode: detectedPin,
-          formattedAddress: `${detectedArea}, ${detectedCity} ${detectedPin} (GPS Verified)`
-        };
+            const newAddr: DeliveryAddress = {
+              id: `addr_gps_${Date.now()}`,
+              tag: 'Home',
+              flatNo: 'Current Location',
+              building: `GPS (${lat.toFixed(4)}, ${lon.toFixed(4)})`,
+              street: `${detectedArea}, ${detectedCity}`,
+              area: detectedArea,
+              city: detectedCity,
+              state: detectedState,
+              pincode: detectedPin,
+              formattedAddress: `${detectedArea}, ${detectedCity}, ${detectedState} ${detectedPin}`
+            };
 
-        onSelectAddress(newAddr);
-        onCityChange(detectedCity);
-        setGpsNotice(`✓ Detected: ${detectedArea}, ${detectedCity}`);
+            onSelectAddress(newAddr);
+            onCityChange(detectedCity);
+            setGpsNotice(`✓ Detected: ${detectedArea}, ${detectedCity}`);
+            setIsDetectingGps(false);
+            setTimeout(() => {
+              onClose();
+            }, 900);
+            return;
+          }
+        } catch (e2) {}
+
         setIsDetectingGps(false);
-        setTimeout(() => {
-          onClose();
-        }, 800);
       },
       (err) => {
-        if (resolved) return;
-        resolved = true;
-        clearTimeout(safetyTimer);
-        console.warn('Browser GPS permission declined or timeout:', err?.message);
-        fallbackIpLocation();
+        setIsDetectingGps(false);
+        if (err.code === 1) {
+          // PERMISSION_DENIED
+          setGpsNotice('⚠️ Location permission is blocked in your browser. Click the lock 🔒 icon next to your URL bar, set Location to "Allow", and click GPS Detect again, or search your area below.');
+        } else if (err.code === 2) {
+          // POSITION_UNAVAILABLE
+          setGpsNotice('⚠️ Device GPS signal unavailable. Auto-detected approximate area via network telemetry.');
+          fallbackIpLocation();
+        } else if (err.code === 3) {
+          // TIMEOUT
+          setGpsNotice('⚠️ GPS timed out. Auto-detected approximate area via network telemetry.');
+          fallbackIpLocation();
+        } else {
+          fallbackIpLocation();
+        }
       },
-      { enableHighAccuracy: false, timeout: 4500, maximumAge: 300000 }
+      { enableHighAccuracy: true, timeout: 15000, maximumAge: 0 }
     );
   };
 
@@ -500,10 +547,68 @@ export const LocationSelectorModal: React.FC<LocationSelectorModalProps> = ({
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Search area, landmark, apartment, or pincode..."
+              placeholder="Search apartment, colony, road, landmark, or pincode..."
               className="w-full pl-10 pr-3.5 py-2.5 rounded-xl bg-gray-50 dark:bg-slate-800/80 border border-gray-200 dark:border-slate-700 text-xs text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:border-[#d11243]"
             />
           </div>
+
+          {/* Live Search Spinner & Results (Swiggy / Zomato Real-Time Geocoding) */}
+          {isSearchingPlaces && (
+            <div className="p-3 text-center text-xs text-gray-500 dark:text-gray-400 flex items-center justify-center gap-2 bg-gray-50/60 dark:bg-slate-800/40 rounded-xl border border-gray-100 dark:border-slate-800">
+              <div className="w-3.5 h-3.5 border-2 border-[#d11243] border-t-transparent rounded-full animate-spin" />
+              <span>Searching live places & landmarks across India...</span>
+            </div>
+          )}
+
+          {livePlaces.length > 0 && (
+            <div className="space-y-2">
+              <span className="text-[10px] font-extrabold uppercase tracking-wider text-[#d11243] flex items-center gap-1">
+                <Sparkles className="w-3 h-3 text-[#d11243]" />
+                <span>Live Location Matches for "{searchQuery}":</span>
+              </span>
+              <div className="space-y-1.5 max-h-56 overflow-y-auto pr-1">
+                {livePlaces.map((place) => (
+                  <div
+                    key={place.id}
+                    onClick={() => {
+                      const newAddr: DeliveryAddress = {
+                        id: `addr_${Date.now()}`,
+                        tag: 'Home',
+                        flatNo: '',
+                        building: place.name,
+                        street: place.street || place.area,
+                        area: place.area,
+                        city: place.city,
+                        pincode: place.pincode,
+                        formattedAddress: place.formattedAddress
+                      };
+                      onSelectAddress(newAddr);
+                      onCityChange(place.city);
+                      onClose();
+                    }}
+                    className="p-3 rounded-xl border border-rose-100 dark:border-rose-950/60 bg-white dark:bg-slate-900 hover:border-[#d11243] hover:bg-rose-50/40 dark:hover:bg-rose-950/20 flex items-start justify-between gap-3 cursor-pointer transition shadow-2xs group"
+                  >
+                    <div className="flex items-start gap-2.5">
+                      <div className="p-1.5 rounded-lg bg-rose-50 dark:bg-rose-950/60 text-[#d11243] shrink-0 mt-0.5 group-hover:scale-110 transition-transform">
+                        <MapPin className="w-4 h-4" />
+                      </div>
+                      <div>
+                        <span className="font-extrabold text-xs text-gray-900 dark:text-white block group-hover:text-[#d11243] transition-colors">
+                          {place.name}
+                        </span>
+                        <span className="text-[11px] text-gray-500 dark:text-gray-400 line-clamp-2 mt-0.5 leading-relaxed">
+                          {place.formattedAddress}
+                        </span>
+                      </div>
+                    </div>
+                    <span className="text-[10px] px-2.5 py-1 bg-[#d11243] text-white rounded-lg font-bold shrink-0 shadow-2xs group-hover:opacity-90">
+                      Deliver Here &rarr;
+                    </span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
 
           {/* City Quick Pills */}
           <div className="space-y-1.5">
