@@ -692,6 +692,87 @@ app.get('/api/admin/metrics', authenticate, requireAdmin, (req, res) => {
   });
 });
 
+// Admin Customer Management
+app.get('/api/admin/users', authenticate, requireAdmin, (req, res) => {
+  const users = db.get('users').map(u => {
+    const { password, ...userWithoutPw } = u;
+    const userOrders = db.get('orders').filter(o => o.userId === u.id || o.customerEmail === u.email);
+    const totalSpent = userOrders.reduce((sum, o) => sum + (o.paymentStatus === 'PAID' ? (o.total || o.subtotal || 0) : 0), 0);
+    return {
+      ...userWithoutPw,
+      totalOrders: userOrders.length,
+      totalSpent
+    };
+  });
+  res.json(users);
+});
+
+// Admin Fleet: Register New Cooler
+app.post('/api/coolers', authenticate, requireAdmin, (req, res) => {
+  const { id, qrCode, model, depositAmount, assignedHub } = req.body;
+  if (!id) return res.status(400).json({ error: 'Cooler ID is required (e.g. BOX-BLR-109)' });
+  
+  const existing = db.findById('coolers', id);
+  if (existing) return res.status(409).json({ error: 'Cooler ID already exists' });
+  
+  const newCooler = {
+    id,
+    qrCode: qrCode || `SAGAR-${id}`,
+    model: model || 'ThermalVault 18L - Reusable EPP Cold-Gel Box',
+    status: 'available',
+    currentOrderId: null,
+    currentUserId: null,
+    currentUserName: null,
+    cyclesUsed: 0,
+    lastSanitizedDate: new Date().toISOString().split('T')[0],
+    depositAmount: depositAmount || 250,
+    maxHoldingHours: 36,
+    assignedHub: assignedHub || 'Bengaluru Central Hub Depot'
+  };
+  
+  db.insert('coolers', newCooler);
+  res.status(201).json(newCooler);
+});
+
+// Admin Fleet: Update Cooler Status / Sanitation cycle
+app.patch('/api/coolers/:id/status', authenticate, requireAdmin, (req, res) => {
+  const { status, assignedHub } = req.body;
+  const cooler = db.findById('coolers', req.params.id);
+  if (!cooler) return res.status(404).json({ error: 'Cooler not found' });
+  
+  const updates = { status };
+  if (status === 'available') {
+    updates.lastSanitizedDate = new Date().toISOString().split('T')[0];
+    updates.cyclesUsed = (cooler.cyclesUsed || 0) + 1;
+  }
+  if (assignedHub) updates.assignedHub = assignedHub;
+  
+  const updated = db.update('coolers', req.params.id, updates);
+  res.json(updated);
+});
+
+// Admin Courier & Fleet Assignment for Order
+app.patch('/api/orders/:id/courier', authenticate, requireAdmin, (req, res) => {
+  const { deliveryExecutive, coolerId } = req.body;
+  const order = db.findById('orders', req.params.id);
+  if (!order) return res.status(404).json({ error: 'Order not found' });
+  
+  const updates = {};
+  if (deliveryExecutive) updates.deliveryExecutive = deliveryExecutive;
+  if (coolerId) {
+    updates.coolerId = coolerId;
+    db.update('coolers', coolerId, {
+      status: 'assigned',
+      currentOrderId: order.id,
+      currentUserId: order.userId,
+      currentUserName: order.customerName
+    });
+  }
+  
+  const updated = db.update('orders', req.params.id, updates);
+  res.json(updated);
+});
+
 const isDirectRun = process.argv[1] && fileURLToPath(import.meta.url) === path.resolve(process.argv[1]);
 
 if (!process.env.VERCEL && isDirectRun) {

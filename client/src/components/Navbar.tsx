@@ -11,11 +11,13 @@ import {
   User as UserIcon,
   ShieldAlert,
   Sun,
-  Moon
+  Moon,
+  ChevronDown
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { useCart } from '../context/CartContext';
 import { useTheme } from '../context/ThemeContext';
+import type { DeliveryAddress } from '../types';
 
 interface NavbarProps {
   currentTab: string;
@@ -25,6 +27,8 @@ interface NavbarProps {
   setSelectedCity: (city: string) => void;
   searchQuery: string;
   setSearchQuery: (query: string) => void;
+  currentAddress?: DeliveryAddress;
+  onOpenLocationModal?: () => void;
 }
 
 export const Navbar: React.FC<NavbarProps> = ({
@@ -34,7 +38,9 @@ export const Navbar: React.FC<NavbarProps> = ({
   selectedCity,
   setSelectedCity,
   searchQuery,
-  setSearchQuery
+  setSearchQuery,
+  currentAddress,
+  onOpenLocationModal
 }) => {
   const { user, logout } = useAuth();
   const { totalItems, subtotal, setIsCartOpen } = useCart();
@@ -112,28 +118,39 @@ export const Navbar: React.FC<NavbarProps> = ({
             </div>
 
             {/* Location Selector */}
-            <div className="hidden lg:flex items-center gap-1.5 pl-3 border-l border-gray-200 dark:border-slate-800 text-xs">
-              <MapPin className="w-4 h-4 text-[#d11243] shrink-0" />
-              <div>
+            <button
+              onClick={onOpenLocationModal}
+              className="hidden lg:flex items-center gap-2 pl-3 py-1 px-2.5 rounded-xl border-l border-gray-200 dark:border-slate-800 hover:bg-gray-50 dark:hover:bg-slate-800 text-xs transition cursor-pointer text-left group"
+              title="Click to enter custom delivery address or detect location"
+              type="button"
+            >
+              <div className="p-1.5 rounded-lg bg-rose-50 dark:bg-rose-950/60 text-[#d11243] group-hover:scale-110 transition-transform shrink-0">
+                <MapPin className="w-4 h-4" />
+              </div>
+              <div className="leading-tight">
                 <div className="flex items-center gap-1">
-                  <select
-                    value={selectedCity}
-                    onChange={(e) => setSelectedCity(e.target.value)}
-                    className="font-bold text-gray-900 dark:text-white bg-transparent cursor-pointer focus:outline-none"
-                  >
-                    {indianCities.map(c => (
-                      <option key={c.name} value={c.name} className="dark:bg-slate-900 dark:text-white">{c.name}</option>
-                    ))}
-                  </select>
-                  <span className="text-gray-400">•</span>
-                  <span className="text-gray-500 dark:text-gray-400 font-medium truncate max-w-[140px]">{currentLocality}</span>
+                  <span className="font-extrabold text-gray-900 dark:text-white group-hover:text-[#d11243] transition-colors">
+                    {currentAddress ? (
+                      currentAddress.tag === 'Home' || currentAddress.tag === 'Work' 
+                        ? `${currentAddress.tag} • ${currentAddress.city}`
+                        : (currentAddress.area || currentAddress.city)
+                    ) : selectedCity}
+                  </span>
+                  <ChevronDown className="w-3.5 h-3.5 text-gray-400 group-hover:text-[#d11243] transition-transform group-hover:translate-y-0.5" />
                 </div>
-                <div className="text-[10px] text-emerald-700 dark:text-emerald-400 font-semibold flex items-center gap-1">
-                  <Zap className="w-2.5 h-2.5 fill-emerald-600 text-emerald-600 dark:fill-emerald-400 dark:text-emerald-400" />
-                  <span>Express in 90 Mins Available</span>
+                <div className="flex items-center gap-1.5 mt-0.5">
+                  <span className="text-gray-600 dark:text-gray-300 font-medium truncate max-w-[190px] text-[11px]">
+                    {currentAddress ? (
+                      currentAddress.formattedAddress || `${currentAddress.flatNo ? currentAddress.flatNo + ', ' : ''}${currentAddress.area || currentAddress.street}`
+                    ) : currentLocality}
+                  </span>
+                  <span className="w-1 h-1 rounded-full bg-emerald-500 shrink-0" />
+                  <span className="text-[10px] text-emerald-600 dark:text-emerald-400 font-bold whitespace-nowrap">
+                    90 Mins
+                  </span>
                 </div>
               </div>
-            </div>
+            </button>
           </div>
 
           {/* Search Bar */}
@@ -379,7 +396,7 @@ export const Navbar: React.FC<NavbarProps> = ({
       {/* Mobile Drawer */}
       {mobileMenuOpen && (
         <div className="md:hidden px-4 pt-2 pb-4 bg-white dark:bg-slate-900 border-b border-gray-200 dark:border-slate-800 space-y-2 text-xs">
-          <div className="pb-2 border-b border-gray-100 dark:border-slate-800">
+          <div className="pb-2 border-b border-gray-100 dark:border-slate-800 space-y-2">
             <input
               type="text"
               value={searchQuery}
@@ -387,6 +404,29 @@ export const Navbar: React.FC<NavbarProps> = ({
               placeholder="Search chicken, fish, mutton..."
               className="w-full px-3 py-2 rounded-lg bg-gray-100 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 text-gray-800 dark:text-gray-100 text-xs"
             />
+            {/* Mobile Location Selector */}
+            <button
+              onClick={() => {
+                onOpenLocationModal?.();
+                setMobileMenuOpen(false);
+              }}
+              className="w-full flex items-center justify-between p-2.5 rounded-xl bg-rose-50/60 dark:bg-rose-950/40 border border-rose-200/80 dark:border-rose-900/60 text-left text-xs"
+              type="button"
+            >
+              <div className="flex items-center gap-2">
+                <MapPin className="w-4 h-4 text-[#d11243] shrink-0" />
+                <div>
+                  <div className="font-bold text-gray-900 dark:text-white flex items-center gap-1">
+                    <span>Deliver to: {currentAddress?.tag || currentAddress?.city || selectedCity}</span>
+                    <span className="text-[10px] font-semibold text-emerald-600 dark:text-emerald-400">• 90 Mins</span>
+                  </div>
+                  <div className="text-[11px] text-gray-600 dark:text-gray-300 truncate max-w-[240px]">
+                    {currentAddress ? (currentAddress.formattedAddress || `${currentAddress.flatNo ? currentAddress.flatNo + ', ' : ''}${currentAddress.area || currentAddress.street}`) : currentLocality}
+                  </div>
+                </div>
+              </div>
+              <span className="text-[11px] font-bold text-[#d11243] underline shrink-0">Change</span>
+            </button>
           </div>
 
           {/* Theme Toggle in Mobile */}

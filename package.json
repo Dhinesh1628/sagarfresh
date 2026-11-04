@@ -21,6 +21,7 @@
     "google-auth-library": "^11.3.2",
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^9.11.4",
+    "pptxgenjs": "^4.0.1",
     "puppeteer-core": "^25.16.0",
     "razorpay": "^2.9.8",
     "uuid": "^11.1.0"

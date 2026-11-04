@@ -13,6 +13,9 @@ export interface User {
   googleId?: string;
   authProvider?: 'local' | 'google';
   emailVerified?: boolean;
+  totalOrders?: number;
+  totalSpent?: number;
+  createdAt?: string;
 }
 
 export interface Product {
@@ -75,6 +78,19 @@ export interface AddressDetails {
   state?: string;
   pincode?: string;
   instructions?: string;
+}
+
+export interface DeliveryAddress {
+  id: string;
+  tag: 'Home' | 'Work' | 'Other';
+  flatNo: string;
+  building?: string;
+  street: string;
+  area: string;
+  city: string;
+  state?: string;
+  pincode: string;
+  formattedAddress: string;
 }
 
 export type OrderPipelineStatus = 

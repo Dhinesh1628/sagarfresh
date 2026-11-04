@@ -8,20 +8,30 @@ interface GlassmorphicLoginGateProps {
   isOpen?: boolean;
   onCloseModal?: () => void;
   isModalMode?: boolean;
+  roleHint?: 'customer' | 'admin';
 }
 
 export const GlassmorphicLoginGate: React.FC<GlassmorphicLoginGateProps> = ({
   onUnlockGuest,
   isOpen = true,
   onCloseModal,
-  isModalMode = false
+  isModalMode = false,
+  roleHint
 }) => {
   const { login, register } = useAuth();
   const [mode, setMode] = useState<'login' | 'register'>('login');
-  const [identifier, setIdentifier] = useState('');
-  const [password, setPassword] = useState('');
+  const [identifier, setIdentifier] = useState(roleHint === 'admin' ? 'ops@gomeat.in' : '');
+  const [password, setPassword] = useState(roleHint === 'admin' ? 'admin123' : '');
   const [showPassword, setShowPassword] = useState(false);
   const [rememberMe, setRememberMe] = useState(true);
+
+  React.useEffect(() => {
+    if (isOpen && roleHint === 'admin') {
+      setIdentifier('ops@gomeat.in');
+      setPassword('admin123');
+      setMode('login');
+    }
+  }, [isOpen, roleHint]);
 
   // Registration fields
   const [regName, setRegName] = useState('');

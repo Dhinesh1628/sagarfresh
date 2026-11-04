@@ -674,7 +674,7 @@ export const OrderTrackingPage: React.FC<OrderTrackingPageProps> = ({ onNavigate
                 </span>
                 <p className="font-bold text-gray-900 dark:text-white">{currentOrder.customerName}</p>
                 <p className="text-gray-600 dark:text-gray-400 text-[11px] leading-relaxed">
-                  {currentOrder.deliveryAddress}
+                  {typeof currentOrder.deliveryAddress === 'object' && currentOrder.deliveryAddress !== null ? `${(currentOrder.deliveryAddress as any).flatNo || (currentOrder.deliveryAddress as any).line1 || ''} ${(currentOrder.deliveryAddress as any).street || ''}, ${(currentOrder.deliveryAddress as any).city || ''}` : String(currentOrder.deliveryAddress || '')}
                 </p>
                 {currentOrder.deliveryNotes && (
                   <p className="text-[10px] text-amber-700 dark:text-amber-400 italic pt-1">

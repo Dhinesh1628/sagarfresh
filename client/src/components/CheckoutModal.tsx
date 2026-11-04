@@ -22,13 +22,15 @@ import {
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
 import { api } from '../api';
-import type { Order } from '../types';
+import type { Order, DeliveryAddress } from '../types';
 
 interface CheckoutModalProps {
   isOpen: boolean;
   onClose: () => void;
   onOrderSuccess: (order: Order) => void;
   selectedCity: string;
+  currentAddress?: DeliveryAddress | null;
+  onOpenLocationModal?: () => void;
 }
 
 declare global {
@@ -41,7 +43,9 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
   isOpen,
   onClose,
   onOrderSuccess,
-  selectedCity
+  selectedCity,
+  currentAddress,
+  onOpenLocationModal
 }) => {
   const { items, subtotal, coolerDeposit, shippingFee, couponCode, couponDiscount, total, clearCart } = useCart();
   const { user, refreshUser } = useAuth();
@@ -49,16 +53,35 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
   // Contact Info State
   const [fullName, setFullName] = useState(user?.name || '');
   const [email, setEmail] = useState(user?.email || '');
-  const [phone, setPhone] = useState(user?.phone || '+91 98765 43210');
+  const [phone, setPhone] = useState(user?.phone || '');
 
-  // Address State
-  const [addressType, setAddressType] = useState<'home' | 'work' | 'other'>('home');
-  const [flatNo, setFlatNo] = useState('Flat 402, Tower B');
-  const [building, setBuilding] = useState('Alpine Eco Apartments');
-  const [street, setStreet] = useState('Outer Ring Road, Doddanekkundi');
-  const [city, setCity] = useState(selectedCity || 'Bengaluru');
-  const [state, setState] = useState('Karnataka');
-  const [pincode, setPincode] = useState('560037');
+  // Address State - pre-filled from customer's current selected address or user profile
+  const [addressType, setAddressType] = useState<'home' | 'work' | 'other'>(
+    (currentAddress?.tag?.toLowerCase() as any) || 'home'
+  );
+  const [flatNo, setFlatNo] = useState(currentAddress?.flatNo || '');
+  const [building, setBuilding] = useState(currentAddress?.building || '');
+  const [street, setStreet] = useState(
+    currentAddress ? [currentAddress.street, currentAddress.area].filter(Boolean).join(', ') : ''
+  );
+  const [city, setCity] = useState(currentAddress?.city || selectedCity || 'Bengaluru');
+  const [state, setState] = useState(currentAddress?.state || 'Karnataka');
+  const [pincode, setPincode] = useState(currentAddress?.pincode || '');
+
+  // Sync with currentAddress when it changes
+  useEffect(() => {
+    if (currentAddress) {
+      if (currentAddress.flatNo) setFlatNo(currentAddress.flatNo);
+      if (currentAddress.building) setBuilding(currentAddress.building);
+      if (currentAddress.street || currentAddress.area) {
+        setStreet([currentAddress.street, currentAddress.area].filter(Boolean).join(', '));
+      }
+      if (currentAddress.city) setCity(currentAddress.city);
+      if (currentAddress.state) setState(currentAddress.state);
+      if (currentAddress.pincode) setPincode(currentAddress.pincode);
+      if (currentAddress.tag) setAddressType(currentAddress.tag.toLowerCase() as any);
+    }
+  }, [currentAddress]);
 
   // Delivery Slot State
   const [slotMode, setSlotMode] = useState<'express' | 'scheduled'>('express');
@@ -548,34 +571,48 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
 
           {/* Section 3: Delivery Address */}
           <div className="space-y-3">
-            <div className="flex items-center justify-between">
+            <div className="flex flex-wrap items-center justify-between gap-2">
               <label className="text-xs font-black uppercase text-gray-900 dark:text-white flex items-center gap-1.5">
                 <MapPin className="w-3.5 h-3.5 text-[#d11243]" />
                 <span>3. Delivery Address</span>
               </label>
-              <div className="flex gap-1.5">
-                {[
-                  { id: 'home', label: 'Home', icon: Home },
-                  { id: 'work', label: 'Work', icon: Briefcase },
-                  { id: 'other', label: 'Other', icon: Building }
-                ].map(item => {
-                  const Icon = item.icon;
-                  return (
-                    <button
-                      key={item.id}
-                      type="button"
-                      onClick={() => setAddressType(item.id as any)}
-                      className={`px-2 py-0.5 rounded-md text-[10px] font-bold flex items-center gap-1 transition ${
-                        addressType === item.id
-                          ? 'bg-[#d11243] text-white'
-                          : 'bg-gray-100 dark:bg-slate-800 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-slate-700'
-                      }`}
-                    >
-                      <Icon className="w-3 h-3" />
-                      <span>{item.label}</span>
-                    </button>
-                  );
-                })}
+
+              <div className="flex items-center gap-2">
+                {onOpenLocationModal && (
+                  <button
+                    type="button"
+                    onClick={onOpenLocationModal}
+                    className="text-[11px] font-bold text-[#d11243] hover:underline cursor-pointer flex items-center gap-1"
+                  >
+                    <span>Change / Saved Addresses</span>
+                    <ArrowRight className="w-3 h-3" />
+                  </button>
+                )}
+
+                <div className="flex gap-1.5">
+                  {[
+                    { id: 'home', label: 'Home', icon: Home },
+                    { id: 'work', label: 'Work', icon: Briefcase },
+                    { id: 'other', label: 'Other', icon: Building }
+                  ].map(item => {
+                    const Icon = item.icon;
+                    return (
+                      <button
+                        key={item.id}
+                        type="button"
+                        onClick={() => setAddressType(item.id as any)}
+                        className={`px-2 py-0.5 rounded-md text-[10px] font-bold flex items-center gap-1 transition ${
+                          addressType === item.id
+                            ? 'bg-[#d11243] text-white'
+                            : 'bg-gray-100 dark:bg-slate-800 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-slate-700'
+                        }`}
+                      >
+                        <Icon className="w-3 h-3" />
+                        <span>{item.label}</span>
+                      </button>
+                    );
+                  })}
+                </div>
               </div>
             </div>
 

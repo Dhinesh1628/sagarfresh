@@ -20,3 +20,20 @@ yarn-error.log*
 .env.local
 .env.production
 .vercel/
+
+# Scratch & temporary test scripts
+test-*.js
+test-*.cjs
+debug-*.cjs
+*.png
+screenshots/
+diagrams/
+generate_*.js
+build_*.js
+create_*.js
+capture_*.js
+~$*
+presentation.html
+presentation_v2.html
+GoMeat_Engineering_Presentation.*
+GoMeat_Full_Production_Presentation.*

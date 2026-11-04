@@ -14,15 +14,16 @@ import { OrderConfirmationModal } from './components/OrderConfirmationModal';
 import { LegalModal } from './components/LegalModals';
 import { WhatsAppButton } from './components/WhatsAppButton';
 import { GlassmorphicLoginGate } from './components/GlassmorphicLoginGate';
-import type { Order } from './types';
+import { LocationSelectorModal } from './components/LocationSelectorModal';
+import type { Order, DeliveryAddress } from './types';
 
 const MainApp: React.FC = () => {
-  const { user } = useAuth();
+  const { user, loading: authLoading } = useAuth();
   const { isCartOpen, setIsCartOpen } = useCart();
-  const [currentTab, setCurrentTab] = useState<'catalog' | 'tracking' | 'dashboard' | 'coolers' | 'admin'>('catalog');
-  const [selectedCity, setSelectedCity] = useState('Bengaluru');
-  const [searchQuery, setSearchQuery] = useState('');
-  
+  const [currentTab, setCurrentTab] = useState<'catalog' | 'tracking' | 'dashboard' | 'coolers' | 'admin'>(() => {
+    const hash = typeof window !== 'undefined' ? window.location.hash.replace('#', '') as any : 'catalog';
+    return ['catalog', 'tracking', 'dashboard', 'coolers', 'admin'].includes(hash) ? hash : 'catalog';
+  });
   // Modals and Overlays
   const [isAuthOpen, setIsAuthOpen] = useState(false);
   const [authRoleHint, setAuthRoleHint] = useState<'customer' | 'admin'>('customer');
@@ -31,6 +32,44 @@ const MainApp: React.FC = () => {
   const [isConfirmationOpen, setIsConfirmationOpen] = useState(false);
   const [legalModalType, setLegalModalType] = useState<'tos' | 'privacy' | null>(null);
   const [isAiButcherOpen, setIsAiButcherOpen] = useState(false);
+  const [isLocationModalOpen, setIsLocationModalOpen] = useState(false);
+
+  // Customer Delivery Address State (saved in localStorage)
+  const [currentAddress, setCurrentAddress] = useState<DeliveryAddress>(() => {
+    if (typeof window !== 'undefined') {
+      const saved = localStorage.getItem('gomeat_active_address');
+      if (saved) {
+        try {
+          return JSON.parse(saved);
+        } catch (e) {}
+      }
+    }
+    return {
+      id: 'default_hyd',
+      tag: 'Home',
+      flatNo: 'Road No. 36',
+      building: 'Near Checkpost',
+      street: 'Jubilee Hills',
+      area: 'Jubilee Hills',
+      city: 'Hyderabad',
+      pincode: '500033',
+      formattedAddress: 'Road No. 36, Jubilee Hills, Hyderabad 500033'
+    };
+  });
+
+  const [selectedCity, setSelectedCity] = useState(() => currentAddress?.city || 'Hyderabad');
+  const [searchQuery, setSearchQuery] = useState('');
+
+  const handleSelectAddress = (addr: DeliveryAddress) => {
+    setCurrentAddress(addr);
+    setSelectedCity(addr.city);
+    localStorage.setItem('gomeat_active_address', JSON.stringify(addr));
+  };
+
+  const handleOpenLocationModal = () => {
+    window.history.pushState({ type: 'modal', name: 'location' }, '');
+    setIsLocationModalOpen(true);
+  };
 
   // Synchronize browser history so pressing "Back" retreats by 1 step instead of exiting the website
   useEffect(() => {
@@ -41,6 +80,10 @@ const MainApp: React.FC = () => {
 
     const handlePopState = () => {
       // Step 1: If any overlay or modal is active, dismiss it (retreats 1 step)
+      if (isLocationModalOpen) {
+        setIsLocationModalOpen(false);
+        return;
+      }
       if (isAiButcherOpen) {
         setIsAiButcherOpen(false);
         return;
@@ -77,7 +120,7 @@ const MainApp: React.FC = () => {
 
     window.addEventListener('popstate', handlePopState);
     return () => window.removeEventListener('popstate', handlePopState);
-  }, [isAiButcherOpen, isAuthOpen, isCheckoutOpen, isConfirmationOpen, legalModalType, isCartOpen, currentTab, setIsCartOpen]);
+  }, [isLocationModalOpen, isAiButcherOpen, isAuthOpen, isCheckoutOpen, isConfirmationOpen, legalModalType, isCartOpen, currentTab, setIsCartOpen]);
 
   // Tab switching with history push
   const handleTabChange = (tab: 'catalog' | 'tracking' | 'dashboard' | 'coolers' | 'admin') => {
@@ -94,6 +137,9 @@ const MainApp: React.FC = () => {
 
   const handleCloseAuth = () => {
     setIsAuthOpen(false);
+    if (authRoleHint === 'admin') {
+      setCurrentTab('admin');
+    }
   };
 
   const handleProceedToCheckout = () => {
@@ -148,6 +194,8 @@ const MainApp: React.FC = () => {
         setSelectedCity={setSelectedCity}
         searchQuery={searchQuery}
         setSearchQuery={setSearchQuery}
+        currentAddress={currentAddress}
+        onOpenLocationModal={handleOpenLocationModal}
       />
 
       {/* Main Container */}
@@ -214,15 +262,20 @@ const MainApp: React.FC = () => {
         )}
 
         {currentTab === 'admin' && (
-          user?.role === 'admin' ? (
+          authLoading ? (
+            <div className="flex items-center justify-center py-24 text-xs text-gray-500 font-bold">
+              <div className="animate-spin mr-2 w-4 h-4 border-2 border-[#d11243] border-t-transparent rounded-full" />
+              <span>Verifying Operations Hub credentials...</span>
+            </div>
+          ) : user?.role === 'admin' ? (
             <AdminDashboardPage />
           ) : (
-            <div className="bg-white rounded-xl border border-gray-200 p-8 text-center max-w-md mx-auto my-12 space-y-3">
-              <h3 className="font-bold text-gray-900 text-sm">Operations Admin Authentication Required</h3>
-              <p className="text-xs text-gray-500">Access to the Central Hub Operations Control Room requires verified administrator credentials (ops@gomeat.in / admin123).</p>
+            <div className="bg-white dark:bg-slate-900 rounded-2xl border border-gray-200 dark:border-slate-800 p-8 text-center max-w-md mx-auto my-12 space-y-3">
+              <h3 className="font-bold text-gray-900 dark:text-white text-sm">Operations Admin Authentication Required</h3>
+              <p className="text-xs text-gray-500 dark:text-gray-400">Access to the Central Hub Operations Control Room requires verified administrator credentials (ops@gomeat.in / admin123).</p>
               <button
                 onClick={() => handleOpenAuth('admin')}
-                className="px-4 py-2 bg-gray-900 hover:bg-black text-white rounded-lg font-bold text-xs cursor-pointer shadow-xs"
+                className="px-4 py-2 bg-[#d11243] hover:bg-[#b80f3b] text-white rounded-xl font-bold text-xs cursor-pointer shadow-xs"
               >
                 Sign In as Admin
               </button>
@@ -329,6 +382,18 @@ const MainApp: React.FC = () => {
         onClose={handleCloseCheckout}
         onOrderSuccess={handleOrderSuccess}
         selectedCity={selectedCity}
+        currentAddress={currentAddress}
+        onOpenLocationModal={handleOpenLocationModal}
+      />
+
+      {/* Location Selector Modal */}
+      <LocationSelectorModal
+        isOpen={isLocationModalOpen}
+        onClose={() => setIsLocationModalOpen(false)}
+        currentAddress={currentAddress}
+        onSelectAddress={handleSelectAddress}
+        selectedCity={selectedCity}
+        onCityChange={setSelectedCity}
       />
 
       {/* Order Confirmation & Telemetry Modal (Figma Step 5) */}
@@ -350,6 +415,7 @@ const MainApp: React.FC = () => {
       <GlassmorphicLoginGate
         isOpen={isAuthOpen}
         isModalMode={true}
+        roleHint={authRoleHint}
         onCloseModal={handleCloseAuth}
         onUnlockGuest={handleCloseAuth}
       />

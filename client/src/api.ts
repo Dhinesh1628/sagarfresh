@@ -336,5 +336,48 @@ export const api = {
     });
     if (!res.ok) throw new Error('Failed to load operations metrics');
     return res.json();
+  },
+
+  // Admin Customer Management
+  async getAdminUsers(): Promise<User[]> {
+    const res = await fetch(`${API_BASE}/admin/users`, {
+      headers: getHeaders()
+    });
+    if (!res.ok) throw new Error('Failed to load customer directory');
+    return res.json();
+  },
+
+  // Admin Fleet Controls
+  async createCooler(data: { id: string; qrCode?: string; model?: string; depositAmount?: number; assignedHub?: string }): Promise<Cooler> {
+    const res = await fetch(`${API_BASE}/coolers`, {
+      method: 'POST',
+      headers: getHeaders(),
+      body: JSON.stringify(data)
+    });
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      throw new Error(err.error || 'Failed to register cooler');
+    }
+    return res.json();
+  },
+
+  async updateCoolerStatus(id: string, status: string, assignedHub?: string): Promise<Cooler> {
+    const res = await fetch(`${API_BASE}/coolers/${id}/status`, {
+      method: 'PATCH',
+      headers: getHeaders(),
+      body: JSON.stringify({ status, assignedHub })
+    });
+    if (!res.ok) throw new Error('Failed to update cooler status');
+    return res.json();
+  },
+
+  async assignOrderCourier(id: string, deliveryExecutive: string, coolerId?: string): Promise<Order> {
+    const res = await fetch(`${API_BASE}/orders/${id}/courier`, {
+      method: 'PATCH',
+      headers: getHeaders(),
+      body: JSON.stringify({ deliveryExecutive, coolerId })
+    });
+    if (!res.ok) throw new Error('Failed to assign courier');
+    return res.json();
   }
 };

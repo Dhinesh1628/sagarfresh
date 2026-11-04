@@ -899,7 +899,7 @@ export const CustomerDashboardPage: React.FC<CustomerDashboardPageProps> = ({
               {selectedOrder.razorpayPaymentId && (
                 <div><strong>Razorpay Payment ID:</strong> <span className="font-mono">{selectedOrder.razorpayPaymentId}</span></div>
               )}
-              <div><strong>Delivery Address:</strong> {selectedOrder.deliveryAddress}</div>
+              <div><strong>Delivery Address:</strong> {typeof selectedOrder.deliveryAddress === 'object' && selectedOrder.deliveryAddress !== null ? `${(selectedOrder.deliveryAddress as any).flatNo || (selectedOrder.deliveryAddress as any).line1 || ''} ${(selectedOrder.deliveryAddress as any).street || ''}, ${(selectedOrder.deliveryAddress as any).city || ''}` : String(selectedOrder.deliveryAddress || '')}</div>
               <div><strong>ThermalVault Box ID:</strong> <span className="font-mono">{selectedOrder.coolerId}</span></div>
             </div>
 

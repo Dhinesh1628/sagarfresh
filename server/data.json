@@ -171,7 +171,7 @@
       "imageUrl": "/images/products/prod_5.jpg",
       "__v": 0,
       "createdAt": "2026-10-30T19:00:48.193Z",
-      "updatedAt": "2026-11-03T07:43:50.619Z",
+      "updatedAt": "2026-11-03T07:44:53.363Z",
       "image": "/images/products/prod_5.jpg"
     },
     {
@@ -260,20 +260,6 @@
     }
   ],
   "coolers": [
-    {
-      "id": "BOX-BLR-643",
-      "qrCode": "SAGAR-BOX-BLR-643",
-      "model": "ThermalVault 18L - Reusable EPP Cold-Gel Box",
-      "status": "assigned",
-      "currentOrderId": "GOM-623840",
-      "currentUserId": "guest_0c97693c",
-      "currentUserName": "Customer",
-      "cyclesUsed": 1,
-      "lastSanitizedDate": "2026-11-03",
-      "depositAmount": 250,
-      "maxHoldingHours": 36,
-      "assignedHub": "Bengaluru Regional Hub Depot"
-    },
     {
       "_id": "6ae4e9c6d3dfa1be68125774",
       "id": "BOX-BLR-983",
