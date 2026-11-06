@@ -1,4 +1,4 @@
-import { Product, Order, Cooler, CoolerReturn, AdminMetrics, User } from './types';
+import { Product, Order, Cooler, CoolerReturn, AdminMetrics, User, WalletTransaction } from './types';
 
 const API_BASE = '/api';
 
@@ -140,6 +140,7 @@ export const api = {
     city?: string;
     couponCode?: string | null;
     couponDiscount?: number;
+    useWallet?: boolean;
   }) {
     const res = await fetch(`${API_BASE}/payments/create-order`, {
       method: 'POST',
@@ -298,6 +299,7 @@ export const api = {
     pickupSlot: string;
     notes?: string;
     address?: string;
+    refundPreference?: 'wallet' | 'upi';
   }): Promise<CoolerReturn> {
     const res = await fetch(`${API_BASE}/coolers/request-return`, {
       method: 'POST',
@@ -319,13 +321,22 @@ export const api = {
     return res.json();
   },
 
-  async updateReturnStatus(id: string, status: string, conditionNotes?: string): Promise<CoolerReturn> {
+  async updateReturnStatus(id: string, status: string, conditionNotes?: string, refundPreference?: 'wallet' | 'upi'): Promise<CoolerReturn> {
     const res = await fetch(`${API_BASE}/returns/${id}/status`, {
       method: 'PATCH',
       headers: getHeaders(),
-      body: JSON.stringify({ status, conditionNotes })
+      body: JSON.stringify({ status, conditionNotes, refundPreference })
     });
     if (!res.ok) throw new Error('Failed to update return status');
+    return res.json();
+  },
+
+  // In-App Vault Wallet
+  async getWallet(): Promise<{ balance: number; depositBalance: number; transactions: WalletTransaction[]; upiId: string }> {
+    const res = await fetch(`${API_BASE}/wallet`, {
+      headers: getHeaders()
+    });
+    if (!res.ok) throw new Error('Failed to fetch wallet details');
     return res.json();
   },
 

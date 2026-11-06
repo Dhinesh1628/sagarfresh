@@ -17,7 +17,8 @@ import {
   ArrowRight,
   RefreshCw,
   Info,
-  Banknote
+  Banknote,
+  Wallet
 } from 'lucide-react';
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
@@ -92,6 +93,14 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
   const [instructionTag, setInstructionTag] = useState<string>('Leave with security guard');
   const [customNotes, setCustomNotes] = useState('');
   const [paymentMethod, setPaymentMethod] = useState<'razorpay' | 'cod'>('razorpay');
+
+  // GoMeat In-App Vault Wallet State & Calculations
+  const [useWallet, setUseWallet] = useState<boolean>(true);
+  const userWalletBalance = user?.walletBalance || 0;
+  const isWalletEligible = userWalletBalance > 0;
+  const walletDeduction = (useWallet && isWalletEligible) ? Math.min(userWalletBalance, total) : 0;
+  const finalPayable = Math.max(0, total - walletDeduction);
+  const isFullyWalletPaid = walletDeduction > 0 && finalPayable === 0;
 
   // Processing & Verification States
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -211,14 +220,24 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
       city,
       couponCode: couponCode || null,
       couponDiscount: couponDiscount || 0,
-      paymentMethod
+      paymentMethod,
+      useWallet: useWallet && isWalletEligible
     };
 
     try {
       // 1. Create Order on backend (server calculates prices using MongoDB product records)
       const res = await api.createPaymentOrder(orderPayload);
 
-      // A) Handle Cash on Delivery
+      // A1) Handle 100% Wallet Paid (₹0 out-of-pocket, 1-second instant confirmation bypassing gateway!)
+      if (res.isWalletPaid) {
+        clearCart();
+        await refreshUser();
+        onOrderSuccess(res.order);
+        onClose();
+        return;
+      }
+
+      // A2) Handle Cash on Delivery (with or without partial wallet deduction)
       if (paymentMethod === 'cod' || res.isCod) {
         clearCart();
         await refreshUser();
@@ -723,67 +742,128 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
             </div>
           </div>
 
-          {/* Section 4: Payment Method Selection */}
-          <div className="space-y-3">
-            <label className="text-xs font-black uppercase text-gray-900 dark:text-white flex items-center gap-1.5">
-              <CreditCard className="w-3.5 h-3.5 text-[#d11243]" />
-              <span>4. Select Payment Method</span>
-            </label>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              {/* Online Payment (Razorpay) */}
-              <div
-                onClick={() => setPaymentMethod('razorpay')}
-                className={`p-3.5 rounded-xl border cursor-pointer transition relative ${
-                  paymentMethod === 'razorpay'
-                    ? 'border-[#d11243] bg-rose-50/70 dark:bg-rose-950/40 ring-1 ring-[#d11243]'
-                    : 'border-gray-200 dark:border-slate-800 bg-white dark:bg-slate-800/80 hover:border-gray-300 dark:hover:border-slate-700'
-                }`}
-              >
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2 font-black text-xs text-gray-950 dark:text-white">
-                    <Zap className="w-4 h-4 fill-emerald-500 text-emerald-500" />
-                    <span>Razorpay Online Gateway</span>
-                  </div>
-                  <span className="text-[10px] font-extrabold bg-emerald-600 text-white px-2 py-0.5 rounded-full">
-                    Instant & Secure
-                  </span>
+          {/* GoMeat In-App Vault Wallet Card */}
+          <div className="p-3.5 rounded-xl border border-emerald-200 dark:border-emerald-800/80 bg-emerald-50/70 dark:bg-emerald-950/40 space-y-2">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2.5">
+                <div className="w-9 h-9 rounded-xl bg-emerald-100 dark:bg-emerald-900/60 flex items-center justify-center text-emerald-700 dark:text-emerald-300 shrink-0">
+                  <Wallet className="w-5 h-5" />
                 </div>
-                <p className="text-[11px] text-gray-600 dark:text-gray-300 mt-1.5">
-                  UPI (GPay / PhonePe / Paytm), Credit & Debit Cards, NetBanking, and Wallets.
-                </p>
-                <div className="flex items-center gap-2 mt-2 pt-2 border-t border-gray-200/60 dark:border-slate-700/60 text-[10px] text-gray-500 dark:text-gray-400">
-                  <Lock className="w-3 h-3 text-emerald-600" />
-                  <span>Razorpay Standard Checkout Verified</span>
+                <div>
+                  <div className="font-extrabold text-xs text-gray-900 dark:text-white flex items-center gap-1.5">
+                    <span>Pay using GoMeat Wallet</span>
+                    <span className="px-1.5 py-0.5 bg-emerald-100 dark:bg-emerald-900/80 text-emerald-800 dark:text-emerald-200 text-[10px] rounded font-bold">
+                      Available: ₹{userWalletBalance}
+                    </span>
+                  </div>
+                  <p className="text-[11px] text-gray-600 dark:text-gray-300">
+                    {userWalletBalance > 0
+                      ? 'Instant store credit from returned cooler boxes. Never expires, 1-click checkout.'
+                      : 'Balance is ₹0. Hand your cooler box back to the delivery rider to get ₹250 added here instantly!'}
+                  </p>
                 </div>
               </div>
 
-              {/* Cash / Pay on Delivery */}
-              <div
-                onClick={() => setPaymentMethod('cod')}
-                className={`p-3.5 rounded-xl border cursor-pointer transition relative ${
-                  paymentMethod === 'cod'
-                    ? 'border-[#d11243] bg-rose-50/70 dark:bg-rose-950/40 ring-1 ring-[#d11243]'
-                    : 'border-gray-200 dark:border-slate-800 bg-white dark:bg-slate-800/80 hover:border-gray-300 dark:hover:border-slate-700'
-                }`}
-              >
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2 font-bold text-xs text-gray-950 dark:text-white">
-                    <Banknote className="w-4 h-4 text-amber-500" />
-                    <span>Cash on Delivery (COD)</span>
+              {userWalletBalance > 0 && (
+                <label className="flex items-center gap-2 cursor-pointer select-none bg-white dark:bg-slate-800 px-3 py-1.5 rounded-lg border border-emerald-300 dark:border-emerald-700 shadow-2xs">
+                  <input
+                    type="checkbox"
+                    checked={useWallet}
+                    onChange={(e) => setUseWallet(e.target.checked)}
+                    className="w-4 h-4 text-emerald-600 rounded border-gray-300 focus:ring-emerald-500 cursor-pointer"
+                  />
+                  <span className="text-xs font-bold text-emerald-800 dark:text-emerald-300">
+                    {useWallet ? 'Applied' : 'Use'}
+                  </span>
+                </label>
+              )}
+            </div>
+
+            {useWallet && userWalletBalance > 0 && (
+              <div className="pt-2 border-t border-emerald-200/80 dark:border-emerald-800/60 flex items-center justify-between text-xs font-bold text-emerald-800 dark:text-emerald-300">
+                <span>Wallet Discount Deducted:</span>
+                <span>-₹{walletDeduction}</span>
+              </div>
+            )}
+            {isFullyWalletPaid && (
+              <div className="text-[11px] font-bold text-emerald-700 dark:text-emerald-300 flex items-center gap-1 bg-white/70 dark:bg-slate-900/70 p-2 rounded-lg border border-emerald-300/60">
+                <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
+                <span>🎉 100% of order covered by your wallet! You pay ₹0 out of pocket.</span>
+              </div>
+            )}
+          </div>
+
+          {/* Section 4: Payment Method Selection */}
+          {!isFullyWalletPaid ? (
+            <div className="space-y-3">
+              <label className="text-xs font-black uppercase text-gray-900 dark:text-white flex items-center gap-1.5">
+                <CreditCard className="w-3.5 h-3.5 text-[#d11243]" />
+                <span>4. Select Payment Method for Remaining Balance (₹{finalPayable})</span>
+              </label>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                {/* Online Payment (Razorpay) */}
+                <div
+                  onClick={() => setPaymentMethod('razorpay')}
+                  className={`p-3.5 rounded-xl border cursor-pointer transition relative ${
+                    paymentMethod === 'razorpay'
+                      ? 'border-[#d11243] bg-rose-50/70 dark:bg-rose-950/40 ring-1 ring-[#d11243]'
+                      : 'border-gray-200 dark:border-slate-800 bg-white dark:bg-slate-800/80 hover:border-gray-300 dark:hover:border-slate-700'
+                  }`}
+                >
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2 font-black text-xs text-gray-950 dark:text-white">
+                      <Zap className="w-4 h-4 fill-emerald-500 text-emerald-500" />
+                      <span>Razorpay Online Gateway</span>
+                    </div>
+                    <span className="text-[10px] font-extrabold bg-emerald-600 text-white px-2 py-0.5 rounded-full">
+                      Instant & Secure
+                    </span>
                   </div>
-                  <span className="text-[10px] font-bold text-gray-500">Pay at Door</span>
+                  <p className="text-[11px] text-gray-600 dark:text-gray-300 mt-1.5">
+                    UPI (GPay / PhonePe / Paytm), Credit & Debit Cards, NetBanking, and Wallets.
+                  </p>
+                  <div className="flex items-center gap-2 mt-2 pt-2 border-t border-gray-200/60 dark:border-slate-700/60 text-[10px] text-gray-500 dark:text-gray-400">
+                    <Lock className="w-3 h-3 text-emerald-600" />
+                    <span>Razorpay Standard Checkout Verified</span>
+                  </div>
                 </div>
-                <p className="text-[11px] text-gray-500 dark:text-gray-400 mt-1.5">
-                  Pay via Cash or UPI QR scan directly to the cold-courier partner upon box inspection.
-                </p>
-                <div className="flex items-center gap-2 mt-2 pt-2 border-t border-gray-200/60 dark:border-slate-700/60 text-[10px] text-gray-500 dark:text-gray-400">
-                  <Info className="w-3 h-3 text-amber-600" />
-                  <span>Exact cash or UPI recommended</span>
+
+                {/* Cash / Pay on Delivery */}
+                <div
+                  onClick={() => setPaymentMethod('cod')}
+                  className={`p-3.5 rounded-xl border cursor-pointer transition relative ${
+                    paymentMethod === 'cod'
+                      ? 'border-[#d11243] bg-rose-50/70 dark:bg-rose-950/40 ring-1 ring-[#d11243]'
+                      : 'border-gray-200 dark:border-slate-800 bg-white dark:bg-slate-800/80 hover:border-gray-300 dark:hover:border-slate-700'
+                  }`}
+                >
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2 font-bold text-xs text-gray-950 dark:text-white">
+                      <Banknote className="w-4 h-4 text-amber-500" />
+                      <span>Cash on Delivery (COD)</span>
+                    </div>
+                    <span className="text-[10px] font-bold text-gray-500">Pay at Door</span>
+                  </div>
+                  <p className="text-[11px] text-gray-500 dark:text-gray-400 mt-1.5">
+                    Pay via Cash or UPI QR scan directly to the cold-courier partner upon box inspection.
+                  </p>
+                  <div className="flex items-center gap-2 mt-2 pt-2 border-t border-gray-200/60 dark:border-slate-700/60 text-[10px] text-gray-500 dark:text-gray-400">
+                    <Info className="w-3 h-3 text-amber-600" />
+                    <span>Exact cash or UPI recommended</span>
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
+          ) : (
+            <div className="p-3 bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-300 dark:border-emerald-700/70 rounded-xl flex items-center justify-between">
+              <div className="flex items-center gap-2 text-xs font-bold text-emerald-900 dark:text-emerald-200">
+                <Wallet className="w-4 h-4 text-emerald-600" />
+                <span>Payment Mode: 100% GoMeat Vault Wallet</span>
+              </div>
+              <span className="text-[11px] font-black text-emerald-700 dark:text-emerald-300">₹0 out-of-pocket</span>
+            </div>
+          )}
 
           {/* Section 5: Order Summary & Cold Box Deposit Transparency */}
           <div className="p-3.5 bg-gray-50 dark:bg-slate-800/70 rounded-xl border border-gray-200 dark:border-slate-700 space-y-2">
@@ -813,10 +893,20 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
               <span>Chilled Express Delivery:</span>
               <span>{shippingFee === 0 ? <strong className="text-emerald-700 dark:text-emerald-400">FREE</strong> : `₹${shippingFee}`}</span>
             </div>
+
+            {walletDeduction > 0 && (
+              <div className="flex justify-between text-emerald-700 dark:text-emerald-400 font-bold bg-emerald-100/70 dark:bg-emerald-900/40 p-2 rounded-lg border border-emerald-300 dark:border-emerald-700">
+                <span className="flex items-center gap-1.5">
+                  <Wallet className="w-4 h-4 text-emerald-600" />
+                  <span>GoMeat Wallet Deduction:</span>
+                </span>
+                <span>-₹{walletDeduction}</span>
+              </div>
+            )}
             
             <div className="border-t border-gray-200 dark:border-slate-700 pt-2 flex justify-between items-center text-sm font-black text-gray-950 dark:text-white">
               <span>Final Total Payable:</span>
-              <span className="text-xl font-black text-[#d11243] dark:text-rose-400">₹{total}</span>
+              <span className="text-xl font-black text-[#d11243] dark:text-rose-400">₹{finalPayable}</span>
             </div>
           </div>
 
@@ -832,21 +922,31 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
           <button
             type="submit"
             disabled={isSubmitting || verifyingPayment}
-            className="w-full py-3.5 px-4 rounded-xl bg-[#d11243] hover:bg-[#b80f3b] text-white font-black text-sm flex items-center justify-center gap-2 cursor-pointer shadow-md hover:shadow-lg transition disabled:opacity-50"
+            className={`w-full py-3.5 px-4 rounded-xl text-white font-black text-sm flex items-center justify-center gap-2 cursor-pointer shadow-md hover:shadow-lg transition disabled:opacity-50 ${
+              isFullyWalletPaid
+                ? 'bg-emerald-600 hover:bg-emerald-700 shadow-emerald-600/30'
+                : 'bg-[#d11243] hover:bg-[#b80f3b]'
+            }`}
           >
             {isSubmitting || verifyingPayment ? (
               <span className="flex items-center gap-2">
                 <RefreshCw className="w-4 h-4 animate-spin" />
-                <span>{verifyingPayment ? 'Verifying with Razorpay...' : 'Initiating Secure Gateway...'}</span>
+                <span>{verifyingPayment ? 'Verifying with Razorpay...' : 'Confirming Order...'}</span>
+              </span>
+            ) : isFullyWalletPaid ? (
+              <span className="flex items-center gap-2">
+                <Wallet className="w-4 h-4" />
+                <span>Pay ₹0 with GoMeat Wallet & Confirm Order</span>
+                <ArrowRight className="w-4 h-4" />
               </span>
             ) : paymentMethod === 'razorpay' ? (
               <span className="flex items-center gap-2">
-                <span>Pay Now with Razorpay • ₹{total}</span>
+                <span>Pay Now with Razorpay • ₹{finalPayable}</span>
                 <ArrowRight className="w-4 h-4" />
               </span>
             ) : (
               <span className="flex items-center gap-2">
-                <span>Confirm Order (Pay ₹{total} on Delivery)</span>
+                <span>Confirm Order (Pay ₹{finalPayable} on Delivery)</span>
                 <ArrowRight className="w-4 h-4" />
               </span>
             )}

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Wallet, Smartphone, ShieldCheck, CheckCircle2 } from 'lucide-react';
 import type { Cooler, CoolerReturn } from '../types';
 import { api } from '../api';
 import { useAuth } from '../context/AuthContext';
@@ -11,6 +12,7 @@ export const CoolerReturnsPage: React.FC = () => {
   
   const [selectedCooler, setSelectedCooler] = useState<Cooler | null>(null);
   const [pickupSlot, setPickupSlot] = useState('Tomorrow Morning, 7:00 AM - 10:00 AM');
+  const [refundPreference, setRefundPreference] = useState<'wallet' | 'upi'>('wallet');
   const [upiId, setUpiId] = useState(user?.upiId || 'pooja@okhdfcbank');
   const [returnNotes, setReturnNotes] = useState('Box with gel bricks kept at building security gate.');
   const [pickupAddress, setPickupAddress] = useState(user?.address || 'Flat 402, Alpine Eco Apartments, Doddanekkundi, Bengaluru');
@@ -45,11 +47,16 @@ export const CoolerReturnsPage: React.FC = () => {
         pickupSlot,
         notes: returnNotes,
         address: pickupAddress,
-        upiId
+        upiId: refundPreference === 'upi' ? upiId : undefined,
+        refundPreference
       } as any);
 
       setSelectedCooler(null);
-      setNotice(`Doorstep pickup confirmed for box ${selectedCooler.id}. ₹250 will be credited to UPI (${upiId}) upon courier scan.`);
+      if (refundPreference === 'wallet') {
+        setNotice(`Doorstep pickup confirmed for box ${selectedCooler.id}. ₹250 will be credited directly to your GoMeat Wallet in 0 seconds once inspected!`);
+      } else {
+        setNotice(`Doorstep pickup confirmed for box ${selectedCooler.id}. ₹250 will be refunded to your UPI (${upiId}) upon courier scan.`);
+      }
       await fetchCoolers();
       await refreshUser();
       setTimeout(() => setNotice(null), 6000);
@@ -279,16 +286,97 @@ export const CoolerReturnsPage: React.FC = () => {
                 />
               </div>
 
-              <div>
-                <label className="block text-gray-700 dark:text-gray-300 font-bold mb-1">UPI ID for ₹250 Refund</label>
-                <input
-                  type="text"
-                  required
-                  value={upiId}
-                  onChange={(e) => setUpiId(e.target.value)}
-                  placeholder="e.g. pooja@okhdfcbank"
-                  className="w-full px-3 py-2 rounded-lg bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 text-gray-900 dark:text-white focus:outline-none focus:border-[#d11243]"
-                />
+              {/* Refund Method Options */}
+              <div className="space-y-2">
+                <label className="block text-gray-800 dark:text-gray-200 font-bold text-xs">
+                  How would you like to receive your ₹250 refund?
+                </label>
+                <div className="grid grid-cols-1 gap-2">
+                  {/* Option 1: GoMeat In-App Wallet */}
+                  <div
+                    onClick={() => setRefundPreference('wallet')}
+                    className={`p-3 rounded-xl border cursor-pointer transition text-left flex items-start gap-2.5 ${
+                      refundPreference === 'wallet'
+                        ? 'border-emerald-500 bg-emerald-50/80 dark:bg-emerald-950/40 ring-1 ring-emerald-500'
+                        : 'border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800/80 hover:border-gray-300'
+                    }`}
+                  >
+                    <div className="mt-0.5">
+                      <input
+                        type="radio"
+                        name="refundMode"
+                        checked={refundPreference === 'wallet'}
+                        onChange={() => setRefundPreference('wallet')}
+                        className="text-emerald-600 focus:ring-emerald-500 cursor-pointer"
+                      />
+                    </div>
+                    <div className="flex-1">
+                      <div className="flex items-center justify-between">
+                        <span className="font-extrabold text-xs text-gray-950 dark:text-white flex items-center gap-1.5">
+                          <Wallet className="w-3.5 h-3.5 text-emerald-600" />
+                          <span>GoMeat In-App Wallet</span>
+                        </span>
+                        <span className="text-[10px] font-bold bg-emerald-100 dark:bg-emerald-900/80 text-emerald-800 dark:text-emerald-200 px-1.5 py-0.2 rounded">
+                          0 Seconds • Instant
+                        </span>
+                      </div>
+                      <p className="text-[11px] text-gray-600 dark:text-gray-300 mt-1">
+                        Credited directly into your GoMeat app balance in 0 seconds. Ready to use on your next order.
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Option 2: UPI / Bank Account */}
+                  <div
+                    onClick={() => setRefundPreference('upi')}
+                    className={`p-3 rounded-xl border cursor-pointer transition text-left flex items-start gap-2.5 ${
+                      refundPreference === 'upi'
+                        ? 'border-[#d11243] bg-rose-50/80 dark:bg-rose-950/40 ring-1 ring-[#d11243]'
+                        : 'border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800/80 hover:border-gray-300'
+                    }`}
+                  >
+                    <div className="mt-0.5">
+                      <input
+                        type="radio"
+                        name="refundMode"
+                        checked={refundPreference === 'upi'}
+                        onChange={() => setRefundPreference('upi')}
+                        className="text-[#d11243] focus:ring-[#d11243] cursor-pointer"
+                      />
+                    </div>
+                    <div className="flex-1">
+                      <div className="flex items-center justify-between">
+                        <span className="font-extrabold text-xs text-gray-950 dark:text-white flex items-center gap-1.5">
+                          <Smartphone className="w-3.5 h-3.5 text-[#d11243]" />
+                          <span>Direct UPI / Bank Transfer</span>
+                        </span>
+                        <span className="text-[10px] font-bold text-gray-500 dark:text-gray-400">
+                          Direct to Bank
+                        </span>
+                      </div>
+                      <p className="text-[11px] text-gray-600 dark:text-gray-300 mt-1">
+                        ₹250 sent to your Google Pay, PhonePe, Paytm, or Bank Account.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Show UPI Input when Option 2 is chosen */}
+                {refundPreference === 'upi' && (
+                  <div className="pt-1.5">
+                    <label className="block text-gray-700 dark:text-gray-300 font-bold mb-1 text-[11px]">
+                      Enter UPI ID for ₹250 Bank Transfer *
+                    </label>
+                    <input
+                      type="text"
+                      required
+                      value={upiId}
+                      onChange={(e) => setUpiId(e.target.value)}
+                      placeholder="e.g. yourname@okhdfcbank or 9876543210@paytm"
+                      className="w-full px-3 py-2 rounded-lg bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 text-gray-900 dark:text-white focus:outline-none focus:border-[#d11243] text-xs font-medium"
+                    />
+                  </div>
+                )}
               </div>
 
               <div>

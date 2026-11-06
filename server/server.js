@@ -574,7 +574,7 @@ app.get('/api/coolers/my-coolers', authenticate, (req, res) => {
 });
 
 app.post('/api/coolers/request-return', authenticate, (req, res) => {
-  const { coolerId, pickupSlot, notes, address, upiId } = req.body;
+  const { coolerId, pickupSlot, notes, address, upiId, refundPreference = 'wallet' } = req.body;
   if (!coolerId) {
     return res.status(400).json({ error: 'Please select a cooler box to return' });
   }
@@ -588,6 +588,10 @@ app.post('/api/coolers/request-return', authenticate, (req, res) => {
     return res.status(403).json({ error: 'This cooler box is not tagged to your account' });
   }
 
+  const refundMethodLabel = refundPreference === 'wallet'
+    ? 'GoMeat Wallet (Instant Store Credit)'
+    : (upiId ? `Direct UPI / Bank (${upiId})` : (req.user.upiId ? `Direct UPI (${req.user.upiId})` : 'Direct Bank Transfer'));
+
   const returnRecord = {
     id: `RET-${Math.floor(100 + Math.random() * 900)}`,
     coolerId: cooler.id,
@@ -600,7 +604,8 @@ app.post('/api/coolers/request-return', authenticate, (req, res) => {
     requestDate: new Date().toISOString(),
     scheduledPickupSlot: pickupSlot || 'Tomorrow Morning, 7:00 AM - 10:00 AM',
     refundAmount: cooler.depositAmount || 250,
-    refundMode: upiId ? `UPI (${upiId})` : (req.user.upiId ? `UPI (${req.user.upiId})` : 'Source Account Refund'),
+    refundPreference: refundPreference || 'wallet',
+    refundMode: refundMethodLabel,
     notes: notes || 'Rinsed with gel packs kept inside box for doorstep pickup.',
     courierAssigned: 'Hub Return Partner Chetan (+91 99002 11842)'
   };
@@ -623,11 +628,13 @@ app.get('/api/returns', authenticate, (req, res) => {
 });
 
 app.patch('/api/returns/:id/status', authenticate, requireAdmin, (req, res) => {
-  const { status, conditionNotes } = req.body;
+  const { status, conditionNotes, refundPreference } = req.body;
   const returnItem = db.findById('coolerReturns', req.params.id);
   if (!returnItem) {
     return res.status(404).json({ error: 'Return request not found' });
   }
+
+  const resolvedPreference = refundPreference || returnItem.refundPreference || 'wallet';
 
   const updatedReturn = db.update('coolerReturns', returnItem.id, {
     status,
@@ -649,16 +656,52 @@ app.patch('/api/returns/:id/status', authenticate, requireAdmin, (req, res) => {
     }
 
     const user = db.findById('users', returnItem.userId);
-    if (user && user.depositBalance >= returnItem.refundAmount) {
-      db.update('users', user.id, {
-        depositBalance: user.depositBalance - returnItem.refundAmount
-      });
+    if (user) {
+      const refundAmt = returnItem.refundAmount || 250;
+      const updates = {
+        depositBalance: Math.max(0, (user.depositBalance || 0) - refundAmt)
+      };
+
+      if (resolvedPreference === 'wallet') {
+        const newBal = (user.walletBalance || 0) + refundAmt;
+        const tx = {
+          id: `tx_${Date.now()}`,
+          amount: refundAmt,
+          type: 'credit',
+          title: 'Cooler Box Deposit Refund',
+          description: `ThermalVault™ box #${returnItem.coolerId} returned & verified. Instant refund added to GoMeat Wallet.`,
+          date: new Date().toISOString(),
+          balanceAfter: newBal,
+          coolerId: returnItem.coolerId
+        };
+        updates.walletBalance = newBal;
+        updates.walletTransactions = [tx, ...(user.walletTransactions || [])];
+      }
+
+      db.update('users', user.id, updates);
     }
   } else if (status === 'picked_up') {
     db.update('coolers', returnItem.coolerId, { status: 'sanitizing' });
   }
 
   res.json(updatedReturn);
+});
+
+// ==========================================
+// 5. IN-APP VAULT WALLET
+// ==========================================
+app.get('/api/wallet', authenticate, (req, res) => {
+  const user = db.findById('users', req.user.id);
+  if (!user) {
+    return res.status(404).json({ error: 'User not found' });
+  }
+
+  res.json({
+    balance: user.walletBalance || 0,
+    depositBalance: user.depositBalance || 0,
+    transactions: user.walletTransactions || [],
+    upiId: user.upiId || ''
+  });
 });
 
 // ==========================================

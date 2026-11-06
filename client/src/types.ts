@@ -1,3 +1,15 @@
+export interface WalletTransaction {
+  id: string;
+  amount: number;
+  type: 'credit' | 'debit';
+  title: string;
+  description: string;
+  date: string;
+  balanceAfter: number;
+  orderId?: string;
+  coolerId?: string;
+}
+
 export interface User {
   id: string;
   name: string;
@@ -7,6 +19,8 @@ export interface User {
   city?: string;
   address?: string;
   depositBalance?: number;
+  walletBalance?: number;
+  walletTransactions?: WalletTransaction[];
   activeCoolersCount?: number;
   upiId?: string;
   avatar?: string;
@@ -129,6 +143,8 @@ export interface Order {
   couponCode?: string | null;
   coolerDeposit: number;
   shippingFee: number;
+  walletDeduction?: number;
+  walletPaid?: boolean;
   total: number;
   totalAmount?: number;
   status: string;
@@ -182,6 +198,8 @@ export interface CoolerReturn {
   scheduledPickupSlot: string;
   refundAmount: number;
   refundMode: string;
+  refundPreference?: 'wallet' | 'upi';
+  upiId?: string;
   notes?: string;
   courierAssigned?: string;
   conditionNotes?: string;

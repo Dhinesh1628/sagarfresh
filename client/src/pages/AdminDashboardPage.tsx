@@ -28,7 +28,8 @@ import {
   Eye,
   Check,
   ChevronRight,
-  Box
+  Box,
+  Wallet
 } from 'lucide-react';
 import type { AdminMetrics, Order, Cooler, CoolerReturn, Product, OrderPipelineStatus, User } from '../types';
 import { api } from '../api';
@@ -184,10 +185,19 @@ export const AdminDashboardPage: React.FC = () => {
   };
 
   // Cooler return status update
-  const handleReturnStatusUpdate = async (returnId: string, newStatus: string) => {
+  const handleReturnStatusUpdate = async (returnId: string, newStatus: string, refundPreference?: 'wallet' | 'upi') => {
     try {
-      await api.updateReturnStatus(returnId, newStatus, 'Box inspected: EPP walls intact, gel bricks sanitized.');
-      showNotification(`Return #${returnId} marked "${newStatus}". ₹250 refund recorded.`);
+      await api.updateReturnStatus(returnId, newStatus, 'Box inspected: EPP walls intact, gel bricks sanitized.', refundPreference);
+      if (newStatus === 'refunded') {
+        showNotification(
+          refundPreference === 'wallet'
+            ? `Return #${returnId} approved! ₹250 credited directly to customer's GoMeat Wallet in 0 seconds.`
+            : `Return #${returnId} approved! ₹250 sent to customer bank via UPI.`
+        );
+      } else {
+        showNotification(`Return #${returnId} marked "${newStatus}".`);
+      }
+
       await loadAllData();
     } catch (err: any) {
       alert(err.message || 'Return approval failed');
@@ -1378,6 +1388,99 @@ export const AdminDashboardPage: React.FC = () => {
                 </tbody>
               </table>
             </div>
+          </div>
+          {/* Section 2: Doorstep Return Requests & Customer Refund Approvals */}
+          <div className="bg-white dark:bg-slate-900 rounded-2xl border border-gray-200 dark:border-slate-800 overflow-hidden shadow-2xs text-xs mt-4">
+            <div className="p-4 border-b border-gray-100 dark:border-slate-800 flex items-center justify-between">
+              <div>
+                <span className="font-extrabold text-gray-950 dark:text-white">
+                  Customer Cooler Return Requests & ₹250 Refund Approvals ({returns.length} Requests)
+                </span>
+                <span className="text-[11px] font-normal text-gray-500 block">
+                  Inspect returned ThermalVault™ boxes and approve instant refunds to GoMeat Wallet or UPI / Bank.
+                </span>
+              </div>
+            </div>
+
+            {returns.length === 0 ? (
+              <div className="p-8 text-center text-xs text-gray-400">
+                No active return requests on file.
+              </div>
+            ) : (
+              <div className="overflow-x-auto">
+                <table className="w-full text-left">
+                  <thead className="bg-gray-50 dark:bg-slate-800/80 text-gray-500 dark:text-gray-400 border-b border-gray-200 dark:border-slate-700 text-[11px]">
+                    <tr>
+                      <th className="py-3 px-4">Return ID</th>
+                      <th className="py-3 px-4">Box ID</th>
+                      <th className="py-3 px-4">Customer Address</th>
+                      <th className="py-3 px-4">Pickup Window</th>
+                      <th className="py-3 px-4">Customer Refund Preference</th>
+                      <th className="py-3 px-4">Status</th>
+                      <th className="py-3 px-4 text-right">Refund Action</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-gray-100 dark:divide-slate-800 text-gray-700 dark:text-gray-200">
+                    {returns.map((ret) => {
+                      const isRefunded = ret.status === 'refunded';
+                      const isWallet = ret.refundPreference === 'wallet' || !ret.refundPreference;
+                      return (
+                        <tr key={ret.id} className="hover:bg-gray-50 dark:hover:bg-slate-800/50">
+                          <td className="py-2.5 px-4 font-mono font-bold text-gray-950 dark:text-white">
+                            {ret.id}
+                          </td>
+                          <td className="py-2.5 px-4 font-mono text-gray-600 dark:text-gray-300">
+                            {ret.coolerId}
+                          </td>
+                          <td className="py-2.5 px-4 max-w-xs truncate text-[11px]">
+                            {ret.userAddress || 'Customer registered address'}
+                          </td>
+                          <td className="py-2.5 px-4 text-[11px] font-medium">
+                            {ret.scheduledPickupSlot}
+                          </td>
+                          <td className="py-2.5 px-4">
+                            {isWallet ? (
+                              <span className="px-2 py-0.5 rounded-full bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-300 dark:border-emerald-700 text-emerald-800 dark:text-emerald-300 font-bold text-[10px] flex items-center gap-1 w-max">
+                                <Wallet className="w-3 h-3 text-emerald-600" />
+                                <span>GoMeat Wallet (Instant)</span>
+                              </span>
+                            ) : (
+                              <span className="px-2 py-0.5 rounded-full bg-rose-50 dark:bg-rose-950/60 border border-rose-300 dark:border-rose-700 text-rose-800 dark:text-rose-300 font-bold text-[10px] flex items-center gap-1 w-max">
+                                <span>📱 UPI: {ret.upiId || 'Direct Bank'}</span>
+                              </span>
+                            )}
+                          </td>
+                          <td className="py-2.5 px-4">
+                            <span className={`px-2 py-0.5 rounded text-[10px] font-bold ${
+                              isRefunded
+                                ? 'bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300'
+                                : 'bg-amber-100 text-amber-800 dark:bg-amber-950 dark:text-amber-300'
+                            }`}>
+                              {ret.status.replace('_', ' ')}
+                            </span>
+                          </td>
+                          <td className="py-2.5 px-4 text-right">
+                            {isRefunded ? (
+                              <span className="text-emerald-700 dark:text-emerald-400 font-bold text-[11px] flex items-center justify-end gap-1">
+                                <Check className="w-3.5 h-3.5" />
+                                <span>₹250 {isWallet ? 'in Wallet' : 'sent to UPI'}</span>
+                              </span>
+                            ) : (
+                              <button
+                                onClick={() => handleReturnStatusUpdate(ret.id, 'refunded', ret.refundPreference || 'wallet')}
+                                className="px-3 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-[11px] cursor-pointer shadow-xs transition"
+                              >
+                                {isWallet ? 'Approve & Credit ₹250 to Wallet' : 'Approve & Send ₹250 to UPI'}
+                              </button>
+                            )}
+                          </td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              </div>
+            )}
           </div>
         </div>
       )}

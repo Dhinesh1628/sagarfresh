@@ -1,10 +1,24 @@
 import express from 'express';
 import crypto from 'crypto';
+import jwt from 'jsonwebtoken';
 import Razorpay from 'razorpay';
 import { v4 as uuidv4 } from 'uuid';
 import { db } from '../db.js';
 
 const router = express.Router();
+const JWT_SECRET = process.env.JWT_SECRET || 'sagar-cuts-india-secret-2026';
+
+const getUserFromReq = (req) => {
+  const authHeader = req.headers.authorization;
+  if (!authHeader || !authHeader.startsWith('Bearer ')) return null;
+  const token = authHeader.split(' ')[1];
+  try {
+    const decoded = jwt.verify(token, JWT_SECRET);
+    return db.findById('users', decoded.id) || null;
+  } catch (e) {
+    return null;
+  }
+};
 
 const RAZORPAY_KEY_ID = process.env.RAZORPAY_KEY_ID || process.env.VITE_RAZORPAY_KEY_ID || 'rzp_test_GoMeatDemoKey';
 const RAZORPAY_KEY_SECRET = process.env.RAZORPAY_KEY_SECRET || 'GoMeatTestSecret2026';
@@ -76,29 +90,120 @@ router.post('/create-order', async (req, res) => {
     const COOLER_DEPOSIT = 250;
     const discount = Math.min(parseInt(couponDiscount || 0, 10), subtotal);
     const shippingFee = subtotal >= 799 ? 0 : 40;
-    const totalAmount = Math.max(0, subtotal - discount + COOLER_DEPOSIT + shippingFee);
-    const amountInPaise = Math.round(totalAmount * 100);
+    const grossTotal = Math.max(0, subtotal - discount + COOLER_DEPOSIT + shippingFee);
+
+    // Load authentic user from JWT or request
+    const user = getUserFromReq(req) || req.user || { 
+      id: 'guest_' + uuidv4().slice(0, 8), 
+      name: addressDetails?.fullName || 'Valued Customer', 
+      email: addressDetails?.email || 'customer@gomeat.in', 
+      phone: addressDetails?.phone || '+91 98765 43210',
+      walletBalance: 0
+    };
+
+    // Calculate Wallet Deduction if user toggled wallet
+    let walletDeduction = 0;
+    if (req.body.useWallet && user && Number(user.walletBalance || 0) > 0) {
+      walletDeduction = Math.min(Number(user.walletBalance), grossTotal);
+    }
+
+    const netPayable = Math.max(0, grossTotal - walletDeduction);
+    const amountInPaise = Math.round(netPayable * 100);
 
     const orderNumber = `GOM-${Math.floor(100000 + Math.random() * 900000)}`;
 
-    // 3. If Cash on Delivery, bypass Razorpay online order creation
-    if (paymentMethod === 'cod') {
+    // 3. CASE A: 100% Wallet Paid (Zero Out-of-Pocket, Instant Bypass)
+    if (walletDeduction > 0 && netPayable === 0) {
+      const newBal = (user.walletBalance || 0) - walletDeduction;
+      const tx = {
+        id: `tx_${Date.now()}`,
+        amount: walletDeduction,
+        type: 'debit',
+        title: `Paid for Order #${orderNumber}`,
+        description: 'Order paid in full using GoMeat Wallet store credit.',
+        date: new Date().toISOString(),
+        balanceAfter: newBal,
+        orderId: orderNumber
+      };
+      db.update('users', user.id, {
+        walletBalance: newBal,
+        walletTransactions: [tx, ...(user.walletTransactions || [])]
+      });
+
+      // Deduct stock immediately
+      for (const item of processedItems) {
+        const prod = db.findById('products', item.productId);
+        if (prod) {
+          db.update('products', prod.id, { stock: Math.max(0, prod.stock - item.quantity) });
+        }
+      }
+
       const order = createOrderRecord({
         orderNumber,
-        user: req.user || { id: 'guest_' + uuidv4().slice(0, 8), name: addressDetails?.fullName || 'Valued Customer', email: addressDetails?.email || 'customer@gomeat.in', phone: addressDetails?.phone || '+91 98765 43210' },
+        user,
         processedItems,
         subtotal,
         discount,
         couponCode,
         coolerDeposit: COOLER_DEPOSIT,
         shippingFee,
-        totalAmount,
+        totalAmount: 0,
+        walletDeduction,
         deliveryAddress: deliveryAddress || `${addressDetails?.flatNo}, ${addressDetails?.building}, ${addressDetails?.street}, ${city} - ${addressDetails?.pincode}`,
         addressDetails,
         deliverySlot,
         deliveryNotes,
         city: city || 'Bengaluru',
-        paymentMethod: 'cod',
+        paymentMethod: 'GoMeat Wallet (Fully Paid)',
+        paymentStatus: 'PAID',
+        orderStatus: 'CONFIRMED'
+      });
+
+      return res.status(201).json({
+        success: true,
+        isWalletPaid: true,
+        order,
+        message: `Order placed successfully! ₹${walletDeduction} deducted from your GoMeat Wallet.`
+      });
+    }
+
+    // 4. CASE B: Cash on Delivery
+    if (paymentMethod === 'cod') {
+      if (walletDeduction > 0) {
+        const newBal = (user.walletBalance || 0) - walletDeduction;
+        const tx = {
+          id: `tx_${Date.now()}`,
+          amount: walletDeduction,
+          type: 'debit',
+          title: `Paid for Order #${orderNumber}`,
+          description: `₹${walletDeduction} store credit deducted from GoMeat Wallet.`,
+          date: new Date().toISOString(),
+          balanceAfter: newBal,
+          orderId: orderNumber
+        };
+        db.update('users', user.id, {
+          walletBalance: newBal,
+          walletTransactions: [tx, ...(user.walletTransactions || [])]
+        });
+      }
+
+      const order = createOrderRecord({
+        orderNumber,
+        user,
+        processedItems,
+        subtotal,
+        discount,
+        couponCode,
+        coolerDeposit: COOLER_DEPOSIT,
+        shippingFee,
+        totalAmount: netPayable,
+        walletDeduction,
+        deliveryAddress: deliveryAddress || `${addressDetails?.flatNo}, ${addressDetails?.building}, ${addressDetails?.street}, ${city} - ${addressDetails?.pincode}`,
+        addressDetails,
+        deliverySlot,
+        deliveryNotes,
+        city: city || 'Bengaluru',
+        paymentMethod: walletDeduction > 0 ? `Wallet (₹${walletDeduction}) + Cash on Delivery (₹${netPayable})` : 'cod',
         paymentStatus: 'PENDING',
         orderStatus: 'CONFIRMED'
       });
@@ -107,11 +212,13 @@ router.post('/create-order', async (req, res) => {
         success: true,
         isCod: true,
         order,
-        message: 'Order placed successfully via Cash on Delivery'
+        message: walletDeduction > 0
+          ? `Order placed! ₹${walletDeduction} deducted from wallet, pay ₹${netPayable} in cash at doorstep.`
+          : 'Order placed successfully via Cash on Delivery'
       });
     }
 
-    // 4. Create Razorpay Order
+    // 5. CASE C: Online Payment (Razorpay for Remaining Balance)
     let razorpayOrderId = `order_${uuidv4().replace(/-/g, '').slice(0, 16)}`;
     
     if (razorpayInstance && !isDemoKey) {
@@ -122,8 +229,9 @@ router.post('/create-order', async (req, res) => {
           receipt: orderNumber,
           notes: {
             orderNumber,
-            customerEmail: req.user?.email || addressDetails?.email || '',
-            coolerDeposit: '₹250 Refundable'
+            customerEmail: user.email || addressDetails?.email || '',
+            coolerDeposit: '₹250 Refundable',
+            walletDeduction: String(walletDeduction)
           }
         });
         razorpayOrderId = rzpOrder.id;
@@ -135,23 +243,24 @@ router.post('/create-order', async (req, res) => {
       razorpayOrderId = `order_test_${uuidv4().replace(/-/g, '').slice(0, 14)}`;
     }
 
-    // 5. Store Pending Order Record in Database
+    // Store Pending Order Record in Database
     const order = createOrderRecord({
       orderNumber,
-      user: req.user || { id: 'guest_' + uuidv4().slice(0, 8), name: addressDetails?.fullName || 'Customer', email: addressDetails?.email || 'customer@gomeat.in', phone: addressDetails?.phone || '+91 98765 43210' },
+      user,
       processedItems,
       subtotal,
       discount,
       couponCode,
       coolerDeposit: COOLER_DEPOSIT,
       shippingFee,
-      totalAmount,
+      totalAmount: netPayable,
+      walletDeduction,
       deliveryAddress: deliveryAddress || `${addressDetails?.flatNo}, ${addressDetails?.building}, ${addressDetails?.street}, ${city} - ${addressDetails?.pincode}`,
       addressDetails,
       deliverySlot,
       deliveryNotes,
       city: city || 'Bengaluru',
-      paymentMethod: 'razorpay',
+      paymentMethod: walletDeduction > 0 ? `Wallet (₹${walletDeduction}) + Razorpay (₹${netPayable})` : 'razorpay',
       paymentStatus: 'PENDING',
       orderStatus: 'PENDING',
       razorpayOrderId
@@ -271,6 +380,28 @@ router.post('/verify', async (req, res) => {
         { time: timeStr, temp: 0.8, event: `Payment of ₹${order.total} received via Razorpay (${razorpay_payment_id}). Order confirmed.` }
       ]
     });
+
+    // Deduct wallet store credit from user account if used
+    if (order.walletDeduction > 0 && order.userId) {
+      const payingUser = db.findById('users', order.userId);
+      if (payingUser) {
+        const newBal = Math.max(0, (payingUser.walletBalance || 0) - order.walletDeduction);
+        const tx = {
+          id: `tx_${Date.now()}`,
+          amount: order.walletDeduction,
+          type: 'debit',
+          title: `Paid for Order #${order.orderNumber || order.id}`,
+          description: `₹${order.walletDeduction} store credit deducted from GoMeat Wallet.`,
+          date: new Date().toISOString(),
+          balanceAfter: newBal,
+          orderId: order.orderNumber || order.id
+        };
+        db.update('users', payingUser.id, {
+          walletBalance: newBal,
+          walletTransactions: [tx, ...(payingUser.walletTransactions || [])]
+        });
+      }
+    }
 
     res.status(200).json({
       success: true,
@@ -465,6 +596,7 @@ function createOrderRecord(params) {
     coolerDeposit,
     shippingFee,
     totalAmount,
+    walletDeduction = 0,
     deliveryAddress,
     addressDetails,
     deliverySlot,
@@ -517,6 +649,7 @@ function createOrderRecord(params) {
     couponCode: couponCode || null,
     coolerDeposit,
     shippingFee,
+    walletDeduction: Number(walletDeduction || 0),
     total: totalAmount,
     totalAmount,
     status: orderStatus === 'CONFIRMED' ? 'Order Confirmed' : 'Blast-Chilling',

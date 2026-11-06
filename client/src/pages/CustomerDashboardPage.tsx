@@ -22,12 +22,13 @@ import {
   Mail, 
   ExternalLink,
   Zap,
-  Banknote
+  Banknote,
+  Wallet
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { useCart } from '../context/CartContext';
 import { api } from '../api';
-import type { Order, Cooler, CoolerReturn, Product } from '../types';
+import type { Order, Cooler, CoolerReturn, Product, WalletTransaction } from '../types';
 import { generateAndPrintInvoice } from '../utils/invoiceGenerator';
 
 interface CustomerDashboardPageProps {
@@ -35,7 +36,7 @@ interface CustomerDashboardPageProps {
   onNavigateToCatalog: () => void;
 }
 
-type TabType = 'orders' | 'profile' | 'payments' | 'wishlist' | 'addresses' | 'coolers';
+type TabType = 'orders' | 'profile' | 'payments' | 'wishlist' | 'addresses' | 'coolers' | 'wallet';
 
 export const CustomerDashboardPage: React.FC<CustomerDashboardPageProps> = ({
   onNavigateToTracking,
@@ -53,6 +54,11 @@ export const CustomerDashboardPage: React.FC<CustomerDashboardPageProps> = ({
   const [coolers, setCoolers] = useState<Cooler[]>([]);
   const [returns, setReturns] = useState<CoolerReturn[]>([]);
   const [loadingCoolers, setLoadingCoolers] = useState(false);
+
+  // GoMeat In-App Vault Wallet State
+  const [walletTransactions, setWalletTransactions] = useState<WalletTransaction[]>([]);
+  const [walletBalance, setWalletBalance] = useState<number>(user?.walletBalance || 0);
+  const [loadingWallet, setLoadingWallet] = useState(false);
 
   // Wishlist State (persisted in localStorage)
   const [wishlist, setWishlist] = useState<Product[]>(() => {
@@ -102,6 +108,20 @@ export const CustomerDashboardPage: React.FC<CustomerDashboardPageProps> = ({
   };
 
   // Fetch Coolers
+  // Fetch Wallet Passbook
+  const fetchWallet = async () => {
+    try {
+      setLoadingWallet(true);
+      const data = await api.getWallet();
+      setWalletBalance(data.balance ?? 0);
+      setWalletTransactions(data.transactions || []);
+    } catch (err) {
+      console.error('Failed to load wallet passbook:', err);
+    } finally {
+      setLoadingWallet(false);
+    }
+  };
+
   const fetchCoolers = async () => {
     try {
       setLoadingCoolers(true);
@@ -118,6 +138,7 @@ export const CustomerDashboardPage: React.FC<CustomerDashboardPageProps> = ({
   useEffect(() => {
     fetchOrders();
     fetchCoolers();
+    fetchWallet();
   }, [user]);
 
   useEffect(() => {
@@ -252,6 +273,17 @@ export const CustomerDashboardPage: React.FC<CustomerDashboardPageProps> = ({
 
           {/* Quick Metrics Badges */}
           <div className="flex items-center gap-3">
+            <div 
+              onClick={() => setActiveTab('wallet')}
+              className="px-4 py-2.5 rounded-2xl bg-emerald-50 hover:bg-emerald-100 dark:bg-emerald-950/50 dark:hover:bg-emerald-900/50 border border-emerald-300 dark:border-emerald-700/80 text-center cursor-pointer transition shadow-2xs"
+              title="GoMeat Vault Wallet - Click to view passbook"
+            >
+              <span className="text-[10px] font-bold text-emerald-800 dark:text-emerald-300 uppercase block flex items-center justify-center gap-1">
+                <Wallet className="w-3 h-3 text-emerald-600" />
+                <span>GoMeat Wallet</span>
+              </span>
+              <span className="text-base font-black text-emerald-700 dark:text-emerald-300">₹{user?.walletBalance ?? walletBalance}</span>
+            </div>
             <div className="px-4 py-2.5 rounded-2xl bg-gray-50 dark:bg-slate-800/80 border border-gray-200 dark:border-slate-700 text-center">
               <span className="text-[10px] font-bold text-gray-400 uppercase block">Active Boxes</span>
               <span className="text-base font-black text-gray-900 dark:text-white">{coolers.length} Held</span>
@@ -266,6 +298,7 @@ export const CustomerDashboardPage: React.FC<CustomerDashboardPageProps> = ({
         {/* Dashboard Navigation Tabs */}
         <div className="flex items-center gap-1.5 mt-6 pt-5 border-t border-gray-100 dark:border-slate-800 overflow-x-auto pb-1">
           {[
+            { id: 'wallet', label: 'GoMeat Wallet', icon: Wallet, count: (user?.walletBalance || walletBalance) ? (user?.walletBalance || walletBalance) : undefined },
             { id: 'orders', label: 'My Orders', icon: Package, count: orders.length },
             { id: 'profile', label: 'Profile Settings', icon: User },
             { id: 'payments', label: 'Payment History', icon: CreditCard },
@@ -838,6 +871,202 @@ export const CustomerDashboardPage: React.FC<CustomerDashboardPageProps> = ({
       )}
 
       {/* ======================================================== */}
+      {/* ======================================================== */}
+      {/* TAB 7: GOMEAT VAULT WALLET & REFUNDS PASSBOOK             */}
+      {/* ======================================================== */}
+      {activeTab === 'wallet' && (
+        <div className="space-y-6">
+          {/* Header */}
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-800 rounded-2xl p-5 shadow-xs">
+            <div>
+              <div className="flex items-center gap-2">
+                <div className="w-8 h-8 rounded-lg bg-emerald-100 dark:bg-emerald-900/60 flex items-center justify-center text-emerald-700 dark:text-emerald-300">
+                  <Wallet className="w-4 h-4" />
+                </div>
+                <h3 className="font-black text-base text-gray-950 dark:text-white">
+                  GoMeat In-App Vault Wallet™
+                </h3>
+              </div>
+              <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                Your direct store credit from returned cooler boxes and refunds. Use anytime for 1-click checkout.
+              </p>
+            </div>
+            <button
+              onClick={() => {
+                fetchWallet();
+                refreshUser();
+              }}
+              className="px-3.5 py-2 rounded-xl bg-gray-100 hover:bg-gray-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-gray-800 dark:text-gray-200 text-xs font-bold flex items-center justify-center gap-1.5 transition cursor-pointer"
+            >
+              <RefreshCw className={`w-3.5 h-3.5 ${loadingWallet ? 'animate-spin' : ''}`} />
+              <span>Refresh Balance</span>
+            </button>
+          </div>
+
+          {/* Wallet Balance Hero Card */}
+          <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-emerald-600 via-teal-700 to-emerald-900 text-white p-6 sm:p-8 shadow-xl">
+            <div className="absolute right-0 top-0 translate-x-10 -translate-y-10 w-64 h-64 bg-white/10 rounded-full blur-2xl pointer-events-none" />
+            <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
+              <div className="space-y-2">
+                <div className="flex items-center gap-2">
+                  <span className="px-2.5 py-0.5 rounded-full bg-white/20 text-white text-[11px] font-extrabold uppercase tracking-wide backdrop-blur-xs flex items-center gap-1">
+                    <ShieldCheck className="w-3.5 h-3.5" />
+                    <span>Active Store Credit</span>
+                  </span>
+                  <span className="text-[11px] text-emerald-100 font-medium">• Never Expires</span>
+                </div>
+                <p className="text-xs text-emerald-100 font-medium">Available Balance</p>
+                <div className="text-4xl sm:text-5xl font-black tracking-tight flex items-baseline gap-1">
+                  <span>₹{user?.walletBalance ?? walletBalance}</span>
+                  <span className="text-sm font-semibold text-emerald-200">INR</span>
+                </div>
+                <p className="text-xs text-emerald-100/90 max-w-md pt-1">
+                  Ready to redeem on your next fresh meat order. At checkout, check <strong>"Use GoMeat Wallet"</strong> to deduct this amount directly.
+                </p>
+              </div>
+
+              {/* Quick Actions */}
+              <div className="flex flex-col sm:flex-row md:flex-col gap-2.5 shrink-0">
+                <button
+                  onClick={onNavigateToCatalog}
+                  className="px-5 py-3 rounded-xl bg-white hover:bg-emerald-50 text-emerald-900 font-black text-xs flex items-center justify-center gap-2 cursor-pointer shadow-md transition"
+                >
+                  <ShoppingBag className="w-4 h-4 text-emerald-700" />
+                  <span>Shop Cuts (Use Wallet)</span>
+                </button>
+                <button
+                  onClick={() => setActiveTab('coolers')}
+                  className="px-5 py-3 rounded-xl bg-emerald-800/80 hover:bg-emerald-800 text-white border border-emerald-400/30 font-bold text-xs flex items-center justify-center gap-2 cursor-pointer transition"
+                >
+                  <RotateCcw className="w-4 h-4" />
+                  <span>Return a Box (+₹250)</span>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          {/* 3-Step Simple Explainer */}
+          <div className="bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-800 rounded-2xl p-6 shadow-xs space-y-4">
+            <h4 className="font-extrabold text-xs uppercase tracking-wider text-gray-500 dark:text-gray-400">
+              How the GoMeat Wallet Works (Simple & Transparent)
+            </h4>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div className="p-4 rounded-xl bg-gray-50 dark:bg-slate-800/60 border border-gray-200 dark:border-slate-700 space-y-1.5">
+                <div className="w-7 h-7 rounded-lg bg-emerald-100 dark:bg-emerald-900/60 text-emerald-700 dark:text-emerald-300 font-black text-xs flex items-center justify-center">
+                  1
+                </div>
+                <h5 className="font-bold text-xs text-gray-950 dark:text-white">Return Cooler Box</h5>
+                <p className="text-[11px] text-gray-500 dark:text-gray-400 leading-relaxed">
+                  Hand your empty ThermalVault™ box back to the delivery rider on your next order, or request a free pickup from this dashboard.
+                </p>
+              </div>
+
+              <div className="p-4 rounded-xl bg-gray-50 dark:bg-slate-800/60 border border-gray-200 dark:border-slate-700 space-y-1.5">
+                <div className="w-7 h-7 rounded-lg bg-emerald-100 dark:bg-emerald-900/60 text-emerald-700 dark:text-emerald-300 font-black text-xs flex items-center justify-center">
+                  2
+                </div>
+                <h5 className="font-bold text-xs text-gray-950 dark:text-white">Instant ₹250 Refund</h5>
+                <p className="text-[11px] text-gray-500 dark:text-gray-400 leading-relaxed">
+                  The moment your returned box is inspected at our local hub, ₹250 is instantly credited to your GoMeat Wallet (or directly to your UPI / Bank account).
+                </p>
+              </div>
+
+              <div className="p-4 rounded-xl bg-gray-50 dark:bg-slate-800/60 border border-gray-200 dark:border-slate-700 space-y-1.5">
+                <div className="w-7 h-7 rounded-lg bg-emerald-100 dark:bg-emerald-900/60 text-emerald-700 dark:text-emerald-300 font-black text-xs flex items-center justify-center">
+                  3
+                </div>
+                <h5 className="font-bold text-xs text-gray-950 dark:text-white">1-Click Checkout</h5>
+                <p className="text-[11px] text-gray-500 dark:text-gray-400 leading-relaxed">
+                  Use your wallet balance to pay for your fresh meat cuts. If your wallet covers 100% of the total, you pay ₹0 out of pocket in 1 second!
+                </p>
+              </div>
+            </div>
+          </div>
+
+          {/* Passbook / Transaction History */}
+          <div className="bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-800 rounded-2xl p-6 shadow-xs space-y-4">
+            <div className="flex items-center justify-between pb-3 border-b border-gray-100 dark:border-slate-800">
+              <div>
+                <h4 className="font-black text-sm text-gray-950 dark:text-white">
+                  Wallet Passbook & Transaction Ledger
+                </h4>
+                <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
+                  Complete history of cooler deposits refunded and wallet amounts redeemed.
+                </p>
+              </div>
+              <span className="text-xs font-bold text-gray-500">
+                {(walletTransactions.length || (user?.walletTransactions?.length ?? 0))} Transactions
+              </span>
+            </div>
+
+            {loadingWallet ? (
+              <div className="p-10 text-center text-xs text-gray-400">Loading wallet passbook...</div>
+            ) : (walletTransactions.length === 0 && (!user?.walletTransactions || user.walletTransactions.length === 0)) ? (
+              <div className="p-10 text-center space-y-2">
+                <Wallet className="w-10 h-10 text-gray-300 mx-auto" />
+                <p className="font-bold text-gray-800 dark:text-gray-200 text-xs">No transactions in your wallet yet</p>
+                <p className="text-[11px] text-gray-500 max-w-sm mx-auto">
+                  When you return an empty ThermalVault™ cooler box, your ₹250 refund credit will show up right here!
+                </p>
+              </div>
+            ) : (
+              <div className="divide-y divide-gray-100 dark:divide-slate-800">
+                {(walletTransactions.length > 0 ? walletTransactions : (user?.walletTransactions || [])).map((tx) => {
+                  const isCredit = tx.type === 'credit';
+                  return (
+                    <div key={tx.id} className="py-3.5 flex items-center justify-between gap-4">
+                      <div className="flex items-center gap-3">
+                        <div className={`w-9 h-9 rounded-xl flex items-center justify-center font-black text-sm shrink-0 ${
+                          isCredit 
+                            ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-950/60 dark:text-emerald-300' 
+                            : 'bg-rose-100 text-[#d11243] dark:bg-rose-950/60 dark:text-rose-400'
+                        }`}>
+                          {isCredit ? '+' : '−'}
+                        </div>
+                        <div>
+                          <div className="font-bold text-xs text-gray-900 dark:text-white flex items-center gap-2">
+                            <span>{tx.title}</span>
+                            <span className={`text-[10px] px-1.5 py-0.2 rounded font-bold ${
+                              isCredit 
+                                ? 'bg-emerald-50 text-emerald-800 dark:bg-emerald-950/80 dark:text-emerald-300' 
+                                : 'bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300'
+                            }`}>
+                              {isCredit ? 'CREDIT' : 'DEBIT'}
+                            </span>
+                          </div>
+                          <p className="text-[11px] text-gray-500 dark:text-gray-400 mt-0.5">
+                            {tx.description}
+                          </p>
+                          <span className="text-[10px] text-gray-400">
+                            {new Date(tx.date).toLocaleString('en-IN', {
+                              dateStyle: 'medium',
+                              timeStyle: 'short'
+                            })}
+                          </span>
+                        </div>
+                      </div>
+
+                      <div className="text-right shrink-0">
+                        <div className={`font-black text-sm ${
+                          isCredit 
+                            ? 'text-emerald-600 dark:text-emerald-400' 
+                            : 'text-gray-900 dark:text-white'
+                        }`}>
+                          {isCredit ? `+₹${tx.amount}` : `−₹${tx.amount}`}
+                        </div>
+                        <div className="text-[10px] text-gray-500 dark:text-gray-400 font-semibold mt-0.5">
+                          Balance: ₹{tx.balanceAfter}
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+
       {/* ORDER DETAILS MODAL                                      */}
       {/* ======================================================== */}
       {selectedOrder && (
