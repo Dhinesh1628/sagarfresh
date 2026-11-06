@@ -74,6 +74,66 @@ const POPULAR_LOCALITIES: Record<string, { area: string; pincode: string }[]> = 
 
 const CITIES = ['Hyderabad', 'Bengaluru', 'Mumbai', 'Delhi NCR', 'Pune', 'Chennai'];
 
+// Helper function to smartly format and deduplicate Indian addresses (Swiggy / Zomato standard)
+const formatIndianGpsAddress = (addr: any, fallbackCity: string) => {
+  const road = (addr.road || addr.pedestrian || addr.street || addr.residential || '').trim();
+  const locality = (addr.suburb || addr.neighbourhood || addr.subdistrict || addr.hamlet || '').trim();
+  const countyRaw = (addr.county || '').replace(/\s+mandal\b/i, '').trim();
+  const city = (addr.city || addr.town || addr.village || addr.municipality || addr.state_district || countyRaw || fallbackCity || 'Hyderabad').trim();
+  const state = (addr.state || 'Telangana').trim();
+  const pincode = (addr.postcode || (city.toLowerCase().includes('hyderabad') ? '500033' : '')).trim();
+
+  // Determine cleanest primary area name
+  let areaName = road || locality;
+  if (!areaName) {
+    if (countyRaw && countyRaw.toLowerCase() !== city.toLowerCase()) {
+      areaName = countyRaw;
+    } else {
+      areaName = city;
+    }
+  }
+
+  // Deduplicate parts cleanly:
+  const parts: string[] = [];
+  const seen = new Set<string>();
+  const addPart = (text?: string) => {
+    if (!text) return;
+    const clean = text.trim();
+    if (!clean) return;
+    const lower = clean.toLowerCase();
+    if (!seen.has(lower)) {
+      seen.add(lower);
+      parts.push(clean);
+    }
+  };
+
+  addPart(road);
+  addPart(locality);
+  if (countyRaw && countyRaw.toLowerCase() !== city.toLowerCase()) {
+    addPart(countyRaw);
+  }
+  addPart(city);
+  if (pincode) addPart(pincode);
+  if (state && !seen.has(state.toLowerCase())) addPart(state);
+
+  const cleanFormatted = parts.join(', ');
+
+  const newAddr: DeliveryAddress = {
+    id: `addr_gps_${Date.now()}`,
+    tag: 'Other',
+    flatNo: '',
+    building: areaName,
+    street: road || locality || areaName,
+    area: areaName,
+    city: city,
+    state: state,
+    pincode: pincode,
+    formattedAddress: cleanFormatted
+  };
+
+  return { newAddr, areaName, city, cleanFormatted };
+};
+
 export const LocationSelectorModal: React.FC<LocationSelectorModalProps> = ({
   isOpen,
   onClose,
@@ -232,22 +292,40 @@ export const LocationSelectorModal: React.FC<LocationSelectorModalProps> = ({
         const stateDetected = data.principalSubdivision || 'Telangana';
         const pinDetected = data.postcode || (cityDetected.toLowerCase().includes('hyderabad') ? '500033' : '560038');
         
+        // Deduplicate address parts cleanly
+        const parts: string[] = [];
+        const seen = new Set<string>();
+        const addPart = (p?: string) => {
+          if (!p) return;
+          const clean = p.trim();
+          if (!clean || seen.has(clean.toLowerCase())) return;
+          seen.add(clean.toLowerCase());
+          parts.push(clean);
+        };
+
+        addPart(localityDetected);
+        addPart(cityDetected);
+        addPart(pinDetected);
+        addPart(stateDetected);
+
+        const cleanFormatted = parts.join(', ');
+        
         const newAddr: DeliveryAddress = {
           id: `addr_ip_${Date.now()}`,
-          tag: 'Home',
-          flatNo: 'Current Location',
+          tag: 'Other',
+          flatNo: '',
           building: localityDetected,
-          street: `${localityDetected}, ${cityDetected}`,
+          street: localityDetected !== cityDetected ? `${localityDetected}, ${cityDetected}` : localityDetected,
           area: localityDetected,
           city: cityDetected,
           state: stateDetected,
           pincode: pinDetected,
-          formattedAddress: `${localityDetected}, ${cityDetected}, ${stateDetected} ${pinDetected}`
+          formattedAddress: cleanFormatted
         };
 
         onSelectAddress(newAddr);
         onCityChange(cityDetected);
-        setGpsNotice(`✓ Detected Locality: ${localityDetected}, ${cityDetected}`);
+        setGpsNotice(`✓ Detected Locality: ${cleanFormatted}`);
         setIsDetectingGps(false);
         setTimeout(() => {
           onClose();
@@ -264,9 +342,9 @@ export const LocationSelectorModal: React.FC<LocationSelectorModalProps> = ({
     const fallbackPin = fallbackCity === 'Hyderabad' ? '500033' : '560038';
     const fallbackAddr: DeliveryAddress = {
       id: `addr_fb_${Date.now()}`,
-      tag: 'Home',
-      flatNo: 'Current Location',
-      building: 'City Center',
+      tag: 'Other',
+      flatNo: '',
+      building: fallbackArea,
       street: fallbackArea,
       area: fallbackArea,
       city: fallbackCity,
@@ -296,8 +374,8 @@ export const LocationSelectorModal: React.FC<LocationSelectorModalProps> = ({
       try {
         const perm = await (navigator.permissions as any).query({ name: 'geolocation' });
         if (perm.state === 'denied') {
-          setGpsNotice('⚠️ Location access is blocked in your browser. Click the lock/site icon (🔒) in your address bar, switch Location to "Allow", and click GPS Detect again, or search your area below.');
-          setIsDetectingGps(false);
+          setGpsNotice('⚠️ Location permission is blocked in browser. Using network locality...');
+          fallbackIpLocation();
           return;
         }
       } catch (e) {}
@@ -316,30 +394,11 @@ export const LocationSelectorModal: React.FC<LocationSelectorModalProps> = ({
           if (res.ok) {
             const data = await res.json();
             const addr = data.address || {};
-            const detectedRoad = addr.road || addr.pedestrian || '';
-            const detectedArea = addr.suburb || addr.neighbourhood || addr.residential || addr.village || addr.city_district || 'Current Location';
-            const detectedCity = addr.city || addr.town || addr.municipality || addr.state_district || selectedCity || 'Hyderabad';
-            const detectedState = addr.state || 'Telangana';
-            const detectedPin = addr.postcode || (detectedCity.toLowerCase().includes('hyderabad') ? '500033' : '560038');
-
-            const fullFormatted = data.display_name || [detectedRoad, detectedArea, detectedCity, detectedState, detectedPin].filter(Boolean).join(', ');
-
-            const newAddr: DeliveryAddress = {
-              id: `addr_gps_${Date.now()}`,
-              tag: 'Home',
-              flatNo: 'Current Location',
-              building: detectedRoad || detectedArea,
-              street: detectedRoad ? `${detectedRoad}, ${detectedArea}` : detectedArea,
-              area: detectedArea,
-              city: detectedCity,
-              state: detectedState,
-              pincode: detectedPin,
-              formattedAddress: fullFormatted
-            };
+            const { newAddr, areaName, city: detectedCity, cleanFormatted } = formatIndianGpsAddress(addr, selectedCity);
 
             onSelectAddress(newAddr);
             onCityChange(detectedCity);
-            setGpsNotice(`✓ Exact Doorstep Location: ${detectedRoad ? detectedRoad + ', ' : ''}${detectedArea}, ${detectedCity} ${detectedPin ? `(${detectedPin})` : ''}`);
+            setGpsNotice(`✓ Doorstep Location: ${cleanFormatted}`);
             setIsDetectingGps(false);
             setTimeout(() => {
               onClose();
@@ -358,24 +417,41 @@ export const LocationSelectorModal: React.FC<LocationSelectorModalProps> = ({
             const detectedCity = data2.city || data2.principalSubdivision || selectedCity || 'Hyderabad';
             const detectedArea = data2.locality || data2.principalSubdivision || detectedCity;
             const detectedState = data2.principalSubdivision || 'Telangana';
-            const detectedPin = data2.postcode || '500033';
+            const detectedPin = data2.postcode || (detectedCity.toLowerCase().includes('hyderabad') ? '500033' : '560038');
+
+            const parts: string[] = [];
+            const seen = new Set<string>();
+            const addPart = (p?: string) => {
+              if (!p) return;
+              const clean = p.trim();
+              if (!clean || seen.has(clean.toLowerCase())) return;
+              seen.add(clean.toLowerCase());
+              parts.push(clean);
+            };
+
+            addPart(detectedArea);
+            addPart(detectedCity);
+            addPart(detectedPin);
+            addPart(detectedState);
+
+            const cleanFormatted = parts.join(', ');
 
             const newAddr: DeliveryAddress = {
               id: `addr_gps_${Date.now()}`,
-              tag: 'Home',
-              flatNo: 'Current Location',
-              building: `GPS (${lat.toFixed(4)}, ${lon.toFixed(4)})`,
-              street: `${detectedArea}, ${detectedCity}`,
+              tag: 'Other',
+              flatNo: '',
+              building: detectedArea,
+              street: detectedArea !== detectedCity ? `${detectedArea}, ${detectedCity}` : detectedArea,
               area: detectedArea,
               city: detectedCity,
               state: detectedState,
               pincode: detectedPin,
-              formattedAddress: `${detectedArea}, ${detectedCity}, ${detectedState} ${detectedPin}`
+              formattedAddress: cleanFormatted
             };
 
             onSelectAddress(newAddr);
             onCityChange(detectedCity);
-            setGpsNotice(`✓ Detected: ${detectedArea}, ${detectedCity}`);
+            setGpsNotice(`✓ Detected: ${cleanFormatted}`);
             setIsDetectingGps(false);
             setTimeout(() => {
               onClose();
@@ -389,21 +465,19 @@ export const LocationSelectorModal: React.FC<LocationSelectorModalProps> = ({
       (err) => {
         setIsDetectingGps(false);
         if (err.code === 1) {
-          // PERMISSION_DENIED
-          setGpsNotice('⚠️ Location permission is blocked in your browser. Click the lock 🔒 icon next to your URL bar, set Location to "Allow", and click GPS Detect again, or search your area below.');
+          setGpsNotice('⚠️ Location access was denied. Auto-detected approximate area via network.');
+          fallbackIpLocation();
         } else if (err.code === 2) {
-          // POSITION_UNAVAILABLE
-          setGpsNotice('⚠️ Device GPS signal unavailable. Auto-detected approximate area via network telemetry.');
+          setGpsNotice('⚠️ Device GPS signal unavailable. Auto-detected approximate area via network.');
           fallbackIpLocation();
         } else if (err.code === 3) {
-          // TIMEOUT
-          setGpsNotice('⚠️ GPS timed out. Auto-detected approximate area via network telemetry.');
+          setGpsNotice('⚠️ GPS timed out. Auto-detected approximate area via network.');
           fallbackIpLocation();
         } else {
           fallbackIpLocation();
         }
       },
-      { enableHighAccuracy: true, timeout: 15000, maximumAge: 0 }
+      { enableHighAccuracy: true, timeout: 10000, maximumAge: 30000 }
     );
   };
 
@@ -573,7 +647,7 @@ export const LocationSelectorModal: React.FC<LocationSelectorModalProps> = ({
                     onClick={() => {
                       const newAddr: DeliveryAddress = {
                         id: `addr_${Date.now()}`,
-                        tag: 'Home',
+                        tag: 'Other',
                         flatNo: '',
                         building: place.name,
                         street: place.street || place.area,

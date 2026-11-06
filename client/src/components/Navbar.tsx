@@ -60,6 +60,43 @@ export const Navbar: React.FC<NavbarProps> = ({
 
   const currentLocality = indianCities.find(c => c.name === selectedCity)?.locality || 'Indiranagar, 560038';
 
+  // Smart, clean location display logic (Swiggy / Zepto standard)
+  const getLocationHeading = () => {
+    if (!currentAddress) return selectedCity || 'Hyderabad';
+    
+    if (currentAddress.tag === 'Home' || currentAddress.tag === 'Work') {
+      return `${currentAddress.tag} • ${currentAddress.city || selectedCity}`;
+    }
+    
+    // For GPS or other locations: show area or city
+    if (currentAddress.area && currentAddress.city && currentAddress.area.toLowerCase() !== currentAddress.city.toLowerCase()) {
+      return `${currentAddress.area}, ${currentAddress.city}`;
+    }
+    
+    return currentAddress.area || currentAddress.city || selectedCity || 'Hyderabad';
+  };
+
+  const getLocationSubtitle = () => {
+    if (!currentAddress) return currentLocality || 'Select Location';
+    
+    if (currentAddress.formattedAddress) {
+      // Clean up and prevent duplicate repeating names in the subtitle
+      const parts = currentAddress.formattedAddress.split(',').map(s => s.trim()).filter(Boolean);
+      const uniqueParts: string[] = [];
+      const seen = new Set<string>();
+      for (const p of parts) {
+        const lower = p.toLowerCase();
+        if (!seen.has(lower)) {
+          seen.add(lower);
+          uniqueParts.push(p);
+        }
+      }
+      return uniqueParts.slice(0, 2).join(', ');
+    }
+    
+    return currentAddress.street || currentAddress.area || currentAddress.city || 'Express Delivery';
+  };
+
   const handleAdminTabClick = () => {
     if (!user) {
       onOpenAuth('admin');
@@ -103,10 +140,10 @@ export const Navbar: React.FC<NavbarProps> = ({
 
       {/* Main Navbar */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16 gap-4">
+        <div className="flex items-center justify-between h-16 gap-3 lg:gap-4">
           
           {/* Brand Logo & Location */}
-          <div className="flex items-center gap-3 lg:gap-4 shrink-0">
+          <div className="flex items-center gap-2 sm:gap-3 lg:gap-4 shrink-0">
             <div 
               onClick={() => setCurrentTab('catalog')} 
               className="flex items-center cursor-pointer shrink-0 py-1"
@@ -118,32 +155,26 @@ export const Navbar: React.FC<NavbarProps> = ({
               />
             </div>
 
-            {/* Location Selector */}
+            {/* Location Selector Button */}
             <button
               onClick={onOpenLocationModal}
-              className="hidden lg:flex items-center gap-2 pl-3 py-1 px-2 rounded-xl border-l border-gray-200 dark:border-slate-800 hover:bg-gray-50 dark:hover:bg-slate-800 text-xs transition cursor-pointer text-left group shrink-0 max-w-[200px] xl:max-w-[240px]"
+              className="flex items-center gap-2 px-2.5 h-10 rounded-xl border border-gray-200/90 dark:border-slate-800 hover:bg-gray-100/80 dark:hover:bg-slate-800/80 text-xs transition cursor-pointer text-left group shrink-0 max-w-[170px] sm:max-w-[210px] xl:max-w-[240px]"
               title="Click to enter custom delivery address or detect location"
               type="button"
             >
-              <div className="p-1.5 rounded-lg bg-rose-50 dark:bg-rose-950/60 text-[#d11243] group-hover:scale-110 transition-transform shrink-0">
-                <MapPin className="w-4 h-4" />
+              <div className="w-7 h-7 rounded-lg bg-rose-50 dark:bg-rose-950/60 text-[#d11243] flex items-center justify-center group-hover:scale-105 transition-transform shrink-0">
+                <MapPin className="w-3.5 h-3.5" />
               </div>
               <div className="leading-tight overflow-hidden">
                 <div className="flex items-center gap-1">
                   <span className="font-extrabold text-gray-900 dark:text-white group-hover:text-[#d11243] transition-colors truncate">
-                    {currentAddress ? (
-                      currentAddress.tag === 'Home' || currentAddress.tag === 'Work' 
-                        ? `${currentAddress.tag} • ${currentAddress.city}`
-                        : (currentAddress.area || currentAddress.city)
-                    ) : selectedCity}
+                    {getLocationHeading()}
                   </span>
                   <ChevronDown className="w-3.5 h-3.5 text-gray-400 group-hover:text-[#d11243] transition-transform group-hover:translate-y-0.5 shrink-0" />
                 </div>
-                <div className="flex items-center gap-1.5 mt-0.5">
-                  <span className="text-gray-600 dark:text-gray-300 font-medium truncate max-w-[100px] xl:max-w-[140px] text-[11px]">
-                    {currentAddress ? (
-                      currentAddress.formattedAddress || `${currentAddress.flatNo ? currentAddress.flatNo + ', ' : ''}${currentAddress.area || currentAddress.street}`
-                    ) : currentLocality}
+                <div className="flex items-center gap-1 mt-0.5">
+                  <span className="text-gray-500 dark:text-gray-400 font-medium truncate max-w-[70px] sm:max-w-[100px] xl:max-w-[130px] text-[10px]">
+                    {getLocationSubtitle()}
                   </span>
                   <span className="w-1 h-1 rounded-full bg-emerald-500 shrink-0" />
                   <span className="text-[10px] text-emerald-600 dark:text-emerald-400 font-bold whitespace-nowrap shrink-0">
@@ -154,16 +185,16 @@ export const Navbar: React.FC<NavbarProps> = ({
             </button>
           </div>
 
-          {/* Search Bar */}
-          <div className="hidden md:flex flex-1 min-w-[160px] max-w-xs xl:max-w-md mx-2">
+          {/* Search Bar - Center Zone (Spacious & Flex-1) */}
+          <div className="hidden sm:flex flex-1 min-w-[180px] max-w-xl mx-2 lg:mx-4">
             <div className="relative w-full">
-              <Search className="w-4 h-4 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2" />
+              <Search className="w-4 h-4 text-gray-400 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
               <input
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Search chicken, fish, mutton..."
-                className="w-full pl-9 pr-3 py-2 rounded-lg bg-gray-100 dark:bg-slate-800 hover:bg-gray-50 dark:hover:bg-slate-700/60 focus:bg-white dark:focus:bg-slate-800 border border-gray-200 dark:border-slate-700 focus:border-[#d11243] text-gray-800 dark:text-gray-100 text-xs placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none transition-colors"
+                placeholder="Search fresh chicken, mutton, seafood, eggs..."
+                className="w-full h-10 pl-10 pr-4 rounded-xl bg-gray-100/90 dark:bg-slate-800/90 hover:bg-gray-100 dark:hover:bg-slate-800 focus:bg-white dark:focus:bg-slate-900 border border-gray-200 dark:border-slate-700/80 focus:border-[#d11243] text-gray-900 dark:text-gray-100 text-xs placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-1 focus:ring-[#d11243] transition-all"
               />
             </div>
           </div>
@@ -171,69 +202,38 @@ export const Navbar: React.FC<NavbarProps> = ({
           {/* Right Navigation & Actions */}
           <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
             
+            {/* My Orders / Dashboard Button */}
             <button
               onClick={() => {
                 if (!user) onOpenAuth('customer');
                 else setCurrentTab('dashboard');
               }}
-              className={`hidden sm:flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-bold cursor-pointer transition whitespace-nowrap shrink-0 ${
+              className={`h-10 px-3 rounded-xl text-xs font-bold cursor-pointer transition flex items-center gap-1.5 whitespace-nowrap shrink-0 ${
                 currentTab === 'dashboard' 
                   ? 'bg-rose-50 dark:bg-rose-950/60 text-[#d11243] dark:text-rose-400 border border-rose-200 dark:border-rose-900 shadow-2xs' 
-                  : 'text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-slate-800'
+                  : 'text-gray-700 dark:text-gray-200 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-slate-800 border border-transparent'
               }`}
             >
               <span>My Orders</span>
             </button>
 
-            <button
-              onClick={() => setCurrentTab('coolers')}
-              className={`hidden xl:flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-semibold cursor-pointer transition whitespace-nowrap shrink-0 ${
-                currentTab === 'coolers' 
-                  ? 'bg-rose-50 dark:bg-rose-950/60 text-[#d11243] dark:text-rose-400 border border-rose-200 dark:border-rose-900' 
-                  : 'text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-slate-800'
-              }`}
-            >
-              <RotateCcw className="w-3.5 h-3.5 text-[#d11243]" />
-              <span>Box Returns</span>
-              {user?.depositBalance ? (
-                <span className="px-1.5 py-0.2 bg-emerald-100 dark:bg-emerald-950 text-emerald-800 dark:text-emerald-300 rounded text-[10px] font-bold">
-                  ₹{user.depositBalance}
-                </span>
-              ) : null}
-            </button>
-
-            <button
-              onClick={() => setCurrentTab('tracking')}
-              className={`hidden xl:flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-semibold cursor-pointer transition whitespace-nowrap shrink-0 ${
-                currentTab === 'tracking' 
-                  ? 'bg-rose-50 dark:bg-rose-950/60 text-[#d11243] dark:text-rose-400 border border-rose-200 dark:border-rose-900 shadow-2xs font-bold' 
-                  : 'text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-slate-800'
-              }`}
-            >
-              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-              <span>Live Tracking</span>
-            </button>
-
-            {user?.role === 'admin' && (
+            {/* GoMeat Vault Wallet Live Pill */}
+            {user && (
               <button
-                onClick={handleAdminTabClick}
-                className={`hidden 2xl:inline-flex items-center px-2.5 py-1.5 rounded-lg text-xs font-semibold cursor-pointer transition whitespace-nowrap shrink-0 ${
-                  currentTab === 'admin' 
-                    ? 'bg-amber-50 text-amber-900 border border-amber-300' 
-                    : 'text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-slate-800'
-                }`}
+                onClick={() => setCurrentTab('dashboard')}
+                title="GoMeat Vault Wallet - Click to view passbook"
+                className="h-10 px-3 rounded-xl bg-emerald-50 hover:bg-emerald-100 dark:bg-emerald-950/60 dark:hover:bg-emerald-900/60 border border-emerald-300 dark:border-emerald-700/60 text-emerald-800 dark:text-emerald-300 text-xs font-bold flex items-center gap-1.5 cursor-pointer transition shadow-2xs shrink-0 whitespace-nowrap"
               >
-                <span>Hub Ops</span>
-                <span className="ml-1 px-1 py-0.2 bg-amber-200 dark:bg-amber-900 text-amber-900 dark:text-amber-200 rounded text-[9px] font-bold">
-                  ADMIN
-                </span>
+                <Wallet className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
+                <span className="hidden xl:inline text-[11px] font-medium text-emerald-700 dark:text-emerald-400">Wallet:</span>
+                <span className="font-extrabold text-emerald-900 dark:text-emerald-200">₹{user.walletBalance ?? 0}</span>
               </button>
             )}
 
             {/* Dark / Light Theme Toggle with Glowing Light Effect */}
             <button
               onClick={toggleTheme}
-              className="p-2 rounded-xl border border-gray-200 dark:border-slate-700 bg-gray-50 dark:bg-slate-800 text-gray-700 dark:text-amber-400 hover:border-[#d11243] hover:shadow-[0_0_15px_rgba(225,29,67,0.25)] transition-all duration-300 cursor-pointer flex items-center justify-center shrink-0"
+              className="h-10 w-10 rounded-xl border border-gray-200 dark:border-slate-700 bg-gray-50 dark:bg-slate-800 text-gray-700 dark:text-amber-400 hover:border-[#d11243] hover:shadow-[0_0_15px_rgba(225,29,67,0.25)] transition-all duration-300 cursor-pointer flex items-center justify-center shrink-0"
               title={theme === 'dark' ? 'Switch to Light Theme' : 'Switch to Dark Theme'}
               aria-label="Toggle theme"
             >
@@ -246,33 +246,31 @@ export const Navbar: React.FC<NavbarProps> = ({
 
             {/* User Profile or Explicit Login Button */}
             {user ? (
-              <div className="relative">
+              <div className="relative shrink-0">
                 <button
                   onClick={() => setUserDropdownOpen(!userDropdownOpen)}
-                  className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg hover:bg-gray-100 dark:hover:bg-slate-800 text-xs font-semibold text-gray-800 dark:text-gray-200 border border-gray-200 dark:border-slate-700 cursor-pointer"
+                  className="h-10 px-2.5 rounded-xl hover:bg-gray-100 dark:hover:bg-slate-800 text-xs font-semibold text-gray-800 dark:text-gray-200 border border-gray-200 dark:border-slate-700 cursor-pointer flex items-center gap-1.5"
                 >
                   {user.avatar ? (
                     <img 
                       src={user.avatar} 
                       alt={user.name} 
-                      className="w-5 h-5 rounded-full object-cover border border-gray-300 dark:border-slate-600"
+                      className="w-6 h-6 rounded-full object-cover border border-gray-300 dark:border-slate-600"
                       referrerPolicy="no-referrer"
                     />
                   ) : (
-                    <div className="w-5 h-5 rounded-full bg-[#d11243] text-white flex items-center justify-center font-bold text-[10px]">
+                    <div className="w-6 h-6 rounded-full bg-[#d11243] text-white flex items-center justify-center font-bold text-[10px]">
                       {user.name.charAt(0)}
                     </div>
                   )}
-                  <span className="hidden sm:inline truncate max-w-[90px]">{user.name.split(' ')[0]}</span>
-                  <span className="text-[10px] px-1 py-0.2 bg-gray-100 dark:bg-slate-800 text-gray-500 dark:text-gray-400 rounded font-normal uppercase">
-                    {user.role}
-                  </span>
+                  <span className="hidden sm:inline truncate max-w-[80px]">{user.name.split(' ')[0]}</span>
+                  <ChevronDown className="w-3.5 h-3.5 text-gray-400 shrink-0" />
                 </button>
 
                 {userDropdownOpen && (
                   <div 
                     onClick={() => setUserDropdownOpen(false)}
-                    className="absolute right-0 mt-1 w-60 rounded-xl bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-800 shadow-xl py-2 z-50 text-xs text-gray-700 dark:text-gray-200"
+                    className="absolute right-0 mt-1 w-64 rounded-xl bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-800 shadow-xl py-2 z-50 text-xs text-gray-700 dark:text-gray-200"
                   >
                     <div className="px-3 py-2 border-b border-gray-100 dark:border-slate-800">
                       <div className="flex items-center gap-2 mb-1">
@@ -319,7 +317,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                     >
                       <span className="flex items-center gap-1.5">
                         <Wallet className="w-3.5 h-3.5 text-emerald-600" />
-                        GoMeat Wallet Passbook
+                        GoMeat Vault Wallet
                       </span>
                       <span className="px-1.5 py-0.5 bg-emerald-100 dark:bg-emerald-900 text-emerald-700 dark:text-emerald-200 rounded text-[10px] font-bold">₹{user.walletBalance || 0}</span>
                     </button>
@@ -336,7 +334,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                       onClick={() => setCurrentTab('coolers')}
                       className="w-full text-left px-3 py-2 hover:bg-gray-50 dark:hover:bg-slate-800 hover:text-[#d11243] dark:hover:text-rose-400 cursor-pointer"
                     >
-                      Return Boxes (₹250 UPI Refund)
+                      Return Boxes (₹250 Refund)
                     </button>
 
                     <button
@@ -370,35 +368,22 @@ export const Navbar: React.FC<NavbarProps> = ({
             ) : (
               <button
                 onClick={() => onOpenAuth('customer')}
-                className="px-3.5 py-1.5 rounded-lg bg-gray-900 hover:bg-black dark:bg-white dark:hover:bg-gray-100 dark:text-gray-950 text-white font-bold text-xs cursor-pointer flex items-center gap-1.5 transition shadow-xs"
+                className="h-10 px-3.5 rounded-xl bg-gray-900 hover:bg-black dark:bg-white dark:hover:bg-gray-100 dark:text-gray-950 text-white font-bold text-xs cursor-pointer flex items-center gap-1.5 transition shadow-xs shrink-0 whitespace-nowrap"
               >
                 <UserIcon className="w-3.5 h-3.5" />
                 <span>Sign In</span>
               </button>
             )}
 
-            {/* GoMeat Wallet Live Pill */}
-            {user && (
-              <button
-                onClick={() => setCurrentTab('dashboard')}
-                title="GoMeat Wallet Balance - Click to view passbook"
-                className="px-2.5 py-1.5 rounded-lg bg-emerald-50 hover:bg-emerald-100 dark:bg-emerald-950/60 dark:hover:bg-emerald-900/60 border border-emerald-300 dark:border-emerald-700/60 text-emerald-800 dark:text-emerald-300 text-xs font-bold flex items-center gap-1.5 cursor-pointer transition shadow-2xs"
-              >
-                <Wallet className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" />
-                <span className="hidden sm:inline text-[11px] font-medium text-emerald-700 dark:text-emerald-400">Wallet:</span>
-                <span className="font-extrabold text-emerald-900 dark:text-emerald-200">₹{user.walletBalance ?? 0}</span>
-              </button>
-            )}
-
             {/* Cart Button */}
             <button
               onClick={() => setIsCartOpen(true)}
-              className="px-3 py-2 rounded-lg bg-[#d11243] hover:bg-[#b80f3b] text-white font-bold text-xs flex items-center gap-2 cursor-pointer shadow-md hover:shadow-lg transition card-light-hover"
+              className="h-10 px-3.5 rounded-xl bg-[#d11243] hover:bg-[#b80f3b] text-white font-bold text-xs flex items-center gap-2 cursor-pointer shadow-md hover:shadow-lg transition shrink-0 whitespace-nowrap"
             >
               <ShoppingBag className="w-4 h-4 text-white" />
               <span className="hidden sm:inline">Cart</span>
               {totalItems > 0 && (
-                <span className="px-1.5 py-0.2 bg-white text-[#d11243] rounded-full text-[11px] font-extrabold">
+                <span className="px-1.5 py-0.5 bg-white text-[#d11243] rounded-full text-[11px] font-extrabold leading-none">
                   {totalItems}
                 </span>
               )}
@@ -409,10 +394,10 @@ export const Navbar: React.FC<NavbarProps> = ({
               )}
             </button>
 
-            {/* Mobile Menu */}
+            {/* Mobile Menu Toggle (screens < sm) */}
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="md:hidden p-1.5 text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white"
+              className="sm:hidden h-10 w-10 flex items-center justify-center rounded-xl border border-gray-200 dark:border-slate-700 text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white"
             >
               {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
             </button>
@@ -421,6 +406,22 @@ export const Navbar: React.FC<NavbarProps> = ({
 
         </div>
       </div>
+
+      {/* Mobile Inline Search Bar (visible only on < sm screens) */}
+      <div className="sm:hidden px-4 pb-2.5 pt-0.5">
+        <div className="relative w-full">
+          <Search className="w-4 h-4 text-gray-400 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+          <input
+            type="text"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            placeholder="Search chicken, mutton, fish, cold cuts..."
+            className="w-full h-9 pl-9 pr-3 rounded-xl bg-gray-100/90 dark:bg-slate-800/90 border border-gray-200 dark:border-slate-700 text-gray-900 dark:text-gray-100 text-xs placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:border-[#d11243]"
+          />
+        </div>
+      </div>
+
+
 
       {/* Mobile Drawer */}
       {mobileMenuOpen && (
@@ -446,11 +447,11 @@ export const Navbar: React.FC<NavbarProps> = ({
                 <MapPin className="w-4 h-4 text-[#d11243] shrink-0" />
                 <div>
                   <div className="font-bold text-gray-900 dark:text-white flex items-center gap-1">
-                    <span>Deliver to: {currentAddress?.tag || currentAddress?.city || selectedCity}</span>
+                    <span>Deliver to: {getLocationHeading()}</span>
                     <span className="text-[10px] font-semibold text-emerald-600 dark:text-emerald-400">• 90 Mins</span>
                   </div>
                   <div className="text-[11px] text-gray-600 dark:text-gray-300 truncate max-w-[240px]">
-                    {currentAddress ? (currentAddress.formattedAddress || `${currentAddress.flatNo ? currentAddress.flatNo + ', ' : ''}${currentAddress.area || currentAddress.street}`) : currentLocality}
+                    {getLocationSubtitle()}
                   </div>
                 </div>
               </div>
