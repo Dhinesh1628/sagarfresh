@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { X, Plus, Minus, Zap, ShieldCheck, Star, Award, CheckCircle2, ChevronRight, HelpCircle, Heart } from 'lucide-react';
+import { X, Plus, Minus, Zap, ShieldCheck, Star, Award, CheckCircle2, ChevronRight, HelpCircle, Heart, MessageSquare, ThumbsUp, Send } from 'lucide-react';
 import type { Product } from '../types';
 import { useCart } from '../context/CartContext';
+import { useAuth } from '../context/AuthContext';
 
 interface ProductDetailModalProps {
   product: Product | null;
@@ -13,6 +14,7 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
   onClose
 }) => {
   const { items, addItem, updateQuantity } = useCart();
+  const { user } = useAuth();
   
   if (!product) return null;
 
@@ -50,6 +52,105 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
   const [quantity, setQuantity] = useState<number>(1);
   const [showWeightExplanation, setShowWeightExplanation] = useState<boolean>(false);
   const [isWishlisted, setIsWishlisted] = useState<boolean>(false);
+
+  // Review & Rating State
+  interface ReviewItem {
+    id: string;
+    author: string;
+    location?: string;
+    rating: number;
+    date: string;
+    comment: string;
+    cut?: string;
+    verified?: boolean;
+  }
+
+  const defaultReviews: ReviewItem[] = [
+    {
+      id: 'rev_1',
+      author: 'Ananya R.',
+      location: 'Bengaluru',
+      rating: 5,
+      date: 'Yesterday',
+      comment: 'Super fresh and completely odorless! Delivered ice-cold inside the reusable cold box. Pieces were trimmed cleanly and cooked evenly.',
+      cut: 'Curry Cut',
+      verified: true
+    },
+    {
+      id: 'rev_2',
+      author: 'Vikramaditya S.',
+      location: 'Bengaluru',
+      rating: 5,
+      date: '3 days ago',
+      comment: 'Really fresh and tender! No ice crystals because it was chilled, not rock frozen. Family loved the taste.',
+      cut: 'Biryani Cut',
+      verified: true
+    },
+    {
+      id: 'rev_3',
+      author: 'Deepika M.',
+      location: 'Bengaluru',
+      rating: 5,
+      date: '1 week ago',
+      comment: 'Clean cut without unwanted bones or fat. Handed back the cold box on delivery and got ₹250 back immediately.',
+      cut: 'Boneless Cubes',
+      verified: true
+    }
+  ];
+
+  const [reviews, setReviews] = useState<ReviewItem[]>(() => {
+    try {
+      const saved = localStorage.getItem(`gomeat_reviews_${product.id}`);
+      return saved ? JSON.parse(saved) : defaultReviews;
+    } catch {
+      return defaultReviews;
+    }
+  });
+
+  const [userRating, setUserRating] = useState<number>(5);
+  const [hoverRating, setHoverRating] = useState<number>(0);
+  const [authorName, setAuthorName] = useState<string>(user?.name || '');
+  const [reviewComment, setReviewComment] = useState<string>('');
+  const [isSubmittingReview, setIsSubmittingReview] = useState<boolean>(false);
+  const [reviewSuccessMessage, setReviewSuccessMessage] = useState<string | null>(null);
+  const [showReviewForm, setShowReviewForm] = useState<boolean>(false);
+
+  useEffect(() => {
+    if (user?.name && !authorName) {
+      setAuthorName(user.name);
+    }
+  }, [user]);
+
+  const handleSubmitReview = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!reviewComment.trim()) return;
+
+    setIsSubmittingReview(true);
+    const newRev: ReviewItem = {
+      id: `rev_${Date.now()}`,
+      author: authorName.trim() || user?.name || 'Verified Customer',
+      location: user?.city || 'Bengaluru',
+      rating: userRating,
+      date: 'Just now',
+      comment: reviewComment.trim(),
+      cut: selectedStyle,
+      verified: true
+    };
+
+    const updated = [newRev, ...reviews];
+    setReviews(updated);
+    try {
+      localStorage.setItem(`gomeat_reviews_${product.id}`, JSON.stringify(updated));
+    } catch (e) {}
+
+    setReviewComment('');
+    setIsSubmittingReview(false);
+    setReviewSuccessMessage('Thank you! Your rating and review have been added.');
+    setTimeout(() => {
+      setReviewSuccessMessage(null);
+      setShowReviewForm(false);
+    }, 3000);
+  };
 
   useEffect(() => {
     try {
@@ -91,30 +192,6 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
     addItem(product, quantity, selectedStyle);
     onClose();
   };
-
-  const sampleReviews = [
-    {
-      author: 'Ananya R.',
-      location: 'Indiranagar, Bengaluru',
-      rating: 5,
-      date: 'Yesterday',
-      comment: 'Super fresh and completely odorless! Delivered ice-cold inside the blue ThermalVault cooler box. The curry cut pieces were uniform and cooked evenly.'
-    },
-    {
-      author: 'Vikramaditya S.',
-      location: 'Koramangala, Bengaluru',
-      rating: 5,
-      date: '3 days ago',
-      comment: 'Biryani cuts were juicy and had great bone-to-meat ratio. No ice crystal damage because it was chilled, not rock frozen. Highly recommended!'
-    },
-    {
-      author: 'Deepika M.',
-      location: 'HSR Layout, Bengaluru',
-      rating: 4.8,
-      date: '1 week ago',
-      comment: 'Loved the gross vs net weight transparency. What was weighed was trimmed cleanly without fat waste. Returned the box on my next delivery for ₹250 refund.'
-    }
-  ];
 
   return (
     <div className="fixed inset-0 z-60 overflow-y-auto flex items-center justify-center p-3 sm:p-5">
@@ -345,29 +422,148 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
               </div>
 
               {/* Customer Ratings & Reviews */}
-              <div className="border-t border-gray-100 dark:border-slate-800 pt-5 space-y-3">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <div className="flex items-center gap-1 bg-amber-400 px-2 py-0.5 rounded text-xs font-black text-gray-950">
-                      <Star className="w-3.5 h-3.5 fill-current" />
+              <div className="border-t border-gray-100 dark:border-slate-800 pt-5 space-y-4">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                  <div className="flex items-center gap-2.5">
+                    <div className="flex items-center gap-1 bg-amber-400 px-2.5 py-1 rounded-lg text-xs font-black text-gray-950">
+                      <Star className="w-4 h-4 fill-current" />
                       <span>4.9</span>
                     </div>
-                    <span className="text-xs font-bold text-gray-900 dark:text-white">1,420+ Verified Customer Reviews</span>
+                    <div>
+                      <h4 className="text-xs font-bold text-gray-900 dark:text-white">Customer Reviews & Ratings</h4>
+                      <span className="text-[10px] text-gray-500 dark:text-gray-400">{reviews.length + 1420} verified customer ratings</span>
+                    </div>
                   </div>
-                  <span className="text-[11px] text-emerald-700 dark:text-emerald-400 font-bold">100% Authentic</span>
+
+                  <button
+                    type="button"
+                    onClick={() => setShowReviewForm(!showReviewForm)}
+                    className="px-3.5 py-1.5 rounded-lg bg-gray-900 dark:bg-rose-600 hover:bg-black dark:hover:bg-rose-700 text-white text-xs font-bold flex items-center justify-center gap-1.5 transition cursor-pointer self-start sm:self-auto shadow-xs"
+                  >
+                    <Star className="w-3.5 h-3.5" />
+                    <span>{showReviewForm ? 'Close Rating Form' : 'Rate This Product'}</span>
+                  </button>
                 </div>
 
-                <div className="space-y-2.5">
-                  {sampleReviews.map((rev, i) => (
-                    <div key={i} className="p-3 bg-gray-50 dark:bg-slate-800/80 rounded-xl border border-gray-100 dark:border-slate-700 text-xs space-y-1">
+                {reviewSuccessMessage && (
+                  <div className="p-3 bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-300 dark:border-emerald-800 rounded-xl text-xs text-emerald-800 dark:text-emerald-200 flex items-center gap-2 animate-fade-in">
+                    <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
+                    <span className="font-bold">{reviewSuccessMessage}</span>
+                  </div>
+                )}
+
+                {/* Interactive Rating Form */}
+                {showReviewForm && (
+                  <form onSubmit={handleSubmitReview} className="p-4 bg-gray-50 dark:bg-slate-800/90 rounded-2xl border border-gray-200 dark:border-slate-700 space-y-3">
+                    <div className="flex items-center justify-between border-b border-gray-200 dark:border-slate-700 pb-2">
+                      <span className="font-bold text-xs text-gray-900 dark:text-white">Rate & Review Your Experience</span>
+                      <span className="text-[10px] text-gray-500 dark:text-gray-400 font-medium">{product.name}</span>
+                    </div>
+
+                    {/* Star selector */}
+                    <div>
+                      <label className="block text-[11px] font-bold text-gray-700 dark:text-gray-300 mb-1">
+                        How would you rate this fresh cut? *
+                      </label>
+                      <div className="flex flex-wrap items-center gap-1">
+                        {[1, 2, 3, 4, 5].map((star) => {
+                          const isFilled = (hoverRating || userRating) >= star;
+                          return (
+                            <button
+                              key={star}
+                              type="button"
+                              onMouseEnter={() => setHoverRating(star)}
+                              onMouseLeave={() => setHoverRating(0)}
+                              onClick={() => setUserRating(star)}
+                              className="p-1 cursor-pointer transition hover:scale-110"
+                            >
+                              <Star className={`w-6 h-6 ${isFilled ? 'fill-amber-400 text-amber-400' : 'text-gray-300 dark:text-gray-600'}`} />
+                            </button>
+                          );
+                        })}
+                        <span className="text-xs font-bold text-gray-700 dark:text-gray-300 ml-2">
+                          {userRating === 5 && '5★ Excellent (Fresh & Juicy)'}
+                          {userRating === 4 && '4★ Good & Clean Cut'}
+                          {userRating === 3 && '3★ Average'}
+                          {userRating === 2 && '2★ Needs Improvement'}
+                          {userRating === 1 && '1★ Poor'}
+                        </span>
+                      </div>
+                    </div>
+
+                    {/* Name input */}
+                    <div>
+                      <label className="block text-[11px] font-bold text-gray-700 dark:text-gray-300 mb-1">
+                        Your Name *
+                      </label>
+                      <input
+                        type="text"
+                        required
+                        value={authorName}
+                        onChange={(e) => setAuthorName(e.target.value)}
+                        placeholder="e.g. Ramesh K. or Pooja"
+                        className="w-full px-3 py-1.5 text-xs rounded-lg bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-700 text-gray-900 dark:text-white focus:outline-none focus:border-[#d11243]"
+                      />
+                    </div>
+
+                    {/* Review text */}
+                    <div>
+                      <label className="block text-[11px] font-bold text-gray-700 dark:text-gray-300 mb-1">
+                        Write Your Review *
+                      </label>
+                      <textarea
+                        required
+                        rows={2}
+                        value={reviewComment}
+                        onChange={(e) => setReviewComment(e.target.value)}
+                        placeholder="Share your experience (freshness, tenderness, clean cut, taste)..."
+                        className="w-full px-3 py-2 text-xs rounded-lg bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-700 text-gray-900 dark:text-white focus:outline-none focus:border-[#d11243]"
+                      />
+                    </div>
+
+                    <button
+                      type="submit"
+                      disabled={isSubmittingReview || !reviewComment.trim()}
+                      className="w-full py-2 bg-[#d11243] hover:bg-[#b80f3b] text-white font-bold text-xs rounded-lg flex items-center justify-center gap-1.5 transition cursor-pointer disabled:opacity-50"
+                    >
+                      <Send className="w-3.5 h-3.5" />
+                      <span>Submit Review</span>
+                    </button>
+                  </form>
+                )}
+
+                {/* Reviews List */}
+                <div className="space-y-2.5 max-h-60 overflow-y-auto pr-1">
+                  {reviews.map((rev) => (
+                    <div key={rev.id} className="p-3 bg-gray-50 dark:bg-slate-800/80 rounded-xl border border-gray-100 dark:border-slate-700 text-xs space-y-1.5">
                       <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-1.5 font-bold text-gray-900 dark:text-white">
-                          <span>{rev.author}</span>
-                          <span className="text-[10px] text-gray-400 font-normal">({rev.location})</span>
+                        <div className="flex items-center gap-2">
+                          <span className="font-bold text-gray-900 dark:text-white">{rev.author}</span>
+                          {rev.verified && (
+                            <span className="px-1.5 py-0.2 rounded bg-emerald-50 dark:bg-emerald-950/70 text-emerald-700 dark:text-emerald-300 text-[10px] font-extrabold flex items-center gap-1 border border-emerald-200 dark:border-emerald-800">
+                              <CheckCircle2 className="w-2.5 h-2.5" />
+                              <span>Verified Buyer</span>
+                            </span>
+                          )}
                         </div>
                         <span className="text-[10px] text-gray-400">{rev.date}</span>
                       </div>
-                      <p className="text-[11px] text-gray-600 dark:text-gray-300 leading-relaxed italic">
+
+                      <div className="flex items-center gap-1">
+                        {[1, 2, 3, 4, 5].map((s) => (
+                          <Star
+                            key={s}
+                            className={`w-3 h-3 ${s <= Math.round(rev.rating) ? 'fill-amber-400 text-amber-400' : 'text-gray-300 dark:text-gray-600'}`}
+                          />
+                        ))}
+                        {rev.cut && (
+                          <span className="text-[10px] text-gray-400 ml-1.5 font-medium">
+                            • Cut: {rev.cut}
+                          </span>
+                        )}
+                      </div>
+
+                      <p className="text-[11px] text-gray-600 dark:text-gray-300 leading-relaxed">
                         "{rev.comment}"
                       </p>
                     </div>

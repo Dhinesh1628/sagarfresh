@@ -1,10 +1,9 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Eye, Plus, Minus, Zap, ShieldCheck, Heart, ArrowUpDown, Filter, CheckCircle2 } from 'lucide-react';
+import { Eye, Plus, Minus, Zap, ShieldCheck, Heart, ArrowUpDown, Filter, CheckCircle2, Star } from 'lucide-react';
 import type { Product } from '../types';
 import { api } from '../api';
 import { useCart } from '../context/CartContext';
 import { ProductDetailModal } from '../components/ProductDetailModal';
-import { CustomerReviewsSection } from '../components/CustomerReviewsSection';
 import { HeroSection } from '../components/HeroSection';
 import { CategorySection } from '../components/CategorySection';
 
@@ -299,6 +298,13 @@ export const CatalogPage: React.FC<CatalogPageProps> = ({
                     <h3 className="font-bold text-sm text-gray-900 dark:text-white leading-snug line-clamp-1 group-hover:text-[#d11243] dark:group-hover:text-rose-400 transition-colors">
                       {product.name}
                     </h3>
+                    <div className="flex items-center gap-1.5 mt-1">
+                      <div className="flex items-center gap-0.5 bg-emerald-50 dark:bg-emerald-950/80 text-emerald-800 dark:text-emerald-300 px-1.5 py-0.5 rounded text-[10px] font-black border border-emerald-200 dark:border-emerald-800">
+                        <Star className="w-2.5 h-2.5 fill-emerald-600 text-emerald-600" />
+                        <span>4.8</span>
+                      </div>
+                      <span className="text-[10px] text-gray-400 font-medium">120+ ratings</span>
+                    </div>
                     <p className="text-[11px] text-gray-500 dark:text-gray-400 line-clamp-2 mt-1 leading-relaxed">
                       {product.description}
                     </p>
@@ -411,9 +417,6 @@ export const CatalogPage: React.FC<CatalogPageProps> = ({
           </div>
         </div>
       </div>
-
-      {/* Verified Customer Reviews & Google Rating Section */}
-      <CustomerReviewsSection />
 
       <ProductDetailModal
         product={inspectingProduct}
