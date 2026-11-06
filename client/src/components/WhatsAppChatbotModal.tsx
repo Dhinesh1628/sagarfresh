@@ -41,13 +41,13 @@ export const WhatsAppChatbotModal: React.FC<WhatsAppChatbotModalProps> = ({
     {
       id: 'msg_welcome',
       sender: 'bot',
-      text: `Namaste! 🙏 Welcome to *GoMeat* - Freshness we can trust.\n\nI am your 24/7 AI Butcher & Cold-Chain Assistant.\n\nAsk me about:\n• Today's 4 AM harbor catch availability (Surmai, Pomfret, Prawns)\n• Pasture mutton & farm chicken cuts\n• How to get your ₹250 cooler box UPI refund\n• 0°C–4°C Live order temperature tracking`,
+      text: `Hello! 👋 Welcome to *GoMeat*.\n\nWe're here to help you order fresh meat.\n\nAsk me about:\n• Today's fresh fish & chicken\n• Tender mutton & ready-to-cook items\n• How to get your ₹250 cold box refund\n• Track your order`,
       time: getCurrentTime(),
       suggestedReplies: [
-        "Today's fresh seafood?",
-        "Chicken & Mutton prices",
-        "How to get ₹250 box refund?",
-        "Track my live order"
+        "Today's fresh seafood",
+        "Chicken & Mutton",
+        "How to get ₹250 box refund",
+        "Track my order"
       ]
     }
   ]);

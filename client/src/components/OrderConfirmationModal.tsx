@@ -43,10 +43,10 @@ export const OrderConfirmationModal: React.FC<OrderConfirmationModalProps> = ({
   };
 
   const stages = [
-    { title: 'Order Confirmed', subtitle: 'Fresh cut prepped' },
-    { title: 'Cold Box Packed', subtitle: 'Chilled at 0.8°C' },
-    { title: 'Out for Delivery', subtitle: 'EV Cold Transit' },
-    { title: 'Delivered', subtitle: 'Box handover' }
+    { title: 'Order Confirmed', subtitle: 'Order received' },
+    { title: "Preparing Order", subtitle: 'Freshly packed' },
+    { title: 'Out for Delivery', subtitle: 'On the way' },
+    { title: 'Delivered', subtitle: 'At your door' }
   ];
 
   const currentStageIndex = currentOrder.status === 'Delivered' 
@@ -79,25 +79,25 @@ export const OrderConfirmationModal: React.FC<OrderConfirmationModalProps> = ({
             <CheckCircle2 className="w-9 h-9" />
           </div>
           <div>
-            <span className="px-3 py-1 rounded-full bg-emerald-50 dark:bg-emerald-950/50 text-emerald-800 dark:text-emerald-300 text-xs font-black border border-emerald-200 dark:border-emerald-800 tracking-wide uppercase">
-              Order Confirmed & Sealed
+            <span className="px-3 py-1 rounded-full bg-emerald-50 dark:bg-emerald-950/50 text-emerald-800 dark:text-emerald-300 text-xs font-black border border-emerald-200 dark:border-emerald-800 tracking-wide">
+              Payment Successful! Your order is confirmed.
             </span>
             <h1 className="text-xl sm:text-2xl font-black text-gray-950 dark:text-white mt-2">
-              Order #{currentOrder.id} Placed Successfully!
+              Order #{currentOrder.id} Placed!
             </h1>
             <p className="text-xs text-gray-500 dark:text-gray-400 mt-1 max-w-md mx-auto">
-              Your cuts are packed inside insulated ThermalVault™ Box <strong>{currentOrder.coolerId}</strong> with real-time temperature tracking.
+              Your items are packed in a chilled cold box (Box ID: <strong>{currentOrder.coolerId}</strong>) to stay fresh.
             </p>
           </div>
         </div>
 
-        {/* Live Cold-Chain Sensor Card (Figma Frame 5 Telemetry) */}
+        {/* Live Cold Box Status Card */}
         <div className="mt-5 p-4 sm:p-5 rounded-2xl bg-slate-900 dark:bg-slate-950 text-white shadow-xl space-y-4 border border-slate-800">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
               <div className="w-3 h-3 rounded-full bg-emerald-400 animate-ping" />
               <span className="text-xs font-extrabold uppercase tracking-wider text-emerald-400">
-                Live IoT Core Probe Telemetry
+                Cold Box Status
               </span>
             </div>
             <button
@@ -106,31 +106,31 @@ export const OrderConfirmationModal: React.FC<OrderConfirmationModalProps> = ({
               className="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-[11px] font-bold text-gray-300 hover:text-white flex items-center gap-1.5 transition disabled:opacity-50"
             >
               <RefreshCw className={`w-3 h-3 ${simulatingSensor ? 'animate-spin' : ''}`} />
-              <span>{simulatingSensor ? 'Reading...' : 'Refresh Sensor'}</span>
+              <span>{simulatingSensor ? 'Checking...' : 'Refresh Temperature'}</span>
             </button>
           </div>
 
           {/* Temperature & Cold Status readout */}
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 bg-slate-800/80 dark:bg-slate-900/90 p-3.5 rounded-xl border border-slate-700 dark:border-slate-800">
             <div>
-              <span className="text-[10px] uppercase text-gray-400 font-bold block">Internal Cold Box</span>
+              <span className="text-[10px] uppercase text-gray-400 font-bold block">Box Temperature</span>
               <div className="flex items-baseline gap-1 mt-0.5">
                 <span className="text-2xl sm:text-3xl font-black text-emerald-400">
                   {liveTemp.toFixed(1)}°C
                 </span>
                 <span className="text-[10px] text-gray-400">Safe</span>
               </div>
-              <span className="text-[10px] text-emerald-400/90 font-semibold">0°C - 4°C FreshZone</span>
+              <span className="text-[10px] text-emerald-400/90 font-semibold">0°C - 4°C Chilled Fresh</span>
             </div>
 
             <div>
-              <span className="text-[10px] uppercase text-gray-400 font-bold block">FreshSeal Integrity</span>
-              <span className="text-sm font-extrabold text-white mt-1 block">Digital Seal Active</span>
+              <span className="text-[10px] uppercase text-gray-400 font-bold block">Box Seal</span>
+              <span className="text-sm font-extrabold text-white mt-1 block">Safely Sealed</span>
               <span className="text-[10px] text-gray-400">Box: {currentOrder.coolerId}</span>
             </div>
 
             <div className="col-span-2 sm:col-span-1">
-              <span className="text-[10px] uppercase text-gray-400 font-bold block">Estimated Arrival</span>
+              <span className="text-[10px] uppercase text-gray-400 font-bold block">Arrives By</span>
               <span className="text-sm font-extrabold text-amber-400 mt-1 block">⚡ 28 - 35 mins</span>
               <span className="text-[10px] text-gray-400 truncate block">{currentOrder.deliverySlot}</span>
             </div>
@@ -167,19 +167,19 @@ export const OrderConfirmationModal: React.FC<OrderConfirmationModalProps> = ({
         {/* Courier & Delivery Partner Details */}
         <div className="mt-4 p-3.5 bg-gray-50 dark:bg-slate-800/70 rounded-2xl border border-gray-200 dark:border-slate-700 text-xs flex items-center justify-between">
           <div className="space-y-0.5">
-            <span className="text-[10px] text-gray-400 uppercase font-bold">Assigned Cold Courier Partner</span>
-            <div className="font-bold text-gray-950 dark:text-white">{currentOrder.deliveryExecutive || 'Ramesh Kumar (EV Cold Courier #12)'}</div>
+            <span className="text-[10px] text-gray-400 uppercase font-bold">Delivery Partner</span>
+            <div className="font-bold text-gray-950 dark:text-white">{currentOrder.deliveryExecutive || 'Ramesh Kumar (Delivery Partner)'}</div>
             <div className="text-[11px] text-emerald-700 dark:text-emerald-400 font-semibold flex items-center gap-1">
-              <span>Vaccinated & Cold-Chain Protocol Trained</span>
+              <span>Trained for safe handling & cold delivery</span>
             </div>
           </div>
           <button 
             type="button"
-            onClick={() => alert('Connecting to your delivery partner...')}
+            onClick={() => alert('Calling your delivery partner...')}
             className="px-3 py-1.5 rounded-lg bg-gray-900 dark:bg-slate-700 hover:bg-black dark:hover:bg-slate-600 text-white text-[11px] font-bold flex items-center gap-1.5 transition"
           >
             <Phone className="w-3 h-3" />
-            <span>Call Courier</span>
+            <span>Call Partner</span>
           </button>
         </div>
 
@@ -194,24 +194,24 @@ export const OrderConfirmationModal: React.FC<OrderConfirmationModalProps> = ({
           </div>
 
           <div className="border-t border-gray-200 dark:border-slate-700 pt-2 flex justify-between font-semibold text-gray-700 dark:text-gray-300">
-            <span>{currentOrder.items.length} Fresh Cuts in Box</span>
+            <span>{currentOrder.items.length} Items</span>
             <span>Paid: <strong className="text-gray-950 dark:text-white font-black">₹{currentOrder.total}</strong></span>
           </div>
         </div>
 
-        {/* ₹250 Refundable Cooler Box Callout & 1-Click Return Trigger */}
+        {/* ₹250 Refundable Cold Box Callout */}
         <div className="mt-4 p-4 rounded-2xl bg-sky-50 dark:bg-sky-950/40 border border-sky-200 dark:border-sky-800/70 text-xs space-y-2.5">
           <div className="flex items-start justify-between">
             <div className="flex items-center gap-1.5 font-black text-sky-950 dark:text-sky-200">
               <RotateCcw className="w-4 h-4 text-sky-700 dark:text-sky-400" />
-              <span>₹250 Cooler Box Deposit Refund Guarantee</span>
+              <span>₹250 Cold Box Refund</span>
             </div>
             <span className="px-2 py-0.5 rounded bg-emerald-100 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300 text-[10px] font-extrabold border border-emerald-200 dark:border-emerald-800">
               ₹250 Protected
             </span>
           </div>
           <p className="text-[11px] text-sky-900 dark:text-sky-300 leading-relaxed">
-            Your ThermalVault cooler maintains 0°C–4°C for up to 4 hours. You can return it to the courier immediately after taking your meat, or schedule a 1-click doorstep pickup anytime for an instant ₹250 UPI refund.
+            Your order comes in a reusable cold box. Return the box after delivery and get ₹250 back once it's checked.
           </p>
           <div className="flex gap-2 pt-1">
             <button
@@ -221,7 +221,7 @@ export const OrderConfirmationModal: React.FC<OrderConfirmationModalProps> = ({
               }}
               className="px-3.5 py-2 bg-sky-700 hover:bg-sky-800 text-white rounded-xl text-xs font-bold flex items-center gap-1.5 transition cursor-pointer"
             >
-              <span>Schedule Cooler Return for ₹250 UPI Refund</span>
+              <span>Return Box for ₹250 Refund</span>
               <ArrowRight className="w-3.5 h-3.5" />
             </button>
           </div>
@@ -236,7 +236,7 @@ export const OrderConfirmationModal: React.FC<OrderConfirmationModalProps> = ({
             }}
             className="flex-1 py-3 px-4 rounded-xl bg-[#d11243] hover:bg-[#b80f3b] text-white font-extrabold text-xs flex items-center justify-center gap-2 cursor-pointer shadow-md transition"
           >
-            <span>View Live IoT Tracking & Map</span>
+            <span>Track Your Order</span>
             <ArrowRight className="w-4 h-4" />
           </button>
           
@@ -244,7 +244,7 @@ export const OrderConfirmationModal: React.FC<OrderConfirmationModalProps> = ({
             onClick={onClose}
             className="py-3 px-5 rounded-xl bg-gray-100 dark:bg-slate-800 hover:bg-gray-200 dark:hover:bg-slate-700 text-gray-700 dark:text-gray-200 font-bold text-xs transition cursor-pointer"
           >
-            Continue Shopping
+            Shop Now
           </button>
         </div>
 

@@ -25,10 +25,10 @@ export interface CategoryItem {
 export const CATEGORIES: CategoryItem[] = [
   {
     id: 'all',
-    name: 'All Cuts',
+    name: 'All Items',
     value: 'All',
-    subtitle: 'Live Sensor Hub',
-    tag: '2.1°C Validated',
+    subtitle: 'Everything Fresh',
+    tag: 'Fast Delivery',
     icon: Shield,
     iconBg: 'bg-rose-100',
     iconColor: 'text-[#d11243]'
@@ -37,8 +37,8 @@ export const CATEGORIES: CategoryItem[] = [
     id: 'fish',
     name: 'Fish & Seafood',
     value: 'Fish & Seafood',
-    subtitle: '48 Chilled Cuts',
-    tag: '0°–2°C Harbor Loaded',
+    subtitle: 'Daily Fresh Catch',
+    tag: 'Cleaned & Cut',
     icon: Fish,
     iconBg: 'bg-cyan-100',
     iconColor: 'text-cyan-700'
@@ -47,8 +47,8 @@ export const CATEGORIES: CategoryItem[] = [
     id: 'mutton',
     name: 'Tender Mutton',
     value: 'Tender Mutton',
-    subtitle: '18 Pasture Cuts',
-    tag: 'Grass-Fed Mandya',
+    subtitle: 'Tender & Fresh',
+    tag: 'Curry & Biryani',
     icon: Beef,
     iconBg: 'bg-amber-100',
     iconColor: 'text-amber-800'
@@ -57,8 +57,8 @@ export const CATEGORIES: CategoryItem[] = [
     id: 'chicken',
     name: 'Fresh Chicken',
     value: 'Fresh Chicken',
-    subtitle: '24 Clean Cuts',
-    tag: 'Zero Antibiotics',
+    subtitle: 'Clean & Tender',
+    tag: 'Curry & Boneless',
     icon: Drumstick,
     iconBg: 'bg-blue-100',
     iconColor: 'text-blue-700'
@@ -67,18 +67,18 @@ export const CATEGORIES: CategoryItem[] = [
     id: 'ready_to_cook',
     name: 'Ready to Cook',
     value: 'Ready to Cook',
-    subtitle: '16 Marinated Cuts',
-    tag: 'Air-Fry & Grill',
+    subtitle: 'Marinated & Easy',
+    tag: 'Quick Meals',
     icon: UtensilsCrossed,
     iconBg: 'bg-emerald-100',
     iconColor: 'text-emerald-700'
   },
   {
     id: 'combos',
-    name: 'Combos Box',
+    name: 'Value Combos',
     value: 'Combo Box',
-    subtitle: '8 Feasts • Value',
-    tag: 'Up to 20% OFF',
+    subtitle: 'Save More',
+    tag: 'Best Value',
     icon: Package,
     iconBg: 'bg-purple-100',
     iconColor: 'text-purple-700'
@@ -100,15 +100,20 @@ export const CategorySection: React.FC<CategorySectionProps> = ({
     <section className="space-y-3">
       {/* Section Header */}
       <div className="flex items-center justify-between">
-        <h2 className="text-lg md:text-xl font-black text-gray-900 dark:text-white tracking-tight">
-          Explore Categories
-        </h2>
+        <div>
+          <h2 className="text-lg md:text-xl font-black text-gray-900 dark:text-white tracking-tight">
+            What Are You Craving?
+          </h2>
+          <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
+            Pick a category to view fresh cuts ready for delivery
+          </p>
+        </div>
 
         <button
           onClick={onViewAllSpecs}
-          className="text-xs font-bold text-emerald-700 dark:text-emerald-400 hover:text-emerald-800 hover:underline flex items-center gap-1 cursor-pointer"
+          className="text-xs font-bold text-[#d11243] hover:underline flex items-center gap-1 cursor-pointer"
         >
-          <span>View All Product Specs</span>
+          <span>View All Products</span>
           <ArrowRight className="w-3.5 h-3.5" />
         </button>
       </div>

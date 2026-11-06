@@ -75,9 +75,9 @@ export const CoolerReturnsPage: React.FC = () => {
       
       {/* Header */}
       <div className="bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-800 rounded-xl p-5 shadow-2xs">
-        <h1 className="text-base font-extrabold text-gray-900 dark:text-white">Reusable Cold-Gel Box & Deposit Management</h1>
+        <h1 className="text-base font-extrabold text-gray-900 dark:text-white">Return Cold Boxes for ₹250 Refund</h1>
         <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-          Zero-thermocol circular packaging. Schedule doorstep collection anytime to unlock your ₹250 security deposit.
+          Your order comes in a reusable cold box. Return the box after delivery and get ₹250 back once it's checked.
         </p>
       </div>
 
@@ -247,12 +247,12 @@ export const CoolerReturnsPage: React.FC = () => {
 
           {/* Simple step card */}
           <div className="bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-800 rounded-xl p-4 text-xs space-y-2 shadow-2xs">
-            <h4 className="font-bold text-gray-900 dark:text-white">How Doorstep Return Works</h4>
+            <h4 className="font-bold text-gray-900 dark:text-white">How to Return Your Cold Box</h4>
             <ol className="list-decimal pl-4 space-y-1 text-gray-600 dark:text-gray-300 text-[11px] leading-relaxed">
-              <li>Unpack cuts into your refrigerator crisper.</li>
-              <li>Rinse the internal box and keep ice packs inside.</li>
-              <li>Hand the box to our delivery partner or leave with building security.</li>
-              <li>₹250 is instantly reversed to your registered UPI ID upon handover.</li>
+              <li>Take your meat cuts out and keep them in your fridge.</li>
+              <li>Keep the ice packs inside the cold box.</li>
+              <li>Hand the box back to the delivery partner on your next order, or request a pickup.</li>
+              <li>Get ₹250 back to your GoMeat Wallet or bank account once it's checked!</li>
             </ol>
           </div>
 

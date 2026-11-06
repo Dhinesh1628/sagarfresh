@@ -619,7 +619,7 @@ export const AdminDashboardPage: React.FC = () => {
               : 'bg-white dark:bg-slate-800 text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-slate-700'
           }`}
         >
-          <span>Orders Pipeline</span>
+          <span>Manage Orders</span>
           <span className="px-1.5 py-0.2 bg-white/20 rounded text-[10px]">{orders.length}</span>
         </button>
 
@@ -631,7 +631,7 @@ export const AdminDashboardPage: React.FC = () => {
               : 'bg-white dark:bg-slate-800 text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-slate-700'
           }`}
         >
-          <span>Product Catalog</span>
+          <span>Available Products</span>
           <span className="px-1.5 py-0.2 bg-white/20 rounded text-[10px]">{products.length}</span>
         </button>
 
@@ -643,7 +643,7 @@ export const AdminDashboardPage: React.FC = () => {
               : 'bg-white dark:bg-slate-800 text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-slate-700'
           }`}
         >
-          <span>Inventory & Alerts</span>
+          <span>Low Stock & Inventory</span>
           {lowStockProducts.length > 0 && (
             <span className="px-1.5 py-0.2 bg-amber-500 text-white rounded text-[10px] font-black">
               {lowStockProducts.length} low
@@ -683,7 +683,7 @@ export const AdminDashboardPage: React.FC = () => {
           }`}
         >
           <Users className="w-3.5 h-3.5" />
-          <span>Customers</span>
+          <span>Customer Details</span>
           <span className="px-1.5 py-0.2 bg-sky-500 text-white rounded text-[10px] font-black">{totalCustomersCount}</span>
         </button>
       </div>
@@ -697,7 +697,7 @@ export const AdminDashboardPage: React.FC = () => {
             {/* Total Revenue */}
             <div className="p-4 bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-800 rounded-2xl shadow-2xs space-y-1">
               <div className="flex items-center justify-between text-gray-500 dark:text-gray-400">
-                <span>Total Revenue</span>
+                <span>Total Sales</span>
                 <DollarSign className="w-4 h-4 text-emerald-600" />
               </div>
               <div className="text-2xl font-black text-gray-950 dark:text-white">

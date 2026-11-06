@@ -370,19 +370,19 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
         <div className="flex items-center justify-between pb-4 border-b border-gray-100 dark:border-slate-800">
           <div>
             <div className="flex items-center gap-2">
-              <h2 className="text-lg font-black text-gray-950 dark:text-white">Secure Checkout & Delivery Details</h2>
+              <h2 className="text-lg font-black text-gray-950 dark:text-white">Checkout</h2>
               <span className="px-2 py-0.5 rounded-full bg-emerald-50 dark:bg-emerald-950/50 text-emerald-800 dark:text-emerald-300 text-[10px] font-extrabold border border-emerald-200 dark:border-emerald-800 flex items-center gap-1">
                 <Lock className="w-3 h-3 text-emerald-600" />
-                <span>256-Bit SSL Encrypted</span>
+                <span>100% Safe & Secure</span>
               </span>
             </div>
             <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
-              Delivering to {city} in reusable ThermalVault™ cold box maintaining 0°C–4°C
+              Delivering to {city} in a reusable cold box kept fresh at 0°C–4°C
             </p>
           </div>
           <button 
             onClick={onClose} 
-            className="w-8 h-8 rounded-full bg-gray-100 dark:bg-slate-800 hover:bg-gray-200 dark:hover:bg-slate-700 flex items-center justify-center text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 transition"
+            className="w-8 h-8 rounded-full bg-gray-100 dark:bg-slate-800 hover:bg-gray-200 dark:hover:bg-slate-700 flex items-center justify-center text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 transition cursor-pointer"
           >
             <X className="w-4 h-4" />
           </button>
@@ -401,7 +401,7 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
           <div className="mt-4 p-4 rounded-xl bg-amber-50 dark:bg-amber-950/50 border border-amber-300 dark:border-amber-800 text-xs space-y-2">
             <div className="flex items-center gap-2 text-amber-900 dark:text-amber-200 font-extrabold">
               <AlertCircle className="w-4 h-4 text-amber-600" />
-              <span>Payment Not Completed</span>
+              <span>Payment didn't go through. Please try again.</span>
             </div>
             <p className="text-amber-800 dark:text-amber-300 text-[11px] leading-relaxed">
               {paymentFailedModal.reason}
@@ -413,7 +413,7 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
                 className="px-3.5 py-1.5 rounded-lg bg-gray-900 dark:bg-white text-white dark:text-gray-900 font-bold text-xs flex items-center gap-1.5 hover:opacity-90 cursor-pointer shadow-xs"
               >
                 <RefreshCw className="w-3.5 h-3.5" />
-                <span>Retry Payment</span>
+                <span>Try Again</span>
               </button>
               <button
                 type="button"
@@ -424,7 +424,7 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
                 className="px-3.5 py-1.5 rounded-lg bg-emerald-700 text-white font-bold text-xs flex items-center gap-1 hover:bg-emerald-800 cursor-pointer"
               >
                 <Banknote className="w-3.5 h-3.5" />
-                <span>Switch to Cash on Delivery</span>
+                <span>Pay with Cash on Delivery</span>
               </button>
             </div>
           </div>
@@ -434,9 +434,9 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
         {verifyingPayment && (
           <div className="my-6 p-6 rounded-2xl bg-slate-900 text-white text-center space-y-3">
             <div className="w-12 h-12 rounded-full border-4 border-emerald-400 border-t-transparent animate-spin mx-auto" />
-            <h4 className="font-extrabold text-sm text-white">Verifying Payment Signature with Razorpay...</h4>
+            <h4 className="font-extrabold text-sm text-white">Your payment is being checked. Please wait...</h4>
             <p className="text-xs text-gray-400 max-w-sm mx-auto">
-              Confirming transaction status with the banking network. Please do not close or refresh this tab.
+              Please do not close or refresh this page.
             </p>
           </div>
         )}
@@ -446,7 +446,7 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
           {/* Section 1: Customer Contact Details */}
           <div className="space-y-3">
             <label className="text-xs font-black uppercase text-gray-900 dark:text-white flex items-center gap-1.5">
-              <span>1. Customer Contact Details</span>
+              <span>1. Contact Details</span>
             </label>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
               <div>
@@ -465,7 +465,7 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
 
               <div>
                 <label className="block text-gray-600 dark:text-gray-300 text-[11px] font-bold mb-1">
-                  Email Address (For Invoice) *
+                  Email Address *
                 </label>
                 <input
                   type="email"
@@ -498,9 +498,9 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
             <div className="flex items-center justify-between">
               <label className="text-xs font-black uppercase text-gray-900 dark:text-white flex items-center gap-1.5">
                 <Clock className="w-3.5 h-3.5 text-[#d11243]" />
-                <span>2. Select Delivery Slot</span>
+                <span>2. Choose Delivery Time</span>
               </label>
-              <span className="text-[11px] font-semibold text-emerald-700 dark:text-emerald-400">Guaranteed Fresh</span>
+              <span className="text-[11px] font-semibold text-emerald-700 dark:text-emerald-400">Arrives Fresh</span>
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -516,14 +516,14 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-1.5 font-black text-xs text-gray-950 dark:text-white">
                     <Zap className="w-4 h-4 fill-amber-500 text-amber-500" />
-                    <span>⚡ Express 90 Mins Delivery</span>
+                    <span>⚡ Express (90 Mins)</span>
                   </div>
                   <span className="text-[10px] font-extrabold bg-[#d11243] text-white px-1.5 py-0.5 rounded">
                     Recommended
                   </span>
                 </div>
                 <p className="text-[11px] text-gray-500 dark:text-gray-400 mt-1 leading-snug">
-                  Packed immediately from local cold hub. Arrives at your doorstep in under 90 minutes.
+                  Packed immediately and delivered to your door in under 90 minutes.
                 </p>
               </div>
 
@@ -539,12 +539,12 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-1.5 font-bold text-xs text-gray-950 dark:text-white">
                     <Calendar className="w-4 h-4 text-gray-600 dark:text-gray-300" />
-                    <span>📅 Choose Scheduled Slot</span>
+                    <span>📅 Schedule for Later</span>
                   </div>
                   <span className="text-[10px] font-bold text-gray-500 dark:text-gray-400">Flexible</span>
                 </div>
                 <p className="text-[11px] text-gray-500 dark:text-gray-400 mt-1 leading-snug">
-                  Select a convenient morning, afternoon, or evening window for seamless delivery.
+                  Pick a convenient morning, afternoon, or evening time.
                 </p>
               </div>
             </div>
@@ -718,10 +718,10 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
               </div>
             </div>
 
-            {/* Delivery Instructions */}
+            {/* Note for Delivery Partner */}
             <div className="space-y-1.5 pt-1">
               <label className="block text-gray-600 dark:text-gray-300 text-[11px] font-bold">
-                Delivery Instructions for Rider
+                Note for Delivery Partner
               </label>
               <div className="flex flex-wrap gap-1.5">
                 {deliveryInstructionOptions.map(opt => (
@@ -742,7 +742,7 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
             </div>
           </div>
 
-          {/* GoMeat In-App Vault Wallet Card */}
+          {/* GoMeat Wallet Card */}
           <div className="p-3.5 rounded-xl border border-emerald-200 dark:border-emerald-800/80 bg-emerald-50/70 dark:bg-emerald-950/40 space-y-2">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2.5">
@@ -758,8 +758,8 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
                   </div>
                   <p className="text-[11px] text-gray-600 dark:text-gray-300">
                     {userWalletBalance > 0
-                      ? 'Instant store credit from returned cooler boxes. Never expires, 1-click checkout.'
-                      : 'Balance is ₹0. Hand your cooler box back to the delivery rider to get ₹250 added here instantly!'}
+                      ? 'Refund from your returned cold boxes. Ready to use anytime.'
+                      : 'Balance is ₹0. Return your cold box after delivery to get ₹250 back!'}
                   </p>
                 </div>
               </div>
@@ -788,21 +788,21 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
             {isFullyWalletPaid && (
               <div className="text-[11px] font-bold text-emerald-700 dark:text-emerald-300 flex items-center gap-1 bg-white/70 dark:bg-slate-900/70 p-2 rounded-lg border border-emerald-300/60">
                 <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
-                <span>🎉 100% of order covered by your wallet! You pay ₹0 out of pocket.</span>
+                <span>🎉 Full amount covered by your wallet! You pay ₹0.</span>
               </div>
             )}
           </div>
 
-          {/* Section 4: Payment Method Selection */}
+          {/* Section 4: Choose Payment Method */}
           {!isFullyWalletPaid ? (
             <div className="space-y-3">
               <label className="text-xs font-black uppercase text-gray-900 dark:text-white flex items-center gap-1.5">
                 <CreditCard className="w-3.5 h-3.5 text-[#d11243]" />
-                <span>4. Select Payment Method for Remaining Balance (₹{finalPayable})</span>
+                <span>4. Choose Payment Method (₹{finalPayable})</span>
               </label>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                {/* Online Payment (Razorpay) */}
+                {/* Online Payment (UPI, Cards, NetBanking) */}
                 <div
                   onClick={() => setPaymentMethod('razorpay')}
                   className={`p-3.5 rounded-xl border cursor-pointer transition relative ${
@@ -814,22 +814,22 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2 font-black text-xs text-gray-950 dark:text-white">
                       <Zap className="w-4 h-4 fill-emerald-500 text-emerald-500" />
-                      <span>Razorpay Online Gateway</span>
+                      <span>Pay Online</span>
                     </div>
                     <span className="text-[10px] font-extrabold bg-emerald-600 text-white px-2 py-0.5 rounded-full">
-                      Instant & Secure
+                      Fast & Safe
                     </span>
                   </div>
                   <p className="text-[11px] text-gray-600 dark:text-gray-300 mt-1.5">
-                    UPI (GPay / PhonePe / Paytm), Credit & Debit Cards, NetBanking, and Wallets.
+                    UPI (Google Pay, PhonePe, Paytm), Cards, or NetBanking.
                   </p>
                   <div className="flex items-center gap-2 mt-2 pt-2 border-t border-gray-200/60 dark:border-slate-700/60 text-[10px] text-gray-500 dark:text-gray-400">
                     <Lock className="w-3 h-3 text-emerald-600" />
-                    <span>Razorpay Standard Checkout Verified</span>
+                    <span>100% Safe Payment</span>
                   </div>
                 </div>
 
-                {/* Cash / Pay on Delivery */}
+                {/* Cash on Delivery */}
                 <div
                   onClick={() => setPaymentMethod('cod')}
                   className={`p-3.5 rounded-xl border cursor-pointer transition relative ${
@@ -841,12 +841,12 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2 font-bold text-xs text-gray-950 dark:text-white">
                       <Banknote className="w-4 h-4 text-amber-500" />
-                      <span>Cash on Delivery (COD)</span>
+                      <span>Cash on Delivery</span>
                     </div>
                     <span className="text-[10px] font-bold text-gray-500">Pay at Door</span>
                   </div>
                   <p className="text-[11px] text-gray-500 dark:text-gray-400 mt-1.5">
-                    Pay via Cash or UPI QR scan directly to the cold-courier partner upon box inspection.
+                    Pay with cash or scan UPI QR code when your order arrives.
                   </p>
                   <div className="flex items-center gap-2 mt-2 pt-2 border-t border-gray-200/60 dark:border-slate-700/60 text-[10px] text-gray-500 dark:text-gray-400">
                     <Info className="w-3 h-3 text-amber-600" />
@@ -859,23 +859,23 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
             <div className="p-3 bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-300 dark:border-emerald-700/70 rounded-xl flex items-center justify-between">
               <div className="flex items-center gap-2 text-xs font-bold text-emerald-900 dark:text-emerald-200">
                 <Wallet className="w-4 h-4 text-emerald-600" />
-                <span>Payment Mode: 100% GoMeat Vault Wallet</span>
+                <span>Payment: Paid using GoMeat Wallet</span>
               </div>
-              <span className="text-[11px] font-black text-emerald-700 dark:text-emerald-300">₹0 out-of-pocket</span>
+              <span className="text-[11px] font-black text-emerald-700 dark:text-emerald-300">₹0 to pay</span>
             </div>
           )}
 
-          {/* Section 5: Order Summary & Cold Box Deposit Transparency */}
+          {/* Section 5: Order Summary */}
           <div className="p-3.5 bg-gray-50 dark:bg-slate-800/70 rounded-xl border border-gray-200 dark:border-slate-700 space-y-2">
             <div className="flex justify-between text-gray-600 dark:text-gray-300">
-              <span>Fresh Cuts Subtotal ({items.length} items):</span>
+              <span>Item Total ({items.length} items):</span>
               <span className="font-bold text-gray-900 dark:text-white">₹{subtotal}</span>
             </div>
             
-            {/* Refundable Cold Box line item */}
+            {/* Refundable Cold Box deposit */}
             <div className="flex justify-between text-gray-600 dark:text-gray-300">
               <span className="flex items-center gap-1">
-                <span>❄️ ThermalVault™ Eco-Cooler Deposit:</span>
+                <span>❄️ Cold Box Deposit:</span>
               </span>
               <span className="font-bold text-emerald-700 dark:text-emerald-400">
                 +₹{coolerDeposit} (100% Refundable)
@@ -890,7 +890,7 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
             )}
             
             <div className="flex justify-between text-gray-600 dark:text-gray-300">
-              <span>Chilled Express Delivery:</span>
+              <span>Delivery Fee:</span>
               <span>{shippingFee === 0 ? <strong className="text-emerald-700 dark:text-emerald-400">FREE</strong> : `₹${shippingFee}`}</span>
             </div>
 
@@ -898,23 +898,23 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
               <div className="flex justify-between text-emerald-700 dark:text-emerald-400 font-bold bg-emerald-100/70 dark:bg-emerald-900/40 p-2 rounded-lg border border-emerald-300 dark:border-emerald-700">
                 <span className="flex items-center gap-1.5">
                   <Wallet className="w-4 h-4 text-emerald-600" />
-                  <span>GoMeat Wallet Deduction:</span>
+                  <span>GoMeat Wallet:</span>
                 </span>
                 <span>-₹{walletDeduction}</span>
               </div>
             )}
             
             <div className="border-t border-gray-200 dark:border-slate-700 pt-2 flex justify-between items-center text-sm font-black text-gray-950 dark:text-white">
-              <span>Final Total Payable:</span>
+              <span>Total Amount:</span>
               <span className="text-xl font-black text-[#d11243] dark:text-rose-400">₹{finalPayable}</span>
             </div>
           </div>
 
-          {/* Freshness & Refund Guarantee Notice */}
+          {/* Refundable Cold Box Explanation */}
           <div className="flex items-center gap-2 p-2.5 rounded-lg bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800/80 text-emerald-900 dark:text-emerald-300 text-[11px]">
             <ShieldCheck className="w-4 h-4 text-emerald-700 dark:text-emerald-400 shrink-0" />
             <span>
-              <strong>0°C to 4°C Guarantee:</strong> Hand over the box to the courier or schedule a 1-click doorstep pickup in your dashboard anytime for an instant ₹250 refund!
+              Your order comes in a reusable cold box. Return the box after delivery and get ₹250 back once it's checked.
             </span>
           </div>
 
@@ -931,22 +931,22 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
             {isSubmitting || verifyingPayment ? (
               <span className="flex items-center gap-2">
                 <RefreshCw className="w-4 h-4 animate-spin" />
-                <span>{verifyingPayment ? 'Verifying with Razorpay...' : 'Confirming Order...'}</span>
+                <span>{verifyingPayment ? 'Checking payment...' : 'Placing your order...'}</span>
               </span>
             ) : isFullyWalletPaid ? (
               <span className="flex items-center gap-2">
                 <Wallet className="w-4 h-4" />
-                <span>Pay ₹0 with GoMeat Wallet & Confirm Order</span>
+                <span>Place Order (Paid with Wallet)</span>
                 <ArrowRight className="w-4 h-4" />
               </span>
             ) : paymentMethod === 'razorpay' ? (
               <span className="flex items-center gap-2">
-                <span>Pay Now with Razorpay • ₹{finalPayable}</span>
+                <span>Pay Now • ₹{finalPayable}</span>
                 <ArrowRight className="w-4 h-4" />
               </span>
             ) : (
               <span className="flex items-center gap-2">
-                <span>Confirm Order (Pay ₹{finalPayable} on Delivery)</span>
+                <span>Place Order (Pay ₹{finalPayable} on Delivery)</span>
                 <ArrowRight className="w-4 h-4" />
               </span>
             )}

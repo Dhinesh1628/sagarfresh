@@ -45,10 +45,10 @@ export const CatalogPage: React.FC<CatalogPageProps> = ({
     const exists = wishlist.includes(productId);
     if (exists) {
       updated = wishlist.filter(id => id !== productId);
-      showToast(`Removed "${productName}" from wishlist`);
+      showToast(`Removed "${productName}" from saved items`);
     } else {
       updated = [...wishlist, productId];
-      showToast(`Added "${productName}" to wishlist ❤️`);
+      showToast(`Saved "${productName}" for later ❤️`);
     }
     setWishlist(updated);
     try {
@@ -149,7 +149,7 @@ export const CatalogPage: React.FC<CatalogPageProps> = ({
           onViewAllSpecs={handleScrollToCatalog}
         />
 
-        {/* FreshSeal 0°C to 4°C Assurance Strip */}
+        {/* Always Chilled 0°C to 4°C Assurance Strip */}
         <div className="bg-white dark:bg-slate-900 rounded-2xl border border-gray-200 dark:border-slate-800 p-3.5 sm:p-4 shadow-2xs flex flex-col md:flex-row items-start md:items-center justify-between gap-4 transition-colors">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-xl bg-rose-50 dark:bg-rose-950/70 border border-rose-100 dark:border-rose-900 flex items-center justify-center text-[#d11243] dark:text-rose-400 font-black text-sm shrink-0 shadow-[0_0_12px_rgba(225,29,67,0.15)]">
@@ -158,14 +158,14 @@ export const CatalogPage: React.FC<CatalogPageProps> = ({
             <div>
               <div className="flex items-center gap-2">
                 <span className="font-extrabold text-xs sm:text-sm text-gray-950 dark:text-white">
-                  FreshSeal™ 0°C to 4°C Temperature Controlled
+                  Always Chilled at 0°C to 4°C
                 </span>
                 <span className="px-2 py-0.5 rounded-full bg-emerald-50 dark:bg-emerald-950/70 text-emerald-800 dark:text-emerald-300 text-[10px] font-black border border-emerald-200 dark:border-emerald-800">
                   Never Frozen
                 </span>
               </div>
               <p className="text-[11px] text-gray-500 dark:text-gray-400 mt-0.5">
-                Delivered across {selectedCity} in reusable insulated EPP cold boxes with ice gel bricks. ₹250 refundable box deposit.
+                Delivered fresh in reusable cold boxes across {selectedCity}. Get ₹250 back when you return the box.
               </p>
             </div>
           </div>
@@ -174,15 +174,15 @@ export const CatalogPage: React.FC<CatalogPageProps> = ({
             onClick={onNavigateToReturns}
             className="w-full md:w-auto px-4 py-2 rounded-xl bg-gray-950 hover:bg-black dark:bg-white dark:hover:bg-gray-100 text-white dark:text-gray-950 text-xs font-bold cursor-pointer shrink-0 transition shadow-xs"
           >
-            Return Empty Box for ₹250 Refund
+            Return Box for ₹250 Refund
           </button>
         </div>
 
-        {/* Sorting, Price Budget Filters & Results Count Bar (Module 8) */}
+        {/* Sorting, Price Budget Filters & Results Count Bar */}
         <div className="bg-white dark:bg-slate-900 p-3 rounded-2xl border border-gray-200 dark:border-slate-800 shadow-2xs flex flex-wrap items-center justify-between gap-3 text-xs">
           {/* Price Budget Pills */}
           <div className="flex items-center gap-1.5 overflow-x-auto">
-            <span className="text-gray-400 font-bold text-[11px] mr-1 hidden sm:inline">Budget:</span>
+            <span className="text-gray-400 font-bold text-[11px] mr-1 hidden sm:inline">Price:</span>
             {[
               { id: 'all', label: 'All Prices' },
               { id: 'under300', label: 'Under ₹300' },
@@ -206,16 +206,16 @@ export const CatalogPage: React.FC<CatalogPageProps> = ({
           {/* Sort Selector */}
           <div className="flex items-center gap-2 ml-auto">
             <ArrowUpDown className="w-3.5 h-3.5 text-gray-400" />
-            <span className="text-gray-500 dark:text-gray-400 font-semibold text-[11px]">Sort:</span>
+            <span className="text-gray-500 dark:text-gray-400 font-semibold text-[11px]">Sort By:</span>
             <select
               value={sortBy}
               onChange={(e) => setSortBy(e.target.value as any)}
               className="px-2.5 py-1 rounded-xl bg-gray-100 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 text-gray-800 dark:text-gray-200 font-bold text-xs focus:outline-none focus:border-[#d11243] cursor-pointer"
             >
-              <option value="featured">Featured Fresh Cuts</option>
+              <option value="featured">Featured</option>
               <option value="price-asc">Price: Low to High</option>
               <option value="price-desc">Price: High to Low</option>
-              <option value="discount">Highest Discount</option>
+              <option value="discount">Special Offers</option>
             </select>
           </div>
         </div>
@@ -235,7 +235,7 @@ export const CatalogPage: React.FC<CatalogPageProps> = ({
         </div>
       ) : sortedProducts.length === 0 ? (
         <div className="p-12 text-center bg-white dark:bg-slate-900 rounded-2xl border border-gray-200 dark:border-slate-800 text-xs text-gray-500 dark:text-gray-400">
-          No cuts match your selected filters.
+          No products match your search. Try another category!
         </div>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
@@ -262,17 +262,17 @@ export const CatalogPage: React.FC<CatalogPageProps> = ({
                     }}
                   />
                   
-                  {/* ETA tag */}
+                  {/* Delivery time tag */}
                   <div className="absolute top-2 left-2 bg-white/95 dark:bg-slate-900/90 backdrop-blur-xs px-2 py-0.5 rounded text-[10px] font-bold text-gray-800 dark:text-gray-200 shadow-2xs flex items-center gap-1 border border-gray-100 dark:border-slate-700">
                     <Zap className="w-2.5 h-2.5 fill-amber-500 text-amber-500" />
-                    <span>{product.eta || '⚡ Today in 90 mins'}</span>
+                    <span>{product.eta || '⚡ Arrives in 90 mins'}</span>
                   </div>
 
-                  {/* Wishlist Heart Button */}
+                  {/* Save for Later Heart Button */}
                   <button
                     onClick={(e) => toggleWishlist(product.id, product.name, e)}
                     className="absolute top-2 right-2 w-7 h-7 rounded-full bg-white/90 dark:bg-slate-900/90 backdrop-blur-xs flex items-center justify-center text-gray-600 dark:text-gray-300 hover:text-[#d11243] dark:hover:text-rose-400 shadow-2xs transition z-10 cursor-pointer"
-                    title={isWishlisted ? 'Remove from Wishlist' : 'Add to Wishlist'}
+                    title={isWishlisted ? 'Remove from Saved' : 'Save for Later'}
                   >
                     <Heart className={`w-3.5 h-3.5 ${isWishlisted ? 'fill-[#d11243] text-[#d11243]' : ''}`} />
                   </button>
@@ -284,11 +284,11 @@ export const CatalogPage: React.FC<CatalogPageProps> = ({
                     </div>
                   )}
 
-                  {/* Click to Customize Pill on Hover */}
+                  {/* Click to view detail on hover */}
                   <div className="absolute inset-0 bg-black/35 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
                     <span className="px-3 py-1.5 rounded-full bg-white/95 dark:bg-slate-900/95 text-gray-900 dark:text-white font-extrabold text-[11px] shadow-md flex items-center gap-1.5 border border-white/20">
                       <Eye className="w-3.5 h-3.5 text-[#d11243]" />
-                      <span>View Cuts & Details</span>
+                      <span>View Details</span>
                     </span>
                   </div>
                 </div>
@@ -334,7 +334,7 @@ export const CatalogPage: React.FC<CatalogPageProps> = ({
                           handleOpenProductDetail(product);
                         }}
                         className="p-2 rounded-lg bg-gray-100 dark:bg-slate-800 hover:bg-gray-200 dark:hover:bg-slate-700 text-gray-600 dark:text-gray-300 cursor-pointer transition"
-                        title="View details & custom cuts"
+                        title="View details"
                       >
                         <Eye className="w-3.5 h-3.5" />
                       </button>
@@ -344,7 +344,7 @@ export const CatalogPage: React.FC<CatalogPageProps> = ({
                           onClick={(e) => {
                             e.stopPropagation();
                             addItem(product, 1);
-                            showToast(`Added 1x ${product.name} to Cart`);
+                            showToast(`Added ${product.name} to Your Cart`);
                           }}
                           className="px-3.5 py-1.5 rounded-lg bg-[#d11243] hover:bg-[#b80f3b] text-white font-bold text-xs uppercase cursor-pointer shadow-2xs transition"
                         >
@@ -384,27 +384,30 @@ export const CatalogPage: React.FC<CatalogPageProps> = ({
         </div>
       )}
 
-      {/* Licious-Style 4 Pillar Quality Badges */}
+      {/* Why Shop with Gomeat Section */}
       <div className="bg-white dark:bg-slate-900 rounded-2xl border border-gray-200 dark:border-slate-800 p-6 shadow-2xs transition-colors">
-        <h3 className="font-extrabold text-sm text-gray-900 dark:text-white mb-4 text-center">
-          The GoMeat Promise (Farm to Fork Integrity)
+        <h3 className="font-extrabold text-base text-gray-900 dark:text-white mb-1 text-center">
+          Why Shop with Gomeat?
         </h3>
+        <p className="text-xs text-gray-500 dark:text-gray-400 text-center mb-5">
+          Everything we do is focused on bringing you the freshest meat with zero hassle.
+        </p>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
-          <div className="p-3 rounded-xl bg-gray-50 dark:bg-slate-800/80 border border-gray-100 dark:border-slate-700">
-            <span className="block font-bold text-gray-900 dark:text-white text-xs">150+ Quality Checks</span>
-            <span className="text-[11px] text-gray-500 dark:text-gray-400 mt-0.5 block">Scientific bio-security protocols</span>
+          <div className="p-3.5 rounded-xl bg-gray-50 dark:bg-slate-800/80 border border-gray-100 dark:border-slate-700">
+            <span className="block font-bold text-gray-900 dark:text-white text-xs">Always Fresh</span>
+            <span className="text-[11px] text-gray-500 dark:text-gray-400 mt-1 block">Carefully cleaned & cut daily</span>
           </div>
-          <div className="p-3 rounded-xl bg-gray-50 dark:bg-slate-800/80 border border-gray-100 dark:border-slate-700">
-            <span className="block font-bold text-gray-900 dark:text-white text-xs">0°C - 4°C Chilled</span>
-            <span className="text-[11px] text-gray-500 dark:text-gray-400 mt-0.5 block">Never frozen, locks natural juices</span>
+          <div className="p-3.5 rounded-xl bg-gray-50 dark:bg-slate-800/80 border border-gray-100 dark:border-slate-700">
+            <span className="block font-bold text-gray-900 dark:text-white text-xs">Chilled 0°C - 4°C</span>
+            <span className="text-[11px] text-gray-500 dark:text-gray-400 mt-1 block">Never frozen, keeps natural taste</span>
           </div>
-          <div className="p-3 rounded-xl bg-gray-50 dark:bg-slate-800/80 border border-gray-100 dark:border-slate-700">
-            <span className="block font-bold text-gray-900 dark:text-white text-xs">Zero Antibiotics</span>
-            <span className="text-[11px] text-gray-500 dark:text-gray-400 mt-0.5 block">No chemical water retention agents</span>
+          <div className="p-3.5 rounded-xl bg-gray-50 dark:bg-slate-800/80 border border-gray-100 dark:border-slate-700">
+            <span className="block font-bold text-gray-900 dark:text-white text-xs">Zero Chemicals</span>
+            <span className="text-[11px] text-gray-500 dark:text-gray-400 mt-1 block">100% natural, no preservatives</span>
           </div>
-          <div className="p-3 rounded-xl bg-gray-50 dark:bg-slate-800/80 border border-gray-100 dark:border-slate-700">
+          <div className="p-3.5 rounded-xl bg-gray-50 dark:bg-slate-800/80 border border-gray-100 dark:border-slate-700">
             <span className="block font-bold text-gray-900 dark:text-white text-xs">Reusable Cold Box</span>
-            <span className="text-[11px] text-gray-500 dark:text-gray-400 mt-0.5 block">Zero thermocol with ₹250 refund</span>
+            <span className="text-[11px] text-gray-500 dark:text-gray-400 mt-1 block">Keeps meat cool, get ₹250 back</span>
           </div>
         </div>
       </div>

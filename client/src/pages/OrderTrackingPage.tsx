@@ -159,44 +159,44 @@ export const OrderTrackingPage: React.FC<OrderTrackingPageProps> = ({ onNavigate
     }
   };
 
-  // Module 5 required exact 6-stage visual pipeline:
-  // Order Confirmed -> Preparing Your Order -> Quality Check -> Packed in Cold Box -> Out for Delivery -> Delivered
+  // 6-stage delivery status per UX guidelines:
+  // 1. Order Confirmed -> 2. We're Preparing Your Order -> 3. Quality Check Done -> 4. Packed and Ready -> 5. Out for Delivery -> 6. Delivered!
   const timelineStages = [
     { 
       key: 'CONFIRMED', 
       title: 'Order Confirmed', 
       timeEst: '0 - 10 mins',
-      desc: 'Order verified by hub dispatcher and queued for custom butchery.' 
+      desc: 'Your order is confirmed and sent to the preparation team.' 
     },
     { 
       key: 'PREPARING', 
-      title: 'Preparing Your Order', 
+      title: "We're Preparing Your Order", 
       timeEst: '10 - 25 mins',
-      desc: 'Master butchers precision trimming, portioning & vacuum-sealing fresh cuts.' 
+      desc: 'Fresh cuts are freshly sliced and cleaned for your order.' 
     },
     { 
       key: 'QUALITY_CHECK', 
-      title: 'Quality Check', 
+      title: 'Quality Check Done', 
       timeEst: '25 - 35 mins',
-      desc: 'Certified 150-point FSSAI inspection, digital weigh-in & 0°C temperature check.' 
+      desc: 'Checked for freshness, hygiene, and safe chilling.' 
     },
     { 
       key: 'PACKED', 
-      title: 'Packed in Cold Box', 
+      title: 'Packed and Ready', 
       timeEst: '35 - 50 mins',
-      desc: 'Packed in sanitized ThermalVault™ EPP cold box with frozen food-grade ice gels.' 
+      desc: 'Packed in a cold box with ice gel packs to stay fresh.' 
     },
     { 
       key: 'OUT_FOR_DELIVERY', 
       title: 'Out for Delivery', 
       timeEst: '50 - 75 mins',
-      desc: 'Assigned to EV cold-chain partner heading toward your delivery address.' 
+      desc: 'Your delivery partner is on the way to your home.' 
     },
     { 
       key: 'DELIVERED', 
-      title: 'Delivered', 
+      title: 'Delivered!', 
       timeEst: 'Within 90 mins',
-      desc: 'Delivered cold & fresh to your doorstep. ₹250 refundable box deposit logged.' 
+      desc: 'Delivered fresh to your door. Return the box anytime for ₹250 back.' 
     }
   ];
 
@@ -221,51 +221,51 @@ export const OrderTrackingPage: React.FC<OrderTrackingPageProps> = ({ onNavigate
       return {
         badge: 'Order Cancelled',
         color: 'rose',
-        message: 'This order was cancelled. If paid online, your Razorpay refund of ₹' + order.total + ' will reflect in your account within 3-5 business days.'
+        message: 'This order was cancelled. Payment cancelled. Your refund of ₹' + order.total + ' will be credited back to your account.'
       };
     }
     switch (currentStageIndex) {
       case 0:
         return {
-          badge: 'Confirmed & Queued',
+          badge: 'Order Confirmed',
           color: 'blue',
-          message: 'Your order has been confirmed. Our Bengaluru fulfillment depot has initiated butchery prep.'
+          message: 'Your order is confirmed and sent to our team.'
         };
       case 1:
         return {
-          badge: 'In Preparation',
+          badge: "We're Preparing Your Order",
           color: 'amber',
-          message: 'Master butchers are carving and trimming your fresh cuts to exact specification.'
+          message: 'Your meat is being freshly cut and cleaned.'
         };
       case 2:
         return {
-          badge: 'Quality Screening',
+          badge: 'Quality Check Done',
           color: 'amber',
-          message: 'Zero-antibiotic verification, microbial assay & digital temperature audit in progress.'
+          message: 'Passed our freshness and temperature check.'
         };
       case 3:
         return {
-          badge: 'ThermalVault Packed',
+          badge: 'Packed and Ready',
           color: 'emerald',
-          message: 'Sealed inside reusable EPP box at 0.8°C with sub-zero ice gel packs. Digital seal engaged.'
+          message: 'Packed in a cold box with ice gel packs to stay fresh at 0°C - 4°C.'
         };
       case 4:
         return {
-          badge: 'On the Way',
+          badge: 'Out for Delivery',
           color: 'emerald',
-          message: 'Courier partner is en route to your doorstep in an insulated EV cold-chain vehicle.'
+          message: 'Your delivery partner is on the way to your door.'
         };
       case 5:
         return {
-          badge: 'Delivered Fresh',
+          badge: 'Delivered!',
           color: 'emerald',
-          message: 'Package delivered! Enjoy your fresh meal. Hand back the box anytime for an instant ₹250 UPI refund.'
+          message: "Delivered! Hand back the box anytime to get your ₹250 deposit back."
         };
       default:
         return {
-          badge: 'Processing',
+          badge: 'Preparing Your Order',
           color: 'gray',
-          message: 'Cold chain dispatch is active.'
+          message: 'We are working on your order.'
         };
     }
   };
@@ -292,20 +292,15 @@ export const OrderTrackingPage: React.FC<OrderTrackingPageProps> = ({ onNavigate
           <div className="flex flex-wrap items-center gap-2.5">
             <h1 className="text-lg sm:text-xl font-black text-gray-950 dark:text-white flex items-center gap-2">
               <Truck className="w-5 h-5 text-[#d11243] dark:text-rose-500" />
-              <span>Status-Based Order Tracking & Cold Chain</span>
+              <span>Track Your Order</span>
             </h1>
             <span className="px-2.5 py-0.5 rounded-full bg-emerald-50 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300 text-[11px] font-black border border-emerald-200 dark:border-emerald-800 flex items-center gap-1">
               <span className="w-2 h-2 rounded-full bg-emerald-500 animate-ping" />
-              <span>0°C - 4°C Verified FreshChain</span>
+              <span>Chilled at 0°C - 4°C</span>
             </span>
-            {isDemoOrder && (
-              <span className="px-2 py-0.5 rounded-full bg-amber-50 dark:bg-amber-950/60 text-amber-800 dark:text-amber-300 text-[10px] font-bold border border-amber-200 dark:border-amber-800">
-                Live Interactive Demo
-              </span>
-            )}
           </div>
           <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-            Status-based milestones, verified packaging integrity and live temperature monitoring
+            Follow your order status and cold box temperature in real-time
           </p>
         </div>
 
@@ -316,7 +311,7 @@ export const OrderTrackingPage: React.FC<OrderTrackingPageProps> = ({ onNavigate
             className="px-3.5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold rounded-xl cursor-pointer flex items-center gap-1.5 transition shadow-xs disabled:opacity-50"
           >
             <Activity className={`w-3.5 h-3.5 ${simulatingSensor ? 'animate-spin' : ''}`} />
-            <span>{simulatingSensor ? 'Testing Probe...' : 'Ping Cold Probe'}</span>
+            <span>{simulatingSensor ? 'Checking...' : 'Check Temperature'}</span>
           </button>
           
           <button
@@ -336,9 +331,9 @@ export const OrderTrackingPage: React.FC<OrderTrackingPageProps> = ({ onNavigate
         <div className="lg:col-span-4 space-y-3">
           <div className="flex items-center justify-between">
             <h3 className="text-xs font-black uppercase tracking-wider text-gray-500 dark:text-gray-400">
-              Your Orders ({orders.length})
+              My Orders ({orders.length})
             </h3>
-            <span className="text-[11px] text-emerald-700 dark:text-emerald-400 font-bold">Cold Chain Protected</span>
+            <span className="text-[11px] text-emerald-700 dark:text-emerald-400 font-bold">Chilled & Fresh</span>
           </div>
 
           <div className="space-y-2.5 max-h-[640px] overflow-y-auto pr-1">
@@ -407,20 +402,20 @@ export const OrderTrackingPage: React.FC<OrderTrackingPageProps> = ({ onNavigate
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-1.5 font-black text-sky-950 dark:text-sky-200">
                 <RotateCcw className="w-4 h-4 text-sky-700 dark:text-sky-400" />
-                <span>₹250 Refundable Box Deposit</span>
+                <span>₹250 Cold Box Deposit</span>
               </div>
               <span className="px-2 py-0.5 rounded bg-emerald-100 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300 text-[10px] font-black border border-emerald-200 dark:border-emerald-800">
-                Safe Deposit
+                100% Refundable
               </span>
             </div>
             <p className="text-[11px] text-sky-900 dark:text-sky-300 leading-relaxed">
-              Every GoMeat delivery includes a ₹250 refundable deposit for the sanitized ThermalVault cold box. Return anytime for an instant 100% refund.
+              Your order comes in a reusable cold box. Return the box after delivery and get ₹250 back once it's checked.
             </p>
             <button
               onClick={onNavigateToReturns}
               className="w-full py-2 bg-sky-700 dark:bg-sky-600 hover:bg-sky-800 dark:hover:bg-sky-500 text-white rounded-xl font-bold text-xs cursor-pointer transition shadow-xs"
             >
-              Manage Box Returns & Refunds &rarr;
+              Return Box for ₹250 Refund &rarr;
             </button>
           </div>
         </div>
@@ -450,7 +445,7 @@ export const OrderTrackingPage: React.FC<OrderTrackingPageProps> = ({ onNavigate
             </div>
 
             <div className="bg-gray-50 dark:bg-slate-800 px-3.5 py-2 rounded-2xl border border-gray-200 dark:border-slate-700 shrink-0 text-right">
-              <span className="text-[10px] text-gray-400 uppercase font-bold block">Estimated Arrival</span>
+              <span className="text-[10px] text-gray-400 uppercase font-bold block">Arrives By</span>
               <span className="text-xs font-black text-gray-950 dark:text-white">
                 {calculateEta(currentOrder.createdAt)}
               </span>
@@ -463,10 +458,10 @@ export const OrderTrackingPage: React.FC<OrderTrackingPageProps> = ({ onNavigate
               <div>
                 <h3 className="text-sm font-black text-gray-950 dark:text-white uppercase tracking-wider flex items-center gap-2">
                   <Clock className="w-4 h-4 text-[#d11243]" />
-                  <span>Order Pipeline Progression</span>
+                  <span>Order Status</span>
                 </h3>
                 <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
-                  Real-time status updates reflecting verified depot operations
+                  Follow each step as your fresh meat is prepped and delivered
                 </p>
               </div>
 
@@ -475,7 +470,7 @@ export const OrderTrackingPage: React.FC<OrderTrackingPageProps> = ({ onNavigate
                 className="px-3 py-1.5 rounded-xl border border-gray-200 dark:border-slate-700 bg-gray-50 dark:bg-slate-800 text-gray-700 dark:text-gray-200 hover:text-black hover:border-gray-400 font-bold text-xs flex items-center gap-1.5 cursor-pointer shadow-2xs"
               >
                 <FileText className="w-3.5 h-3.5 text-[#d11243]" />
-                <span>Print Tax Invoice</span>
+                <span>Download Bill</span>
               </button>
             </div>
 
@@ -540,7 +535,7 @@ export const OrderTrackingPage: React.FC<OrderTrackingPageProps> = ({ onNavigate
             {isCancelled && (
               <div className="p-3.5 bg-rose-50 dark:bg-rose-950/60 border border-rose-200 dark:border-rose-900 rounded-2xl flex items-center gap-2.5 text-xs text-rose-800 dark:text-rose-200">
                 <AlertCircle className="w-4 h-4 text-rose-600 shrink-0" />
-                <span>This order was cancelled. Restocked in cold storage. Payment refund initiated to customer source account.</span>
+                <span>This order was cancelled. Payment refund initiated to your bank account.</span>
               </div>
             )}
           </div>
@@ -551,41 +546,41 @@ export const OrderTrackingPage: React.FC<OrderTrackingPageProps> = ({ onNavigate
               <div className="flex items-center gap-2">
                 <div className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-ping" />
                 <span className="text-xs font-black uppercase tracking-wider text-emerald-400">
-                  ThermalVault™ IoT Telemetry • Box #{currentOrder.coolerId}
+                  Cold Box Temperature • Box #{currentOrder.coolerId}
                 </span>
               </div>
               <span className="px-2.5 py-0.5 rounded-full bg-emerald-950 text-emerald-400 border border-emerald-800 text-[10px] font-extrabold">
-                FSSAI 0°C - 4°C Certified Safe
+                0°C - 4°C Fresh & Chilled
               </span>
             </div>
 
             {/* Readout Gauges */}
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
               <div className="p-3.5 rounded-2xl bg-slate-900 border border-slate-800 space-y-1">
-                <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">Internal Cold Box</span>
+                <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">Cold Box Temperature</span>
                 <div className="flex items-baseline gap-1.5">
                   <span className="text-3xl font-black font-mono text-emerald-400">{liveTemp}°C</span>
-                  <span className="text-xs text-gray-400">Safe Target: 0°C–4°C</span>
+                  <span className="text-xs text-gray-400">Safe: 0°C–4°C</span>
                 </div>
                 <div className="text-[11px] text-emerald-400 font-semibold flex items-center gap-1">
                   <CheckCircle2 className="w-3 h-3" />
-                  <span>Optimal Safe FreshZone</span>
+                  <span>Fresh & Safe</span>
                 </div>
               </div>
 
               <div className="p-3.5 rounded-2xl bg-slate-900 border border-slate-800 space-y-1">
-                <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">Thermal Seal Integrity</span>
-                <div className="text-base font-extrabold text-white mt-1">EPP Digital Seal Active</div>
+                <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">Box Seal</span>
+                <div className="text-base font-extrabold text-white mt-1">Safely Sealed</div>
                 <div className="text-[11px] text-gray-400">
-                  Sub-zero gel bricks keep cuts fresh for up to 6 hours
+                  Chilled gel packs keep your meat cold and fresh
                 </div>
               </div>
 
               <div className="p-3.5 rounded-2xl bg-slate-900 border border-slate-800 space-y-1">
-                <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">Refundable Packaging</span>
+                <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">Reusable Box</span>
                 <div className="text-base font-extrabold text-emerald-400 mt-1">₹250 Deposit Recorded</div>
                 <div className="text-[11px] text-gray-400">
-                  100% refundable upon handover to delivery partner
+                  Get ₹250 back when you return the box
                 </div>
               </div>
             </div>
@@ -599,14 +594,14 @@ export const OrderTrackingPage: React.FC<OrderTrackingPageProps> = ({ onNavigate
               </div>
               <div>
                 <span className="text-[10px] text-gray-400 uppercase font-bold tracking-wider">
-                  Assigned Delivery Partner
+                  Delivery Partner
                 </span>
                 <div className="font-black text-sm text-gray-950 dark:text-white">
-                  {currentOrder.deliveryExecutive || 'Ramesh Kumar (EV Cold Fleet #12)'}
+                  {currentOrder.deliveryExecutive || 'Ramesh Kumar (Delivery Partner)'}
                 </div>
                 <div className="text-[11px] text-emerald-700 dark:text-emerald-400 font-semibold flex items-center gap-1.5 mt-0.5">
                   <ShieldCheck className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" />
-                  <span>Vaccinated • Cold-Chain Protocol Trained</span>
+                  <span>Trained for safe handling & cold delivery</span>
                 </div>
               </div>
             </div>
@@ -614,33 +609,33 @@ export const OrderTrackingPage: React.FC<OrderTrackingPageProps> = ({ onNavigate
             <div className="flex items-center gap-2">
               <button 
                 type="button"
-                onClick={() => alert('Connecting to delivery partner Ramesh Kumar (+91 94481 02911)...')}
+                onClick={() => alert('Calling your delivery partner...')}
                 className="flex-1 sm:flex-none px-3.5 py-2 bg-gray-900 dark:bg-slate-800 hover:bg-black dark:hover:bg-slate-700 text-white text-xs font-bold rounded-xl flex items-center justify-center gap-1.5 transition cursor-pointer"
               >
                 <Phone className="w-3.5 h-3.5" />
-                <span>Call Courier</span>
+                <span>Call Partner</span>
               </button>
               
               <button
                 type="button"
-                onClick={() => alert('Opening WhatsApp chat with delivery fleet manager...')}
+                onClick={() => alert('Opening WhatsApp chat with customer support...')}
                 className="px-3.5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold rounded-xl flex items-center justify-center gap-1.5 transition cursor-pointer"
               >
                 <MessageSquare className="w-3.5 h-3.5" />
-                <span>WhatsApp</span>
+                <span>Chat with Us</span>
               </button>
             </div>
           </div>
 
-          {/* Order Details & Summary Snapshot */}
+          {/* Order Details & Summary */}
           <div className="bg-white dark:bg-slate-900 p-5 rounded-3xl border border-gray-200 dark:border-slate-800 shadow-sm space-y-4">
             <div className="flex items-center justify-between border-b border-gray-100 dark:border-slate-800 pb-3">
               <h4 className="text-xs font-black uppercase tracking-wider text-gray-950 dark:text-white flex items-center gap-1.5">
                 <Package className="w-3.5 h-3.5 text-[#d11243] dark:text-rose-500" />
-                <span>Order Summary Snapshot ({currentOrder.items.length} items)</span>
+                <span>Your Items ({currentOrder.items.length})</span>
               </h4>
               <span className="text-xs font-extrabold text-[#d11243] dark:text-rose-400">
-                Paid: ₹{currentOrder.total} ({currentOrder.paymentMethod || 'Razorpay'})
+                Paid: ₹{currentOrder.total} ({currentOrder.paymentMethod || 'Online'})
               </span>
             </div>
 
@@ -670,7 +665,7 @@ export const OrderTrackingPage: React.FC<OrderTrackingPageProps> = ({ onNavigate
               <div className="p-3.5 bg-gray-50 dark:bg-slate-800/50 rounded-2xl border border-gray-200 dark:border-slate-700 space-y-1">
                 <span className="text-[10px] text-gray-400 font-bold uppercase tracking-wider flex items-center gap-1">
                   <MapPin className="w-3 h-3 text-[#d11243]" />
-                  <span>Delivery Address Snapshot</span>
+                  <span>Delivery Address</span>
                 </span>
                 <p className="font-bold text-gray-900 dark:text-white">{currentOrder.customerName}</p>
                 <p className="text-gray-600 dark:text-gray-400 text-[11px] leading-relaxed">
@@ -686,40 +681,40 @@ export const OrderTrackingPage: React.FC<OrderTrackingPageProps> = ({ onNavigate
               {/* Price Breakdown */}
               <div className="p-3.5 bg-gray-50 dark:bg-slate-800/50 rounded-2xl border border-gray-200 dark:border-slate-700 space-y-1.5">
                 <div className="flex justify-between text-gray-600 dark:text-gray-400 text-xs">
-                  <span>Subtotal:</span>
+                  <span>Item Total:</span>
                   <span className="font-bold text-gray-900 dark:text-white">₹{currentOrder.subtotal}</span>
                 </div>
                 <div className="flex justify-between text-gray-600 dark:text-gray-400 text-xs">
-                  <span>Cold-Box Deposit (Refundable):</span>
+                  <span>Cold Box Deposit (Refundable):</span>
                   <span className="font-bold text-emerald-700 dark:text-emerald-400">₹{currentOrder.coolerDeposit || 250}</span>
                 </div>
                 <div className="flex justify-between text-gray-600 dark:text-gray-400 text-xs">
-                  <span>Chilled Express Delivery:</span>
+                  <span>Delivery Fee:</span>
                   <span className="font-bold text-emerald-700 dark:text-emerald-400">
                     {currentOrder.shippingFee === 0 ? 'FREE' : `₹${currentOrder.shippingFee}`}
                   </span>
                 </div>
                 <div className="pt-2 border-t border-gray-200 dark:border-slate-700 flex justify-between font-black text-sm">
-                  <span className="text-gray-950 dark:text-white">Total Payable:</span>
+                  <span className="text-gray-950 dark:text-white">Total Amount:</span>
                   <span className="text-[#d11243] dark:text-rose-400">₹{currentOrder.total}</span>
                 </div>
                 {currentOrder.razorpayPaymentId && (
                   <div className="text-[10px] text-gray-400 font-mono pt-1">
-                    Razorpay ID: {currentOrder.razorpayPaymentId}
+                    Payment ID: {currentOrder.razorpayPaymentId}
                   </div>
                 )}
               </div>
             </div>
           </div>
 
-          {/* Audit Telemetry Log */}
+          {/* Temperature Log */}
           <div className="bg-white dark:bg-slate-900 p-5 rounded-3xl border border-gray-200 dark:border-slate-800 shadow-sm space-y-3">
             <div className="flex items-center justify-between">
               <h4 className="text-xs font-black uppercase tracking-wider text-gray-950 dark:text-white flex items-center gap-1.5">
                 <Clock className="w-3.5 h-3.5 text-gray-500 dark:text-gray-400" />
-                <span>Continuous Cold Chain Audit Log</span>
+                <span>Temperature Log</span>
               </h4>
-              <span className="text-[11px] text-emerald-700 dark:text-emerald-400 font-bold">100% Compliant</span>
+              <span className="text-[11px] text-emerald-700 dark:text-emerald-400 font-bold">Always Chilled</span>
             </div>
 
             <div className="overflow-x-auto">

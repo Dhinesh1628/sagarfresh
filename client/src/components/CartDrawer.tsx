@@ -74,19 +74,19 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({ onCheckout }) => {
           <div className="p-4 border-b border-gray-200 dark:border-slate-800 flex items-center justify-between bg-white dark:bg-slate-900 sticky top-0 z-10">
             <div>
               <div className="flex items-center gap-2">
-                <h2 className="text-base font-black text-gray-950 dark:text-white">Your Fresh Cold Box</h2>
+                <h2 className="text-base font-black text-gray-950 dark:text-white">My Cart</h2>
                 <span className="px-2 py-0.5 rounded-full bg-rose-50 dark:bg-rose-950/50 text-[#d11243] dark:text-rose-400 text-[11px] font-bold border border-rose-100 dark:border-rose-900/60">
                   {items.length} {items.length === 1 ? 'item' : 'items'}
                 </span>
               </div>
               <div className="flex items-center gap-1.5 text-[11px] text-emerald-700 dark:text-emerald-400 font-semibold mt-0.5">
                 <Zap className="w-3.5 h-3.5 fill-emerald-600 text-emerald-600 dark:fill-emerald-400 dark:text-emerald-400" />
-                <span>Express 90 Mins Delivery Dispatched</span>
+                <span>Express 90-Min Delivery</span>
               </div>
             </div>
             <button
               onClick={() => setIsCartOpen(false)}
-              className="w-8 h-8 rounded-full bg-gray-100 dark:bg-slate-800 hover:bg-gray-200 dark:hover:bg-slate-700 flex items-center justify-center text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 transition"
+              className="w-8 h-8 rounded-full bg-gray-100 dark:bg-slate-800 hover:bg-gray-200 dark:hover:bg-slate-700 flex items-center justify-center text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 transition cursor-pointer"
             >
               <X className="w-4 h-4" />
             </button>
@@ -97,7 +97,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({ onCheckout }) => {
             {diffToFree > 0 ? (
               <div className="space-y-1.5">
                 <p className="text-gray-700 dark:text-gray-300 text-[11px]">
-                  Add items worth <span className="font-extrabold text-[#d11243] dark:text-rose-400">₹{diffToFree}</span> to get <strong>FREE Express Delivery</strong>
+                  Add items worth <span className="font-extrabold text-[#d11243] dark:text-rose-400">₹{diffToFree}</span> to get <strong>FREE Delivery</strong>
                 </p>
                 <div className="w-full h-1.5 bg-gray-200 dark:bg-slate-700 rounded-full overflow-hidden">
                   <div 
@@ -109,7 +109,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({ onCheckout }) => {
             ) : (
               <p className="text-emerald-800 dark:text-emerald-400 font-bold flex items-center gap-1.5 text-xs">
                 <CheckCircle2 className="w-4 h-4 text-emerald-600 dark:text-emerald-400 shrink-0" />
-                <span>Free Express Delivery Unlocked (Order &gt; ₹799)</span>
+                <span>Free Delivery Unlocked!</span>
               </p>
             )}
           </div>
@@ -121,13 +121,13 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({ onCheckout }) => {
                 <div className="w-16 h-16 rounded-full bg-rose-50 dark:bg-rose-950/40 flex items-center justify-center text-[#d11243] dark:text-rose-400 mb-3">
                   <Zap className="w-8 h-8" />
                 </div>
-                <p className="font-bold text-gray-900 dark:text-white text-sm">Your cold box is currently empty</p>
-                <p className="text-gray-500 dark:text-gray-400 mt-1 max-w-xs">Explore farm-fresh tender chicken, coastal caught fish, and premium mutton cuts.</p>
+                <p className="font-bold text-gray-900 dark:text-white text-sm">Your Cart is Empty</p>
+                <p className="text-gray-500 dark:text-gray-400 mt-1 max-w-xs">Add fresh chicken, mutton, or fish to get started.</p>
                 <button
                   onClick={() => setIsCartOpen(false)}
-                  className="mt-5 px-5 py-2.5 bg-[#d11243] hover:bg-[#b80f3b] text-white rounded-xl text-xs font-extrabold shadow-sm transition"
+                  className="mt-5 px-5 py-2.5 bg-[#d11243] hover:bg-[#b80f3b] text-white rounded-xl text-xs font-extrabold shadow-sm transition cursor-pointer"
                 >
-                  Browse Fresh Cuts
+                  Shop Now
                 </button>
               </div>
             ) : (
@@ -200,13 +200,13 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({ onCheckout }) => {
           {items.length > 0 && (
             <div className="p-4 border-t border-gray-200 dark:border-slate-800 bg-white dark:bg-slate-900 space-y-3.5 shadow-lg">
               
-              {/* Thermal Cooler Box Deposit Card (Figma Key Concept) */}
+              {/* Reusable Cold Box Deposit Card */}
               <div className="p-3.5 bg-sky-50/70 dark:bg-sky-950/40 border border-sky-200 dark:border-sky-800/70 rounded-xl text-xs space-y-2">
                 <div className="flex items-start justify-between">
                   <div className="flex items-center gap-1.5 font-extrabold text-sky-950 dark:text-sky-200">
                     <span className="text-base">❄️</span>
                     <div>
-                      <span>ThermalVault™ Eco-Cooler Box</span>
+                      <span>Reusable Cold Box</span>
                       <span className="ml-1.5 px-1.5 py-0.2 rounded bg-sky-200/80 dark:bg-sky-900/80 text-sky-900 dark:text-sky-300 text-[10px] font-bold">
                         100% Refundable
                       </span>
@@ -216,7 +216,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({ onCheckout }) => {
                 </div>
 
                 <p className="text-[11px] text-sky-900 dark:text-sky-300 leading-relaxed">
-                  Your meat is delivered in a chilled smart cooler with food-grade ice packs maintaining 0°C–4°C.
+                  Your order comes in a reusable cold box. Return the box after delivery and get ₹250 back once it's checked.
                 </p>
 
                 <button
@@ -230,8 +230,8 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({ onCheckout }) => {
 
                 {showCoolerFaq && (
                   <div className="border-t border-sky-200/80 dark:border-sky-800/80 pt-2 text-[11px] text-sky-950 dark:text-sky-200 space-y-1">
-                    <p>• <strong>Option A (Instant Handover):</strong> Unpack into your kitchen and return the box directly to the rider at delivery.</p>
-                    <p>• <strong>Option B (Doorstep Pickup):</strong> Keep it as long as you like. When ready, click "Return Box" in the app for doorstep pickup & instant UPI refund.</p>
+                    <p>• <strong>Give it back to the rider:</strong> Unpack your items and hand the box right back.</p>
+                    <p>• <strong>Return it later:</strong> Request a pickup anytime from the app to get ₹250 sent to your bank or wallet.</p>
                   </div>
                 )}
               </div>
@@ -266,7 +266,7 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({ onCheckout }) => {
                           type="text"
                           value={inputCoupon}
                           onChange={(e) => setInputCoupon(e.target.value)}
-                          placeholder="Enter Promo Code"
+                          placeholder="Apply Coupon Code"
                           className="w-full pl-8 pr-3 py-2 text-xs bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-lg focus:outline-none focus:border-[#d11243] uppercase font-bold text-gray-900 dark:text-white"
                         />
                       </div>
@@ -284,14 +284,14 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({ onCheckout }) => {
                       <button
                         type="button"
                         onClick={() => handleApplyCoupon('FRESH50')}
-                        className="px-2 py-0.5 rounded border border-gray-200 dark:border-slate-700 bg-gray-50 dark:bg-slate-800 text-[10px] font-bold text-gray-700 dark:text-gray-300 hover:border-gray-400 dark:hover:border-slate-500 shrink-0"
+                        className="px-2 py-0.5 rounded border border-gray-200 dark:border-slate-700 bg-gray-50 dark:bg-slate-800 text-[10px] font-bold text-gray-700 dark:text-gray-300 hover:border-gray-400 dark:hover:border-slate-500 shrink-0 cursor-pointer"
                       >
                         FRESH50 (₹50 OFF)
                       </button>
                       <button
                         type="button"
                         onClick={() => handleApplyCoupon('FIRSTORDER')}
-                        className="px-2 py-0.5 rounded border border-gray-200 dark:border-slate-700 bg-gray-50 dark:bg-slate-800 text-[10px] font-bold text-gray-700 dark:text-gray-300 hover:border-gray-400 dark:hover:border-slate-500 shrink-0"
+                        className="px-2 py-0.5 rounded border border-gray-200 dark:border-slate-700 bg-gray-50 dark:bg-slate-800 text-[10px] font-bold text-gray-700 dark:text-gray-300 hover:border-gray-400 dark:hover:border-slate-500 shrink-0 cursor-pointer"
                       >
                         FIRSTORDER (₹100 OFF)
                       </button>
@@ -311,25 +311,25 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({ onCheckout }) => {
               {/* Breakdown */}
               <div className="space-y-1.5 text-xs border-t border-gray-100 dark:border-slate-800 pt-3">
                 <div className="flex justify-between text-gray-600 dark:text-gray-300">
-                  <span>Cuts Subtotal:</span>
+                  <span>Item Total:</span>
                   <span className="font-semibold text-gray-900 dark:text-white">₹{subtotal}</span>
                 </div>
                 <div className="flex justify-between text-gray-600 dark:text-gray-300">
-                  <span>Refundable Box Deposit:</span>
-                  <span className="font-bold text-emerald-700 dark:text-emerald-400">₹{coolerDeposit} (100% Refundable)</span>
+                  <span>Cold Box Deposit:</span>
+                  <span className="font-bold text-emerald-700 dark:text-emerald-400">₹{coolerDeposit} (Refundable)</span>
                 </div>
                 {couponDiscount > 0 && (
                   <div className="flex justify-between text-emerald-700 dark:text-emerald-400 font-bold">
-                    <span>Promo Discount:</span>
+                    <span>Coupon Discount:</span>
                     <span>-₹{couponDiscount}</span>
                   </div>
                 )}
                 <div className="flex justify-between text-gray-600 dark:text-gray-300">
-                  <span>Delivery Partner Fee:</span>
+                  <span>Delivery Fee:</span>
                   <span>{shippingFee === 0 ? <strong className="text-emerald-700 dark:text-emerald-400">FREE</strong> : `₹${shippingFee}`}</span>
                 </div>
                 <div className="border-t border-gray-200 dark:border-slate-700 pt-2 flex justify-between items-center text-sm font-bold text-gray-950 dark:text-white">
-                  <span>Total Payable:</span>
+                  <span>Total Amount:</span>
                   <span className="text-lg font-black text-[#d11243] dark:text-rose-400">₹{total}</span>
                 </div>
               </div>
@@ -343,14 +343,14 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({ onCheckout }) => {
                   }}
                   className="w-full py-3 px-4 rounded-xl bg-[#d11243] hover:bg-[#b80f3b] text-white font-extrabold text-xs flex items-center justify-center gap-2 cursor-pointer shadow-md hover:shadow-lg transition"
                 >
-                  <span>Select Slot & Address (₹{total})</span>
+                  <span>Continue • ₹{total}</span>
                   <ArrowRight className="w-4 h-4" />
                 </button>
 
                 <div className="flex items-center justify-between text-[11px] text-gray-400">
                   <div className="flex items-center gap-1 text-emerald-700 dark:text-emerald-400 font-semibold">
                     <ShieldCheck className="w-3.5 h-3.5" />
-                    <span>0°C–4°C Chilled Guarantee</span>
+                    <span>Chilled Delivery Guarantee</span>
                   </div>
                   <button
                     onClick={clearCart}

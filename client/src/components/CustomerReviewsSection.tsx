@@ -18,48 +18,48 @@ const REVIEWS: Review[] = [
   {
     id: 'rev_1',
     name: 'Ananya Deshmukh',
-    locality: '100ft Road, Indiranagar',
+    locality: 'Indiranagar',
     city: 'Bengaluru',
-    productPurchased: 'Seer Fish / Surmai (Large Steaks)',
+    productPurchased: 'Surmai / Seer Fish (Steaks)',
     rating: 5,
     date: '2 days ago',
-    comment: 'The Seer Fish steaks were immaculate! Absolutely zero ammoniacal or fishy smell because the box arrived chilled to 1.8°C. I emptied the fish into my tray, handed the ThermalVault box right back to the delivery partner, and the ₹250 refund pinged on GPay within 5 minutes. Best seafood experience in Bangalore.',
+    comment: 'The fish arrived completely fresh with zero bad smell. The cold box kept it chilled properly. I handed the empty box back to the delivery partner and got my ₹250 refund in 5 minutes. Best fish delivery experience in town.',
     verifiedBuyer: true,
     avatarBg: 'bg-emerald-600'
   },
   {
     id: 'rev_2',
     name: 'Vikram Hegde',
-    locality: 'Sector 3, HSR Layout',
+    locality: 'HSR Layout',
     city: 'Bengaluru',
-    productPurchased: 'Rich Tender Goat (Biryani & Curry Cut)',
+    productPurchased: 'Tender Goat Mutton (Curry Cut)',
     rating: 5,
     date: 'Yesterday',
-    comment: 'Finally a meat brand that does not give you 10 layers of non-recyclable plastic and melted ice bags! The Mandya goat meat was fresh, pink, and bone-dust free. Cooked in 3 whistles with authentic village aroma. GoMeat is officially my Sunday meat staple over Licious.',
+    comment: 'Clean cuts with no bone chips or excess fat. Cooked quickly and tasted very tender. Also love the reusable box concept instead of messy plastic bags. GoMeat is now my regular Sunday choice.',
     verifiedBuyer: true,
     avatarBg: 'bg-rose-600'
   },
   {
     id: 'rev_3',
-    name: 'Chef Radhika Sen',
-    locality: '5th Block, Koramangala',
+    name: 'Radhika Sen',
+    locality: 'Koramangala',
     city: 'Bengaluru',
-    productPurchased: 'Sea Tiger Prawns (Jumbo Cleaned)',
+    productPurchased: 'Fresh Jumbo Prawns (Cleaned)',
     rating: 5,
     date: '4 days ago',
-    comment: 'As a private culinary consultant, cold-chain temperature control is non-negotiable. Seeing the live IoT probe graph right on the website holding 2.1°C during Bengaluru traffic was remarkable. The prawns were sweet, firm, and thoroughly deveined with tails intact.',
+    comment: 'Prawns were big, clean, and perfectly deveined. Fresh and sweet taste, ready to cook straight out of the box. Delivery was right on time within 90 minutes.',
     verifiedBuyer: true,
     avatarBg: 'bg-indigo-600'
   },
   {
     id: 'rev_4',
     name: 'Karthik Iyer',
-    locality: 'Prestige Shantiniketan, Whitefield',
+    locality: 'Whitefield',
     city: 'Bengaluru',
-    productPurchased: 'Amritsari Fish Tikka & Desi Nati Koli',
+    productPurchased: 'Fresh Chicken Curry Cut',
     rating: 5,
     date: '1 week ago',
-    comment: 'Ordered at 11:15 AM for a family get-together, delivered by 12:35 PM inside the thermal vault box. The Amritsari fish tikka cooked in 8 minutes on my tawa, crisp outside and juicy inside. Scheduled the cooler box pickup next morning from building security easily.',
+    comment: 'Ordered at 11 AM for lunch, delivered at 12:20 PM. Chicken was fresh, soft, and cleanly washed. Returning the box next day was super simple through the website.',
     verifiedBuyer: true,
     avatarBg: 'bg-amber-600'
   }
@@ -68,22 +68,22 @@ const REVIEWS: Review[] = [
 export const CustomerReviewsSection: React.FC = () => {
   return (
     <section className="mt-10 bg-white dark:bg-slate-900 rounded-2xl border border-gray-200 dark:border-slate-800 p-6 md:p-8 shadow-xs">
-      {/* Header & Google Rating Summary */}
+      {/* Header & Rating Summary */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 pb-6 border-b border-gray-100 dark:border-slate-800">
         <div>
           <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-50 dark:bg-emerald-950/50 text-emerald-800 dark:text-emerald-300 text-[11px] font-bold uppercase tracking-wider mb-2 border border-emerald-200 dark:border-emerald-800">
             <ShieldCheck className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" />
-            <span>100% Verified Customer Experience</span>
+            <span>Customer Reviews</span>
           </div>
           <h2 className="text-xl md:text-2xl font-black text-gray-900 dark:text-white tracking-tight">
-            Loved by 45,000+ Meat & Seafood Lovers
+            Loved by Our Customers
           </h2>
           <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-            Real feedback from households across Bengaluru & Mumbai ordering fresh harbor catch and pasture mutton.
+            Real feedback from happy customers who order fresh meat and seafood daily.
           </p>
         </div>
 
-        {/* Google Reviews Badge */}
+        {/* Rating Badge */}
         <div className="flex items-center gap-4 bg-gray-50 dark:bg-slate-800/80 p-3.5 rounded-xl border border-gray-200 dark:border-slate-700 shrink-0">
           <div className="text-center pr-4 border-r border-gray-200 dark:border-slate-700">
             <div className="flex items-center justify-center gap-1 text-2xl font-black text-gray-900 dark:text-white">
@@ -97,11 +97,11 @@ export const CustomerReviewsSection: React.FC = () => {
           </div>
           <div>
             <div className="text-xs font-bold text-gray-900 dark:text-white flex items-center gap-1">
-              <span>Google Reviews</span>
+              <span>Customer Rating</span>
               <CheckCircle className="w-3.5 h-3.5 fill-blue-500 text-white" />
             </div>
-            <div className="text-[11px] text-gray-500 dark:text-gray-400">Based on 1,480+ Ratings</div>
-            <div className="text-[10px] text-emerald-600 dark:text-emerald-400 font-semibold mt-0.5">99.4% Positive Sentiment</div>
+            <div className="text-[11px] text-gray-500 dark:text-gray-400">Based on 1,480+ Reviews</div>
+            <div className="text-[10px] text-emerald-600 dark:text-emerald-400 font-semibold mt-0.5">99% Positive Rating</div>
           </div>
         </div>
       </div>
@@ -148,7 +148,7 @@ export const CustomerReviewsSection: React.FC = () => {
 
               {/* Product Badge */}
               <div className="inline-block bg-white dark:bg-slate-700 border border-gray-200 dark:border-slate-600 px-2 py-0.5 rounded text-[10px] text-gray-700 dark:text-gray-200 font-medium mb-2.5 shadow-2xs">
-                Bought: <span className="font-bold text-[#d11243] dark:text-rose-400">{review.productPurchased}</span>
+                Ordered: <span className="font-bold text-[#d11243] dark:text-rose-400">{review.productPurchased}</span>
               </div>
 
               {/* Review Text */}
@@ -170,20 +170,20 @@ export const CustomerReviewsSection: React.FC = () => {
       {/* Trust Highlights Strip */}
       <div className="mt-6 pt-5 border-t border-gray-100 dark:border-slate-800 grid grid-cols-2 md:grid-cols-4 gap-3 text-center">
         <div className="p-2.5 bg-rose-50/50 dark:bg-rose-950/30 rounded-lg border border-rose-100 dark:border-rose-900/40">
-          <div className="font-extrabold text-sm text-[#d11243] dark:text-rose-400">0°C to 4°C</div>
+          <div className="font-extrabold text-sm text-[#d11243] dark:text-rose-400">Always Chilled</div>
           <div className="text-[10px] text-gray-600 dark:text-gray-400 mt-0.5">Never Thawed or Refrozen</div>
         </div>
         <div className="p-2.5 bg-emerald-50/50 dark:bg-emerald-950/30 rounded-lg border border-emerald-100 dark:border-emerald-900/40">
-          <div className="font-extrabold text-sm text-emerald-800 dark:text-emerald-400">₹250 UPI Refund</div>
-          <div className="text-[10px] text-gray-600 dark:text-gray-400 mt-0.5">Instant Deposit Reversal</div>
+          <div className="font-extrabold text-sm text-emerald-800 dark:text-emerald-400">₹250 Box Refund</div>
+          <div className="text-[10px] text-gray-600 dark:text-gray-400 mt-0.5">Get Deposit Back Promptly</div>
         </div>
         <div className="p-2.5 bg-amber-50/50 dark:bg-amber-950/30 rounded-lg border border-amber-100 dark:border-amber-900/40">
-          <div className="font-extrabold text-sm text-amber-800 dark:text-amber-400">100% RO Washed</div>
-          <div className="text-[10px] text-gray-600 dark:text-gray-400 mt-0.5">No Formalin / Chemicals</div>
+          <div className="font-extrabold text-sm text-amber-800 dark:text-amber-400">Cleaned & Safe</div>
+          <div className="text-[10px] text-gray-600 dark:text-gray-400 mt-0.5">No Chemicals or Preservatives</div>
         </div>
         <div className="p-2.5 bg-indigo-50/50 dark:bg-indigo-950/30 rounded-lg border border-indigo-100 dark:border-indigo-900/40">
-          <div className="font-extrabold text-sm text-indigo-800 dark:text-indigo-400">Zero Thermocol</div>
-          <div className="text-[10px] text-gray-600 dark:text-gray-400 mt-0.5">100% Reusable Cold Vault</div>
+          <div className="font-extrabold text-sm text-indigo-800 dark:text-indigo-400">Eco-Friendly Box</div>
+          <div className="text-[10px] text-gray-600 dark:text-gray-400 mt-0.5">Reusable Cold Box Packaging</div>
         </div>
       </div>
     </section>

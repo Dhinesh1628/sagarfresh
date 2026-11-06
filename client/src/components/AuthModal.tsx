@@ -104,7 +104,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, defaultRo
               mode === 'login' ? 'bg-white dark:bg-slate-700 text-gray-950 dark:text-white shadow-2xs' : 'text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white'
             }`}
           >
-            Login with Credentials
+            Login
           </button>
           <button
             onClick={() => { setMode('register'); setError(null); }}
@@ -112,7 +112,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, defaultRo
               mode === 'register' ? 'bg-white dark:bg-slate-700 text-gray-950 dark:text-white shadow-2xs' : 'text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white'
             }`}
           >
-            New Registration
+            Sign Up
           </button>
         </div>
 
@@ -240,7 +240,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, defaultRo
               disabled={loading}
               className="w-full py-2.5 bg-[#d11243] hover:bg-[#b80f3b] text-white rounded-lg font-extrabold text-xs cursor-pointer shadow-xs transition"
             >
-              {loading ? 'Creating Account...' : 'Complete Registration'}
+              {loading ? 'Creating Account...' : 'Create Account'}
             </button>
           </form>
         )}

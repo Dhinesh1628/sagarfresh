@@ -224,10 +224,10 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
               <div className="p-3.5 rounded-xl bg-emerald-50/70 dark:bg-emerald-950/40 border border-emerald-200/80 dark:border-emerald-800/60 text-xs space-y-1.5">
                 <div className="flex items-center gap-1.5 font-bold text-emerald-950 dark:text-emerald-300">
                   <ShieldCheck className="w-4 h-4 text-emerald-700 dark:text-emerald-400" />
-                  <span>FreshSeal 100% Quality & Cold-Chain Promise</span>
+                  <span>Our Freshness Promise</span>
                 </div>
                 <p className="text-[11px] text-emerald-800 dark:text-emerald-300/90 leading-relaxed">
-                  Every order is dispatched in our temperature-logged reusable cooler box with food-grade gel bricks. Never frozen, no chemical water-bath washes.
+                  Delivered fresh in our reusable cold box. Kept chilled at 0°C to 4°C so it stays tender and juicy. Never frozen, 100% clean.
                 </p>
               </div>
             </div>
@@ -260,13 +260,13 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
               <div className="grid grid-cols-3 gap-2.5 bg-gray-50 dark:bg-slate-800/80 p-3 rounded-xl border border-gray-100 dark:border-slate-700 text-center">
                 <div className="p-1">
                   <span className="block text-[10px] text-gray-500 dark:text-gray-400 uppercase tracking-wider font-bold">Portion</span>
-                  <span className="text-xs font-extrabold text-gray-900 dark:text-white mt-0.5 block">{product.pieces || '10-14 Pcs'}</span>
-                  <span className="text-[10px] text-gray-500 dark:text-gray-400">{product.serves || 'Serves 3-4'}</span>
+                  <span className="text-xs font-extrabold text-gray-900 dark:text-white mt-0.5 block">{product.pieces || '4-6 Pieces'}</span>
+                  <span className="text-[10px] text-gray-500 dark:text-gray-400">{product.serves || 'Serves 2-3'}</span>
                 </div>
                 <div className="p-1 border-x border-gray-200 dark:border-slate-700">
-                  <span className="block text-[10px] text-gray-500 dark:text-gray-400 uppercase tracking-wider font-bold">Origin</span>
-                  <span className="text-xs font-extrabold text-gray-900 dark:text-white mt-0.5 block truncate">{product.origin || 'Bio-Secure Farm'}</span>
-                  <span className="text-[10px] text-emerald-700 dark:text-emerald-400 font-semibold">100% Traceable</span>
+                  <span className="block text-[10px] text-gray-500 dark:text-gray-400 uppercase tracking-wider font-bold">Quality</span>
+                  <span className="text-xs font-extrabold text-gray-900 dark:text-white mt-0.5 block truncate">Daily Fresh</span>
+                  <span className="text-[10px] text-emerald-700 dark:text-emerald-400 font-semibold">100% Clean</span>
                 </div>
                 <div className="p-1">
                   <span className="block text-[10px] text-gray-500 dark:text-gray-400 uppercase tracking-wider font-bold">Storage</span>
@@ -280,7 +280,7 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-1.5 text-xs font-bold text-amber-950 dark:text-amber-300">
                     <Award className="w-4 h-4 text-amber-700 dark:text-amber-400" />
-                    <span>Weight Transparency Guarantee</span>
+                    <span>Weight Transparency</span>
                   </div>
                   <button 
                     type="button"
@@ -292,13 +292,13 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
                   </button>
                 </div>
                 <div className="mt-1 text-xs text-amber-900 dark:text-amber-200 flex items-center gap-3">
-                  <span>Gross Wt: <strong>{product.grossWeight || '550g'}</strong></span>
+                  <span>Gross Weight: <strong>{product.grossWeight || '550g'}</strong></span>
                   <span className="text-amber-400">➔</span>
-                  <span>Net Edible Wt: <strong>{product.netWeight || '450g'}</strong></span>
+                  <span>Net Meat Weight: <strong>{product.netWeight || '450g'}</strong></span>
                 </div>
                 {showWeightExplanation && (
                   <p className="mt-2 text-[11px] text-amber-800 dark:text-amber-300/90 leading-relaxed border-t border-amber-200 dark:border-amber-800/60 pt-2">
-                    In traditional meat shops, you pay for raw weight including heavy bone end-caps, feathers/scales, and excess fat. At GoMeat, we weigh before precision cutting and clean away all offal, skin, and unwanted trim. You receive pure, clean, ready-to-cook meat.
+                    In local markets, you pay for raw weight before cleaning. At GoMeat, we clean and trim off unwanted fat, skin, and waste before packing, so you only pay for meat you can actually cook and enjoy.
                   </p>
                 )}
               </div>
@@ -307,10 +307,10 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
               <div className="space-y-2.5">
                 <div className="flex items-center justify-between">
                   <label className="text-xs font-extrabold text-gray-900 dark:text-white tracking-wide uppercase">
-                    Select Your Cut Specification:
+                    Choose How You Want It Cut:
                   </label>
                   <span className="text-[11px] font-semibold text-gray-500 dark:text-gray-400">
-                    Customized free of charge
+                    Free customization
                   </span>
                 </div>
 
@@ -382,7 +382,7 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
         {/* Sticky Action Footer */}
         <div className="px-5 py-4 border-t border-gray-200 dark:border-slate-800 bg-white dark:bg-slate-900 sticky bottom-0 z-20 flex flex-col sm:flex-row items-center justify-between gap-4 shadow-lg">
           <div>
-            <span className="text-[11px] text-gray-500 dark:text-gray-400 font-semibold block">Total Item Amount</span>
+            <span className="text-[11px] text-gray-500 dark:text-gray-400 font-semibold block">Total Amount</span>
             <div className="flex items-baseline gap-2">
               <span className="text-2xl font-black text-gray-950 dark:text-white">₹{product.price * quantity}</span>
               <span className="text-xs text-gray-500 dark:text-gray-400">for {quantity} {product.unit} pack</span>
@@ -412,13 +412,13 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
               </button>
             </div>
 
-            {/* Add to Cold Box Button */}
+            {/* Add to Cart Button */}
             <button
               type="button"
               onClick={handleAddToCart}
               className="flex-1 sm:flex-none px-6 py-3 bg-[#d11243] hover:bg-[#b80f3b] text-white font-extrabold text-sm rounded-xl cursor-pointer shadow-md hover:shadow-lg transition flex items-center justify-center gap-2 card-light-hover"
             >
-              <span>Add to Cold Box</span>
+              <span>Add to Cart</span>
               <ChevronRight className="w-4 h-4" />
             </button>
           </div>

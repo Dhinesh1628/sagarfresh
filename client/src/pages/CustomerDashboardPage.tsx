@@ -300,11 +300,11 @@ export const CustomerDashboardPage: React.FC<CustomerDashboardPageProps> = ({
           {[
             { id: 'wallet', label: 'GoMeat Wallet', icon: Wallet, count: (user?.walletBalance || walletBalance) ? (user?.walletBalance || walletBalance) : undefined },
             { id: 'orders', label: 'My Orders', icon: Package, count: orders.length },
-            { id: 'profile', label: 'Profile Settings', icon: User },
-            { id: 'payments', label: 'Payment History', icon: CreditCard },
-            { id: 'wishlist', label: 'Wishlist', icon: Heart, count: wishlist.length },
+            { id: 'profile', label: 'Profile', icon: User },
+            { id: 'payments', label: 'Payments', icon: CreditCard },
+            { id: 'wishlist', label: 'Saved for Later', icon: Heart, count: wishlist.length },
             { id: 'addresses', label: 'Saved Addresses', icon: MapPin, count: savedAddresses.length },
-            { id: 'coolers', label: 'Cold-Box Returns', icon: RotateCcw, count: coolers.length }
+            { id: 'coolers', label: 'Cold Boxes', icon: RotateCcw, count: coolers.length }
           ].map(tab => {
             const Icon = tab.icon;
             const isActive = activeTab === tab.id;
@@ -340,7 +340,7 @@ export const CustomerDashboardPage: React.FC<CustomerDashboardPageProps> = ({
         <div className="space-y-4">
           <div className="flex items-center justify-between">
             <h3 className="text-sm font-black text-gray-950 dark:text-white uppercase tracking-wider">
-              Order History ({orders.length})
+              My Orders ({orders.length})
             </h3>
             <button
               onClick={fetchOrders}
