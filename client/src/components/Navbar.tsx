@@ -106,7 +106,7 @@ export const Navbar: React.FC<NavbarProps> = ({
         <div className="flex items-center justify-between h-16 gap-4">
           
           {/* Brand Logo & Location */}
-          <div className="flex items-center gap-5">
+          <div className="flex items-center gap-3 lg:gap-4 shrink-0">
             <div 
               onClick={() => setCurrentTab('catalog')} 
               className="flex items-center cursor-pointer shrink-0 py-1"
@@ -114,39 +114,39 @@ export const Navbar: React.FC<NavbarProps> = ({
               <img 
                 src="/images/logo.png" 
                 alt="GoMeat - Freshness we can trust." 
-                className="h-10 sm:h-11 w-auto object-contain hover:opacity-95 transition" 
+                className="h-9 sm:h-10 w-auto object-contain hover:opacity-95 transition" 
               />
             </div>
 
             {/* Location Selector */}
             <button
               onClick={onOpenLocationModal}
-              className="hidden lg:flex items-center gap-2 pl-3 py-1 px-2.5 rounded-xl border-l border-gray-200 dark:border-slate-800 hover:bg-gray-50 dark:hover:bg-slate-800 text-xs transition cursor-pointer text-left group"
+              className="hidden lg:flex items-center gap-2 pl-3 py-1 px-2 rounded-xl border-l border-gray-200 dark:border-slate-800 hover:bg-gray-50 dark:hover:bg-slate-800 text-xs transition cursor-pointer text-left group shrink-0 max-w-[200px] xl:max-w-[240px]"
               title="Click to enter custom delivery address or detect location"
               type="button"
             >
               <div className="p-1.5 rounded-lg bg-rose-50 dark:bg-rose-950/60 text-[#d11243] group-hover:scale-110 transition-transform shrink-0">
                 <MapPin className="w-4 h-4" />
               </div>
-              <div className="leading-tight">
+              <div className="leading-tight overflow-hidden">
                 <div className="flex items-center gap-1">
-                  <span className="font-extrabold text-gray-900 dark:text-white group-hover:text-[#d11243] transition-colors">
+                  <span className="font-extrabold text-gray-900 dark:text-white group-hover:text-[#d11243] transition-colors truncate">
                     {currentAddress ? (
                       currentAddress.tag === 'Home' || currentAddress.tag === 'Work' 
                         ? `${currentAddress.tag} • ${currentAddress.city}`
                         : (currentAddress.area || currentAddress.city)
                     ) : selectedCity}
                   </span>
-                  <ChevronDown className="w-3.5 h-3.5 text-gray-400 group-hover:text-[#d11243] transition-transform group-hover:translate-y-0.5" />
+                  <ChevronDown className="w-3.5 h-3.5 text-gray-400 group-hover:text-[#d11243] transition-transform group-hover:translate-y-0.5 shrink-0" />
                 </div>
                 <div className="flex items-center gap-1.5 mt-0.5">
-                  <span className="text-gray-600 dark:text-gray-300 font-medium truncate max-w-[190px] text-[11px]">
+                  <span className="text-gray-600 dark:text-gray-300 font-medium truncate max-w-[100px] xl:max-w-[140px] text-[11px]">
                     {currentAddress ? (
                       currentAddress.formattedAddress || `${currentAddress.flatNo ? currentAddress.flatNo + ', ' : ''}${currentAddress.area || currentAddress.street}`
                     ) : currentLocality}
                   </span>
                   <span className="w-1 h-1 rounded-full bg-emerald-500 shrink-0" />
-                  <span className="text-[10px] text-emerald-600 dark:text-emerald-400 font-bold whitespace-nowrap">
+                  <span className="text-[10px] text-emerald-600 dark:text-emerald-400 font-bold whitespace-nowrap shrink-0">
                     90 Mins
                   </span>
                 </div>
@@ -155,30 +155,30 @@ export const Navbar: React.FC<NavbarProps> = ({
           </div>
 
           {/* Search Bar */}
-          <div className="hidden md:flex flex-1 max-w-md mx-2">
+          <div className="hidden md:flex flex-1 min-w-[160px] max-w-xs xl:max-w-md mx-2">
             <div className="relative w-full">
               <Search className="w-4 h-4 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2" />
               <input
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Search for chicken, seer fish, mutton, prawns..."
-                className="w-full pl-9 pr-4 py-2 rounded-lg bg-gray-100 dark:bg-slate-800 hover:bg-gray-50 dark:hover:bg-slate-700/60 focus:bg-white dark:focus:bg-slate-800 border border-gray-200 dark:border-slate-700 focus:border-[#d11243] text-gray-800 dark:text-gray-100 text-xs placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none transition-colors"
+                placeholder="Search chicken, fish, mutton..."
+                className="w-full pl-9 pr-3 py-2 rounded-lg bg-gray-100 dark:bg-slate-800 hover:bg-gray-50 dark:hover:bg-slate-700/60 focus:bg-white dark:focus:bg-slate-800 border border-gray-200 dark:border-slate-700 focus:border-[#d11243] text-gray-800 dark:text-gray-100 text-xs placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none transition-colors"
               />
             </div>
           </div>
 
           {/* Right Navigation & Actions */}
-          <div className="flex items-center gap-2 sm:gap-2.5">
+          <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
             
             <button
               onClick={() => {
                 if (!user) onOpenAuth('customer');
                 else setCurrentTab('dashboard');
               }}
-              className={`hidden md:flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-semibold cursor-pointer transition ${
+              className={`hidden sm:flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-bold cursor-pointer transition whitespace-nowrap shrink-0 ${
                 currentTab === 'dashboard' 
-                  ? 'bg-rose-50 dark:bg-rose-950/60 text-[#d11243] dark:text-rose-400 border border-rose-200 dark:border-rose-900 shadow-2xs font-bold' 
+                  ? 'bg-rose-50 dark:bg-rose-950/60 text-[#d11243] dark:text-rose-400 border border-rose-200 dark:border-rose-900 shadow-2xs' 
                   : 'text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-slate-800'
               }`}
             >
@@ -187,7 +187,7 @@ export const Navbar: React.FC<NavbarProps> = ({
 
             <button
               onClick={() => setCurrentTab('coolers')}
-              className={`hidden sm:flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-semibold cursor-pointer transition ${
+              className={`hidden xl:flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-semibold cursor-pointer transition whitespace-nowrap shrink-0 ${
                 currentTab === 'coolers' 
                   ? 'bg-rose-50 dark:bg-rose-950/60 text-[#d11243] dark:text-rose-400 border border-rose-200 dark:border-rose-900' 
                   : 'text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-slate-800'
@@ -204,7 +204,7 @@ export const Navbar: React.FC<NavbarProps> = ({
 
             <button
               onClick={() => setCurrentTab('tracking')}
-              className={`hidden sm:flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-semibold cursor-pointer transition ${
+              className={`hidden xl:flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-semibold cursor-pointer transition whitespace-nowrap shrink-0 ${
                 currentTab === 'tracking' 
                   ? 'bg-rose-50 dark:bg-rose-950/60 text-[#d11243] dark:text-rose-400 border border-rose-200 dark:border-rose-900 shadow-2xs font-bold' 
                   : 'text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-slate-800'
@@ -214,21 +214,21 @@ export const Navbar: React.FC<NavbarProps> = ({
               <span>Live Tracking</span>
             </button>
 
-            <button
-              onClick={handleAdminTabClick}
-              className={`hidden md:inline-block px-2.5 py-1.5 rounded-lg text-xs font-semibold cursor-pointer transition ${
-                currentTab === 'admin' 
-                  ? 'bg-amber-50 text-amber-900 border border-amber-300' 
-                  : 'text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-slate-800'
-              }`}
-            >
-              Hub Ops
-              {user?.role === 'admin' && (
+            {user?.role === 'admin' && (
+              <button
+                onClick={handleAdminTabClick}
+                className={`hidden 2xl:inline-flex items-center px-2.5 py-1.5 rounded-lg text-xs font-semibold cursor-pointer transition whitespace-nowrap shrink-0 ${
+                  currentTab === 'admin' 
+                    ? 'bg-amber-50 text-amber-900 border border-amber-300' 
+                    : 'text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-slate-800'
+                }`}
+              >
+                <span>Hub Ops</span>
                 <span className="ml-1 px-1 py-0.2 bg-amber-200 dark:bg-amber-900 text-amber-900 dark:text-amber-200 rounded text-[9px] font-bold">
                   ADMIN
                 </span>
-              )}
-            </button>
+              </button>
+            )}
 
             {/* Dark / Light Theme Toggle with Glowing Light Effect */}
             <button
