@@ -51,17 +51,32 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const clean = code.trim().toUpperCase();
     if (!clean) return { success: false, message: 'Please enter a coupon code' };
     
-    if (clean === 'FRESH50') {
+    if (clean === 'MEAT100') {
+      if (subtotal < 499) {
+        return { success: false, message: 'Add items worth ₹' + (499 - subtotal) + ' more for MEAT100 (Min order ₹499)' };
+      }
+      setCouponCode('MEAT100');
+      setCouponDiscount(100);
+      return { success: true, message: '₹100 discount applied with MEAT100!' };
+    } else if (clean === 'FIRST20' || clean === 'FIRSTORDER' || clean === 'FIRSTMEAT') {
+      if (subtotal < 399) {
+        return { success: false, message: 'Add items worth ₹' + (399 - subtotal) + ' more for FIRST20 (Min order ₹399)' };
+      }
+      const disc = Math.min(120, Math.round(subtotal * 0.20)) || 100;
+      setCouponCode(clean);
+      setCouponDiscount(disc);
+      return { success: true, message: `₹${disc} discount applied on your first order!` };
+    } else if (clean === 'FREEDEL') {
+      setCouponCode('FREEDEL');
+      setCouponDiscount(40);
+      return { success: true, message: 'FREE Delivery coupon applied (₹40 saved)!' };
+    } else if (clean === 'FRESH50') {
+      if (subtotal < 249) {
+        return { success: false, message: 'Min order of ₹249 required for FRESH50' };
+      }
       setCouponCode('FRESH50');
       setCouponDiscount(50);
       return { success: true, message: '₹50 discount applied with FRESH50!' };
-    } else if (clean === 'FIRSTORDER' || clean === 'FIRSTMEAT') {
-      if (subtotal < 399) {
-        return { success: false, message: 'Min order of ₹399 required for FIRSTORDER' };
-      }
-      setCouponCode(clean);
-      setCouponDiscount(100);
-      return { success: true, message: '₹100 discount applied on your first order!' };
     } else if (clean === 'COLDCHAIN' || clean === 'FRESH100') {
       if (subtotal < 499) {
         return { success: false, message: 'Min order of ₹499 required for this coupon' };
@@ -70,7 +85,7 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
       setCouponDiscount(75);
       return { success: true, message: '₹75 cold-chain bonus discount applied!' };
     } else {
-      return { success: false, message: 'Invalid or expired coupon code. Try FRESH50 or FIRSTORDER.' };
+      return { success: false, message: 'Invalid or expired coupon code. Try MEAT100, FIRST20, or FREEDEL.' };
     }
   };
 
@@ -150,8 +165,8 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
   
   // Refundable cooler box deposit: ₹250 flat per order
   const coolerDeposit = items.length > 0 ? 250 : 0;
-  // Free delivery threshold: ₹799
-  const shippingFee = items.length === 0 ? 0 : (subtotal >= 799 ? 0 : 40);
+  // Free delivery threshold: ₹499 (Swiggy style)
+  const shippingFee = items.length === 0 ? 0 : (subtotal >= 499 ? 0 : 40);
   const effectiveDiscount = Math.min(couponDiscount, subtotal);
   const total = Math.max(0, subtotal - effectiveDiscount + coolerDeposit + shippingFee);
   const totalItems = items.reduce((sum, item) => sum + item.quantity, 0);

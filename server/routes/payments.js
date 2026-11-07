@@ -102,8 +102,10 @@ router.post('/create-order', async (req, res) => {
     // 2. Compute Fees & Cold-Box Deposit
     const COOLER_DEPOSIT = 250;
     const discount = Math.min(parseInt(couponDiscount || 0, 10), subtotal);
-    const shippingFee = subtotal >= 799 ? 0 : 40;
-    const grossTotal = Math.max(0, subtotal - discount + COOLER_DEPOSIT + shippingFee);
+    const shippingFee = subtotal >= 499 ? 0 : 40;
+    const tip = Math.max(0, parseInt(req.body.tipAmount || 0, 10));
+    const grossTotal = Math.max(0, subtotal - discount + COOLER_DEPOSIT + shippingFee + tip);
+    const deliveryPin = Math.floor(1000 + Math.random() * 9000).toString();
 
     // Load authentic user from JWT or request
     const user = getUserFromReq(req) || req.user || { 
@@ -160,6 +162,8 @@ router.post('/create-order', async (req, res) => {
         couponCode,
         coolerDeposit: COOLER_DEPOSIT,
         shippingFee,
+        tipAmount: tip,
+        deliveryPin,
         totalAmount: 0,
         walletDeduction,
         deliveryAddress: deliveryAddress || `${addressDetails?.flatNo}, ${addressDetails?.building}, ${addressDetails?.street}, ${city} - ${addressDetails?.pincode}`,
@@ -209,6 +213,8 @@ router.post('/create-order', async (req, res) => {
         couponCode,
         coolerDeposit: COOLER_DEPOSIT,
         shippingFee,
+        tipAmount: tip,
+        deliveryPin,
         totalAmount: netPayable,
         walletDeduction,
         deliveryAddress: deliveryAddress || `${addressDetails?.flatNo}, ${addressDetails?.building}, ${addressDetails?.street}, ${city} - ${addressDetails?.pincode}`,
@@ -266,6 +272,8 @@ router.post('/create-order', async (req, res) => {
       couponCode,
       coolerDeposit: COOLER_DEPOSIT,
       shippingFee,
+      tipAmount: tip,
+      deliveryPin,
       totalAmount: netPayable,
       walletDeduction,
       deliveryAddress: deliveryAddress || `${addressDetails?.flatNo}, ${addressDetails?.building}, ${addressDetails?.street}, ${city} - ${addressDetails?.pincode}`,
@@ -608,6 +616,8 @@ function createOrderRecord(params) {
     couponCode,
     coolerDeposit,
     shippingFee,
+    tipAmount = 0,
+    deliveryPin = '',
     totalAmount,
     walletDeduction = 0,
     deliveryAddress,
@@ -662,6 +672,8 @@ function createOrderRecord(params) {
     couponCode: couponCode || null,
     coolerDeposit,
     shippingFee,
+    tipAmount: Number(tipAmount || 0),
+    deliveryPin: deliveryPin || Math.floor(1000 + Math.random() * 9000).toString(),
     walletDeduction: Number(walletDeduction || 0),
     total: totalAmount,
     totalAmount,

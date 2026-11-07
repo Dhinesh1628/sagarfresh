@@ -187,6 +187,8 @@ export interface Order {
   trackingCode: string;
   createdAt: string;
   deliveryNotes?: string;
+  tipAmount?: number;
+  deliveryPin?: string;
   coolerDetails?: Cooler;
 }
 

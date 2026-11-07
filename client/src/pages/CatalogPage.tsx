@@ -399,30 +399,35 @@ export const CatalogPage: React.FC<CatalogPageProps> = ({
                             addItem(product, 1, undefined, currentOption.weight, currentOption.price, currentOption.mrp);
                             showToast(`Added ${product.name} (${currentOption.weight}) to Your Cart`);
                           }}
-                          className="px-3.5 py-1.5 rounded-lg bg-[#d11243] hover:bg-[#b80f3b] text-white font-bold text-xs uppercase cursor-pointer shadow-2xs transition"
+                          className="h-8 min-w-[78px] px-3.5 rounded-xl bg-white dark:bg-slate-900 hover:bg-rose-50 dark:hover:bg-rose-950/40 text-[#d11243] dark:text-rose-400 font-black text-xs uppercase cursor-pointer border-2 border-[#d11243]/80 hover:border-[#d11243] shadow-xs active:scale-95 transition-all flex items-center justify-center gap-1 select-none"
                         >
-                          Add
+                          <span>ADD</span>
+                          <span className="text-sm font-black leading-none">+</span>
                         </button>
                       ) : (
-                        <div className="flex items-center border border-[#d11243] rounded-lg bg-white dark:bg-slate-800">
+                        <div className="h-8 min-w-[78px] flex items-center justify-between border-2 border-[#d11243] rounded-xl bg-white dark:bg-slate-900 shadow-xs overflow-hidden select-none">
                           <button
                             onClick={(e) => {
                               e.stopPropagation();
                               updateQuantity(cartItem?.id || product.id, qty - 1);
                             }}
-                            className="p-1 text-[#d11243] hover:bg-rose-50 dark:hover:bg-rose-950/60 rounded-l cursor-pointer"
+                            className="w-7 h-full flex items-center justify-center text-[#d11243] dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/60 font-black transition cursor-pointer active:scale-90"
+                            title="Decrease quantity"
                           >
-                            <Minus className="w-3.5 h-3.5" />
+                            <Minus className="w-3.5 h-3.5 stroke-[3]" />
                           </button>
-                          <span className="px-2 text-xs font-bold text-[#d11243]">{qty}</span>
+                          <span className="text-xs font-black text-[#d11243] dark:text-rose-400 px-1">
+                            {qty}
+                          </span>
                           <button
                             onClick={(e) => {
                               e.stopPropagation();
                               updateQuantity(cartItem?.id || product.id, qty + 1);
                             }}
-                            className="p-1 text-[#d11243] hover:bg-rose-50 dark:hover:bg-rose-950/60 rounded-r cursor-pointer"
+                            className="w-7 h-full flex items-center justify-center text-[#d11243] dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/60 font-black transition cursor-pointer active:scale-90"
+                            title="Increase quantity"
                           >
-                            <Plus className="w-3.5 h-3.5" />
+                            <Plus className="w-3.5 h-3.5 stroke-[3]" />
                           </button>
                         </div>
                       )}

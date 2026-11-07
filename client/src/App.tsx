@@ -15,6 +15,7 @@ import { LegalModal } from './components/LegalModals';
 import { WhatsAppButton } from './components/WhatsAppButton';
 import { GlassmorphicLoginGate } from './components/GlassmorphicLoginGate';
 import { LocationSelectorModal } from './components/LocationSelectorModal';
+import { FloatingBottomCartBar } from './components/FloatingBottomCartBar';
 import type { Order, DeliveryAddress } from './types';
 
 const MainApp: React.FC = () => {
@@ -372,6 +373,12 @@ const MainApp: React.FC = () => {
           </div>
         </div>
       </footer>
+
+      {/* Swiggy Style Floating Bottom Cart Bar */}
+      <FloatingBottomCartBar
+        onViewCart={() => setIsCartOpen(true)}
+        isHidden={isCartOpen || isCheckoutOpen || isConfirmationOpen || isLocationModalOpen || isAiButcherOpen}
+      />
 
       {/* Cart Drawer */}
       <CartDrawer onCheckout={handleProceedToCheckout} />

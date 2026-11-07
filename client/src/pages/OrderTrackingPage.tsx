@@ -89,6 +89,7 @@ export const OrderTrackingPage: React.FC<OrderTrackingPageProps> = ({ onNavigate
     ],
     deliverySlot: '⚡ Express Delivery in 90 Mins (Live EV Courier)',
     trackingCode: 'SAGAR-TRK-84920',
+    deliveryPin: '4892',
     createdAt: new Date().toISOString(),
     deliveryNotes: 'Leave with building security or ring Flat 402 doorbell.'
   };
@@ -201,6 +202,8 @@ export const OrderTrackingPage: React.FC<OrderTrackingPageProps> = ({ onNavigate
   ];
 
   const currentOrder = selectedOrder || demoOrder;
+  const orderPin = currentOrder.deliveryPin || 
+    ((parseInt((currentOrder.orderNumber || currentOrder.id).replace(/\D/g, '').slice(-4), 10) || 4892).toString().padStart(4, '0'));
 
   const getStageIndex = (order: Order): number => {
     const rawStatus = (order.orderStatus || order.status || '').toUpperCase().replace(/[\s-]/g, '_');
@@ -583,6 +586,35 @@ export const OrderTrackingPage: React.FC<OrderTrackingPageProps> = ({ onNavigate
                   Get ₹250 back when you return the box
                 </div>
               </div>
+            </div>
+          </div>
+
+          {/* Swiggy Style 4-Digit Handover PIN Card */}
+          <div className="p-4 sm:p-5 rounded-3xl bg-gradient-to-r from-amber-50 via-orange-50 to-amber-100/70 dark:from-slate-850 dark:to-slate-800 border-2 border-amber-300 dark:border-amber-700/80 shadow-md flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div className="flex items-center gap-3.5">
+              <div className="w-12 h-12 rounded-2xl bg-amber-500 dark:bg-amber-600 text-white flex items-center justify-center font-black text-xl shadow-md shrink-0">
+                🔒
+              </div>
+              <div>
+                <div className="flex items-center gap-2">
+                  <span className="text-xs font-black text-amber-950 dark:text-amber-200 uppercase tracking-wider">
+                    Cold Box Handover PIN
+                  </span>
+                  <span className="px-2 py-0.5 rounded-full bg-amber-200 dark:bg-amber-900/80 text-amber-950 dark:text-amber-200 text-[10px] font-black">
+                    Required on Arrival
+                  </span>
+                </div>
+                <p className="text-[11px] text-amber-900/90 dark:text-amber-300/90 mt-0.5">
+                  Share this 4-digit PIN with your delivery partner to verify your identity and safely receive your insulated cold box.
+                </p>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-2.5 self-start sm:self-auto bg-white dark:bg-slate-900 px-4 py-2.5 rounded-2xl border-2 border-amber-400 dark:border-amber-500 shadow-sm">
+              <span className="text-xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">PIN:</span>
+              <span className="text-2xl sm:text-3xl font-black font-mono tracking-widest text-[#d11243] dark:text-rose-400">
+                {orderPin}
+              </span>
             </div>
           </div>
 

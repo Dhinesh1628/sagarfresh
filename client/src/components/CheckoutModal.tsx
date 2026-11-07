@@ -89,17 +89,30 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
   const [scheduledDay, setScheduledDay] = useState<'Today' | 'Tomorrow'>('Today');
   const [selectedSlotTime, setSelectedSlotTime] = useState('05:30 PM - 08:00 PM (Evening)');
 
-  // Instructions & Payment Method
-  const [instructionTag, setInstructionTag] = useState<string>('Leave with security guard');
+  // Swiggy 1-Tap Delivery Notes State
+  const deliveryPills = [
+    { id: 'nobell', icon: '🔕', label: "Don't ring the bell" },
+    { id: 'door', icon: '🚪', label: 'Leave at door' },
+    { id: 'nocall', icon: '📞', label: 'Avoid calling' },
+    { id: 'guard', icon: '🛡️', label: 'Leave with security guard' }
+  ];
+  const [selectedInstructionPills, setSelectedInstructionPills] = useState<string[]>([
+    "🔕 Don't ring the bell"
+  ]);
   const [customNotes, setCustomNotes] = useState('');
   const [paymentMethod, setPaymentMethod] = useState<'razorpay' | 'cod'>('razorpay');
+
+  // Swiggy Delivery Partner Tip State
+  const [tipAmount, setTipAmount] = useState<number>(0);
+  const [customTipInput, setCustomTipInput] = useState<string>('');
 
   // GoMeat In-App Vault Wallet State & Calculations
   const [useWallet, setUseWallet] = useState<boolean>(true);
   const userWalletBalance = user?.walletBalance || 0;
   const isWalletEligible = userWalletBalance > 0;
-  const walletDeduction = (useWallet && isWalletEligible) ? Math.min(userWalletBalance, total) : 0;
-  const finalPayable = Math.max(0, total - walletDeduction);
+  const grossPayableWithTip = total + tipAmount;
+  const walletDeduction = (useWallet && isWalletEligible) ? Math.min(userWalletBalance, grossPayableWithTip) : 0;
+  const finalPayable = Math.max(0, grossPayableWithTip - walletDeduction);
   const isFullyWalletPaid = walletDeduction > 0 && finalPayable === 0;
 
   // Processing & Verification States
@@ -190,9 +203,10 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
       ? '⚡ Express Delivery in 90 Mins (Live EV Chilled Courier)'
       : `${scheduledDay}, ${selectedSlotTime}`;
 
+    const instructionsSummary = selectedInstructionPills.join(' • ');
     const finalNotes = customNotes.trim() 
-      ? `${instructionTag}. Notes: ${customNotes.trim()}`
-      : instructionTag;
+      ? (instructionsSummary ? `${instructionsSummary}. Notes: ${customNotes.trim()}` : customNotes.trim())
+      : (instructionsSummary || 'Leave at door');
 
     const addressDetails = {
       fullName: fullName.trim(),
@@ -223,6 +237,7 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
       couponCode: couponCode || null,
       couponDiscount: couponDiscount || 0,
       paymentMethod,
+      tipAmount,
       useWallet: useWallet && isWalletEligible
     };
 
@@ -720,27 +735,49 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
               </div>
             </div>
 
-            {/* Note for Delivery Partner */}
+            {/* Swiggy Style 1-Tap Delivery Notes (Icon Pills) */}
             <div className="space-y-1.5 pt-1">
-              <label className="block text-gray-600 dark:text-gray-300 text-[11px] font-bold">
-                Note for Delivery Partner
-              </label>
-              <div className="flex flex-wrap gap-1.5">
-                {deliveryInstructionOptions.map(opt => (
-                  <button
-                    key={opt}
-                    type="button"
-                    onClick={() => setInstructionTag(opt)}
-                    className={`px-2.5 py-1 rounded-lg text-[10px] font-semibold transition ${
-                      instructionTag === opt
-                        ? 'bg-gray-900 dark:bg-rose-600 text-white'
-                        : 'bg-gray-100 dark:bg-slate-800 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-slate-700'
-                    }`}
-                  >
-                    {opt}
-                  </button>
-                ))}
+              <div className="flex items-center justify-between">
+                <label className="block text-gray-700 dark:text-gray-300 text-[11px] font-bold">
+                  1-Tap Delivery Instructions
+                </label>
+                <span className="text-[10px] text-gray-400">Tap to select / deselect</span>
               </div>
+              <div className="grid grid-cols-2 gap-1.5">
+                {deliveryPills.map(opt => {
+                  const isSelected = selectedInstructionPills.includes(opt.label);
+                  return (
+                    <button
+                      key={opt.id}
+                      type="button"
+                      onClick={() => {
+                        setSelectedInstructionPills(prev => 
+                          prev.includes(opt.label)
+                            ? prev.filter(p => p !== opt.label)
+                            : [...prev, opt.label]
+                        );
+                      }}
+                      className={`px-3 py-2 rounded-xl text-left text-[11px] font-bold transition flex items-center gap-2 cursor-pointer border ${
+                        isSelected
+                          ? 'bg-rose-50 dark:bg-rose-950/70 border-[#d11243] text-[#d11243] dark:text-rose-400 shadow-2xs ring-1 ring-[#d11243]/30'
+                          : 'bg-gray-50 dark:bg-slate-800 text-gray-700 dark:text-gray-300 border-gray-200 dark:border-slate-700 hover:bg-gray-100 dark:hover:bg-slate-700'
+                      }`}
+                    >
+                      <span className="text-sm shrink-0">{opt.icon}</span>
+                      <span className="truncate">{opt.label}</span>
+                    </button>
+                  );
+                })}
+              </div>
+
+              {/* Optional custom note input */}
+              <input
+                type="text"
+                value={customNotes}
+                onChange={(e) => setCustomNotes(e.target.value)}
+                placeholder="Add other instructions (e.g. Landmark, gate number)"
+                className="w-full mt-1.5 px-3 py-1.5 bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl text-xs text-gray-900 dark:text-white focus:outline-none focus:border-[#d11243]"
+              />
             </div>
           </div>
 
@@ -867,6 +904,75 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
             </div>
           )}
 
+          {/* Swiggy Style Delivery Partner Tip */}
+          <div className="p-3.5 rounded-xl border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-800/60 space-y-2 shadow-2xs">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <span className="text-xl">🛵</span>
+                <div>
+                  <div className="flex items-center gap-2">
+                    <span className="font-extrabold text-xs text-gray-900 dark:text-white">
+                      Tip your delivery partner
+                    </span>
+                    {tipAmount > 0 && (
+                      <span className="px-1.5 py-0.2 rounded bg-rose-50 dark:bg-rose-950/60 text-[#d11243] dark:text-rose-400 font-black text-[10px]">
+                        ₹{tipAmount} added
+                      </span>
+                    )}
+                  </div>
+                  <p className="text-[10px] text-gray-500 dark:text-gray-400">
+                    "100% of your tip goes directly to your partner."
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-2 pt-0.5">
+              {[
+                { amount: 0, label: 'No Tip' },
+                { amount: 20, label: '₹20' },
+                { amount: 30, label: '₹30' },
+                { amount: 50, label: '₹50' }
+              ].map(t => (
+                <button
+                  key={t.amount}
+                  type="button"
+                  onClick={() => {
+                    setTipAmount(t.amount);
+                    setCustomTipInput('');
+                  }}
+                  className={`flex-1 py-1.5 px-2 rounded-xl text-xs font-black transition cursor-pointer border ${
+                    tipAmount === t.amount && !customTipInput
+                      ? 'bg-[#d11243] text-white border-[#d11243] shadow-xs ring-1 ring-[#d11243]/30'
+                      : 'bg-gray-50 dark:bg-slate-900 text-gray-700 dark:text-gray-300 border-gray-200 dark:border-slate-700 hover:bg-gray-100 dark:hover:bg-slate-800'
+                  }`}
+                >
+                  {t.label}
+                </button>
+              ))}
+
+              <div className="relative w-24">
+                <input
+                  type="number"
+                  min="0"
+                  max="500"
+                  placeholder="Custom"
+                  value={customTipInput}
+                  onChange={(e) => {
+                    const val = parseInt(e.target.value, 10);
+                    setCustomTipInput(e.target.value);
+                    setTipAmount(isNaN(val) || val < 0 ? 0 : val);
+                  }}
+                  className={`w-full py-1.5 px-2.5 rounded-xl text-xs font-bold bg-gray-50 dark:bg-slate-900 border text-center focus:outline-none focus:border-[#d11243] text-gray-900 dark:text-white ${
+                    customTipInput
+                      ? 'border-[#d11243] ring-1 ring-[#d11243]'
+                      : 'border-gray-200 dark:border-slate-700'
+                  }`}
+                />
+              </div>
+            </div>
+          </div>
+
           {/* Section 5: Order Summary */}
           <div className="p-3.5 bg-gray-50 dark:bg-slate-800/70 rounded-xl border border-gray-200 dark:border-slate-700 space-y-2">
             {/* Items Breakdown with Selected Weights */}
@@ -915,6 +1021,15 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
               <span>Delivery Fee:</span>
               <span>{shippingFee === 0 ? <strong className="text-emerald-700 dark:text-emerald-400">FREE</strong> : `₹${shippingFee}`}</span>
             </div>
+
+            {tipAmount > 0 && (
+              <div className="flex justify-between text-gray-700 dark:text-gray-200 font-bold">
+                <span className="flex items-center gap-1">
+                  <span>🛵 Delivery Partner Tip:</span>
+                </span>
+                <span>+₹{tipAmount}</span>
+              </div>
+            )}
 
             {walletDeduction > 0 && (
               <div className="flex justify-between text-emerald-700 dark:text-emerald-400 font-bold bg-emerald-100/70 dark:bg-emerald-900/40 p-2 rounded-lg border border-emerald-300 dark:border-emerald-700">

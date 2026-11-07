@@ -36,8 +36,39 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({ onCheckout }) => {
 
   if (!isCartOpen) return null;
 
-  const freeThreshold = 799;
+  const freeThreshold = 499;
   const diffToFree = Math.max(0, freeThreshold - subtotal);
+
+  const availableCoupons = [
+    {
+      code: 'MEAT100',
+      title: 'Flat ₹100 OFF',
+      desc: 'On orders above ₹499. Save ₹100 instantly.',
+      minOrder: 499,
+      badge: 'Bestseller'
+    },
+    {
+      code: 'FREEDEL',
+      title: 'FREE Delivery',
+      desc: 'Waives ₹40 courier delivery fee on your box.',
+      minOrder: 0,
+      badge: 'Zero Delivery Fee'
+    },
+    {
+      code: 'FIRST20',
+      title: '20% OFF (Up to ₹120)',
+      desc: 'Welcome special on your first fresh meat order.',
+      minOrder: 399,
+      badge: 'New User'
+    },
+    {
+      code: 'FRESH50',
+      title: 'Flat ₹50 OFF',
+      desc: 'On orders above ₹249 on chicken and fish cuts.',
+      minOrder: 249,
+      badge: 'Quick Saver'
+    }
+  ];
 
   const handleApplyCoupon = (codeToApply?: string) => {
     const code = (codeToApply || inputCoupon).trim();
@@ -92,25 +123,36 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({ onCheckout }) => {
             </button>
           </div>
 
-          {/* Delivery progress bar */}
-          <div className="px-4 py-2.5 bg-rose-50/70 dark:bg-slate-800/80 border-b border-rose-100 dark:border-slate-700/80 text-xs">
+          {/* Swiggy Instamart Real-Time Free Delivery Progress Bar */}
+          <div className="px-4 py-3 bg-gradient-to-r from-rose-50/90 via-amber-50/80 to-emerald-50/90 dark:from-slate-850 dark:to-slate-800 border-b border-rose-100/70 dark:border-slate-700/80 text-xs">
             {diffToFree > 0 ? (
-              <div className="space-y-1.5">
-                <p className="text-gray-700 dark:text-gray-300 text-[11px]">
-                  Add items worth <span className="font-extrabold text-[#d11243] dark:text-rose-400">₹{diffToFree}</span> to get <strong>FREE Delivery</strong>
-                </p>
-                <div className="w-full h-1.5 bg-gray-200 dark:bg-slate-700 rounded-full overflow-hidden">
+              <div className="space-y-2">
+                <div className="flex items-center justify-between text-[11px]">
+                  <span className="text-gray-800 dark:text-gray-200 font-bold flex items-center gap-1.5">
+                    <span>🚚</span>
+                    <span>Add items worth <strong className="text-[#d11243] dark:text-rose-400 font-black">₹{diffToFree}</strong> more to get <strong>FREE Delivery!</strong></span>
+                  </span>
+                  <span className="text-[10px] font-black text-gray-500 dark:text-gray-400">
+                    {Math.min(100, Math.round((subtotal / freeThreshold) * 100))}%
+                  </span>
+                </div>
+                <div className="w-full h-2 bg-gray-200/90 dark:bg-slate-700 rounded-full overflow-hidden p-0.5">
                   <div 
-                    className="h-full bg-[#d11243] dark:bg-rose-500 rounded-full transition-all duration-300"
+                    className="h-full bg-gradient-to-r from-[#d11243] via-amber-500 to-emerald-500 rounded-full transition-all duration-500 shadow-2xs"
                     style={{ width: `${Math.min(100, Math.round((subtotal / freeThreshold) * 100))}%` }}
                   />
                 </div>
               </div>
             ) : (
-              <p className="text-emerald-800 dark:text-emerald-400 font-bold flex items-center gap-1.5 text-xs">
-                <CheckCircle2 className="w-4 h-4 text-emerald-600 dark:text-emerald-400 shrink-0" />
-                <span>Free Delivery Unlocked!</span>
-              </p>
+              <div className="flex items-center justify-between">
+                <p className="text-emerald-800 dark:text-emerald-300 font-black flex items-center gap-1.5 text-xs">
+                  <CheckCircle2 className="w-4 h-4 text-emerald-600 dark:text-emerald-400 shrink-0" />
+                  <span>🎉 You unlocked FREE Delivery! (Saved ₹40)</span>
+                </p>
+                <span className="px-2 py-0.5 rounded-full bg-emerald-100 dark:bg-emerald-950/80 text-emerald-800 dark:text-emerald-300 text-[10px] font-extrabold border border-emerald-300 dark:border-emerald-700">
+                  FREE
+                </span>
+              </div>
             )}
           </div>
 
@@ -252,76 +294,100 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({ onCheckout }) => {
                 )}
               </div>
 
-              {/* Promo Coupon Section */}
+              {/* Swiggy Style 1-Click Coupon Cards (No typing codes) */}
               <div className="space-y-2">
-                {couponCode ? (
-                  <div className="p-2.5 bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800 rounded-xl flex items-center justify-between text-xs">
-                    <div className="flex items-center gap-2">
-                      <Tag className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
-                      <div>
-                        <span className="font-extrabold text-emerald-950 dark:text-emerald-200">{couponCode} applied</span>
-                        <span className="text-[11px] text-emerald-700 dark:text-emerald-400 ml-1.5 font-semibold">
-                          (Saved ₹{couponDiscount})
-                        </span>
-                      </div>
-                    </div>
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-1.5 font-extrabold text-xs text-gray-900 dark:text-white">
+                    <Tag className="w-3.5 h-3.5 text-[#d11243]" />
+                    <span>Offers & Coupons</span>
+                  </div>
+                  {couponCode && (
                     <button
                       type="button"
                       onClick={handleRemoveCoupon}
                       className="text-[11px] font-bold text-red-600 dark:text-red-400 hover:underline cursor-pointer"
                     >
-                      Remove
+                      Remove ({couponCode})
+                    </button>
+                  )}
+                </div>
+
+                {/* 1-Click Coupon Cards List */}
+                <div className="space-y-2 max-h-48 overflow-y-auto pr-0.5">
+                  {availableCoupons.map((c) => {
+                    const isApplied = couponCode === c.code;
+                    return (
+                      <div
+                        key={c.code}
+                        className={`p-2.5 rounded-xl border transition flex items-center justify-between gap-2.5 ${
+                          isApplied
+                            ? 'bg-emerald-50/80 dark:bg-emerald-950/40 border-emerald-300 dark:border-emerald-700/80 shadow-2xs'
+                            : 'bg-gray-50/80 dark:bg-slate-800/80 border-gray-200 dark:border-slate-700 hover:border-gray-300 dark:hover:border-slate-600'
+                        }`}
+                      >
+                        <div className="min-w-0 flex-1">
+                          <div className="flex items-center gap-1.5">
+                            <span className="font-black text-xs text-gray-950 dark:text-white font-mono tracking-wide">
+                              {c.code}
+                            </span>
+                            <span className="px-1.5 py-0.2 rounded bg-rose-50 dark:bg-rose-950/60 text-[#d11243] dark:text-rose-400 font-extrabold text-[9px]">
+                              {c.title}
+                            </span>
+                          </div>
+                          <p className="text-[10px] text-gray-500 dark:text-gray-400 mt-0.5 truncate">
+                            {c.desc}
+                          </p>
+                        </div>
+
+                        {isApplied ? (
+                          <div className="flex items-center gap-1 text-[11px] font-black text-emerald-700 dark:text-emerald-400 shrink-0">
+                            <CheckCircle2 className="w-3.5 h-3.5" />
+                            <span>Applied</span>
+                          </div>
+                        ) : (
+                          <button
+                            type="button"
+                            onClick={() => handleApplyCoupon(c.code)}
+                            className="px-3 py-1 rounded-lg text-xs font-black uppercase cursor-pointer transition shrink-0 bg-white dark:bg-slate-900 border border-[#d11243] text-[#d11243] hover:bg-[#d11243] hover:text-white shadow-2xs active:scale-95"
+                          >
+                            Apply
+                          </button>
+                        )}
+                      </div>
+                    );
+                  })}
+                </div>
+
+                {/* Manual Code Input Option */}
+                <div className="pt-1">
+                  <div className="flex gap-2">
+                    <div className="relative flex-1">
+                      <Tag className="w-3.5 h-3.5 text-gray-400 absolute left-2.5 top-2.5" />
+                      <input
+                        type="text"
+                        value={inputCoupon}
+                        onChange={(e) => setInputCoupon(e.target.value)}
+                        placeholder="Or enter coupon code"
+                        className="w-full pl-8 pr-3 py-1.5 text-xs bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-lg focus:outline-none focus:border-[#d11243] uppercase font-bold text-gray-900 dark:text-white"
+                      />
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => handleApplyCoupon()}
+                      className="px-3.5 py-1.5 bg-gray-900 dark:bg-rose-600 hover:bg-black dark:hover:bg-rose-700 text-white text-xs font-bold rounded-lg cursor-pointer transition shrink-0"
+                    >
+                      Apply
                     </button>
                   </div>
-                ) : (
-                  <div>
-                    <div className="flex gap-2">
-                      <div className="relative flex-1">
-                        <Tag className="w-3.5 h-3.5 text-gray-400 absolute left-2.5 top-2.5" />
-                        <input
-                          type="text"
-                          value={inputCoupon}
-                          onChange={(e) => setInputCoupon(e.target.value)}
-                          placeholder="Apply Coupon Code"
-                          className="w-full pl-8 pr-3 py-2 text-xs bg-gray-50 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-lg focus:outline-none focus:border-[#d11243] uppercase font-bold text-gray-900 dark:text-white"
-                        />
-                      </div>
-                      <button
-                        type="button"
-                        onClick={() => handleApplyCoupon()}
-                        className="px-3.5 py-2 bg-gray-900 dark:bg-rose-600 hover:bg-black dark:hover:bg-rose-700 text-white text-xs font-bold rounded-lg cursor-pointer transition"
-                      >
-                        Apply
-                      </button>
-                    </div>
 
-                    {/* Quick coupon chips */}
-                    <div className="flex gap-1.5 mt-1.5 overflow-x-auto pb-1">
-                      <button
-                        type="button"
-                        onClick={() => handleApplyCoupon('FRESH50')}
-                        className="px-2 py-0.5 rounded border border-gray-200 dark:border-slate-700 bg-gray-50 dark:bg-slate-800 text-[10px] font-bold text-gray-700 dark:text-gray-300 hover:border-gray-400 dark:hover:border-slate-500 shrink-0 cursor-pointer"
-                      >
-                        FRESH50 (₹50 OFF)
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => handleApplyCoupon('FIRSTORDER')}
-                        className="px-2 py-0.5 rounded border border-gray-200 dark:border-slate-700 bg-gray-50 dark:bg-slate-800 text-[10px] font-bold text-gray-700 dark:text-gray-300 hover:border-gray-400 dark:hover:border-slate-500 shrink-0 cursor-pointer"
-                      >
-                        FIRSTORDER (₹100 OFF)
-                      </button>
-                    </div>
-
-                    {couponFeedback && (
-                      <p className={`text-[11px] mt-1 font-semibold ${
-                        couponFeedback.type === 'success' ? 'text-emerald-700 dark:text-emerald-400' : 'text-red-600 dark:text-red-400'
-                      }`}>
-                        {couponFeedback.text}
-                      </p>
-                    )}
-                  </div>
-                )}
+                  {couponFeedback && (
+                    <p className={`text-[11px] mt-1 font-semibold ${
+                      couponFeedback.type === 'success' ? 'text-emerald-700 dark:text-emerald-400' : 'text-red-600 dark:text-red-400'
+                    }`}>
+                      {couponFeedback.text}
+                    </p>
+                  )}
+                </div>
               </div>
 
               {/* Breakdown */}
