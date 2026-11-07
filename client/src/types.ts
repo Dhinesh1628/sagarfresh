@@ -32,6 +32,20 @@ export interface User {
   createdAt?: string;
 }
 
+export interface WeightOption {
+  weight: string; // '500g' | '800g' | '1kg'
+  label: string;
+  price: number; // GoMeat discounted price (less than market)
+  mrp: number;   // Local market price
+  discountPercent: number;
+  savings: number;
+  netWeight: string;
+  grossWeight: string;
+  pieces?: string;
+  serves?: string;
+  badge?: string;
+}
+
 export interface Product {
   id: string;
   name: string;
@@ -54,12 +68,18 @@ export interface Product {
   imageUrl?: string;
   vacuumSealed?: boolean;
   featured?: boolean;
+  weightOptions?: WeightOption[];
+  priceUpdatedAt?: string;
 }
 
 export interface CartItem {
+  id?: string;
   product: Product;
   quantity: number;
   selectedCutStyle?: string;
+  selectedWeight?: string;
+  unitPrice?: number;
+  unitMrp?: number;
 }
 
 export interface TempLogEntry {

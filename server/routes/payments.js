@@ -72,15 +72,28 @@ router.post('/create-order', async (req, res) => {
         return res.status(400).json({ error: `Insufficient stock for ${prod.name}. Available: ${prod.stock}` });
       }
 
-      const lineTotal = prod.price * item.quantity;
+      // Calculate unit price based on selected pack size (500g, 800g, 1kg or eggs)
+      let unitPrice = prod.price;
+      const weight = item.selectedWeight || prod.netWeight || '500g';
+      const isEgg = (prod.unit || '').toLowerCase().includes('egg') || (prod.category || '').toLowerCase() === 'eggs';
+
+      if (isEgg) {
+        if (weight.includes('12')) unitPrice = Math.round(prod.price * 1.9);
+        else if (weight.includes('30')) unitPrice = Math.round(prod.price * 4.4);
+      } else {
+        if (weight.includes('800')) unitPrice = Math.round(prod.price * 1.52);
+        else if (weight.includes('1kg') || weight.includes('1000')) unitPrice = Math.round(prod.price * 1.85);
+      }
+
+      const lineTotal = unitPrice * item.quantity;
       subtotal += lineTotal;
       processedItems.push({
         productId: prod.id,
         name: prod.name,
-        price: prod.price, // verified from server DB
+        price: unitPrice, // verified from server DB with pack size multiplier
         quantity: item.quantity,
-        unit: prod.unit,
-        netWeight: prod.netWeight,
+        unit: weight,
+        netWeight: weight,
         cutStyle: item.selectedCutStyle || prod.cutStyle,
         image: prod.image || prod.imageUrl || `/images/products/${prod.id}.jpg`
       });

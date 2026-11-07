@@ -3,9 +3,16 @@ import type { Product, CartItem } from '../types';
 
 interface CartContextType {
   items: CartItem[];
-  addItem: (product: Product, quantity?: number, selectedCutStyle?: string) => void;
-  removeItem: (productId: string) => void;
-  updateQuantity: (productId: string, quantity: number) => void;
+  addItem: (
+    product: Product, 
+    quantity?: number, 
+    selectedCutStyle?: string,
+    selectedWeight?: string,
+    unitPrice?: number,
+    unitMrp?: number
+  ) => void;
+  removeItem: (itemIdOrProductId: string) => void;
+  updateQuantity: (itemIdOrProductId: string, quantity: number) => void;
   clearCart: () => void;
   isCartOpen: boolean;
   setIsCartOpen: (open: boolean) => void;
@@ -72,33 +79,60 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
     setCouponDiscount(0);
   };
 
-  const addItem = (product: Product, quantity = 1, selectedCutStyle?: string) => {
+  const addItem = (
+    product: Product, 
+    quantity = 1, 
+    selectedCutStyle?: string,
+    selectedWeight?: string,
+    unitPrice?: number,
+    unitMrp?: number
+  ) => {
+    const weight = selectedWeight || product.netWeight || product.unit || '500g';
+    const cut = selectedCutStyle || product.cutStyle || 'Default';
+    const finalPrice = typeof unitPrice === 'number' && unitPrice > 0 ? unitPrice : product.price;
+    const finalMrp = typeof unitMrp === 'number' && unitMrp > 0 ? unitMrp : (product.mrp || Math.round(finalPrice * 1.25));
+    const itemId = `${product.id}_${weight}_${cut}`.replace(/\s+/g, '_');
+
     setItems(prev => {
-      const existing = prev.find(item => item.product.id === product.id);
+      const existing = prev.find(item => 
+        (item.id && item.id === itemId) || 
+        (!item.id && item.product.id === product.id && (item.selectedWeight || '500g') === weight)
+      );
       if (existing) {
         return prev.map(item =>
-          item.product.id === product.id
-            ? { ...item, quantity: item.quantity + quantity, selectedCutStyle: selectedCutStyle || item.selectedCutStyle }
+          ((item.id && item.id === itemId) || (!item.id && item.product.id === product.id && (item.selectedWeight || '500g') === weight))
+            ? { ...item, quantity: item.quantity + quantity, unitPrice: finalPrice, unitMrp: finalMrp, selectedWeight: weight, selectedCutStyle: cut }
             : item
         );
       }
-      return [...prev, { product, quantity, selectedCutStyle: selectedCutStyle || product.cutStyle }];
+      return [
+        ...prev, 
+        { 
+          id: itemId,
+          product, 
+          quantity, 
+          selectedCutStyle: cut,
+          selectedWeight: weight,
+          unitPrice: finalPrice,
+          unitMrp: finalMrp
+        }
+      ];
     });
     setIsCartOpen(true);
   };
 
-  const removeItem = (productId: string) => {
-    setItems(prev => prev.filter(item => item.product.id !== productId));
+  const removeItem = (itemIdOrProductId: string) => {
+    setItems(prev => prev.filter(item => item.id !== itemIdOrProductId && item.product.id !== itemIdOrProductId));
   };
 
-  const updateQuantity = (productId: string, quantity: number) => {
+  const updateQuantity = (itemIdOrProductId: string, quantity: number) => {
     if (quantity <= 0) {
-      removeItem(productId);
+      removeItem(itemIdOrProductId);
       return;
     }
     setItems(prev =>
       prev.map(item =>
-        item.product.id === productId ? { ...item, quantity } : item
+        (item.id === itemIdOrProductId || item.product.id === itemIdOrProductId) ? { ...item, quantity } : item
       )
     );
   };
@@ -109,7 +143,10 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
     setCouponDiscount(0);
   };
 
-  const subtotal = items.reduce((sum, item) => sum + item.product.price * item.quantity, 0);
+  const subtotal = items.reduce((sum, item) => {
+    const price = typeof item.unitPrice === 'number' && item.unitPrice > 0 ? item.unitPrice : item.product.price;
+    return sum + price * item.quantity;
+  }, 0);
   
   // Refundable cooler box deposit: ₹250 flat per order
   const coolerDeposit = items.length > 0 ? 250 : 0;

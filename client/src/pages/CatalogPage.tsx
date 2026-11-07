@@ -1,11 +1,12 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Eye, Plus, Minus, Zap, ShieldCheck, Heart, ArrowUpDown, Filter, CheckCircle2, Star } from 'lucide-react';
+import { Eye, Plus, Minus, Zap, ShieldCheck, Heart, ArrowUpDown, Filter, CheckCircle2, Star, TrendingDown } from 'lucide-react';
 import type { Product } from '../types';
 import { api } from '../api';
 import { useCart } from '../context/CartContext';
 import { ProductDetailModal } from '../components/ProductDetailModal';
 import { HeroSection } from '../components/HeroSection';
 import { CategorySection } from '../components/CategorySection';
+import { getProductWeightOptions } from '../utils/weightUtils';
 
 interface CatalogPageProps {
   onNavigateToReturns: () => void;
@@ -22,6 +23,8 @@ export const CatalogPage: React.FC<CatalogPageProps> = ({
   const [loading, setLoading] = useState(true);
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [inspectingProduct, setInspectingProduct] = useState<Product | null>(null);
+  const [inspectingWeight, setInspectingWeight] = useState<string>('500g');
+  const [selectedWeights, setSelectedWeights] = useState<Record<string, string>>({});
   const [sortBy, setSortBy] = useState<'featured' | 'price-asc' | 'price-desc' | 'discount'>('featured');
   const [priceBudget, setPriceBudget] = useState<'all' | 'under300' | 'under500' | 'above500'>('all');
   const [wishlist, setWishlist] = useState<string[]>([]);
@@ -60,8 +63,9 @@ export const CatalogPage: React.FC<CatalogPageProps> = ({
     setTimeout(() => setToastMessage(null), 3000);
   };
 
-  const handleOpenProductDetail = (product: Product) => {
+  const handleOpenProductDetail = (product: Product, weight?: string) => {
     window.history.pushState({ modal: 'product-detail' }, '');
+    setInspectingWeight(weight || selectedWeights[product.id] || '500g');
     setInspectingProduct(product);
   };
 
@@ -239,14 +243,22 @@ export const CatalogPage: React.FC<CatalogPageProps> = ({
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
           {sortedProducts.map((product) => {
-            const qty = getItemQuantity(product.id);
-            const discountPct = product.mrp ? Math.round(((product.mrp - product.price) / product.mrp) * 100) : 0;
+            const weightOptions = getProductWeightOptions(product);
+            const currentWeight = selectedWeights[product.id] || weightOptions[0]?.weight || '500g';
+            const currentOption = weightOptions.find(o => o.weight === currentWeight) || weightOptions[0];
+
+            // Match specific product + weight in cart
+            const cartItem = items.find(i => 
+              (i.product.id === product.id && (i.selectedWeight || '500g') === currentOption.weight) ||
+              (!i.selectedWeight && i.product.id === product.id && currentOption.weight === '500g')
+            );
+            const qty = cartItem ? cartItem.quantity : 0;
             const isWishlisted = wishlist.includes(product.id);
 
             return (
               <div
                 key={product.id}
-                onClick={() => handleOpenProductDetail(product)}
+                onClick={() => handleOpenProductDetail(product, currentOption.weight)}
                 className="group bg-white dark:bg-slate-900/90 rounded-2xl border border-gray-200 dark:border-slate-800/80 hover:border-[#d11243]/50 dark:hover:border-rose-500/50 shadow-2xs hover:shadow-lg dark:hover:shadow-[0_8px_30px_rgba(225,29,67,0.2)] transition-all duration-300 flex flex-col justify-between overflow-hidden cursor-pointer card-light-hover"
               >
                 {/* Image & Badges */}
@@ -276,12 +288,11 @@ export const CatalogPage: React.FC<CatalogPageProps> = ({
                     <Heart className={`w-3.5 h-3.5 ${isWishlisted ? 'fill-[#d11243] text-[#d11243]' : ''}`} />
                   </button>
 
-                  {/* Net weight tag */}
-                  {product.netWeight && (
-                    <div className="absolute bottom-2 left-2 bg-black/80 backdrop-blur-xs px-2 py-0.5 rounded text-[10px] text-white font-medium">
-                      Net wt: {product.netWeight} {product.grossWeight ? `| Gross: ${product.grossWeight}` : ''}
-                    </div>
-                  )}
+                  {/* Net weight tag based on current selected option */}
+                  <div className="absolute bottom-2 left-2 bg-black/80 backdrop-blur-xs px-2 py-0.5 rounded text-[10px] text-white font-medium flex items-center gap-1">
+                    <span>Net wt: {currentOption.netWeight}</span>
+                    <span className="text-gray-400">• Gross: {currentOption.grossWeight}</span>
+                  </div>
 
                   {/* Click to view detail on hover */}
                   <div className="absolute inset-0 bg-black/35 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
@@ -309,35 +320,71 @@ export const CatalogPage: React.FC<CatalogPageProps> = ({
                       {product.description}
                     </p>
 
-                    {/* Pieces & Serves */}
+                    {/* Pieces & Serves dynamic for selected weight */}
                     <div className="mt-2.5 flex items-center gap-2 text-[10px] text-gray-600 dark:text-gray-400 bg-gray-50 dark:bg-slate-800/80 px-2 py-1 rounded-lg">
-                      <span>{product.pieces || '4-6 Pieces'}</span>
+                      <span>{currentOption.pieces || product.pieces || '4-6 Pieces'}</span>
                       <span>•</span>
-                      <span>{product.serves || 'Serves 2-3'}</span>
+                      <span>{currentOption.serves || product.serves || 'Serves 2-3'}</span>
+                    </div>
+
+                    {/* Quantity / Weight Selector Buttons */}
+                    <div className="mt-3 pt-2.5 border-t border-gray-100 dark:border-slate-800" onClick={(e) => e.stopPropagation()}>
+                      <div className="flex items-center justify-between text-[10px] font-bold text-gray-500 dark:text-gray-400 mb-1.5">
+                        <span className="uppercase tracking-wider">Choose Pack Size:</span>
+                        <span className="text-emerald-600 dark:text-emerald-400 font-extrabold flex items-center gap-1">
+                          <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                          Daily Rate
+                        </span>
+                      </div>
+                      <div className="grid grid-cols-3 gap-1.5">
+                        {weightOptions.map((opt) => {
+                          const isSelected = opt.weight === currentOption.weight;
+                          return (
+                            <button
+                              key={opt.weight}
+                              type="button"
+                              onClick={() => setSelectedWeights(prev => ({ ...prev, [product.id]: opt.weight }))}
+                              className={`py-1.5 px-1 rounded-xl text-center font-extrabold text-[11px] transition cursor-pointer border ${
+                                isSelected
+                                  ? 'bg-rose-50 dark:bg-rose-950/70 border-[#d11243] dark:border-rose-500 text-[#d11243] dark:text-rose-400 shadow-2xs ring-1 ring-[#d11243]'
+                                  : 'bg-gray-50 dark:bg-slate-800/80 border-gray-200 dark:border-slate-700 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-slate-700'
+                              }`}
+                            >
+                              <div className="truncate">{opt.weight}</div>
+                              {opt.badge && (
+                                <div className="text-[8px] font-black uppercase text-amber-600 dark:text-amber-400 truncate mt-0.5">
+                                  {opt.badge.replace('🔥', '')}
+                                </div>
+                              )}
+                            </button>
+                          );
+                        })}
+                      </div>
                     </div>
                   </div>
 
-                  {/* Price & Add to Cart */}
+                  {/* Price, Market Comparison & Add to Cart */}
                   <div className="pt-2 border-t border-gray-100 dark:border-slate-800 flex items-center justify-between gap-2">
                     <div>
                       <div className="flex items-baseline gap-1.5">
-                        <span className="font-extrabold text-base text-gray-950 dark:text-white">₹{product.price}</span>
-                        {product.mrp && (
-                          <span className="text-[11px] text-gray-400 line-through">₹{product.mrp}</span>
-                        )}
+                        <span className="font-extrabold text-base text-gray-950 dark:text-white">₹{currentOption.price}</span>
+                        <span className="text-[11px] text-gray-400 line-through">₹{currentOption.mrp}</span>
                       </div>
-                      {discountPct > 0 && (
-                        <span className="text-[10px] font-bold text-emerald-700 dark:text-emerald-400">
-                          {discountPct}% OFF
+                      <div className="flex items-center gap-1 mt-0.5">
+                        <span className="text-[10px] font-black text-emerald-700 dark:text-emerald-400">
+                          {currentOption.discountPercent}% OFF
                         </span>
-                      )}
+                        <span className="text-[10px] text-gray-400 dark:text-gray-500 font-medium">
+                          • Save ₹{currentOption.savings}
+                        </span>
+                      </div>
                     </div>
 
                     <div className="flex items-center gap-1.5" onClick={(e) => e.stopPropagation()}>
                       <button
                         onClick={(e) => {
                           e.stopPropagation();
-                          handleOpenProductDetail(product);
+                          handleOpenProductDetail(product, currentOption.weight);
                         }}
                         className="p-2 rounded-lg bg-gray-100 dark:bg-slate-800 hover:bg-gray-200 dark:hover:bg-slate-700 text-gray-600 dark:text-gray-300 cursor-pointer transition"
                         title="View details"
@@ -349,8 +396,8 @@ export const CatalogPage: React.FC<CatalogPageProps> = ({
                         <button
                           onClick={(e) => {
                             e.stopPropagation();
-                            addItem(product, 1);
-                            showToast(`Added ${product.name} to Your Cart`);
+                            addItem(product, 1, undefined, currentOption.weight, currentOption.price, currentOption.mrp);
+                            showToast(`Added ${product.name} (${currentOption.weight}) to Your Cart`);
                           }}
                           className="px-3.5 py-1.5 rounded-lg bg-[#d11243] hover:bg-[#b80f3b] text-white font-bold text-xs uppercase cursor-pointer shadow-2xs transition"
                         >
@@ -361,7 +408,7 @@ export const CatalogPage: React.FC<CatalogPageProps> = ({
                           <button
                             onClick={(e) => {
                               e.stopPropagation();
-                              updateQuantity(product.id, qty - 1);
+                              updateQuantity(cartItem?.id || product.id, qty - 1);
                             }}
                             className="p-1 text-[#d11243] hover:bg-rose-50 dark:hover:bg-rose-950/60 rounded-l cursor-pointer"
                           >
@@ -371,7 +418,7 @@ export const CatalogPage: React.FC<CatalogPageProps> = ({
                           <button
                             onClick={(e) => {
                               e.stopPropagation();
-                              updateQuantity(product.id, qty + 1);
+                              updateQuantity(cartItem?.id || product.id, qty + 1);
                             }}
                             className="p-1 text-[#d11243] hover:bg-rose-50 dark:hover:bg-rose-950/60 rounded-r cursor-pointer"
                           >
@@ -420,6 +467,7 @@ export const CatalogPage: React.FC<CatalogPageProps> = ({
 
       <ProductDetailModal
         product={inspectingProduct}
+        initialWeight={inspectingWeight}
         onClose={() => setInspectingProduct(null)}
       />
 

@@ -211,7 +211,9 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
       items: items.map(item => ({
         productId: item.product.id,
         quantity: item.quantity,
-        selectedCutStyle: item.selectedCutStyle
+        selectedCutStyle: item.selectedCutStyle,
+        selectedWeight: item.selectedWeight || '500g',
+        unitPrice: item.unitPrice || item.product.price
       })),
       deliveryAddress: fullAddress,
       addressDetails,
@@ -867,6 +869,26 @@ export const CheckoutModal: React.FC<CheckoutModalProps> = ({
 
           {/* Section 5: Order Summary */}
           <div className="p-3.5 bg-gray-50 dark:bg-slate-800/70 rounded-xl border border-gray-200 dark:border-slate-700 space-y-2">
+            {/* Items Breakdown with Selected Weights */}
+            <div className="space-y-1.5 pb-2 border-b border-gray-200 dark:border-slate-700">
+              {items.map(item => {
+                const itemPrice = typeof item.unitPrice === 'number' && item.unitPrice > 0 ? item.unitPrice : item.product.price;
+                const packWeight = item.selectedWeight || item.product.netWeight || item.product.unit || '500g';
+                return (
+                  <div key={item.id || `${item.product.id}_${packWeight}`} className="flex items-center justify-between text-[11px]">
+                    <div className="flex items-center gap-1.5 truncate max-w-[70%]">
+                      <span className="font-bold text-gray-900 dark:text-white truncate">{item.product.name}</span>
+                      <span className="px-1.5 py-0.2 rounded bg-rose-50 dark:bg-rose-950/60 text-[#d11243] dark:text-rose-400 font-extrabold text-[9px] shrink-0">
+                        {packWeight}
+                      </span>
+                      <span className="text-gray-400 shrink-0">×{item.quantity}</span>
+                    </div>
+                    <span className="font-bold text-gray-900 dark:text-white">₹{itemPrice * item.quantity}</span>
+                  </div>
+                );
+              })}
+            </div>
+
             <div className="flex justify-between text-gray-600 dark:text-gray-300">
               <span>Item Total ({items.length} items):</span>
               <span className="font-bold text-gray-900 dark:text-white">₹{subtotal}</span>

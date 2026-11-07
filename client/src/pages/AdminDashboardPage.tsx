@@ -1049,9 +1049,11 @@ export const AdminDashboardPage: React.FC = () => {
                 <div className="pt-2 border-t border-gray-100 dark:border-slate-800 flex justify-between items-center">
                   <div>
                     <span className="font-black text-gray-950 dark:text-white text-sm">₹{p.price}</span>
+                    <span className="text-[9px] text-emerald-600 dark:text-emerald-400 font-extrabold ml-1">Daily Harbor Rate</span>
                     {p.mrp && p.mrp > p.price && (
                       <span className="text-[10px] text-gray-400 line-through ml-1.5">₹{p.mrp}</span>
                     )}
+                    <span className="text-[9px] text-emerald-700 dark:text-emerald-400 font-extrabold block">800g: ₹{Math.round(p.price * 1.52)} • 1kg: ₹{Math.round(p.price * 1.85)}</span>
                     <span className="text-[10px] text-gray-400 block">{p.unit} • Stock: <strong>{p.stock}</strong></span>
                   </div>
 

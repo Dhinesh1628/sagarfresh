@@ -3,20 +3,38 @@ import { X, Plus, Minus, Zap, ShieldCheck, Star, Award, CheckCircle2, ChevronRig
 import type { Product } from '../types';
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
+import { getProductWeightOptions } from '../utils/weightUtils';
 
 interface ProductDetailModalProps {
   product: Product | null;
+  initialWeight?: string;
   onClose: () => void;
 }
 
 export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
   product,
+  initialWeight,
   onClose
 }) => {
   const { items, addItem, updateQuantity } = useCart();
   const { user } = useAuth();
   
   if (!product) return null;
+
+  const weightOptions = getProductWeightOptions(product);
+  const [selectedWeight, setSelectedWeight] = useState<string>(
+    initialWeight || weightOptions[0]?.weight || '500g'
+  );
+
+  useEffect(() => {
+    if (initialWeight) {
+      setSelectedWeight(initialWeight);
+    } else if (weightOptions.length > 0) {
+      setSelectedWeight(weightOptions[0].weight);
+    }
+  }, [initialWeight, product?.id]);
+
+  const activeWeightOption = weightOptions.find(o => o.weight === selectedWeight) || weightOptions[0];
 
   const cutOptions = [
     {
@@ -189,7 +207,14 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
   ];
 
   const handleAddToCart = () => {
-    addItem(product, quantity, selectedStyle);
+    addItem(
+      product, 
+      quantity, 
+      selectedStyle, 
+      activeWeightOption.weight, 
+      activeWeightOption.price, 
+      activeWeightOption.mrp
+    );
     onClose();
   };
 
@@ -321,15 +346,20 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
                   {product.description}
                 </p>
 
-                <div className="mt-3 flex items-baseline gap-3">
-                  <span className="text-2xl font-black text-gray-950 dark:text-white">₹{product.price}</span>
-                  {product.mrp && (
-                    <span className="text-sm text-gray-400 line-through">₹{product.mrp}</span>
-                  )}
-                  <span className="text-xs font-semibold text-gray-500 dark:text-gray-400">/ {product.unit}</span>
-                  <span className="px-2 py-0.5 rounded bg-rose-50 dark:bg-rose-950/60 text-[#d11243] dark:text-rose-400 text-xs font-bold">
-                    Taxes Included
+                <div className="mt-3 flex flex-wrap items-baseline gap-2.5 sm:gap-3">
+                  <span className="text-2xl sm:text-3xl font-black text-gray-950 dark:text-white">₹{activeWeightOption.price}</span>
+                  <span className="text-sm text-gray-400 line-through">₹{activeWeightOption.mrp}</span>
+                  <span className="text-xs font-semibold text-gray-500 dark:text-gray-400">/ {activeWeightOption.weight}</span>
+                  <span className="px-2 py-0.5 rounded-full bg-emerald-50 dark:bg-emerald-950/70 text-emerald-700 dark:text-emerald-300 text-xs font-black border border-emerald-200 dark:border-emerald-800">
+                    Save ₹{activeWeightOption.savings} ({activeWeightOption.discountPercent}% OFF)
                   </span>
+                </div>
+
+                {/* Daily Market Rate Notice Banner */}
+                <div className="mt-2.5 flex items-center gap-2 p-2 rounded-xl bg-gray-50 dark:bg-slate-800/80 border border-gray-200 dark:border-slate-700 text-[11px] text-gray-600 dark:text-gray-300">
+                  <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse shrink-0"></span>
+                  <span className="font-bold text-gray-900 dark:text-white">Daily Harbor & Farm Rate:</span>
+                  <span>Direct sourcing ensures today's price is lower than your local butcher shop.</span>
                 </div>
               </div>
 
@@ -337,8 +367,8 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
               <div className="grid grid-cols-3 gap-2.5 bg-gray-50 dark:bg-slate-800/80 p-3 rounded-xl border border-gray-100 dark:border-slate-700 text-center">
                 <div className="p-1">
                   <span className="block text-[10px] text-gray-500 dark:text-gray-400 uppercase tracking-wider font-bold">Portion</span>
-                  <span className="text-xs font-extrabold text-gray-900 dark:text-white mt-0.5 block">{product.pieces || '4-6 Pieces'}</span>
-                  <span className="text-[10px] text-gray-500 dark:text-gray-400">{product.serves || 'Serves 2-3'}</span>
+                  <span className="text-xs font-extrabold text-gray-900 dark:text-white mt-0.5 block">{activeWeightOption.pieces || product.pieces || '4-6 Pieces'}</span>
+                  <span className="text-[10px] text-gray-500 dark:text-gray-400">{activeWeightOption.serves || product.serves || 'Serves 2-3'}</span>
                 </div>
                 <div className="p-1 border-x border-gray-200 dark:border-slate-700">
                   <span className="block text-[10px] text-gray-500 dark:text-gray-400 uppercase tracking-wider font-bold">Quality</span>
@@ -369,9 +399,9 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
                   </button>
                 </div>
                 <div className="mt-1 text-xs text-amber-900 dark:text-amber-200 flex items-center gap-3">
-                  <span>Gross Weight: <strong>{product.grossWeight || '550g'}</strong></span>
+                  <span>Gross Weight: <strong>{activeWeightOption.grossWeight}</strong></span>
                   <span className="text-amber-400">➔</span>
-                  <span>Net Meat Weight: <strong>{product.netWeight || '450g'}</strong></span>
+                  <span>Net Meat Weight: <strong>{activeWeightOption.netWeight}</strong></span>
                 </div>
                 {showWeightExplanation && (
                   <p className="mt-2 text-[11px] text-amber-800 dark:text-amber-300/90 leading-relaxed border-t border-amber-200 dark:border-amber-800/60 pt-2">
@@ -380,11 +410,64 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
                 )}
               </div>
 
-              {/* Interactive Cut Selector */}
+              {/* Step 1: Pack Size Selector */}
+              <div className="space-y-2.5">
+                <div className="flex items-center justify-between">
+                  <label className="text-xs font-extrabold text-gray-900 dark:text-white tracking-wide uppercase flex items-center gap-1.5">
+                    <span>1. Choose Pack Size:</span>
+                  </label>
+                  <span className="text-[11px] font-bold text-emerald-700 dark:text-emerald-400">
+                    Below Local Market Price
+                  </span>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
+                  {weightOptions.map((opt) => {
+                    const isSelected = selectedWeight === opt.weight;
+                    return (
+                      <div
+                        key={opt.weight}
+                        onClick={() => setSelectedWeight(opt.weight)}
+                        className={`p-3 rounded-xl border text-left cursor-pointer transition relative ${
+                          isSelected
+                            ? 'bg-rose-50/70 dark:bg-rose-950/60 border-[#d11243] dark:border-rose-500 ring-1 ring-[#d11243] dark:ring-rose-500'
+                            : 'bg-white dark:bg-slate-800/80 border-gray-200 dark:border-slate-700 hover:border-gray-300 dark:hover:border-slate-600'
+                        }`}
+                      >
+                        <div className="flex items-center justify-between">
+                          <span className="font-black text-sm text-gray-950 dark:text-white">{opt.weight}</span>
+                          {opt.badge && (
+                            <span className={`text-[9px] font-extrabold px-1.5 py-0.5 rounded ${
+                              isSelected ? 'bg-[#d11243] text-white' : 'bg-amber-100 dark:bg-amber-950/80 text-amber-800 dark:text-amber-300'
+                            }`}>
+                              {opt.badge}
+                            </span>
+                          )}
+                        </div>
+
+                        <div className="mt-1 flex items-baseline gap-1.5">
+                          <span className="font-extrabold text-sm text-gray-900 dark:text-white">₹{opt.price}</span>
+                          <span className="text-[10px] text-gray-400 line-through">₹{opt.mrp}</span>
+                        </div>
+
+                        <div className="mt-1 text-[10px] font-bold text-emerald-700 dark:text-emerald-400">
+                          Save ₹{opt.savings} ({opt.discountPercent}% OFF)
+                        </div>
+
+                        <div className="mt-1.5 pt-1.5 border-t border-gray-100 dark:border-slate-700/60 text-[10px] text-gray-500 dark:text-gray-400">
+                          Net: {opt.netWeight} • {opt.serves}
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+
+              {/* Step 2: Interactive Cut Selector */}
               <div className="space-y-2.5">
                 <div className="flex items-center justify-between">
                   <label className="text-xs font-extrabold text-gray-900 dark:text-white tracking-wide uppercase">
-                    Choose How You Want It Cut:
+                    2. Choose How You Want It Cut:
                   </label>
                   <span className="text-[11px] font-semibold text-gray-500 dark:text-gray-400">
                     Free customization
@@ -580,12 +663,18 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
           <div>
             <span className="text-[11px] text-gray-500 dark:text-gray-400 font-semibold block">Total Amount</span>
             <div className="flex items-baseline gap-2">
-              <span className="text-2xl font-black text-gray-950 dark:text-white">₹{product.price * quantity}</span>
-              <span className="text-xs text-gray-500 dark:text-gray-400">for {quantity} {product.unit} pack</span>
+              <span className="text-2xl font-black text-gray-950 dark:text-white">₹{activeWeightOption.price * quantity}</span>
+              <span className="text-xs text-gray-500 dark:text-gray-400">for {quantity} × {activeWeightOption.weight} pack</span>
             </div>
-            <span className="text-[10px] text-emerald-700 dark:text-emerald-400 font-bold block mt-0.5">
-              Cut: {selectedStyle}
-            </span>
+            <div className="flex items-center gap-2 mt-0.5 text-[10px]">
+              <span className="text-emerald-700 dark:text-emerald-400 font-bold">
+                Cut: {selectedStyle}
+              </span>
+              <span className="text-gray-400">•</span>
+              <span className="text-gray-500 dark:text-gray-400 font-medium">
+                Save ₹{activeWeightOption.savings * quantity} vs market
+              </span>
+            </div>
           </div>
 
           <div className="flex items-center gap-3 w-full sm:w-auto">

@@ -131,68 +131,84 @@ export const CartDrawer: React.FC<CartDrawerProps> = ({ onCheckout }) => {
                 </button>
               </div>
             ) : (
-              items.map((item) => (
-                <div 
-                  key={item.product.id}
-                  className="p-3 bg-white dark:bg-slate-800/90 border border-gray-200 dark:border-slate-700 rounded-xl flex gap-3 items-center shadow-2xs hover:border-gray-300 dark:hover:border-slate-600 transition"
-                >
-                  <img 
-                    src={item.product.image || item.product.imageUrl || `/images/products/${item.product.id}.jpg`} 
-                    alt={item.product.name}
-                    className="w-16 h-16 rounded-xl object-cover border border-gray-100 dark:border-slate-700 shrink-0" 
-                    onError={(e) => {
-                      (e.target as HTMLImageElement).src = `/images/products/${item.product.id}.jpg`;
-                    }}
-                  />
+              items.map((item) => {
+                const itemKey = item.id || `${item.product.id}_${item.selectedWeight || '500g'}`;
+                const itemPrice = typeof item.unitPrice === 'number' && item.unitPrice > 0 ? item.unitPrice : item.product.price;
+                const itemMrp = typeof item.unitMrp === 'number' && item.unitMrp > 0 ? item.unitMrp : item.product.mrp;
+                const savings = itemMrp && itemMrp > itemPrice ? (itemMrp - itemPrice) * item.quantity : 0;
+                const packWeight = item.selectedWeight || item.product.netWeight || item.product.unit || '500g';
 
-                  <div className="flex-1 min-w-0 space-y-1">
-                    <h4 className="text-xs font-extrabold text-gray-950 dark:text-white truncate leading-snug">{item.product.name}</h4>
-                    <div className="flex items-center gap-2 text-[11px] text-gray-500 dark:text-gray-400">
-                      <span>₹{item.product.price} / {item.product.unit}</span>
-                      {item.product.netWeight && (
-                        <span className="text-gray-400 dark:text-gray-500">• Net: {item.product.netWeight}</span>
+                return (
+                  <div 
+                    key={itemKey}
+                    className="p-3 bg-white dark:bg-slate-800/90 border border-gray-200 dark:border-slate-700 rounded-xl flex gap-3 items-center shadow-2xs hover:border-gray-300 dark:hover:border-slate-600 transition"
+                  >
+                    <img 
+                      src={item.product.image || item.product.imageUrl || `/images/products/${item.product.id}.jpg`} 
+                      alt={item.product.name}
+                      className="w-16 h-16 rounded-xl object-cover border border-gray-100 dark:border-slate-700 shrink-0" 
+                      onError={(e) => {
+                        (e.target as HTMLImageElement).src = `/images/products/${item.product.id}.jpg`;
+                      }}
+                    />
+
+                    <div className="flex-1 min-w-0 space-y-1">
+                      <h4 className="text-xs font-extrabold text-gray-950 dark:text-white truncate leading-snug">{item.product.name}</h4>
+                      <div className="flex items-center gap-2 text-[11px] text-gray-500 dark:text-gray-400">
+                        <span className="font-bold text-gray-900 dark:text-gray-200">₹{itemPrice}</span>
+                        <span className="px-1.5 py-0.2 rounded bg-rose-50 dark:bg-rose-950/70 text-[#d11243] dark:text-rose-400 font-extrabold text-[10px]">
+                          {packWeight}
+                        </span>
+                        {itemMrp && itemMrp > itemPrice && (
+                          <span className="text-[10px] text-gray-400 line-through">₹{itemMrp}</span>
+                        )}
+                      </div>
+                      {item.selectedCutStyle && (
+                        <div className="inline-block px-2 py-0.5 rounded bg-gray-100 dark:bg-slate-700 text-gray-700 dark:text-gray-200 text-[10px] font-semibold">
+                          Cut: {item.selectedCutStyle}
+                        </div>
+                      )}
+                      {savings > 0 && (
+                        <div className="text-[10px] font-bold text-emerald-600 dark:text-emerald-400">
+                          Save ₹{savings} vs market
+                        </div>
                       )}
                     </div>
-                    {item.selectedCutStyle && (
-                      <div className="inline-block px-2 py-0.5 rounded bg-gray-100 dark:bg-slate-700 text-gray-700 dark:text-gray-200 text-[10px] font-semibold">
-                        Cut: {item.selectedCutStyle}
+
+                    <div className="flex flex-col items-end gap-2 shrink-0">
+                      <span className="text-xs font-black text-gray-950 dark:text-white">
+                        ₹{itemPrice * item.quantity}
+                      </span>
+
+                      <div className="flex items-center border border-gray-200 dark:border-slate-700 rounded-lg bg-gray-50 dark:bg-slate-900/60">
+                        <button
+                          onClick={() => updateQuantity(item.id || item.product.id, item.quantity - 1)}
+                          className="p-1 text-gray-500 dark:text-gray-400 hover:text-black dark:hover:text-white cursor-pointer"
+                          title="Decrease quantity"
+                        >
+                          <Minus className="w-3 h-3" />
+                        </button>
+                        <span className="px-2 text-xs font-extrabold text-gray-900 dark:text-white">{item.quantity}</span>
+                        <button
+                          onClick={() => updateQuantity(item.id || item.product.id, item.quantity + 1)}
+                          className="p-1 text-gray-500 dark:text-gray-400 hover:text-black dark:hover:text-white cursor-pointer"
+                          title="Increase quantity"
+                        >
+                          <Plus className="w-3 h-3" />
+                        </button>
                       </div>
-                    )}
-                  </div>
 
-                  <div className="flex flex-col items-end gap-2 shrink-0">
-                    <span className="text-xs font-black text-gray-950 dark:text-white">
-                      ₹{item.product.price * item.quantity}
-                    </span>
-
-                    <div className="flex items-center border border-gray-200 dark:border-slate-700 rounded-lg bg-gray-50 dark:bg-slate-900/60">
                       <button
-                        onClick={() => updateQuantity(item.product.id, item.quantity - 1)}
-                        className="p-1 text-gray-500 dark:text-gray-400 hover:text-black dark:hover:text-white cursor-pointer"
-                        title="Decrease quantity"
+                        onClick={() => removeItem(item.id || item.product.id)}
+                        className="text-gray-400 hover:text-red-600 dark:hover:text-red-400 transition cursor-pointer"
+                        title="Remove item"
                       >
-                        <Minus className="w-3 h-3" />
-                      </button>
-                      <span className="px-2 text-xs font-extrabold text-gray-900 dark:text-white">{item.quantity}</span>
-                      <button
-                        onClick={() => updateQuantity(item.product.id, item.quantity + 1)}
-                        className="p-1 text-gray-500 dark:text-gray-400 hover:text-black dark:hover:text-white cursor-pointer"
-                        title="Increase quantity"
-                      >
-                        <Plus className="w-3 h-3" />
+                        <Trash2 className="w-3.5 h-3.5" />
                       </button>
                     </div>
-
-                    <button
-                      onClick={() => removeItem(item.product.id)}
-                      className="text-gray-400 hover:text-red-600 dark:hover:text-red-400 transition"
-                      title="Remove item"
-                    >
-                      <Trash2 className="w-3.5 h-3.5" />
-                    </button>
                   </div>
-                </div>
-              ))
+                );
+              })
             )}
           </div>
 
