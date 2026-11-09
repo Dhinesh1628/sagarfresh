@@ -1,316 +1,648 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { 
-  Zap, 
-  RotateCcw, 
   ArrowRight, 
-  ShieldCheck, 
-  CheckCircle, 
-  Sparkles, 
-  QrCode, 
-  ThermometerSnowflake,
-  Clock,
-  Award
+  RotateCcw, 
+  Check, 
+  ChevronLeft, 
+  ChevronRight, 
+  Sparkles,
+  ShieldCheck
 } from 'lucide-react';
+import { useCart } from '../context/CartContext';
+import { Product } from '../types';
 
 interface HeroSectionProps {
   onExploreCuts: () => void;
   onNavigateToReturns: () => void;
 }
 
+interface SlideData {
+  id: string;
+  giantText: string;
+  title: string;
+  category: string;
+  cutStyle: string;
+  origin: string;
+  description: string;
+  price: string;
+  priceNum: number;
+  mrp: string;
+  mrpNum: number;
+  image: string;
+  bgGradient: string;
+  garnishes: [React.ReactNode, React.ReactNode, React.ReactNode, React.ReactNode];
+  productData: Product;
+}
+
+// 100% reliable inline vector garnishes (never broken, crisp at all resolutions)
+const Garnishes = {
+  iceCube: (
+    <svg viewBox="0 0 120 120" className="w-full h-full drop-shadow-[0_12px_20px_rgba(0,0,0,0.7)]">
+      <defs>
+        <linearGradient id="iceGrad" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%" stopColor="#ffffff" stopOpacity="0.95" />
+          <stop offset="50%" stopColor="#cbd5e1" stopOpacity="0.75" />
+          <stop offset="100%" stopColor="#64748b" stopOpacity="0.5" />
+        </linearGradient>
+      </defs>
+      <polygon points="60,10 105,35 105,85 60,110 15,85 15,35" fill="url(#iceGrad)" stroke="#ffffff" strokeWidth="2.5" />
+      <line x1="60" y1="10" x2="60" y2="110" stroke="#ffffff" strokeWidth="2" strokeOpacity="0.8" />
+      <line x1="60" y1="60" x2="105" y2="35" stroke="#ffffff" strokeWidth="2" strokeOpacity="0.8" />
+      <line x1="60" y1="60" x2="15" y2="35" stroke="#ffffff" strokeWidth="2" strokeOpacity="0.8" />
+      <circle cx="45" cy="45" r="4" fill="#ffffff" opacity="0.8" />
+      <circle cx="75" cy="75" r="3" fill="#ffffff" opacity="0.7" />
+    </svg>
+  ),
+
+  lemonSlice: (
+    <svg viewBox="0 0 140 140" className="w-full h-full drop-shadow-[0_12px_20px_rgba(0,0,0,0.7)]">
+      <circle cx="70" cy="70" r="65" fill="#facc15" stroke="#eab308" strokeWidth="5" />
+      <circle cx="70" cy="70" r="54" fill="#fef08a" />
+      <circle cx="70" cy="70" r="50" fill="#facc15" />
+      <g stroke="#fef08a" strokeWidth="3" fill="#fef9c3">
+        <path d="M70,70 L70,22 A48,48 0 0,1 104,36 Z" />
+        <path d="M70,70 L104,36 A48,48 0 0,1 118,70 Z" />
+        <path d="M70,70 L118,70 A48,48 0 0,1 104,104 Z" />
+        <path d="M70,70 L104,104 A48,48 0 0,1 70,118 Z" />
+        <path d="M70,70 L70,118 A48,48 0 0,1 36,104 Z" />
+        <path d="M70,70 L36,104 A48,48 0 0,1 22,70 Z" />
+        <path d="M70,70 L22,70 A48,48 0 0,1 36,36 Z" />
+        <path d="M70,70 L36,36 A48,48 0 0,1 70,22 Z" />
+      </g>
+      <circle cx="70" cy="70" r="8" fill="#fef08a" />
+    </svg>
+  ),
+
+  dillSprig: (
+    <svg viewBox="0 0 100 120" className="w-full h-full drop-shadow-[0_12px_20px_rgba(0,0,0,0.7)]">
+      <path d="M50,110 Q52,60 48,15" stroke="#15803d" strokeWidth="4" fill="none" strokeLinecap="round" />
+      <g stroke="#22c55e" strokeWidth="3" fill="none" strokeLinecap="round">
+        <path d="M49,85 Q30,75 18,80" />
+        <path d="M51,75 Q70,65 82,70" />
+        <path d="M49,60 Q32,50 20,54" />
+        <path d="M51,50 Q68,40 80,44" />
+        <path d="M49,35 Q35,28 25,30" />
+        <path d="M50,25 Q65,18 75,20" />
+      </g>
+    </svg>
+  ),
+
+  starAnise: (
+    <svg viewBox="0 0 120 120" className="w-full h-full drop-shadow-[0_12px_20px_rgba(0,0,0,0.7)]">
+      <g fill="#78350f" stroke="#290e03" strokeWidth="2.5">
+        <path d="M60,60 C55,40 50,20 60,8 C70,20 65,40 60,60 Z" />
+        <path d="M60,60 C75,45 95,40 107,50 C95,60 75,55 60,60 Z" transform="rotate(45 60 60)" />
+        <path d="M60,60 C75,45 95,40 107,50 C95,60 75,55 60,60 Z" transform="rotate(90 60 60)" />
+        <path d="M60,60 C75,45 95,40 107,50 C95,60 75,55 60,60 Z" transform="rotate(135 60 60)" />
+        <path d="M60,60 C75,45 95,40 107,50 C95,60 75,55 60,60 Z" transform="rotate(180 60 60)" />
+        <path d="M60,60 C75,45 95,40 107,50 C95,60 75,55 60,60 Z" transform="rotate(225 60 60)" />
+        <path d="M60,60 C75,45 95,40 107,50 C95,60 75,55 60,60 Z" transform="rotate(270 60 60)" />
+        <path d="M60,60 C75,45 95,40 107,50 C95,60 75,55 60,60 Z" transform="rotate(315 60 60)" />
+      </g>
+      <circle cx="60" cy="60" r="10" fill="#92400e" stroke="#451a03" strokeWidth="2.5" />
+    </svg>
+  ),
+
+  cinnamon: (
+    <svg viewBox="0 0 140 60" className="w-full h-full drop-shadow-[0_12px_20px_rgba(0,0,0,0.7)]">
+      <rect x="15" y="15" width="110" height="30" rx="15" fill="#7c2d12" stroke="#1c0a00" strokeWidth="2.5" />
+      <ellipse cx="25" cy="30" rx="8" ry="14" fill="#451a03" stroke="#9a3412" strokeWidth="2" />
+      <ellipse cx="115" cy="30" rx="8" ry="14" fill="#290e03" />
+    </svg>
+  ),
+
+  bayLeaf: (
+    <svg viewBox="0 0 100 140" className="w-full h-full drop-shadow-[0_12px_20px_rgba(0,0,0,0.7)]">
+      <path d="M50,130 Q10,75 50,10 Q90,75 50,130 Z" fill="#4d7c0f" stroke="#1a3d04" strokeWidth="3" />
+      <path d="M50,130 Q50,70 50,10" stroke="#bef264" strokeWidth="2" fill="none" />
+    </svg>
+  ),
+
+  redChili: (
+    <svg viewBox="0 0 140 100" className="w-full h-full drop-shadow-[0_12px_20px_rgba(0,0,0,0.7)]">
+      <path d="M25,25 Q60,15 110,40 Q130,55 125,75 Q85,85 25,25 Z" fill="#dc2626" stroke="#5f0d0d" strokeWidth="3" />
+      <path d="M25,25 Q18,20 15,10 Q20,12 25,25" fill="#15803d" stroke="#14532d" strokeWidth="2" />
+    </svg>
+  ),
+
+  garlic: (
+    <svg viewBox="0 0 100 100" className="w-full h-full drop-shadow-[0_12px_20px_rgba(0,0,0,0.7)]">
+      <path d="M50,15 Q20,50 35,80 Q50,92 65,80 Q80,50 50,15 Z" fill="#fef3c7" stroke="#b45309" strokeWidth="3" />
+      <path d="M50,15 Q46,55 48,85" stroke="#d97706" strokeWidth="2" fill="none" />
+    </svg>
+  ),
+
+  lime: (
+    <svg viewBox="0 0 120 120" className="w-full h-full drop-shadow-[0_12px_20px_rgba(0,0,0,0.7)]">
+      <path d="M15,95 A80,80 0 0,1 95,15 L15,95 Z" fill="#65a30d" stroke="#365314" strokeWidth="4" />
+      <path d="M22,88 A68,68 0 0,1 88,22 L22,88 Z" fill="#bef264" />
+      <g stroke="#f7fee7" strokeWidth="2.5">
+        <line x1="22" y1="88" x2="60" y2="40" />
+        <line x1="22" y1="88" x2="40" y2="60" />
+        <line x1="22" y1="88" x2="75" y2="55" />
+        <line x1="22" y1="88" x2="55" y2="75" />
+      </g>
+    </svg>
+  ),
+
+  saltCrystal: (
+    <svg viewBox="0 0 90 90" className="w-full h-full drop-shadow-[0_12px_20px_rgba(0,0,0,0.7)]">
+      <polygon points="45,10 75,30 80,65 50,85 15,65 20,30" fill="#ffffff" stroke="#94a3b8" strokeWidth="3" opacity="0.95" />
+      <line x1="45" y1="10" x2="50" y2="85" stroke="#cbd5e1" strokeWidth="2" />
+      <line x1="75" y1="30" x2="15" y2="65" stroke="#cbd5e1" strokeWidth="2" />
+    </svg>
+  )
+};
+
+const SLIDES: SlideData[] = [
+  {
+    id: 'surmai',
+    giantText: 'SURMAI',
+    title: 'Seer Fish / Surmai',
+    category: 'Coastal Harbor Catch • 0°C Chilled',
+    cutStyle: 'Curry Cut & Tawa Fry Steaks',
+    origin: 'Daily 4:00 AM Mangalore Harbor Catch • 0°C Never Frozen',
+    description: 'Center-cut neat steaks from daily fresh catches off the Mangalore coast. Shucked, scale-scraped, cleaned in RO water, and immediately blast-chilled to 0°C.',
+    price: '₹799',
+    priceNum: 799,
+    mrp: '₹899',
+    mrpNum: 899,
+    image: '/images/products/prod_1.jpg',
+    bgGradient: 'radial-gradient(circle at 50% 45%, #2a3138 0%, #181d22 35%, #0c0f12 70%, #050607 100%)',
+    garnishes: [Garnishes.iceCube, Garnishes.lemonSlice, Garnishes.dillSprig, Garnishes.iceCube],
+    productData: {
+      id: 'prod_1',
+      name: 'Seer Fish / Surmai (Large Steaks)',
+      category: 'fish',
+      description: 'Center-cut neat steaks from daily fresh catches off the Mangalore-Malabar coast.',
+      price: 799,
+      mrp: 899,
+      unit: '500g',
+      chillingMethod: '0°C to 4°C Constant Cold Chain',
+      catchDate: 'Today 4:00 AM',
+      origin: 'Mangalore Harbor Catch',
+      cutStyle: 'Curry Cut & Tawa Fry Steaks',
+      stock: 24,
+      image: '/images/products/prod_1.jpg'
+    }
+  },
+  {
+    id: 'mutton',
+    giantText: 'MUTTON',
+    title: 'Tender Goat Curry Cut',
+    category: 'Grass-Fed • Pasture Raised',
+    cutStyle: 'Prime Bone-In Curry Cut',
+    origin: 'Dindigul Pasture Farms • 0°C Vacuum Cold Box',
+    description: 'Lean, tender young goat cuts with prime rib and shoulder pieces. Naturally grazed on open pastures, antibiotic-free, and blast chilled to lock in natural succulence.',
+    price: '₹549',
+    priceNum: 549,
+    mrp: '₹599',
+    mrpNum: 599,
+    image: '/images/products/prod_4.jpg',
+    bgGradient: 'radial-gradient(circle at 50% 45%, #2c2527 0%, #1a1516 35%, #0e0b0c 70%, #050404 100%)',
+    garnishes: [Garnishes.starAnise, Garnishes.cinnamon, Garnishes.bayLeaf, Garnishes.starAnise],
+    productData: {
+      id: 'prod_4',
+      name: 'Premium Goat Curry Cut',
+      category: 'mutton',
+      description: 'Lean, tender young goat cuts with prime rib and shoulder pieces. Naturally grazed on open pastures.',
+      price: 549,
+      mrp: 599,
+      unit: '500g',
+      chillingMethod: '0°C to 4°C Constant Cold Chain',
+      catchDate: 'Fresh Today',
+      origin: 'Dindigul Pasture Farms',
+      cutStyle: 'Prime Bone-In Curry Cut',
+      stock: 18,
+      image: '/images/products/prod_4.jpg'
+    }
+  },
+  {
+    id: 'chicken',
+    giantText: 'CHICKEN',
+    title: 'Country Nati Koli',
+    category: 'Free-Range • Antibiotic-Free',
+    cutStyle: 'Medium Bone-In Curry Cut',
+    origin: 'Naturally Foraged Organic Birds • Sealed within 90 Mins',
+    description: 'Naturally foraged country fowl with rich muscle density and authentic rustic flavor. Dressed cleanly and vacuum sealed within 90 minutes of processing.',
+    price: '₹389',
+    priceNum: 389,
+    mrp: '₹429',
+    mrpNum: 429,
+    image: '/images/products/prod_6.jpg',
+    bgGradient: 'radial-gradient(circle at 50% 45%, #2d2824 0%, #1a1714 35%, #0e0c0a 70%, #050404 100%)',
+    garnishes: [Garnishes.redChili, Garnishes.garlic, Garnishes.redChili, Garnishes.garlic],
+    productData: {
+      id: 'prod_6',
+      name: 'Country Chicken (Nati Koli)',
+      category: 'chicken',
+      description: 'Naturally foraged country fowl with rich muscle density and authentic rustic flavor.',
+      price: 389,
+      mrp: 429,
+      unit: '500g',
+      chillingMethod: '0°C to 4°C Constant Cold Chain',
+      catchDate: 'Processed Today',
+      origin: 'Organic Poultry Farms',
+      cutStyle: 'Medium Bone-In Curry Cut',
+      stock: 35,
+      image: '/images/products/prod_6.jpg'
+    }
+  },
+  {
+    id: 'prawns',
+    giantText: 'PRAWNS',
+    title: 'Sea Tiger Prawns',
+    category: 'Wild Catch • Jumbo Cleaned',
+    cutStyle: 'Tail-On Deveined Jumbo',
+    origin: 'Deep Coastal Waters of Karnataka • Pristine Catch',
+    description: 'Wild-caught sea tiger prawns, tail-on, cleaned in RO water and thoroughly deveined. Juicy, firm, and bursting with fresh oceanic sweetness.',
+    price: '₹449',
+    priceNum: 449,
+    mrp: '₹499',
+    mrpNum: 499,
+    image: '/images/products/prod_3.jpg',
+    bgGradient: 'radial-gradient(circle at 50% 45%, #242c2c 0%, #151a1a 35%, #0b0e0e 70%, #040505 100%)',
+    garnishes: [Garnishes.lime, Garnishes.saltCrystal, Garnishes.lime, Garnishes.saltCrystal],
+    productData: {
+      id: 'prod_3',
+      name: 'Fresh Sea Tiger Prawns (Cleaned)',
+      category: 'prawns',
+      description: 'Wild-caught sea tiger prawns, tail-on, cleaned in RO water and thoroughly deveined.',
+      price: 449,
+      mrp: 499,
+      unit: '500g',
+      chillingMethod: '0°C to 4°C Constant Cold Chain',
+      catchDate: 'Today 4:00 AM',
+      origin: 'Karnataka Coast',
+      cutStyle: 'Tail-On Deveined Jumbo',
+      stock: 22,
+      image: '/images/products/prod_3.jpg'
+    }
+  }
+];
+
 export const HeroSection: React.FC<HeroSectionProps> = ({
   onExploreCuts,
   onNavigateToReturns
 }) => {
-  const [activeSlide, setActiveSlide] = useState<'gradient' | 'minimal'>('gradient');
+  const { addItem } = useCart();
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [isAnimating, setIsAnimating] = useState(false);
+  const [addedCutId, setAddedCutId] = useState<string | null>(null);
+
+  // 3D Parallax Tilt state
+  const stageRef = useRef<HTMLDivElement>(null);
+  const [tilt, setTilt] = useState({ x: 0, y: 0 });
+
+  const currentSlide = SLIDES[currentIndex];
+
+  // Mousemove Parallax listener
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (!stageRef.current || isAnimating) return;
+    const rect = stageRef.current.getBoundingClientRect();
+    const x = ((e.clientX - rect.left) / rect.width - 0.5) * 2;
+    const y = ((e.clientY - rect.top) / rect.height - 0.5) * 2;
+    setTilt({ x, y });
+  };
+
+  const handleMouseLeave = () => {
+    setTilt({ x: 0, y: 0 });
+  };
+
+  const changeSlide = (newIndex: number) => {
+    if (isAnimating || newIndex === currentIndex) return;
+    setIsAnimating(true);
+    setTimeout(() => {
+      setCurrentIndex(newIndex);
+      setIsAnimating(false);
+    }, 400);
+  };
+
+  const handleNext = () => {
+    changeSlide((currentIndex + 1) % SLIDES.length);
+  };
+
+  const handlePrev = () => {
+    changeSlide((currentIndex - 1 + SLIDES.length) % SLIDES.length);
+  };
+
+  // Keyboard navigation
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'ArrowRight') handleNext();
+      if (e.key === 'ArrowLeft') handlePrev();
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [currentIndex, isAnimating]);
+
+  // Handle Add to Cart action
+  const handleAddToCart = () => {
+    addItem(
+      currentSlide.productData,
+      1,
+      currentSlide.cutStyle,
+      '500g',
+      currentSlide.priceNum,
+      currentSlide.mrpNum
+    );
+
+    setAddedCutId(currentSlide.id);
+    setTimeout(() => {
+      setAddedCutId(null);
+    }, 1800);
+  };
 
   return (
-    <div className="space-y-4">
+    <div 
+      ref={stageRef}
+      onMouseMove={handleMouseMove}
+      onMouseLeave={handleMouseLeave}
+      className="relative w-full rounded-3xl overflow-hidden shadow-2xl border border-white/10 select-none transition-colors duration-700"
+      style={{
+        background: currentSlide.bgGradient,
+        perspective: '1600px'
+      }}
+    >
       {/* ======================================================== */}
-      {/* 1. DESKTOP HERO SECTION (Hidden on mobile, visible md+)   */}
+      {/* TOP METADATA BAR (Black & White Luxury Minimalist)       */}
       {/* ======================================================== */}
-      <div className="hidden md:block relative overflow-hidden rounded-2xl shadow-md border border-rose-900/10 transition-all duration-300">
-        {activeSlide === 'gradient' ? (
-          /* Variant V2: Premium Crimson-Wine Gradient (Featured in Figma) */
-          <div className="relative bg-gradient-to-r from-[#7a0624] via-[#b80f3b] to-[#d11243] text-white p-8 lg:p-10">
-            {/* Ambient background glow patterns */}
-            <div className="absolute -right-20 -top-20 w-96 h-96 bg-white/10 rounded-full blur-3xl pointer-events-none" />
-            <div className="absolute right-1/3 -bottom-20 w-80 h-80 bg-rose-950/30 rounded-full blur-2xl pointer-events-none" />
+      <div className="relative z-30 px-6 sm:px-10 pt-6 pb-2 flex items-center justify-between border-b border-white/10">
+        <div className="flex items-center gap-2.5">
+          <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-ping" />
+          <span className="text-xs font-black uppercase tracking-wider text-white">
+            0°C – 4°C Active Cold Chain
+          </span>
+          <span className="text-gray-500 hidden sm:inline">•</span>
+          <span className="text-xs text-gray-300 font-semibold hidden sm:inline">
+            ⚡ 90-Min Guaranteed Delivery
+          </span>
+        </div>
 
-            <div className="relative z-10 grid grid-cols-12 gap-8 items-center">
-              {/* Left Copy (7 cols) */}
-              <div className="col-span-7 space-y-4">
-                {/* Assurance Pill */}
-                <div className="flex flex-wrap items-center gap-2 text-xs font-semibold text-rose-100">
-                  <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-black/30 backdrop-blur-md border border-white/20">
-                    <span className="relative flex h-2 w-2">
-                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                      <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-400"></span>
-                    </span>
-                    <span>FRESH & CHILLED (0°C – 4°C)</span>
-                  </span>
-
-                  <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-950/40 text-emerald-300 backdrop-blur-md border border-emerald-400/30">
-                    <Zap className="w-3.5 h-3.5 text-amber-300" />
-                    <span>Express 90-Min Delivery</span>
-                  </span>
-                </div>
-
-                {/* Slogan & Main Headline */}
-                <div className="space-y-1">
-                  <h1 className="text-3xl lg:text-5xl font-black tracking-tight leading-tight text-white">
-                    Fresh Meat, Delivered to Your Door.
-                  </h1>
-                </div>
-
-                {/* Subheading */}
-                <p className="text-sm lg:text-base text-rose-100/90 leading-relaxed max-w-xl font-normal">
-                  Shop your favourites and get fresh meat delivered right to your home. Never frozen, 100% clean, and always chilled.
-                </p>
-
-                {/* Clean Feature Badges */}
-                <div className="flex items-center gap-3 text-xs text-rose-200">
-                  <span className="flex items-center gap-1.5 bg-black/20 px-3 py-1.5 rounded-lg border border-white/10">
-                    <CheckCircle className="w-3.5 h-3.5 text-emerald-400" />
-                    <span>100% Chemical-Free</span>
-                  </span>
-                  <span className="flex items-center gap-1.5 bg-black/20 px-3 py-1.5 rounded-lg border border-white/10">
-                    <Clock className="w-3.5 h-3.5 text-cyan-300" />
-                    <span>Cut Fresh Daily</span>
-                  </span>
-                </div>
-
-                {/* Action Buttons */}
-                <div className="flex flex-wrap items-center gap-3 pt-2">
-                  <button
-                    onClick={onExploreCuts}
-                    className="px-6 py-3 rounded-xl bg-white hover:bg-rose-50 text-[#b80f3b] font-black text-xs uppercase tracking-wider flex items-center gap-2 shadow-lg hover:shadow-xl hover:scale-[1.02] transition cursor-pointer"
-                  >
-                    <span>Shop Now</span>
-                    <ArrowRight className="w-4 h-4" />
-                  </button>
-
-                  <button
-                    onClick={onNavigateToReturns}
-                    className="px-5 py-3 rounded-xl bg-black/25 hover:bg-black/35 text-white font-bold text-xs tracking-wide flex items-center gap-2 border border-white/25 backdrop-blur-xs transition cursor-pointer"
-                  >
-                    <RotateCcw className="w-4 h-4 text-emerald-300" />
-                    <span>Return Box for ₹250 Refund</span>
-                  </button>
-                </div>
-
-                {/* Trust Badges Strip */}
-                <div className="pt-3 border-t border-white/15 flex flex-wrap items-center gap-5 text-[11px] text-rose-100/80 font-medium">
-                  <div className="flex items-center gap-1.5">
-                    <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
-                    <span>Clean & Safe Everyday</span>
-                  </div>
-                  <div className="flex items-center gap-1.5">
-                    <Award className="w-3.5 h-3.5 text-amber-300" />
-                    <span>Govt Approved Quality</span>
-                  </div>
-                  <div className="flex items-center gap-1.5">
-                    <Sparkles className="w-3.5 h-3.5 text-cyan-300" />
-                    <span>Zero Preservatives</span>
-                  </div>
-                </div>
-              </div>
-
-              {/* Right Hero Image Card (5 cols) */}
-              <div className="col-span-5 relative">
-                <div className="relative rounded-2xl overflow-hidden border-2 border-white/25 shadow-2xl bg-black/30 group">
-                  <img
-                    src="/images/hero_banner_meat.jpg"
-                    alt="Fresh butcher cuts and steak"
-                    className="w-full h-72 object-cover object-center group-hover:scale-105 transition duration-500"
-                  />
-                  
-                  {/* Subtle vignette gradient */}
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-black/20 pointer-events-none" />
-
-                  {/* Clean Freshness Badge */}
-                  <div className="absolute top-3 left-3 bg-white/95 backdrop-blur-md px-3 py-1.5 rounded-lg shadow-lg border border-gray-100 flex items-center gap-2 text-gray-900">
-                    <div className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse" />
-                    <div className="text-[10px] leading-tight">
-                      <span className="font-extrabold block text-gray-950">Chilled Fresh (0°–4°C)</span>
-                      <span className="text-[9px] text-emerald-700 font-medium">Never Frozen</span>
-                    </div>
-                  </div>
-
-                  {/* Clean Bottom Strip */}
-                  <div className="absolute bottom-3 left-3 right-3 bg-black/75 backdrop-blur-md p-2.5 rounded-xl border border-white/15 flex items-center justify-between text-white text-[11px]">
-                    <div>
-                      <span className="font-bold block text-white">Daily Fresh Sourcing</span>
-                      <span className="text-[10px] text-rose-200">Cleaned & cut with care</span>
-                    </div>
-                    <span className="px-2 py-0.5 rounded bg-emerald-500/90 text-[10px] font-black text-white uppercase tracking-wider">
-                      100% Fresh
-                    </span>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        ) : (
-          /* Variant V1: Clean Light Style */
-          <div className="bg-white dark:bg-slate-900 text-gray-900 dark:text-gray-100 p-8 lg:p-10 border border-gray-200 dark:border-slate-800">
-            <div className="grid grid-cols-12 gap-8 items-center">
-              <div className="col-span-7 space-y-4">
-                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-rose-50 dark:bg-rose-950/50 border border-rose-200 dark:border-rose-800 text-xs font-bold text-[#d11243] dark:text-rose-400">
-                  <Zap className="w-3.5 h-3.5 text-[#d11243] dark:text-rose-400" />
-                  <span>Express 90-Min Delivery</span>
-                </div>
-                <h1 className="text-3xl lg:text-5xl font-black text-gray-950 dark:text-white tracking-tight leading-tight">
-                  Fresh Meat, Delivered to Your Door.
-                </h1>
-                <p className="text-sm lg:text-base text-gray-600 dark:text-gray-300 leading-relaxed max-w-xl">
-                  Shop your favourites and get fresh meat delivered right to your home. Always fresh, carefully cleaned, and delivered in reusable cold boxes.
-                </p>
-                <div className="flex items-center gap-3 pt-2">
-                  <button
-                    onClick={onExploreCuts}
-                    className="px-6 py-3 rounded-xl bg-[#d11243] hover:bg-[#b80f3b] text-white font-extrabold text-xs uppercase tracking-wider flex items-center gap-2 shadow-md hover:shadow-lg transition cursor-pointer"
-                  >
-                    <span>Shop Now</span>
-                    <ArrowRight className="w-4 h-4" />
-                  </button>
-                  <button
-                    onClick={onNavigateToReturns}
-                    className="px-5 py-3 rounded-xl bg-gray-100 dark:bg-slate-800 hover:bg-gray-200 dark:hover:bg-slate-700 text-gray-800 dark:text-gray-200 font-bold text-xs tracking-wide flex items-center gap-2 border border-gray-300 dark:border-slate-700 transition cursor-pointer"
-                  >
-                    <RotateCcw className="w-4 h-4 text-gray-600 dark:text-gray-400" />
-                    <span>Return Cold Box (₹250 Refund)</span>
-                  </button>
-                </div>
-              </div>
-
-              <div className="col-span-5 relative">
-                <div className="rounded-2xl overflow-hidden border border-gray-200 dark:border-slate-700 shadow-xl bg-gray-50 dark:bg-slate-800">
-                  <img
-                    src="/images/hero_banner_meat.jpg"
-                    alt="Fresh butcher cuts"
-                    className="w-full h-72 object-cover object-center"
-                  />
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* Variant Switcher Toggle */}
-        <div className="absolute top-3 right-3 z-20 flex items-center gap-1 bg-black/40 backdrop-blur-md p-1 rounded-lg border border-white/20 text-[10px] text-white">
+        <div className="flex items-center gap-3">
           <button
-            onClick={() => setActiveSlide('gradient')}
-            className={`px-2 py-0.5 rounded font-bold transition cursor-pointer ${
-              activeSlide === 'gradient' ? 'bg-white text-[#d11243]' : 'hover:text-rose-200'
-            }`}
+            onClick={onNavigateToReturns}
+            className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-white/10 hover:bg-white/20 text-white text-xs font-bold border border-white/20 transition cursor-pointer backdrop-blur-md"
           >
-            Banner 1
-          </button>
-          <button
-            onClick={() => setActiveSlide('minimal')}
-            className={`px-2 py-0.5 rounded font-bold transition cursor-pointer ${
-              activeSlide === 'minimal' ? 'bg-white text-gray-900' : 'hover:text-rose-200'
-            }`}
-          >
-            Banner 2
+            <RotateCcw className="w-3.5 h-3.5 text-emerald-300" />
+            <span>₹250 Box Refund</span>
           </button>
         </div>
       </div>
 
       {/* ======================================================== */}
-      {/* 2. MOBILE HERO SECTION (Visible on mobile screens < md)  */}
+      {/* MAIN 3D SHOWCASE HERO STAGE                              */}
       {/* ======================================================== */}
-      <div className="md:hidden space-y-3">
-        {/* Mobile Gradient Card Banner */}
-        <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-[#7a0624] via-[#b80f3b] to-[#d11243] text-white p-5 shadow-lg border border-rose-900/10">
-          <div className="space-y-3 relative z-10">
-            {/* Top Pill */}
-            <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-black/30 backdrop-blur-xs text-[10px] font-semibold text-rose-100 border border-white/20">
-              <Zap className="w-3 h-3 text-amber-300" />
-              <span>90-Min Delivery</span>
-              <span>•</span>
-              <ThermometerSnowflake className="w-3 h-3 text-cyan-200" />
-              <span>Chilled 0°C - 4°C</span>
-            </div>
+      <div className="relative min-h-[380px] sm:min-h-[460px] md:min-h-[520px] flex items-center justify-center px-4 overflow-hidden">
+        
+        {/* ---------------------------------------------------- */}
+        {/* LAYER 1: SOLID GIGANTIC TEXT (BEHIND MEAT CUT)       */}
+        {/* Plain, clean, high-contrast, pure white bold letters */}
+        {/* ---------------------------------------------------- */}
+        <div 
+          className="absolute inset-0 flex items-center justify-center pointer-events-none select-none z-0"
+          style={{
+            transform: `translate(${tilt.x * -35}px, ${tilt.y * -20}px)`,
+            transition: isAnimating ? 'all 0.4s ease' : 'transform 0.15s ease-out'
+          }}
+        >
+          <span 
+            className={`font-black uppercase tracking-[0.12em] text-white select-none transition-all duration-500 ${
+              isAnimating ? 'opacity-0 scale-90 translate-y-12' : 'opacity-95 scale-100 translate-y-0'
+            }`}
+            style={{
+              fontSize: 'clamp(4.5rem, 15vw, 15rem)',
+              lineHeight: '0.85',
+              fontFamily: 'Montserrat, system-ui, -apple-system, sans-serif',
+              textShadow: '0 25px 50px rgba(0, 0, 0, 0.95)'
+            }}
+          >
+            {currentSlide.giantText}
+          </span>
+        </div>
 
-            {/* Headline */}
-            <div>
-              <h1 className="text-xl font-black text-white leading-tight">
-                Fresh Meat, Delivered to Your Door.
-              </h1>
-              <p className="text-[11px] text-rose-100/90 leading-normal mt-1">
-                Shop your favourites and get fresh meat delivered right to your home.
-              </p>
-            </div>
+        {/* ---------------------------------------------------- */}
+        {/* FLOATING INLINE GARNISHES (Multi-depth parallax)     */}
+        {/* ---------------------------------------------------- */}
+        <div className="absolute inset-0 pointer-events-none z-10">
+          {/* Top Left */}
+          <div 
+            className="absolute top-[10%] left-[8%] sm:left-[14%] w-18 h-18 sm:w-26 sm:h-26 transition-transform duration-200"
+            style={{ transform: `translate(${tilt.x * 40}px, ${tilt.y * 30}px)` }}
+          >
+            {currentSlide.garnishes[0]}
+          </div>
 
-            {/* Mobile Product Visual */}
-            <div className="relative rounded-xl overflow-hidden border border-white/20 shadow-md">
-              <img
-                src="/images/hero_banner_meat.jpg"
-                alt="Fresh meat cuts"
-                className="w-full h-36 object-cover object-center"
+          {/* Top Right */}
+          <div 
+            className="absolute top-[12%] right-[8%] sm:right-[14%] w-18 h-18 sm:w-26 sm:h-26 transition-transform duration-200"
+            style={{ transform: `translate(${tilt.x * -35}px, ${tilt.y * 45}px)` }}
+          >
+            {currentSlide.garnishes[1]}
+          </div>
+
+          {/* Bottom Right */}
+          <div 
+            className="absolute bottom-[10%] right-[10%] sm:right-[18%] w-16 h-16 sm:w-22 sm:h-22 transition-transform duration-200"
+            style={{ transform: `translate(${tilt.x * 25}px, ${tilt.y * -35}px)` }}
+          >
+            {currentSlide.garnishes[2]}
+          </div>
+
+          {/* Bottom Left */}
+          <div 
+            className="absolute bottom-[12%] left-[10%] sm:left-[16%] w-16 h-16 sm:w-22 sm:h-22 transition-transform duration-200"
+            style={{ transform: `translate(${tilt.x * -45}px, ${tilt.y * -25}px)` }}
+          >
+            {currentSlide.garnishes[3]}
+          </div>
+        </div>
+
+        {/* ---------------------------------------------------- */}
+        {/* LAYER 2: 3D HERO PRODUCT CENTERPIECE                 */}
+        {/* ---------------------------------------------------- */}
+        <div 
+          className="relative z-20 cursor-pointer"
+          style={{
+            transform: `rotateY(${tilt.x * 15}deg) rotateX(${-tilt.y * 15}deg) translateZ(40px)`,
+            transformStyle: 'preserve-3d',
+            transition: isAnimating 
+              ? 'transform 0.4s cubic-bezier(0.34, 1.4, 0.64, 1), opacity 0.3s ease' 
+              : 'transform 0.15s ease-out'
+          }}
+        >
+          <div className={`relative flex items-center justify-center drop-shadow-[0_35px_50px_rgba(0,0,0,0.85)] transition-all duration-500 ${
+            isAnimating ? 'opacity-0 scale-75 translate-y-16' : 'opacity-100 scale-100 translate-y-0'
+          }`}>
+            
+            {/* Frosted Monochrome Platter with High-Res Product Cut */}
+            <div className="relative w-56 h-56 sm:w-72 sm:h-72 md:w-88 md:h-88 rounded-full p-3 sm:p-4 bg-gradient-to-tr from-white/30 via-white/10 to-transparent backdrop-blur-2xl border-4 border-white/50 shadow-2xl overflow-hidden flex items-center justify-center group">
+              <img 
+                src={currentSlide.image} 
+                alt={currentSlide.title}
+                className="w-full h-full object-cover rounded-full transition-transform duration-700 group-hover:scale-105"
               />
-              <div className="absolute bottom-2 left-2 right-2 bg-black/75 backdrop-blur-xs p-1.5 rounded-lg flex items-center justify-between text-[10px] text-white">
-                <span className="font-bold flex items-center gap-1">
-                  <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-                  Chilled Fresh
-                </span>
-                <span className="text-rose-200 font-semibold">Never Frozen</span>
+
+              {/* Cold-Chain Telemetry Pill Overlay Inside Platter */}
+              <div className="absolute bottom-4 sm:bottom-6 inset-x-4 sm:inset-x-8 bg-black/75 backdrop-blur-xl rounded-2xl py-2 px-3 sm:px-4 text-center shadow-2xl border border-white/30">
+                <div className="flex items-center justify-center gap-2 text-white font-black text-[10px] sm:text-xs uppercase tracking-wider">
+                  <span className="w-2 h-2 rounded-full bg-emerald-400" />
+                  <span>{currentSlide.cutStyle}</span>
+                </div>
+                <p className="text-[9px] sm:text-[10px] text-gray-300 font-semibold mt-0.5 tracking-wide line-clamp-1">
+                  {currentSlide.origin}
+                </p>
               </div>
             </div>
 
-            {/* Mobile Action Buttons */}
-            <div className="space-y-2 pt-1">
+          </div>
+        </div>
+
+        {/* ---------------------------------------------------- */}
+        {/* LAYER 3: 3D STROKED TEXT (DIRECTLY IN FRONT OF CUT)   */}
+        {/* Plain, clean, sharp white stroke - creates 3D depth  */}
+        {/* ---------------------------------------------------- */}
+        <div 
+          className="absolute inset-0 flex items-center justify-center pointer-events-none select-none z-30"
+          style={{
+            transform: `translate(${tilt.x * -35}px, ${tilt.y * -20}px)`,
+            transition: isAnimating ? 'all 0.4s ease' : 'transform 0.15s ease-out'
+          }}
+        >
+          <span 
+            className={`font-black uppercase tracking-[0.12em] select-none transition-all duration-500 ${
+              isAnimating ? 'opacity-0 scale-90 translate-y-12' : 'opacity-95 scale-100 translate-y-0'
+            }`}
+            style={{
+              fontSize: 'clamp(4.5rem, 15vw, 15rem)',
+              lineHeight: '0.85',
+              fontFamily: 'Montserrat, system-ui, -apple-system, sans-serif',
+              color: 'transparent',
+              WebkitTextStroke: '2px rgba(255, 255, 255, 0.95)',
+              filter: 'drop-shadow(0 0 10px rgba(255, 255, 255, 0.25))'
+            }}
+          >
+            {currentSlide.giantText}
+          </span>
+        </div>
+
+      </div>
+
+      {/* ======================================================== */}
+      {/* BOTTOM CONTROL PANEL (Exact Replica of Reference Video)  */}
+      {/* ======================================================== */}
+      <div className="relative z-40 px-6 sm:px-10 py-5 bg-black/60 backdrop-blur-xl border-t border-white/10">
+        <div className="flex flex-col md:flex-row items-center justify-between gap-5">
+          
+          {/* Bottom Left: Title, Tagline, Description & Shop Now Button */}
+          <div className="flex-1 space-y-1 text-center md:text-left">
+            <div>
+              <span className="text-[11px] font-black uppercase tracking-widest text-gray-400">
+                {currentSlide.category}
+              </span>
+              <h2 className="text-2xl sm:text-3xl md:text-4xl font-black text-white tracking-tight leading-tight">
+                {currentSlide.title}
+              </h2>
+            </div>
+
+            <p className="text-xs text-gray-300 max-w-lg leading-relaxed font-medium line-clamp-2">
+              {currentSlide.description}
+            </p>
+
+            <div className="pt-2 flex flex-wrap items-center justify-center md:justify-start gap-3">
+              {/* Authentic Video "Shop now" Pill Button */}
+              <button
+                onClick={handleAddToCart}
+                className={`px-8 py-2.5 rounded-full font-black text-xs shadow-2xl transition-all cursor-pointer tracking-wider uppercase flex items-center gap-2 ${
+                  addedCutId === currentSlide.id
+                    ? 'bg-emerald-400 text-black scale-105 ring-2 ring-emerald-300'
+                    : 'bg-white text-black hover:bg-gray-200 hover:scale-105 active:scale-95'
+                }`}
+              >
+                {addedCutId === currentSlide.id ? (
+                  <>
+                    <Check className="w-4 h-4" />
+                    <span>Added to Cart</span>
+                  </>
+                ) : (
+                  <>
+                    <span>Shop now</span>
+                    <ArrowRight className="w-3.5 h-3.5" />
+                  </>
+                )}
+              </button>
+
               <button
                 onClick={onExploreCuts}
-                className="w-full py-2.5 rounded-xl bg-white text-[#b80f3b] font-black text-xs uppercase tracking-wider flex items-center justify-center gap-1.5 shadow-md active:scale-98 transition"
+                className="text-gray-300 hover:text-white text-xs font-bold underline underline-offset-4 decoration-white/40 hover:decoration-white transition cursor-pointer"
               >
-                <span>Shop Now</span>
-                <ArrowRight className="w-3.5 h-3.5" />
-              </button>
-
-              <button
-                onClick={onNavigateToReturns}
-                className="w-full py-2.5 rounded-xl bg-black/30 text-white font-bold text-xs flex items-center justify-center gap-1.5 border border-white/20 active:scale-98 transition"
-              >
-                <RotateCcw className="w-3.5 h-3.5 text-emerald-300" />
-                <span>Return Box for ₹250 Refund</span>
+                View Full Catalog
               </button>
             </div>
           </div>
-        </div>
-      </div>
 
-      {/* ======================================================== */}
-      {/* 3. REUSABLE COLD BOX RETURN BANNER                       */}
-      {/* ======================================================== */}
-      <div className="bg-white dark:bg-slate-900 rounded-2xl border border-gray-200 dark:border-slate-800 p-4 sm:p-5 shadow-2xs flex flex-col md:flex-row items-center justify-between gap-4">
-        <div className="flex items-start sm:items-center gap-3.5">
-          <div className="w-12 h-12 rounded-xl bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-200 dark:border-emerald-800 flex items-center justify-center text-emerald-700 dark:text-emerald-400 shrink-0">
-            <QrCode className="w-6 h-6" />
-          </div>
-          <div>
-            <div className="flex flex-wrap items-center gap-2">
-              <span className="font-extrabold text-sm text-gray-900 dark:text-white">
-                Reusable Cold Box
+          {/* Bottom Center: Bold Price Tag */}
+          <div className="text-center shrink-0 px-5 py-2 rounded-2xl bg-white/5 border border-white/15 backdrop-blur-lg">
+            <span className="text-[10px] uppercase font-black text-gray-400 tracking-widest block mb-0.5">
+              Price (500g)
+            </span>
+            <div className="flex items-baseline justify-center gap-2">
+              <span className="text-3xl sm:text-4xl font-black text-white tracking-tight">
+                {currentSlide.price}
               </span>
-              <span className="px-2 py-0.5 rounded-full bg-emerald-100 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300 text-[10px] font-black tracking-wide border border-emerald-300 dark:border-emerald-800">
-                ₹250 REFUNDABLE DEPOSIT
+              <span className="text-sm text-gray-500 line-through font-bold">
+                {currentSlide.mrp}
               </span>
             </div>
-            <p className="text-xs text-gray-500 dark:text-gray-400 mt-1 leading-relaxed">
-              Your order comes in a reusable cold box. Return the box after delivery and get ₹250 back once it's checked.
-            </p>
           </div>
-        </div>
 
-        <button
-          onClick={onNavigateToReturns}
-          className="w-full md:w-auto px-4 py-2.5 bg-emerald-700 dark:bg-emerald-600 hover:bg-emerald-800 dark:hover:bg-emerald-500 text-white rounded-xl text-xs font-extrabold flex items-center justify-center gap-2 shadow-xs transition shrink-0 cursor-pointer"
-        >
-          <RotateCcw className="w-3.5 h-3.5" />
-          <span>Return Box for ₹250</span>
-        </button>
+          {/* Bottom Right: Next / Prev Circular Buttons & Thumbnails */}
+          <div className="flex items-center gap-4 shrink-0">
+            {/* Prev / Next buttons */}
+            <div className="flex items-center gap-2">
+              <button 
+                onClick={handlePrev}
+                className="w-10 h-10 rounded-full bg-white/10 hover:bg-white text-white hover:text-black transition-all flex items-center justify-center shadow-xl cursor-pointer hover:scale-110 active:scale-95 border border-white/20"
+                title="Previous Cut (Left Arrow)"
+              >
+                <ChevronLeft className="w-5 h-5" />
+              </button>
+              
+              <button 
+                onClick={handleNext}
+                className="w-10 h-10 rounded-full bg-white text-black hover:bg-gray-200 transition-all flex items-center justify-center shadow-2xl cursor-pointer hover:scale-110 active:scale-95"
+                title="Next Cut (Right Arrow)"
+              >
+                <ChevronRight className="w-5 h-5" />
+              </button>
+            </div>
+
+            {/* Thumbnail Navigation Bar */}
+            <div className="flex items-center gap-2 bg-white/10 p-1.5 rounded-2xl border border-white/15 backdrop-blur-md">
+              {SLIDES.map((slide, idx) => (
+                <button
+                  key={slide.id}
+                  onClick={() => changeSlide(idx)}
+                  className={`w-9 h-9 sm:w-10 sm:h-10 rounded-xl overflow-hidden border-2 transition-all cursor-pointer ${
+                    idx === currentIndex
+                      ? 'border-white scale-110 shadow-2xl ring-2 ring-white/60'
+                      : 'border-white/20 opacity-40 hover:opacity-90'
+                  }`}
+                  title={slide.title}
+                >
+                  <img src={slide.image} alt={slide.title} className="w-full h-full object-cover" />
+                </button>
+              ))}
+            </div>
+
+            {/* Counter */}
+            <div className="text-xs font-black text-gray-300 tracking-widest pl-1 hidden sm:block">
+              <span>{String(currentIndex + 1).padStart(2, '0')}</span> / <span>{String(SLIDES.length).padStart(2, '0')}</span>
+            </div>
+
+          </div>
+
+        </div>
       </div>
     </div>
   );
