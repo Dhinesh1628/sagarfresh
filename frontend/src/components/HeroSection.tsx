@@ -30,14 +30,15 @@ interface SlideData {
   mrpNum: number;
   image: string;
   bgGradient: string;
+  glowColor: string;
   garnishes: [React.ReactNode, React.ReactNode, React.ReactNode, React.ReactNode];
   productData: Product;
 }
 
-// 100% reliable inline vector garnishes (never broken, crisp at all resolutions)
+// 100% reliable inline vector garnishes
 const Garnishes = {
   iceCube: (
-    <svg viewBox="0 0 120 120" className="w-full h-full drop-shadow-[0_12px_20px_rgba(0,0,0,0.7)]">
+    <svg viewBox="0 0 120 120" className="w-full h-full drop-shadow-[0_15px_25px_rgba(0,0,0,0.8)]">
       <defs>
         <linearGradient id="iceGrad" x1="0" y1="0" x2="1" y2="1">
           <stop offset="0%" stopColor="#ffffff" stopOpacity="0.95" />
@@ -49,13 +50,13 @@ const Garnishes = {
       <line x1="60" y1="10" x2="60" y2="110" stroke="#ffffff" strokeWidth="2" strokeOpacity="0.8" />
       <line x1="60" y1="60" x2="105" y2="35" stroke="#ffffff" strokeWidth="2" strokeOpacity="0.8" />
       <line x1="60" y1="60" x2="15" y2="35" stroke="#ffffff" strokeWidth="2" strokeOpacity="0.8" />
-      <circle cx="45" cy="45" r="4" fill="#ffffff" opacity="0.8" />
-      <circle cx="75" cy="75" r="3" fill="#ffffff" opacity="0.7" />
+      <circle cx="45" cy="45" r="4" fill="#ffffff" opacity="0.85" />
+      <circle cx="75" cy="75" r="3" fill="#ffffff" opacity="0.75" />
     </svg>
   ),
 
   lemonSlice: (
-    <svg viewBox="0 0 140 140" className="w-full h-full drop-shadow-[0_12px_20px_rgba(0,0,0,0.7)]">
+    <svg viewBox="0 0 140 140" className="w-full h-full drop-shadow-[0_15px_25px_rgba(0,0,0,0.8)]">
       <circle cx="70" cy="70" r="65" fill="#facc15" stroke="#eab308" strokeWidth="5" />
       <circle cx="70" cy="70" r="54" fill="#fef08a" />
       <circle cx="70" cy="70" r="50" fill="#facc15" />
@@ -74,7 +75,7 @@ const Garnishes = {
   ),
 
   dillSprig: (
-    <svg viewBox="0 0 100 120" className="w-full h-full drop-shadow-[0_12px_20px_rgba(0,0,0,0.7)]">
+    <svg viewBox="0 0 100 120" className="w-full h-full drop-shadow-[0_15px_25px_rgba(0,0,0,0.8)]">
       <path d="M50,110 Q52,60 48,15" stroke="#15803d" strokeWidth="4" fill="none" strokeLinecap="round" />
       <g stroke="#22c55e" strokeWidth="3" fill="none" strokeLinecap="round">
         <path d="M49,85 Q30,75 18,80" />
@@ -88,7 +89,7 @@ const Garnishes = {
   ),
 
   starAnise: (
-    <svg viewBox="0 0 120 120" className="w-full h-full drop-shadow-[0_12px_20px_rgba(0,0,0,0.7)]">
+    <svg viewBox="0 0 120 120" className="w-full h-full drop-shadow-[0_15px_25px_rgba(0,0,0,0.8)]">
       <g fill="#78350f" stroke="#290e03" strokeWidth="2.5">
         <path d="M60,60 C55,40 50,20 60,8 C70,20 65,40 60,60 Z" />
         <path d="M60,60 C75,45 95,40 107,50 C95,60 75,55 60,60 Z" transform="rotate(45 60 60)" />
@@ -104,7 +105,7 @@ const Garnishes = {
   ),
 
   cinnamon: (
-    <svg viewBox="0 0 140 60" className="w-full h-full drop-shadow-[0_12px_20px_rgba(0,0,0,0.7)]">
+    <svg viewBox="0 0 140 60" className="w-full h-full drop-shadow-[0_15px_25px_rgba(0,0,0,0.8)]">
       <rect x="15" y="15" width="110" height="30" rx="15" fill="#7c2d12" stroke="#1c0a00" strokeWidth="2.5" />
       <ellipse cx="25" cy="30" rx="8" ry="14" fill="#451a03" stroke="#9a3412" strokeWidth="2" />
       <ellipse cx="115" cy="30" rx="8" ry="14" fill="#290e03" />
@@ -112,28 +113,28 @@ const Garnishes = {
   ),
 
   bayLeaf: (
-    <svg viewBox="0 0 100 140" className="w-full h-full drop-shadow-[0_12px_20px_rgba(0,0,0,0.7)]">
+    <svg viewBox="0 0 100 140" className="w-full h-full drop-shadow-[0_15px_25px_rgba(0,0,0,0.8)]">
       <path d="M50,130 Q10,75 50,10 Q90,75 50,130 Z" fill="#4d7c0f" stroke="#1a3d04" strokeWidth="3" />
       <path d="M50,130 Q50,70 50,10" stroke="#bef264" strokeWidth="2" fill="none" />
     </svg>
   ),
 
   redChili: (
-    <svg viewBox="0 0 140 100" className="w-full h-full drop-shadow-[0_12px_20px_rgba(0,0,0,0.7)]">
+    <svg viewBox="0 0 140 100" className="w-full h-full drop-shadow-[0_15px_25px_rgba(0,0,0,0.8)]">
       <path d="M25,25 Q60,15 110,40 Q130,55 125,75 Q85,85 25,25 Z" fill="#dc2626" stroke="#5f0d0d" strokeWidth="3" />
       <path d="M25,25 Q18,20 15,10 Q20,12 25,25" fill="#15803d" stroke="#14532d" strokeWidth="2" />
     </svg>
   ),
 
   garlic: (
-    <svg viewBox="0 0 100 100" className="w-full h-full drop-shadow-[0_12px_20px_rgba(0,0,0,0.7)]">
+    <svg viewBox="0 0 100 100" className="w-full h-full drop-shadow-[0_15px_25px_rgba(0,0,0,0.8)]">
       <path d="M50,15 Q20,50 35,80 Q50,92 65,80 Q80,50 50,15 Z" fill="#fef3c7" stroke="#b45309" strokeWidth="3" />
       <path d="M50,15 Q46,55 48,85" stroke="#d97706" strokeWidth="2" fill="none" />
     </svg>
   ),
 
   lime: (
-    <svg viewBox="0 0 120 120" className="w-full h-full drop-shadow-[0_12px_20px_rgba(0,0,0,0.7)]">
+    <svg viewBox="0 0 120 120" className="w-full h-full drop-shadow-[0_15px_25px_rgba(0,0,0,0.8)]">
       <path d="M15,95 A80,80 0 0,1 95,15 L15,95 Z" fill="#65a30d" stroke="#365314" strokeWidth="4" />
       <path d="M22,88 A68,68 0 0,1 88,22 L22,88 Z" fill="#bef264" />
       <g stroke="#f7fee7" strokeWidth="2.5">
@@ -146,7 +147,7 @@ const Garnishes = {
   ),
 
   saltCrystal: (
-    <svg viewBox="0 0 90 90" className="w-full h-full drop-shadow-[0_12px_20px_rgba(0,0,0,0.7)]">
+    <svg viewBox="0 0 90 90" className="w-full h-full drop-shadow-[0_15px_25px_rgba(0,0,0,0.8)]">
       <polygon points="45,10 75,30 80,65 50,85 15,65 20,30" fill="#ffffff" stroke="#94a3b8" strokeWidth="3" opacity="0.95" />
       <line x1="45" y1="10" x2="50" y2="85" stroke="#cbd5e1" strokeWidth="2" />
       <line x1="75" y1="30" x2="15" y2="65" stroke="#cbd5e1" strokeWidth="2" />
@@ -168,7 +169,8 @@ const SLIDES: SlideData[] = [
     mrp: '₹899',
     mrpNum: 899,
     image: '/images/products/prod_1.jpg',
-    bgGradient: 'radial-gradient(circle at 50% 45%, #2a3138 0%, #181d22 35%, #0c0f12 70%, #050607 100%)',
+    bgGradient: 'radial-gradient(ellipse at 50% 45%, #232a31 0%, #14181c 45%, #080a0c 80%, #030405 100%)',
+    glowColor: 'rgba(255, 255, 255, 0.12)',
     garnishes: [Garnishes.iceCube, Garnishes.lemonSlice, Garnishes.dillSprig, Garnishes.iceCube],
     productData: {
       id: 'prod_1',
@@ -199,7 +201,8 @@ const SLIDES: SlideData[] = [
     mrp: '₹599',
     mrpNum: 599,
     image: '/images/products/prod_4.jpg',
-    bgGradient: 'radial-gradient(circle at 50% 45%, #2c2527 0%, #1a1516 35%, #0e0b0c 70%, #050404 100%)',
+    bgGradient: 'radial-gradient(ellipse at 50% 45%, #261f22 0%, #151113 45%, #090708 80%, #030203 100%)',
+    glowColor: 'rgba(244, 63, 94, 0.15)',
     garnishes: [Garnishes.starAnise, Garnishes.cinnamon, Garnishes.bayLeaf, Garnishes.starAnise],
     productData: {
       id: 'prod_4',
@@ -230,7 +233,8 @@ const SLIDES: SlideData[] = [
     mrp: '₹429',
     mrpNum: 429,
     image: '/images/products/prod_6.jpg',
-    bgGradient: 'radial-gradient(circle at 50% 45%, #2d2824 0%, #1a1714 35%, #0e0c0a 70%, #050404 100%)',
+    bgGradient: 'radial-gradient(ellipse at 50% 45%, #25211d 0%, #151310 45%, #0a0807 80%, #030302 100%)',
+    glowColor: 'rgba(245, 158, 11, 0.14)',
     garnishes: [Garnishes.redChili, Garnishes.garlic, Garnishes.redChili, Garnishes.garlic],
     productData: {
       id: 'prod_6',
@@ -261,7 +265,8 @@ const SLIDES: SlideData[] = [
     mrp: '₹499',
     mrpNum: 499,
     image: '/images/products/prod_3.jpg',
-    bgGradient: 'radial-gradient(circle at 50% 45%, #242c2c 0%, #151a1a 35%, #0b0e0e 70%, #040505 100%)',
+    bgGradient: 'radial-gradient(ellipse at 50% 45%, #1e2525 0%, #111616 45%, #070909 80%, #020303 100%)',
+    glowColor: 'rgba(20, 184, 166, 0.15)',
     garnishes: [Garnishes.lime, Garnishes.saltCrystal, Garnishes.lime, Garnishes.saltCrystal],
     productData: {
       id: 'prod_3',
@@ -334,12 +339,11 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
     const deltaX = touch.clientX - touchStartRef.current.x;
     const deltaY = touch.clientY - touchStartRef.current.y;
 
-    // Horizontal swipe threshold: 45px
     if (Math.abs(deltaX) > 45 && Math.abs(deltaX) > Math.abs(deltaY)) {
       if (deltaX < 0) {
-        handleNext(); // Swiped left -> Next
+        handleNext();
       } else {
-        handlePrev(); // Swiped right -> Prev
+        handlePrev();
       }
     }
 
@@ -347,15 +351,13 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
     setTilt({ x: 0, y: 0 });
   };
 
-  // Mobile Gyroscope Parallax (Tilting physical phone moves the 3D platter)
+  // Mobile Gyroscope Parallax
   useEffect(() => {
     const handleOrientation = (e: DeviceOrientationEvent) => {
       if (isAnimating) return;
       if (e.gamma !== null && e.beta !== null) {
-        // gamma: left-to-right tilt [-90, 90]
-        // beta: front-to-back tilt [-180, 180]
         const clampedGamma = Math.max(-30, Math.min(30, e.gamma)) / 30;
-        const clampedBeta = Math.max(-30, Math.min(30, e.beta - 45)) / 30; // normalized around 45deg viewing angle
+        const clampedBeta = Math.max(-30, Math.min(30, e.beta - 45)) / 30;
         setTilt({ x: clampedGamma, y: clampedBeta });
       }
     };
@@ -412,6 +414,10 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
     }, 1800);
   };
 
+  // Calculated Volumetric Spotlight coordinate
+  const spotX = 50 + tilt.x * 22;
+  const spotY = 45 + tilt.y * 18;
+
   return (
     <div 
       ref={stageRef}
@@ -420,31 +426,71 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
       onTouchStart={handleTouchStart}
       onTouchMove={handleTouchMove}
       onTouchEnd={handleTouchEnd}
-      className="relative w-full rounded-3xl overflow-hidden shadow-2xl border border-white/10 select-none transition-colors duration-700"
+      className="relative w-full rounded-3xl overflow-hidden shadow-[0_30px_90px_-20px_rgba(0,0,0,0.95)] ring-1 ring-white/10 select-none transition-colors duration-700 group/hero"
       style={{
         background: currentSlide.bgGradient,
         perspective: '1600px'
       }}
     >
       {/* ======================================================== */}
-      {/* TOP METADATA BAR (Black & White Luxury Minimalist)       */}
+      {/* 1. ATMOSPHERIC SPOTLIGHT & CINEMATIC VIGNETTE (No Strips)*/}
       {/* ======================================================== */}
-      <div className="relative z-30 px-6 sm:px-10 pt-6 pb-2 flex items-center justify-between border-b border-white/10">
-        <div className="flex items-center gap-2.5">
+      {/* Smooth Volumetric Overhead Spotlight following cursor/tilt */}
+      <div 
+        className="absolute inset-0 pointer-events-none z-5 transition-opacity duration-700"
+        style={{
+          background: `radial-gradient(750px circle at ${spotX}% ${spotY}%, ${currentSlide.glowColor} 0%, rgba(255, 255, 255, 0.02) 45%, transparent 75%)`
+        }}
+      />
+
+      {/* Edge Vignette: Dissolves side edges into deep obsidian without harsh borders */}
+      <div className="absolute inset-0 pointer-events-none z-5 bg-gradient-to-r from-black/40 via-transparent to-black/40" />
+
+      {/* Subtle 0°C Cold-Vapor Mist animation around the platter */}
+      <div className="absolute inset-0 pointer-events-none z-10 overflow-hidden flex items-center justify-center">
+        <div 
+          className="w-96 h-96 rounded-full bg-white/[0.04] blur-3xl animate-pulse pointer-events-none"
+          style={{
+            transform: `translate(${tilt.x * 20}px, ${tilt.y * 15}px) scale(1.15)`,
+            transition: 'transform 0.5s ease-out'
+          }}
+        />
+        <div 
+          className="w-80 h-80 rounded-full bg-cyan-200/[0.03] blur-2xl pointer-events-none"
+          style={{
+            transform: `translate(${tilt.x * -15}px, ${tilt.y * -10}px) scale(0.95)`,
+            transition: 'transform 0.4s ease-out'
+          }}
+        />
+      </div>
+
+      {/* Floating Micro-Frost Crystals (Twinkling cold specks) */}
+      <div className="absolute inset-0 pointer-events-none z-15 overflow-hidden">
+        <span className="absolute top-[22%] left-[25%] w-1.5 h-1.5 rounded-full bg-white/40 blur-[0.5px] animate-ping" style={{ animationDuration: '4s' }} />
+        <span className="absolute top-[35%] right-[28%] w-1 h-1 rounded-full bg-cyan-200/50 blur-[0.5px] animate-pulse" style={{ animationDuration: '3s' }} />
+        <span className="absolute bottom-[30%] left-[32%] w-1.5 h-1.5 rounded-full bg-white/30 blur-[0.5px] animate-pulse" style={{ animationDuration: '5s' }} />
+        <span className="absolute top-[18%] right-[38%] w-1 h-1 rounded-full bg-white/40 animate-ping" style={{ animationDuration: '6s' }} />
+      </div>
+
+      {/* ======================================================== */}
+      {/* 2. TOP METADATA BAR (Seamless Floating Capsule Design)   */}
+      {/* ======================================================== */}
+      <div className="relative z-30 px-6 sm:px-10 pt-6 pb-2 flex items-center justify-between">
+        <div className="flex items-center gap-2.5 px-4 py-2 rounded-full bg-black/30 backdrop-blur-xl ring-1 ring-white/10 shadow-lg">
           <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-ping" />
           <span className="text-xs font-black uppercase tracking-wider text-white">
             0°C – 4°C Active Cold Chain
           </span>
           <span className="text-gray-500 hidden sm:inline">•</span>
           <span className="text-xs text-gray-300 font-semibold hidden sm:inline">
-            ⚡ 90-Min Guaranteed Delivery
+            ⚡ 90-Min Express
           </span>
         </div>
 
         <div className="flex items-center gap-3">
           <button
             onClick={onNavigateToReturns}
-            className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-white/10 hover:bg-white/20 text-white text-xs font-bold border border-white/20 transition cursor-pointer backdrop-blur-md"
+            className="flex items-center gap-1.5 px-4 py-2 rounded-full bg-black/30 hover:bg-white/15 text-white text-xs font-bold ring-1 ring-white/15 hover:ring-white/30 transition-all cursor-pointer backdrop-blur-xl shadow-lg"
           >
             <RotateCcw className="w-3.5 h-3.5 text-emerald-300" />
             <span>₹250 Box Refund</span>
@@ -453,7 +499,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
       </div>
 
       {/* ======================================================== */}
-      {/* MAIN 3D SHOWCASE HERO STAGE                              */}
+      {/* 3. MAIN 3D SHOWCASE HERO STAGE                           */}
       {/* ======================================================== */}
       <div className="relative min-h-[380px] sm:min-h-[460px] md:min-h-[520px] flex items-center justify-center px-4 overflow-hidden">
         
@@ -469,14 +515,14 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
           }}
         >
           <span 
-            className={`font-black uppercase tracking-[0.12em] text-white select-none transition-all duration-500 ${
+            className={`font-black uppercase tracking-[0.14em] text-white select-none transition-all duration-500 ${
               isAnimating ? 'opacity-0 scale-90 translate-y-12' : 'opacity-95 scale-100 translate-y-0'
             }`}
             style={{
               fontSize: 'clamp(4.5rem, 15vw, 15rem)',
               lineHeight: '0.85',
               fontFamily: 'Montserrat, system-ui, -apple-system, sans-serif',
-              textShadow: '0 25px 50px rgba(0, 0, 0, 0.95)'
+              textShadow: '0 30px 60px rgba(0, 0, 0, 0.95)'
             }}
           >
             {currentSlide.giantText}
@@ -487,7 +533,6 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
         {/* FLOATING INLINE GARNISHES (Multi-depth parallax)     */}
         {/* ---------------------------------------------------- */}
         <div className="absolute inset-0 pointer-events-none z-10">
-          {/* Top Left */}
           <div 
             className="absolute top-[10%] left-[8%] sm:left-[14%] w-18 h-18 sm:w-26 sm:h-26 transition-transform duration-200"
             style={{ transform: `translate(${tilt.x * 40}px, ${tilt.y * 30}px)` }}
@@ -495,7 +540,6 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
             {currentSlide.garnishes[0]}
           </div>
 
-          {/* Top Right */}
           <div 
             className="absolute top-[12%] right-[8%] sm:right-[14%] w-18 h-18 sm:w-26 sm:h-26 transition-transform duration-200"
             style={{ transform: `translate(${tilt.x * -35}px, ${tilt.y * 45}px)` }}
@@ -503,7 +547,6 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
             {currentSlide.garnishes[1]}
           </div>
 
-          {/* Bottom Right */}
           <div 
             className="absolute bottom-[10%] right-[10%] sm:right-[18%] w-16 h-16 sm:w-22 sm:h-22 transition-transform duration-200"
             style={{ transform: `translate(${tilt.x * 25}px, ${tilt.y * -35}px)` }}
@@ -511,7 +554,6 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
             {currentSlide.garnishes[2]}
           </div>
 
-          {/* Bottom Left */}
           <div 
             className="absolute bottom-[12%] left-[10%] sm:left-[16%] w-16 h-16 sm:w-22 sm:h-22 transition-transform duration-200"
             style={{ transform: `translate(${tilt.x * -45}px, ${tilt.y * -25}px)` }}
@@ -526,27 +568,27 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
         <div 
           className="relative z-20 cursor-pointer"
           style={{
-            transform: `rotateY(${tilt.x * 15}deg) rotateX(${-tilt.y * 15}deg) translateZ(40px)`,
+            transform: `rotateY(${tilt.x * 16}deg) rotateX(${-tilt.y * 16}deg) translateZ(45px)`,
             transformStyle: 'preserve-3d',
             transition: isAnimating 
               ? 'transform 0.4s cubic-bezier(0.34, 1.4, 0.64, 1), opacity 0.3s ease' 
               : 'transform 0.15s ease-out'
           }}
         >
-          <div className={`relative flex items-center justify-center drop-shadow-[0_35px_50px_rgba(0,0,0,0.85)] transition-all duration-500 ${
+          <div className={`relative flex items-center justify-center transition-all duration-500 ${
             isAnimating ? 'opacity-0 scale-75 translate-y-16' : 'opacity-100 scale-100 translate-y-0'
           }`}>
             
-            {/* Frosted Monochrome Platter with High-Res Product Cut */}
-            <div className="relative w-56 h-56 sm:w-72 sm:h-72 md:w-88 md:h-88 rounded-full p-3 sm:p-4 bg-gradient-to-tr from-white/30 via-white/10 to-transparent backdrop-blur-2xl border-4 border-white/50 shadow-2xl overflow-hidden flex items-center justify-center group">
+            {/* Frosted Glass Culinary Platter (No thick white border strip) */}
+            <div className="relative w-56 h-56 sm:w-72 sm:h-72 md:w-88 md:h-88 rounded-full p-3 sm:p-4 bg-gradient-to-tr from-white/15 via-white/5 to-transparent backdrop-blur-3xl ring-1 ring-white/20 shadow-[0_0_60px_rgba(255,255,255,0.06),0_35px_80px_rgba(0,0,0,0.95)] overflow-hidden flex items-center justify-center group">
               <img 
                 src={currentSlide.image} 
                 alt={currentSlide.title}
                 className="w-full h-full object-cover rounded-full transition-transform duration-700 group-hover:scale-105"
               />
 
-              {/* Cold-Chain Telemetry Pill Overlay Inside Platter */}
-              <div className="absolute bottom-4 sm:bottom-6 inset-x-4 sm:inset-x-8 bg-black/75 backdrop-blur-xl rounded-2xl py-2 px-3 sm:px-4 text-center shadow-2xl border border-white/30">
+              {/* Cold-Chain Telemetry Capsule Inside Platter */}
+              <div className="absolute bottom-4 sm:bottom-6 inset-x-4 sm:inset-x-8 bg-black/80 backdrop-blur-2xl rounded-2xl py-2 px-3 sm:px-4 text-center shadow-2xl ring-1 ring-white/20">
                 <div className="flex items-center justify-center gap-2 text-white font-black text-[10px] sm:text-xs uppercase tracking-wider">
                   <span className="w-2 h-2 rounded-full bg-emerald-400" />
                   <span>{currentSlide.cutStyle}</span>
@@ -572,7 +614,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
           }}
         >
           <span 
-            className={`font-black uppercase tracking-[0.12em] select-none transition-all duration-500 ${
+            className={`font-black uppercase tracking-[0.14em] select-none transition-all duration-500 ${
               isAnimating ? 'opacity-0 scale-90 translate-y-12' : 'opacity-95 scale-100 translate-y-0'
             }`}
             style={{
@@ -581,7 +623,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
               fontFamily: 'Montserrat, system-ui, -apple-system, sans-serif',
               color: 'transparent',
               WebkitTextStroke: '2px rgba(255, 255, 255, 0.95)',
-              filter: 'drop-shadow(0 0 10px rgba(255, 255, 255, 0.25))'
+              filter: 'drop-shadow(0 0 8px rgba(255, 255, 255, 0.2))'
             }}
           >
             {currentSlide.giantText}
@@ -591,9 +633,9 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
       </div>
 
       {/* ======================================================== */}
-      {/* BOTTOM CONTROL PANEL (Exact Replica of Reference Video)  */}
+      {/* 4. BOTTOM CONTROL PANEL (Seamless Obsidian Glass)        */}
       {/* ======================================================== */}
-      <div className="relative z-40 px-6 sm:px-10 py-5 bg-black/60 backdrop-blur-xl border-t border-white/10">
+      <div className="relative z-40 px-6 sm:px-10 py-6 bg-gradient-to-t from-black/90 via-black/60 to-transparent backdrop-blur-md">
         <div className="flex flex-col md:flex-row items-center justify-between gap-5">
           
           {/* Bottom Left: Title, Tagline, Description & Shop Now Button */}
@@ -643,8 +685,8 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
             </div>
           </div>
 
-          {/* Bottom Center: Bold Price Tag */}
-          <div className="text-center shrink-0 px-5 py-2 rounded-2xl bg-white/5 border border-white/15 backdrop-blur-lg">
+          {/* Bottom Center: Bold Price Tag Capsule */}
+          <div className="text-center shrink-0 px-6 py-2.5 rounded-full bg-black/40 ring-1 ring-white/15 backdrop-blur-xl shadow-xl">
             <span className="text-[10px] uppercase font-black text-gray-400 tracking-widest block mb-0.5">
               Price (500g)
             </span>
@@ -664,7 +706,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
             <div className="flex items-center gap-2">
               <button 
                 onClick={handlePrev}
-                className="w-10 h-10 rounded-full bg-white/10 hover:bg-white text-white hover:text-black transition-all flex items-center justify-center shadow-xl cursor-pointer hover:scale-110 active:scale-95 border border-white/20"
+                className="w-10 h-10 rounded-full bg-black/40 hover:bg-white text-white hover:text-black transition-all flex items-center justify-center shadow-xl cursor-pointer hover:scale-110 active:scale-95 ring-1 ring-white/15"
                 title="Previous Cut (Left Arrow)"
               >
                 <ChevronLeft className="w-5 h-5" />
@@ -680,15 +722,15 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
             </div>
 
             {/* Thumbnail Navigation Bar */}
-            <div className="flex items-center gap-2 bg-white/10 p-1.5 rounded-2xl border border-white/15 backdrop-blur-md">
+            <div className="flex items-center gap-2 bg-black/40 p-1.5 rounded-full ring-1 ring-white/15 backdrop-blur-xl">
               {SLIDES.map((slide, idx) => (
                 <button
                   key={slide.id}
                   onClick={() => changeSlide(idx)}
-                  className={`w-9 h-9 sm:w-10 sm:h-10 rounded-xl overflow-hidden border-2 transition-all cursor-pointer ${
+                  className={`w-9 h-9 sm:w-10 sm:h-10 rounded-full overflow-hidden transition-all cursor-pointer ${
                     idx === currentIndex
-                      ? 'border-white scale-110 shadow-2xl ring-2 ring-white/60'
-                      : 'border-white/20 opacity-40 hover:opacity-90'
+                      ? 'ring-2 ring-white scale-110 shadow-2xl'
+                      : 'opacity-40 hover:opacity-90'
                   }`}
                   title={slide.title}
                 >
@@ -698,8 +740,8 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
             </div>
 
             {/* Counter */}
-            <div className="text-xs font-black text-gray-300 tracking-widest pl-1 hidden sm:block">
-              <span>{String(currentIndex + 1).padStart(2, '0')}</span> / <span>{String(SLIDES.length).padStart(2, '0')}</span>
+            <div className="text-xs font-black text-gray-400 tracking-widest pl-1 hidden sm:block">
+              <span className="text-white">{String(currentIndex + 1).padStart(2, '0')}</span> / <span>{String(SLIDES.length).padStart(2, '0')}</span>
             </div>
 
           </div>
