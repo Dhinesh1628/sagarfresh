@@ -1,0 +1,96 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 480" width="100%" height="100%">
+  <defs>
+    <linearGradient id="bg3" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#0b1120"/>
+      <stop offset="100%" stop-color="#020617"/>
+    </linearGradient>
+    <marker id="arr1" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1 L 8 5 L 0 9 z" fill="#38bdf8"/>
+    </marker>
+    <marker id="arrRed2" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1 L 8 5 L 0 9 z" fill="#f43f5e"/>
+    </marker>
+  </defs>
+
+  <rect width="960" height="480" rx="16" fill="url(#bg3)" stroke="#334155" stroke-width="1.5"/>
+
+  <!-- Title -->
+  <text x="40" y="44" font-family="system-ui, sans-serif" font-size="18" font-weight="800" fill="#f8fafc">Order State Engine &amp; Decoupled Lifecycle Matrix</text>
+  <text x="40" y="64" font-family="system-ui, sans-serif" font-size="11" fill="#94a3b8">Independent State Transitions: Fulfillment Pipeline vs Payment vs Deposit Refund</text>
+
+  <!-- Pipeline Stages -->
+  <!-- 1. PENDING -->
+  <rect x="40" y="110" width="115" height="60" rx="8" fill="#1e293b" stroke="#64748b" stroke-width="1.5"/>
+  <text x="97" y="135" font-family="system-ui, sans-serif" font-size="12" font-weight="700" fill="#cbd5e1" text-anchor="middle">PENDING</text>
+  <text x="97" y="153" font-family="system-ui, sans-serif" font-size="9" fill="#94a3b8" text-anchor="middle">Awaiting Checkout</text>
+
+  <line x1="155" y1="140" x2="185" y2="140" stroke="#38bdf8" stroke-width="2" marker-end="url(#arr1)"/>
+
+  <!-- 2. CONFIRMED -->
+  <rect x="185" y="110" width="115" height="60" rx="8" fill="#0284c7" fill-opacity="0.2" stroke="#38bdf8" stroke-width="1.5"/>
+  <text x="242" y="135" font-family="system-ui, sans-serif" font-size="12" font-weight="700" fill="#38bdf8" text-anchor="middle">CONFIRMED</text>
+  <text x="242" y="153" font-family="system-ui, sans-serif" font-size="9" fill="#94a3b8" text-anchor="middle">Paid / COD Accepted</text>
+
+  <line x1="300" y1="140" x2="330" y2="140" stroke="#38bdf8" stroke-width="2" marker-end="url(#arr1)"/>
+
+  <!-- 3. PREPARING -->
+  <rect x="330" y="110" width="115" height="60" rx="8" fill="#1e293b" stroke="#f59e0b" stroke-width="1.5"/>
+  <text x="387" y="135" font-family="system-ui, sans-serif" font-size="12" font-weight="700" fill="#fbbf24" text-anchor="middle">PREPARING</text>
+  <text x="387" y="153" font-family="system-ui, sans-serif" font-size="9" fill="#94a3b8" text-anchor="middle">Custom Cut Butchery</text>
+
+  <line x1="445" y1="140" x2="475" y2="140" stroke="#38bdf8" stroke-width="2" marker-end="url(#arr1)"/>
+
+  <!-- 4. QUALITY_CHECK -->
+  <rect x="475" y="110" width="125" height="60" rx="8" fill="#1e293b" stroke="#a855f7" stroke-width="1.5"/>
+  <text x="537" y="135" font-family="system-ui, sans-serif" font-size="11" font-weight="700" fill="#c084fc" text-anchor="middle">QUALITY_CHECK</text>
+  <text x="537" y="153" font-family="system-ui, sans-serif" font-size="9" fill="#94a3b8" text-anchor="middle">FSSAI Inward Inspection</text>
+
+  <line x1="600" y1="140" x2="630" y2="140" stroke="#38bdf8" stroke-width="2" marker-end="url(#arr1)"/>
+
+  <!-- 5. PACKED -->
+  <rect x="630" y="110" width="115" height="60" rx="8" fill="#1e293b" stroke="#06b6d4" stroke-width="1.5"/>
+  <text x="687" y="135" font-family="system-ui, sans-serif" font-size="12" font-weight="700" fill="#22d3ee" text-anchor="middle">PACKED</text>
+  <text x="687" y="153" font-family="system-ui, sans-serif" font-size="9" fill="#94a3b8" text-anchor="middle">EPP Cold-Box Sealed</text>
+
+  <line x1="745" y1="140" x2="775" y2="140" stroke="#38bdf8" stroke-width="2" marker-end="url(#arr1)"/>
+
+  <!-- 6. OUT_FOR_DELIVERY -->
+  <rect x="775" y="110" width="145" height="60" rx="8" fill="#1e293b" stroke="#3b82f6" stroke-width="1.5"/>
+  <text x="847" y="135" font-family="system-ui, sans-serif" font-size="11" font-weight="700" fill="#60a5fa" text-anchor="middle">OUT_FOR_DELIVERY</text>
+  <text x="847" y="153" font-family="system-ui, sans-serif" font-size="9" fill="#94a3b8" text-anchor="middle">Insulated EV En Route</text>
+
+  <!-- 7. DELIVERED (Lower right) -->
+  <line x1="847" y1="170" x2="847" y2="210" stroke="#10b981" stroke-width="2" marker-end="url(#arr1)"/>
+  <rect x="775" y="210" width="145" height="60" rx="8" fill="#059669" fill-opacity="0.2" stroke="#10b981" stroke-width="1.5"/>
+  <text x="847" y="235" font-family="system-ui, sans-serif" font-size="12" font-weight="700" fill="#34d399" text-anchor="middle">DELIVERED</text>
+  <text x="847" y="253" font-family="system-ui, sans-serif" font-size="9" fill="#94a3b8" text-anchor="middle">Order Complete</text>
+
+  <!-- CANCELLED Branch -->
+  <path d="M 242 170 L 242 220 L 330 220" stroke="#f43f5e" stroke-width="2" marker-end="url(#arrRed2)"/>
+  <rect x="330" y="200" width="125" height="48" rx="8" fill="#f43f5e" fill-opacity="0.15" stroke="#f43f5e"/>
+  <text x="392" y="222" font-family="system-ui, sans-serif" font-size="11" font-weight="700" fill="#fb7185" text-anchor="middle">CANCELLED</text>
+  <text x="392" y="238" font-family="system-ui, sans-serif" font-size="8" fill="#94a3b8" text-anchor="middle">Restores Inventory &amp; Cooler</text>
+
+  <!-- Decoupled Matrices Table (Lower) -->
+  <rect x="40" y="295" width="880" height="155" rx="10" fill="#0f172a" stroke="#334155"/>
+  <text x="60" y="322" font-family="system-ui, sans-serif" font-size="13" font-weight="700" fill="#f1f5f9">State Machine Decoupling Architecture</text>
+  
+  <!-- Sub-table cols -->
+  <rect x="60" y="335" width="260" height="95" rx="6" fill="#1e293b" stroke="#475569"/>
+  <text x="75" y="355" font-family="system-ui, sans-serif" font-size="11" font-weight="700" fill="#38bdf8">1. Payment Status (Razorpay)</text>
+  <text x="75" y="375" font-family="system-ui, sans-serif" font-size="10" fill="#cbd5e1">• PENDING (Awaiting Gateway)</text>
+  <text x="75" y="392" font-family="system-ui, sans-serif" font-size="10" fill="#34d399">• PAID (Verified HMAC SHA-256)</text>
+  <text x="75" y="409" font-family="system-ui, sans-serif" font-size="10" fill="#fb7185">• FAILED / REFUNDED</text>
+
+  <rect x="350" y="335" width="260" height="95" rx="6" fill="#1e293b" stroke="#475569"/>
+  <text x="365" y="355" font-family="system-ui, sans-serif" font-size="11" font-weight="700" fill="#fbbf24">2. Order Status (Fulfillment)</text>
+  <text x="365" y="375" font-family="system-ui, sans-serif" font-size="10" fill="#cbd5e1">• Managed by Operations Hub team</text>
+  <text x="365" y="392" font-family="system-ui, sans-serif" font-size="10" fill="#cbd5e1">• Advances from CONFIRMED to DELIVERED</text>
+  <text x="365" y="409" font-family="system-ui, sans-serif" font-size="10" fill="#cbd5e1">• Independent of gateway timeout</text>
+
+  <rect x="640" y="335" width="260" height="95" rx="6" fill="#1e293b" stroke="#475569"/>
+  <text x="655" y="355" font-family="system-ui, sans-serif" font-size="11" font-weight="700" fill="#34d399">3. Cold-Box Deposit (₹250)</text>
+  <text x="655" y="375" font-family="system-ui, sans-serif" font-size="10" fill="#cbd5e1">• HELD (In customer possession)</text>
+  <text x="655" y="392" font-family="system-ui, sans-serif" font-size="10" fill="#fbbf24">• RETURN_REQUESTED (Pickup booked)</text>
+  <text x="655" y="409" font-family="system-ui, sans-serif" font-size="10" fill="#34d399">• REFUNDED (Processed to UPI ID)</text>
+</svg>

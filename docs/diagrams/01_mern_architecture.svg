@@ -1,0 +1,116 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 480" width="100%" height="100%">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#0b1120"/>
+      <stop offset="100%" stop-color="#020617"/>
+    </linearGradient>
+    <linearGradient id="cardGrad" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#1e293b"/>
+      <stop offset="100%" stop-color="#0f172a"/>
+    </linearGradient>
+    <marker id="arrow" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1 L 8 5 L 0 9 z" fill="#38bdf8"/>
+    </marker>
+    <marker id="arrowRed" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1 L 8 5 L 0 9 z" fill="#f43f5e"/>
+    </marker>
+    <marker id="arrowGreen" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1 L 8 5 L 0 9 z" fill="#10b981"/>
+    </marker>
+  </defs>
+
+  <rect width="960" height="480" rx="16" fill="url(#bg)" stroke="#334155" stroke-width="1.5"/>
+
+  <!-- Title -->
+  <text x="40" y="48" font-family="system-ui, sans-serif" font-size="20" font-weight="800" fill="#f8fafc">GoMeat Full-Stack MERN System Architecture</text>
+  <text x="40" y="70" font-family="system-ui, sans-serif" font-size="12" fill="#94a3b8">End-to-End Component Boundaries, Protocol Interfaces, and Data Flow</text>
+
+  <!-- Client Layer -->
+  <rect x="40" y="100" width="250" height="340" rx="12" fill="url(#cardGrad)" stroke="#38bdf8" stroke-width="1.5"/>
+  <rect x="52" y="112" width="226" height="32" rx="6" fill="#0284c7" fill-opacity="0.2"/>
+  <text x="64" y="133" font-family="system-ui, sans-serif" font-size="14" font-weight="700" fill="#38bdf8">Frontend: React 18 + Vite</text>
+  
+  <rect x="52" y="156" width="226" height="48" rx="6" fill="#0f172a" stroke="#334155"/>
+  <text x="64" y="176" font-family="system-ui, sans-serif" font-size="11" font-weight="600" fill="#f1f5f9">UI Views &amp; SPA Routing</text>
+  <text x="64" y="193" font-family="system-ui, sans-serif" font-size="10" fill="#64748b">Catalog, Tracking, Hub Ops, Returns</text>
+
+  <rect x="52" y="214" width="226" height="48" rx="6" fill="#0f172a" stroke="#334155"/>
+  <text x="64" y="234" font-family="system-ui, sans-serif" font-size="11" font-weight="600" fill="#f1f5f9">State Contexts (Auth, Cart)</text>
+  <text x="64" y="251" font-family="system-ui, sans-serif" font-size="10" fill="#64748b">JWT Token Storage, Cart Calculation</text>
+
+  <rect x="52" y="272" width="226" height="48" rx="6" fill="#0f172a" stroke="#334155"/>
+  <text x="64" y="292" font-family="system-ui, sans-serif" font-size="11" font-weight="600" fill="#f1f5f9">Client SDKs &amp; Modules</text>
+  <text x="64" y="309" font-family="system-ui, sans-serif" font-size="10" fill="#64748b">Razorpay Checkout Modal, Invoicing</text>
+
+  <rect x="52" y="330" width="226" height="96" rx="6" fill="#0284c7" fill-opacity="0.1" stroke="#0284c7" stroke-dasharray="3 3"/>
+  <text x="64" y="352" font-family="system-ui, sans-serif" font-size="11" font-weight="700" fill="#38bdf8">Edge CDN Hosting</text>
+  <text x="64" y="372" font-family="system-ui, sans-serif" font-size="10" fill="#94a3b8">Vercel Global Edge Network</text>
+  <text x="64" y="390" font-family="system-ui, sans-serif" font-size="10" fill="#94a3b8">Automated Git Main CI/CD</text>
+  <text x="64" y="408" font-family="system-ui, sans-serif" font-size="10" fill="#94a3b8">Brotli/Gzip Assets Delivery</text>
+
+  <!-- Connectors Frontend -> Backend -->
+  <path d="M 290 180 L 370 180" stroke="#38bdf8" stroke-width="2" marker-end="url(#arrow)"/>
+  <text x="300" y="170" font-family="system-ui, sans-serif" font-size="9" fill="#38bdf8">REST HTTPS</text>
+
+  <path d="M 370 210 L 290 210" stroke="#94a3b8" stroke-width="1.5" stroke-dasharray="4 4" marker-end="url(#arrow)"/>
+  <text x="302" y="225" font-family="system-ui, sans-serif" font-size="9" fill="#94a3b8">JSON DTO</text>
+
+  <!-- Backend Layer -->
+  <rect x="370" y="100" width="260" height="340" rx="12" fill="url(#cardGrad)" stroke="#10b981" stroke-width="1.5"/>
+  <rect x="382" y="112" width="236" height="32" rx="6" fill="#059669" fill-opacity="0.2"/>
+  <text x="394" y="133" font-family="system-ui, sans-serif" font-size="14" font-weight="700" fill="#34d399">Backend: Node.js + Express</text>
+
+  <rect x="382" y="156" width="236" height="52" rx="6" fill="#0f172a" stroke="#334155"/>
+  <text x="394" y="176" font-family="system-ui, sans-serif" font-size="11" font-weight="600" fill="#f1f5f9">Cryptographic Router</text>
+  <text x="394" y="193" font-family="system-ui, sans-serif" font-size="10" fill="#64748b">rawBody Preservation for Webhooks</text>
+  <text x="394" y="204" font-family="system-ui, sans-serif" font-size="9" fill="#10b981">crypto.createHmac('sha256')</text>
+
+  <rect x="382" y="218" width="236" height="52" rx="6" fill="#0f172a" stroke="#334155"/>
+  <text x="394" y="238" font-family="system-ui, sans-serif" font-size="11" font-weight="600" fill="#f1f5f9">State Machine &amp; Pricing Engine</text>
+  <text x="394" y="255" font-family="system-ui, sans-serif" font-size="10" fill="#64748b">Server-authoritative Price Recalculation</text>
+  <text x="394" y="266" font-family="system-ui, sans-serif" font-size="9" fill="#f59e0b">Zero trust on client-submitted prices</text>
+
+  <rect x="382" y="280" width="236" height="52" rx="6" fill="#0f172a" stroke="#334155"/>
+  <text x="394" y="300" font-family="system-ui, sans-serif" font-size="11" font-weight="600" fill="#f1f5f9">Auth &amp; RBAC Middleware</text>
+  <text x="394" y="317" font-family="system-ui, sans-serif" font-size="10" fill="#64748b">JWT 7-day Tokens, Role Inspection</text>
+  <text x="394" y="328" font-family="system-ui, sans-serif" font-size="9" fill="#38bdf8">requireAdmin &amp; authenticate</text>
+
+  <rect x="382" y="342" width="236" height="84" rx="6" fill="#0f172a" stroke="#334155"/>
+  <text x="394" y="362" font-family="system-ui, sans-serif" font-size="11" font-weight="600" fill="#f1f5f9">Persistence Abstraction Layer</text>
+  <text x="394" y="380" font-family="system-ui, sans-serif" font-size="10" fill="#64748b">Mongoose ODM + Multi-Model Sync</text>
+  <text x="394" y="396" font-family="system-ui, sans-serif" font-size="10" fill="#64748b">Fallback High-Speed In-Memory Cache</text>
+  <text x="394" y="414" font-family="system-ui, sans-serif" font-size="9" fill="#10b981">Auto-reconnection logic on drop</text>
+
+  <!-- Connectors Backend -> Database -->
+  <path d="M 630 200 L 710 200" stroke="#10b981" stroke-width="2" marker-end="url(#arrowGreen)"/>
+  <text x="640" y="190" font-family="system-ui, sans-serif" font-size="9" fill="#10b981">Mongoose</text>
+
+  <path d="M 710 230 L 630 230" stroke="#94a3b8" stroke-width="1.5" stroke-dasharray="4 4" marker-end="url(#arrow)"/>
+  <text x="645" y="245" font-family="system-ui, sans-serif" font-size="9" fill="#94a3b8">BSON Docs</text>
+
+  <!-- Database Layer -->
+  <rect x="710" y="100" width="210" height="340" rx="12" fill="url(#cardGrad)" stroke="#10b981" stroke-width="1.5"/>
+  <rect x="722" y="112" width="186" height="32" rx="6" fill="#059669" fill-opacity="0.2"/>
+  <text x="734" y="133" font-family="system-ui, sans-serif" font-size="14" font-weight="700" fill="#34d399">MongoDB Atlas Cloud</text>
+
+  <rect x="722" y="156" width="186" height="42" rx="6" fill="#0f172a" stroke="#334155"/>
+  <text x="732" y="174" font-family="system-ui, sans-serif" font-size="10" font-weight="600" fill="#f1f5f9">Users Collection</text>
+  <text x="732" y="189" font-family="system-ui, sans-serif" font-size="9" fill="#64748b">Auth, Roles, Balances, UPI</text>
+
+  <rect x="722" y="206" width="186" height="42" rx="6" fill="#0f172a" stroke="#334155"/>
+  <text x="732" y="224" font-family="system-ui, sans-serif" font-size="10" font-weight="600" fill="#f1f5f9">Products Collection</text>
+  <text x="732" y="239" font-family="system-ui, sans-serif" font-size="9" fill="#64748b">Prices, Stock, Weights, Cuts</text>
+
+  <rect x="722" y="256" width="186" height="42" rx="6" fill="#0f172a" stroke="#334155"/>
+  <text x="732" y="274" font-family="system-ui, sans-serif" font-size="10" font-weight="600" fill="#f1f5f9">Orders Collection</text>
+  <text x="732" y="289" font-family="system-ui, sans-serif" font-size="9" fill="#64748b">Item Snapshots, State Machines</text>
+
+  <rect x="722" y="306" width="186" height="42" rx="6" fill="#0f172a" stroke="#334155"/>
+  <text x="732" y="324" font-family="system-ui, sans-serif" font-size="10" font-weight="600" fill="#f1f5f9">Coolers Fleet Collection</text>
+  <text x="732" y="339" font-family="system-ui, sans-serif" font-size="9" fill="#64748b">ThermalVault Barcodes &amp; Cycles</text>
+
+  <rect x="722" y="356" width="186" height="70" rx="6" fill="#059669" fill-opacity="0.1" stroke="#059669" stroke-dasharray="3 3"/>
+  <text x="732" y="376" font-family="system-ui, sans-serif" font-size="10" font-weight="700" fill="#34d399">Cluster Resilience</text>
+  <text x="732" y="393" font-family="system-ui, sans-serif" font-size="9" fill="#94a3b8">3-Node Replica Set</text>
+  <text x="732" y="408" font-family="system-ui, sans-serif" font-size="9" fill="#94a3b8">Automated Failover &amp; TLS 1.3</text>
+</svg>

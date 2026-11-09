@@ -1,0 +1,589 @@
+{
+  "sagarfresh": [
+    {
+      "file": ".env",
+      "line": 4,
+      "text": "MONGODB_URI=mongodb+srv://dhineshkandukuri2023_db_user:Dinnu2005@cluster0.6rm7klj.mongodb.net/sagarfresh?retryWrites=true&w=majority"
+    },
+    {
+      "file": ".env",
+      "line": 4,
+      "text": "MONGODB_URI=mongodb+srv://dhineshkandukuri2023_db_user:Dinnu2005@cluster0.6rm7klj.mongodb.net/sagarfresh?retryWrites=true&w=majority"
+    },
+    {
+      "file": ".env.example",
+      "line": 6,
+      "text": "# MONGODB_URI=mongodb+srv://<username>:<password>@cluster0.abcde.mongodb.net/sagarfresh?retryWrites=true&w=majority"
+    },
+    {
+      "file": ".env.example",
+      "line": 6,
+      "text": "# MONGODB_URI=mongodb+srv://<username>:<password>@cluster0.abcde.mongodb.net/sagarfresh?retryWrites=true&w=majority"
+    },
+    {
+      "file": ".env.example",
+      "line": 7,
+      "text": "MONGODB_URI=mongodb://127.0.0.1:27017/sagarfresh"
+    },
+    {
+      "file": ".env.example",
+      "line": 7,
+      "text": "MONGODB_URI=mongodb://127.0.0.1:27017/sagarfresh"
+    },
+    {
+      "file": "create_presentation.js",
+      "line": 362,
+      "text": "'MongoDB Atlas cloud cluster (sagarfresh database)',"
+    },
+    {
+      "file": "create_presentation.js",
+      "line": 362,
+      "text": "'MongoDB Atlas cloud cluster (sagarfresh database)',"
+    },
+    {
+      "file": "create_presentation.js",
+      "line": 1471,
+      "text": "'• Live Website: https://gomeat-git-main-dhinesh-s-projects1.vercel.app\\n• API Production Health: https://gomeat-git-main-dhinesh-s-projects1.vercel.app/api/health\\n• GitHub Repository: https://github.com/Dhinesh1628/sagarfresh (Branch: main)',"
+    },
+    {
+      "file": "create_presentation.js",
+      "line": 1471,
+      "text": "'• Live Website: https://gomeat-git-main-dhinesh-s-projects1.vercel.app\\n• API Production Health: https://gomeat-git-main-dhinesh-s-projects1.vercel.app/api/health\\n• GitHub Repository: https://github.com/Dhinesh1628/sagarfresh (Branch: main)',"
+    },
+    {
+      "file": "deck.html",
+      "line": 723,
+      "text": "GitHub (Dhinesh1628/sagarfresh) ➔ Automated Vercel Build ➔ Serverless Node Runtime ➔ MongoDB Atlas Cloud (Sharded Cluster)"
+    },
+    {
+      "file": "deck.html",
+      "line": 723,
+      "text": "GitHub (Dhinesh1628/sagarfresh) ➔ Automated Vercel Build ➔ Serverless Node Runtime ➔ MongoDB Atlas Cloud (Sharded Cluster)"
+    },
+    {
+      "file": "intern_deck.html",
+      "line": 829,
+      "text": "<p style=\"font-size: 12px; color: #94a3b8;\">Live prototype running locally on Port 5000 and deployed on GitHub (`Dhinesh1628/sagarfresh`).</p>"
+    },
+    {
+      "file": "intern_deck.html",
+      "line": 829,
+      "text": "<p style=\"font-size: 12px; color: #94a3b8;\">Live prototype running locally on Port 5000 and deployed on GitHub (`Dhinesh1628/sagarfresh`).</p>"
+    },
+    {
+      "file": "package-lock.json",
+      "line": 2,
+      "text": "\"name\": \"sagarfresh\","
+    },
+    {
+      "file": "package-lock.json",
+      "line": 2,
+      "text": "\"name\": \"sagarfresh\","
+    },
+    {
+      "file": "package-lock.json",
+      "line": 8,
+      "text": "\"name\": \"sagarfresh\","
+    },
+    {
+      "file": "package-lock.json",
+      "line": 8,
+      "text": "\"name\": \"sagarfresh\","
+    },
+    {
+      "file": "package.json",
+      "line": 2,
+      "text": "\"name\": \"sagarfresh\","
+    },
+    {
+      "file": "package.json",
+      "line": 2,
+      "text": "\"name\": \"sagarfresh\","
+    },
+    {
+      "file": "presentation.html",
+      "line": 241,
+      "text": "<span class=\"text-[10px] font-mono text-slate-400 border-t pt-2 block\">sagarfresh production DB</span>"
+    },
+    {
+      "file": "presentation.html",
+      "line": 241,
+      "text": "<span class=\"text-[10px] font-mono text-slate-400 border-t pt-2 block\">sagarfresh production DB</span>"
+    },
+    {
+      "file": "presentation.html",
+      "line": 1035,
+      "text": "Repository: <span class=\"text-white\">Dhinesh1628/sagarfresh (main)</span>"
+    },
+    {
+      "file": "presentation.html",
+      "line": 1035,
+      "text": "Repository: <span class=\"text-white\">Dhinesh1628/sagarfresh (main)</span>"
+    },
+    {
+      "file": "README.md",
+      "line": 50,
+      "text": "git clone https://github.com/Dhinesh1628/sagarfresh.git"
+    },
+    {
+      "file": "README.md",
+      "line": 50,
+      "text": "git clone https://github.com/Dhinesh1628/sagarfresh.git"
+    },
+    {
+      "file": "README.md",
+      "line": 51,
+      "text": "cd sagarfresh"
+    },
+    {
+      "file": "README.md",
+      "line": 51,
+      "text": "cd sagarfresh"
+    },
+    {
+      "file": "README.md",
+      "line": 85,
+      "text": "| **Operations Admin (Rajeshwar Rao)** | `ops@gomeat.in` *(or `ops@sagarfresh.in`)* | `admin123` | Central Hub operations, dispatch management, cooler fleet inventory, return approvals, and catalog inventory CRUD. |"
+    },
+    {
+      "file": "README.md",
+      "line": 85,
+      "text": "| **Operations Admin (Rajeshwar Rao)** | `ops@gomeat.in` *(or `ops@sagarfresh.in`)* | `admin123` | Central Hub operations, dispatch management, cooler fleet inventory, return approvals, and catalog inventory CRUD. |"
+    },
+    {
+      "file": "server\\.env",
+      "line": 4,
+      "text": "MONGODB_URI=mongodb+srv://dhineshkandukuri2023_db_user:Dinnu2005@cluster0.6rm7klj.mongodb.net/sagarfresh?retryWrites=true&w=majority"
+    },
+    {
+      "file": "server\\.env",
+      "line": 4,
+      "text": "MONGODB_URI=mongodb+srv://dhineshkandukuri2023_db_user:Dinnu2005@cluster0.6rm7klj.mongodb.net/sagarfresh?retryWrites=true&w=majority"
+    },
+    {
+      "file": "server\\data.json",
+      "line": 7,
+      "text": "\"email\": \"ops@sagarfresh.in\","
+    },
+    {
+      "file": "server\\data.json",
+      "line": 7,
+      "text": "\"email\": \"ops@sagarfresh.in\","
+    },
+    {
+      "file": "server\\mongo.js",
+      "line": 19,
+      "text": "const uri = process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/sagarfresh';"
+    },
+    {
+      "file": "server\\mongo.js",
+      "line": 19,
+      "text": "const uri = process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/sagarfresh';"
+    },
+    {
+      "file": "server\\mongo.js",
+      "line": 42,
+      "text": "configuredUri: process.env.MONGODB_URI ? 'Configured in environment' : 'mongodb://127.0.0.1:27017/sagarfresh (default)',"
+    },
+    {
+      "file": "server\\mongo.js",
+      "line": 42,
+      "text": "configuredUri: process.env.MONGODB_URI ? 'Configured in environment' : 'mongodb://127.0.0.1:27017/sagarfresh (default)',"
+    },
+    {
+      "file": "server\\server.js",
+      "line": 154,
+      "text": "// Find user by email (supports ops@gomeat.in and legacy ops@sagarfresh.in) or by phone number match"
+    },
+    {
+      "file": "server\\server.js",
+      "line": 154,
+      "text": "// Find user by email (supports ops@gomeat.in and legacy ops@sagarfresh.in) or by phone number match"
+    },
+    {
+      "file": "server\\server.js",
+      "line": 160,
+      "text": "if ((input === 'ops@gomeat.in' && uEmail === 'ops@sagarfresh.in') || (input === 'ops@sagarfresh.in' && uEmail === 'ops@gomeat.in')) return true;"
+    },
+    {
+      "file": "server\\server.js",
+      "line": 160,
+      "text": "if ((input === 'ops@gomeat.in' && uEmail === 'ops@sagarfresh.in') || (input === 'ops@sagarfresh.in' && uEmail === 'ops@gomeat.in')) return true;"
+    },
+    {
+      "file": "test-mongodb.js",
+      "line": 12,
+      "text": "const uri = process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/sagarfresh';"
+    },
+    {
+      "file": "test-mongodb.js",
+      "line": 12,
+      "text": "const uri = process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/sagarfresh';"
+    },
+    {
+      "file": "test-mongodb.js",
+      "line": 35,
+      "text": "console.log('  MONGODB_URI=mongodb+srv://<username>:<password>@cluster0.abcde.mongodb.net/sagarfresh');"
+    },
+    {
+      "file": "test-mongodb.js",
+      "line": 35,
+      "text": "console.log('  MONGODB_URI=mongodb+srv://<username>:<password>@cluster0.abcde.mongodb.net/sagarfresh');"
+    },
+    {
+      "file": "test-workflows.js",
+      "line": 39,
+      "text": "body: JSON.stringify({ email: 'ops@sagarfresh.in', password: 'admin123' })"
+    },
+    {
+      "file": "test-workflows.js",
+      "line": 39,
+      "text": "body: JSON.stringify({ email: 'ops@sagarfresh.in', password: 'admin123' })"
+    }
+  ],
+  "sagar fresh": [
+    {
+      "file": ".env",
+      "line": 1,
+      "text": "# Sagar Fresh - Environment Configuration"
+    },
+    {
+      "file": "brand_guidelines.html",
+      "line": 5,
+      "text": "<title>Sagar Fresh - Brand Guidelines & UI Design System</title>"
+    },
+    {
+      "file": "brand_guidelines.html",
+      "line": 197,
+      "text": "<div class=\"doc-subtitle\">Sagar Fresh • Design System & UI Specifications</div>"
+    },
+    {
+      "file": "brand_guidelines.html",
+      "line": 207,
+      "text": "<p style=\"margin-bottom: 6px;\"><strong>Brand Name:</strong> Sagar Fresh (Tagline: <em>Farm to Fork Fresh</em>)</p>"
+    },
+    {
+      "file": "brand_guidelines.html",
+      "line": 302,
+      "text": "<span>Sagar Fresh Design Handbook • Confidential Team Document</span>"
+    },
+    {
+      "file": "brand_guidelines.html",
+      "line": 312,
+      "text": "<div class=\"doc-subtitle\">Sagar Fresh • Design System & UI Specifications</div>"
+    },
+    {
+      "file": "brand_guidelines.html",
+      "line": 442,
+      "text": "<span>Sagar Fresh Design Handbook • Confidential Team Document</span>"
+    },
+    {
+      "file": "brand_guidelines.html",
+      "line": 452,
+      "text": "<div class=\"doc-subtitle\">Sagar Fresh • Design System & UI Specifications</div>"
+    },
+    {
+      "file": "brand_guidelines.html",
+      "line": 530,
+      "text": "<span>Sagar Fresh Design Handbook • Created for UI/UX & Marketing Team</span>"
+    },
+    {
+      "file": "deck.html",
+      "line": 5,
+      "text": "<title>Sagar Fresh - Executive Business Deck</title>"
+    },
+    {
+      "file": "deck.html",
+      "line": 202,
+      "text": "<div class=\"brand-tag\">Sagar Fresh Technologies Pvt. Ltd. • Executive Deck</div>"
+    },
+    {
+      "file": "deck.html",
+      "line": 211,
+      "text": "<p style=\"margin-bottom: 8px;\"><strong>Company:</strong> Sagar Fresh Technologies Pvt. Ltd. (Bengaluru, India)</p>"
+    },
+    {
+      "file": "deck.html",
+      "line": 220,
+      "text": "<strong>Sagar Fresh</strong> replaces disposable packaging with a reusable cold-gel vault model, guaranteeing 100% lab-certified cold-chain compliance and saving up to ₹39 per order in operating packaging expenditure.\""
+    },
+    {
+      "file": "deck.html",
+      "line": 244,
+      "text": "<span>Confidential • Sagar Fresh Business Presentation</span>"
+    },
+    {
+      "file": "deck.html",
+      "line": 291,
+      "text": "<span>Confidential • Sagar Fresh Business Presentation</span>"
+    },
+    {
+      "file": "deck.html",
+      "line": 301,
+      "text": "<div class=\"slide-title\">Slide 3: The Sagar Fresh Solution — FreshSeal™</div>"
+    },
+    {
+      "file": "deck.html",
+      "line": 328,
+      "text": "<span>Confidential • Sagar Fresh Business Presentation</span>"
+    },
+    {
+      "file": "deck.html",
+      "line": 361,
+      "text": "<div class=\"card-title\">Underlying Market Tailwinds Supporting Sagar Fresh</div>"
+    },
+    {
+      "file": "deck.html",
+      "line": 376,
+      "text": "<span>Confidential • Sagar Fresh Business Presentation</span>"
+    },
+    {
+      "file": "deck.html",
+      "line": 454,
+      "text": "<td>Sagar Fresh Master Kitchen</td>"
+    },
+    {
+      "file": "deck.html",
+      "line": 463,
+      "text": "<span>Confidential • Sagar Fresh Business Presentation</span>"
+    },
+    {
+      "file": "deck.html",
+      "line": 486,
+      "text": "<tr style=\"background: #e2e8f0;\"><td><strong>Net Packaging Cost per Sagar Fresh Delivery</strong></td><td style=\"text-align: right;\"><strong>₹8.80</strong></td></tr>"
+    },
+    {
+      "file": "deck.html",
+      "line": 516,
+      "text": "<span>Confidential • Sagar Fresh Business Presentation</span>"
+    },
+    {
+      "file": "deck.html",
+      "line": 535,
+      "text": "<th>Sagar Fresh</th>"
+    },
+    {
+      "file": "deck.html",
+      "line": 588,
+      "text": "<span>Confidential • Sagar Fresh Business Presentation</span>"
+    },
+    {
+      "file": "deck.html",
+      "line": 622,
+      "text": "<li style=\"margin-bottom: 8px;\"><strong>First-Order Positive:</strong> Unlike traditional D2C competitors that lose money on the initial customer purchase, Sagar Fresh generates a positive CM2 of ₹117.80 on Order #1.</li>"
+    },
+    {
+      "file": "deck.html",
+      "line": 630,
+      "text": "<span>Confidential • Sagar Fresh Business Presentation</span>"
+    },
+    {
+      "file": "deck.html",
+      "line": 661,
+      "text": "• <strong>₹300 Sagar Fresh Wallet Credits</strong> (+₹50 Bonus for next order)"
+    },
+    {
+      "file": "deck.html",
+      "line": 686,
+      "text": "<span>Confidential • Sagar Fresh Business Presentation</span>"
+    },
+    {
+      "file": "deck.html",
+      "line": 728,
+      "text": "<span>Confidential • Sagar Fresh Business Presentation</span>"
+    },
+    {
+      "file": "deck.html",
+      "line": 782,
+      "text": "<span>Confidential • Sagar Fresh Business Presentation</span>"
+    },
+    {
+      "file": "deck.html",
+      "line": 861,
+      "text": "<span>Confidential • Sagar Fresh Business Presentation</span>"
+    },
+    {
+      "file": "intern_deck.html",
+      "line": 5,
+      "text": "<title>Sagar Fresh - Internship Project Presentation</title>"
+    },
+    {
+      "file": "intern_deck.html",
+      "line": 200,
+      "text": "<div class=\"brand-tag\">Internship Live Project Showcase • Sagar Fresh</div>"
+    },
+    {
+      "file": "intern_deck.html",
+      "line": 209,
+      "text": "<p style=\"margin-bottom: 8px;\"><strong>Project Name:</strong> Sagar Fresh — D2C Meat & Seafood E-Commerce Platform</p>"
+    },
+    {
+      "file": "intern_deck.html",
+      "line": 242,
+      "text": "<span>Internship Capstone Presentation • Sagar Fresh Demo Project</span>"
+    },
+    {
+      "file": "intern_deck.html",
+      "line": 289,
+      "text": "<span>Internship Capstone Presentation • Sagar Fresh Demo Project</span>"
+    },
+    {
+      "file": "intern_deck.html",
+      "line": 299,
+      "text": "<div class=\"slide-title\">Slide 3: Proposed Solution — The Sagar Fresh Model</div>"
+    },
+    {
+      "file": "intern_deck.html",
+      "line": 328,
+      "text": "<span>Internship Capstone Presentation • Sagar Fresh Demo Project</span>"
+    },
+    {
+      "file": "intern_deck.html",
+      "line": 347,
+      "text": "<th>Sagar Fresh (Our Project)</th>"
+    },
+    {
+      "file": "intern_deck.html",
+      "line": 400,
+      "text": "<p>Licious built brand trust on hygiene and convenience. Sagar Fresh can capture the next wave of urban Indian buyers by positioning itself as the <strong>cleaner, zero-waste, verifiable cold-chain alternative</strong>.</p>"
+    },
+    {
+      "file": "intern_deck.html",
+      "line": 404,
+      "text": "<span>Internship Capstone Presentation • Sagar Fresh Demo Project</span>"
+    },
+    {
+      "file": "intern_deck.html",
+      "line": 476,
+      "text": "<td>Sagar Fresh Master Kitchen</td>"
+    },
+    {
+      "file": "intern_deck.html",
+      "line": 487,
+      "text": "<span>Internship Capstone Presentation • Sagar Fresh Demo Project</span>"
+    },
+    {
+      "file": "intern_deck.html",
+      "line": 534,
+      "text": "<span>Internship Capstone Presentation • Sagar Fresh Demo Project</span>"
+    },
+    {
+      "file": "intern_deck.html",
+      "line": 575,
+      "text": "<span>Internship Capstone Presentation • Sagar Fresh Demo Project</span>"
+    },
+    {
+      "file": "intern_deck.html",
+      "line": 594,
+      "text": "<li>Every order placed on Sagar Fresh is assigned a specific reusable cooler unit from the fleet (e.g. `BOX-BLR-102`).</li>"
+    },
+    {
+      "file": "intern_deck.html",
+      "line": 626,
+      "text": "<span>Internship Capstone Presentation • Sagar Fresh Demo Project</span>"
+    },
+    {
+      "file": "intern_deck.html",
+      "line": 643,
+      "text": "<div class=\"card-title\">Sagar Fresh Circular Packaging Economics</div>"
+    },
+    {
+      "file": "intern_deck.html",
+      "line": 665,
+      "text": "<p>By reusing containers over 150 cycles, Sagar Fresh reduces packaging expense from ₹48.00 to ₹8.80, delivering <strong>direct operational savings of ₹39.20 per order</strong> while eliminating 100% of single-use landfill waste.</p>"
+    },
+    {
+      "file": "intern_deck.html",
+      "line": 669,
+      "text": "<span>Internship Capstone Presentation • Sagar Fresh Demo Project</span>"
+    },
+    {
+      "file": "intern_deck.html",
+      "line": 718,
+      "text": "<span>Internship Capstone Presentation • Sagar Fresh Demo Project</span>"
+    },
+    {
+      "file": "intern_deck.html",
+      "line": 794,
+      "text": "<span>Internship Capstone Presentation • Sagar Fresh Demo Project</span>"
+    },
+    {
+      "file": "intern_deck.html",
+      "line": 828,
+      "text": "<div style=\"font-size: 14px; font-weight: 700; color: #38bdf8; margin-bottom: 4px;\">Thank You! Sagar Fresh Prototype Ready for Demonstration</div>"
+    },
+    {
+      "file": "intern_deck.html",
+      "line": 833,
+      "text": "<span>Internship Capstone Presentation • Sagar Fresh Demo Project</span>"
+    },
+    {
+      "file": "server\\.env",
+      "line": 1,
+      "text": "# Sagar Fresh - Environment Configuration"
+    },
+    {
+      "file": "server\\data.json",
+      "line": 12,
+      "text": "\"address\": \"Sagar Fresh Fulfillment Center, Outer Ring Road, Mahadevapura, Bengaluru 560048\","
+    },
+    {
+      "file": "server\\data.json",
+      "line": 221,
+      "text": "\"origin\": \"Sagar Fresh Master Kitchen\","
+    },
+    {
+      "file": "test-mongodb.js",
+      "line": 9,
+      "text": "console.log('SAGAR FRESH - MONGODB CONNECTION & SCHEMAS TEST');"
+    }
+  ],
+  "frost prime": [],
+  "frost & prime": [
+    {
+      "file": "server\\package.json",
+      "line": 4,
+      "text": "\"description\": \"Backend API for Frost & Prime Cuts - Blast-Chilled Seafood, Prime Meats & Reusable Coolers\","
+    }
+  ],
+  "frost-prime": [
+    {
+      "file": "server\\package-lock.json",
+      "line": 2,
+      "text": "\"name\": \"frost-prime-server\","
+    },
+    {
+      "file": "server\\package-lock.json",
+      "line": 8,
+      "text": "\"name\": \"frost-prime-server\","
+    },
+    {
+      "file": "server\\package.json",
+      "line": 2,
+      "text": "\"name\": \"frost-prime-server\","
+    },
+    {
+      "file": "test-admin-e2e.cjs",
+      "line": 65,
+      "text": "await page.screenshot({ path: 'C:/Users/dines/.gemini/antigravity/scratch/frost-prime/test-admin-overview.png' });"
+    },
+    {
+      "file": "test-admin-e2e.cjs",
+      "line": 86,
+      "text": "await page.screenshot({ path: 'C:/Users/dines/.gemini/antigravity/scratch/frost-prime/test-admin-customers.png' });"
+    },
+    {
+      "file": "test-admin-e2e.cjs",
+      "line": 108,
+      "text": "await page.screenshot({ path: 'C:/Users/dines/.gemini/antigravity/scratch/frost-prime/test-admin-order-modal.png' });"
+    },
+    {
+      "file": "test-admin-full.cjs",
+      "line": 5,
+      "text": "const screenshotDir = 'C:/Users/dines/.gemini/antigravity/scratch/frost-prime/screenshots';"
+    }
+  ],
+  "frostprime": [],
+  "prime & tide": [],
+  "prime and tide": []
+}

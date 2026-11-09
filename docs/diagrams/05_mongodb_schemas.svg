@@ -1,0 +1,81 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 480" width="100%" height="100%">
+  <defs>
+    <linearGradient id="bg5" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#0b1120"/>
+      <stop offset="100%" stop-color="#020617"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="960" height="480" rx="16" fill="url(#bg5)" stroke="#334155" stroke-width="1.5"/>
+
+  <!-- Title -->
+  <text x="40" y="44" font-family="system-ui, sans-serif" font-size="18" font-weight="800" fill="#f8fafc">MongoDB Schemas &amp; Entity Relationships</text>
+  <text x="40" y="64" font-family="system-ui, sans-serif" font-size="11" fill="#94a3b8">Strong Typing, Snapshot Isolation for Auditing, and Normalized Fleet References</text>
+
+  <!-- User Schema -->
+  <rect x="40" y="90" width="200" height="200" rx="8" fill="#1e293b" stroke="#38bdf8"/>
+  <rect x="40" y="90" width="200" height="28" rx="8" fill="#0284c7" fill-opacity="0.3"/>
+  <text x="50" y="109" font-family="system-ui, sans-serif" font-size="12" font-weight="700" fill="#38bdf8">User Schema</text>
+  <text x="50" y="132" font-family="monospace" font-size="10" fill="#f1f5f9">_id: ObjectId / String</text>
+  <text x="50" y="148" font-family="monospace" font-size="10" fill="#f1f5f9">name: String</text>
+  <text x="50" y="164" font-family="monospace" font-size="10" fill="#f1f5f9">email: String (Indexed)</text>
+  <text x="50" y="180" font-family="monospace" font-size="10" fill="#f1f5f9">password: Hash (bcrypt)</text>
+  <text x="50" y="196" font-family="monospace" font-size="10" fill="#f1f5f9">role: 'customer' | 'admin'</text>
+  <text x="50" y="212" font-family="monospace" font-size="10" fill="#f1f5f9">phone: String</text>
+  <text x="50" y="228" font-family="monospace" font-size="10" fill="#f1f5f9">depositBalance: Number</text>
+  <text x="50" y="244" font-family="monospace" font-size="10" fill="#f1f5f9">upiId: String</text>
+  <text x="50" y="260" font-family="monospace" font-size="10" fill="#f1f5f9">savedAddresses: Array</text>
+
+  <!-- Order Schema (Center) -->
+  <rect x="270" y="90" width="250" height="360" rx="8" fill="#1e293b" stroke="#10b981"/>
+  <rect x="270" y="90" width="250" height="28" rx="8" fill="#059669" fill-opacity="0.3"/>
+  <text x="280" y="109" font-family="system-ui, sans-serif" font-size="12" font-weight="700" fill="#34d399">Order Schema (Auditable)</text>
+  <text x="280" y="130" font-family="monospace" font-size="10" fill="#f1f5f9">_id / id: String (Unique)</text>
+  <text x="280" y="146" font-family="monospace" font-size="10" fill="#f1f5f9">userId: Ref('User')</text>
+  <text x="280" y="162" font-family="monospace" font-size="10" fill="#f1f5f9">customerName, customerEmail</text>
+  <text x="280" y="178" font-family="monospace" font-size="10" fill="#f1f5f9">deliveryAddress: Snapshot</text>
+  <text x="280" y="194" font-family="monospace" font-size="10" fill="#fbbf24">items: [{</text>
+  <text x="295" y="210" font-family="monospace" font-size="9" fill="#94a3b8">productId, name, priceSnapshot,</text>
+  <text x="295" y="224" font-family="monospace" font-size="9" fill="#94a3b8">quantity, cutStyle, unit</text>
+  <text x="280" y="238" font-family="monospace" font-size="10" fill="#fbbf24">}]</text>
+  <text x="280" y="254" font-family="monospace" font-size="10" fill="#f1f5f9">subtotal, coolerDeposit: 250</text>
+  <text x="280" y="270" font-family="monospace" font-size="10" fill="#f1f5f9">total: Number</text>
+  <text x="280" y="286" font-family="monospace" font-size="10" fill="#38bdf8">paymentStatus: 'PAID'|'PENDING'</text>
+  <text x="280" y="302" font-family="monospace" font-size="10" fill="#38bdf8">razorpayOrderId, paymentId</text>
+  <text x="280" y="318" font-family="monospace" font-size="10" fill="#fbbf24">status: 7-Stage Pipeline Enum</text>
+  <text x="280" y="334" font-family="monospace" font-size="10" fill="#34d399">coolerId: Ref('Cooler')</text>
+  <text x="280" y="350" font-family="monospace" font-size="10" fill="#34d399">coldBoxRefundStatus: Enum</text>
+  <text x="280" y="366" font-family="monospace" font-size="10" fill="#f1f5f9">liveTemp, tempLog: Array</text>
+  <text x="280" y="382" font-family="monospace" font-size="10" fill="#f1f5f9">createdAt: ISODate</text>
+
+  <!-- Product Schema -->
+  <rect x="550" y="90" width="180" height="230" rx="8" fill="#1e293b" stroke="#f59e0b"/>
+  <rect x="550" y="90" width="180" height="28" rx="8" fill="#d97706" fill-opacity="0.3"/>
+  <text x="560" y="109" font-family="system-ui, sans-serif" font-size="12" font-weight="700" fill="#fbbf24">Product Schema</text>
+  <text x="560" y="132" font-family="monospace" font-size="10" fill="#f1f5f9">_id: String</text>
+  <text x="560" y="148" font-family="monospace" font-size="10" fill="#f1f5f9">name, category</text>
+  <text x="560" y="164" font-family="monospace" font-size="10" fill="#f1f5f9">price, mrp (Authoritative)</text>
+  <text x="560" y="180" font-family="monospace" font-size="10" fill="#f1f5f9">unit, netWeight, gross</text>
+  <text x="560" y="196" font-family="monospace" font-size="10" fill="#f1f5f9">stock: Number</text>
+  <text x="560" y="212" font-family="monospace" font-size="10" fill="#f1f5f9">chillingMethod</text>
+  <text x="560" y="228" font-family="monospace" font-size="10" fill="#f1f5f9">cutStyle: String</text>
+  <text x="560" y="244" font-family="monospace" font-size="10" fill="#f1f5f9">origin, catchDate</text>
+
+  <!-- Cooler & Returns -->
+  <rect x="755" y="90" width="165" height="230" rx="8" fill="#1e293b" stroke="#a855f7"/>
+  <rect x="755" y="90" width="165" height="28" rx="8" fill="#7e22ce" fill-opacity="0.3"/>
+  <text x="765" y="109" font-family="system-ui, sans-serif" font-size="12" font-weight="700" fill="#c084fc">Cooler Fleet Schema</text>
+  <text x="765" y="132" font-family="monospace" font-size="10" fill="#f1f5f9">_id: BOX-BLR-xxx</text>
+  <text x="765" y="148" font-family="monospace" font-size="10" fill="#f1f5f9">qrCode: String</text>
+  <text x="765" y="164" font-family="monospace" font-size="10" fill="#f1f5f9">model: ThermalVault</text>
+  <text x="765" y="180" font-family="monospace" font-size="10" fill="#f1f5f9">status: Enum</text>
+  <text x="765" y="196" font-family="monospace" font-size="10" fill="#f1f5f9">currentOrderId: Ref</text>
+  <text x="765" y="212" font-family="monospace" font-size="10" fill="#f1f5f9">currentUserId: Ref</text>
+  <text x="765" y="228" font-family="monospace" font-size="10" fill="#f1f5f9">cyclesUsed: Number</text>
+  <text x="765" y="244" font-family="monospace" font-size="10" fill="#f1f5f9">depositAmount: 250</text>
+
+  <!-- Relationship Connectors & Annotations -->
+  <path d="M 240 145 L 270 145" stroke="#38bdf8" stroke-width="2"/>
+  <path d="M 520 180 L 550 180" stroke="#f59e0b" stroke-width="2"/>
+  <path d="M 520 330 L 755 180" stroke="#a855f7" stroke-width="2"/>
+</svg>

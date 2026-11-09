@@ -1,39 +1,61 @@
+# ==========================================
+# GoMeat Monorepo - Git Ignore Rules
+# ==========================================
+
 # Dependencies
 node_modules/
-client/node_modules/
-server/node_modules/
+frontend/node_modules/
+backend/node_modules/
 
-# Production build
-client/dist/
+# Production build outputs
 dist/
+build/
+frontend/dist/
+backend/dist/
 
-# Logs & temp
+# Local Environment Variables
+.env
+.env.local
+.env.*.local
+.env.development
+.env.production
+backend/.env
+frontend/.env
+
+# Logs and Process PIDs
 *.log
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
 .system_generated/
-.DS_Store
+*.pid
+*.seed
+*.pid.lock
 
-# Environment & Vercel
-.env
-.env.local
-.env.production
+# Operating System Files
+.DS_Store
+Thumbs.db
+ehthumbs.db
+desktop.ini
+
+# IDE & Editor Temporary Files
+.idea/
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+*.sublime-workspace
+*.swp
+*.swo
+
+# Vercel Deployment Cache
 .vercel/
 
-# Scratch & temporary test scripts
-test-*.js
-test-*.cjs
-debug-*.cjs
-*.png
-screenshots/
-diagrams/
-generate_*.js
-build_*.js
-create_*.js
-capture_*.js
+# Temporary artifacts & binary decks
 ~$*
-presentation.html
-presentation_v2.html
-GoMeat_Engineering_Presentation.*
-GoMeat_Full_Production_Presentation.*
+docs/presentations/*.pdf
+docs/presentations/*.pptx
+screenshots/

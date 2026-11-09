@@ -1,0 +1,64 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 480" width="100%" height="100%">
+  <defs>
+    <linearGradient id="bg4" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#0b1120"/>
+      <stop offset="100%" stop-color="#020617"/>
+    </linearGradient>
+    <marker id="arrC" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1 L 8 5 L 0 9 z" fill="#10b981"/>
+    </marker>
+  </defs>
+
+  <rect width="960" height="480" rx="16" fill="url(#bg4)" stroke="#334155" stroke-width="1.5"/>
+
+  <!-- Title -->
+  <text x="40" y="44" font-family="system-ui, sans-serif" font-size="18" font-weight="800" fill="#f8fafc">Circular Packaging Architecture: The ₹250 ThermalVault™ Closed-Loop Engine</text>
+  <text x="40" y="64" font-family="system-ui, sans-serif" font-size="11" fill="#94a3b8">Zero-Waste Sustainable Packaging, Automated Asset Tracking, and Instant Deposit Refunds</text>
+
+  <!-- Cycle Node 1: Depot Sanitization -->
+  <rect x="80" y="110" width="220" height="90" rx="10" fill="#1e293b" stroke="#38bdf8" stroke-width="1.5"/>
+  <text x="100" y="136" font-family="system-ui, sans-serif" font-size="13" font-weight="700" fill="#38bdf8">1. Hub Wash &amp; UV Sanitization</text>
+  <text x="100" y="156" font-family="system-ui, sans-serif" font-size="10" fill="#94a3b8">• Medical-grade sanitization chamber</text>
+  <text x="100" y="172" font-family="system-ui, sans-serif" font-size="10" fill="#94a3b8">• Cold gel bricks frozen to -18°C</text>
+  <text x="100" y="188" font-family="system-ui, sans-serif" font-size="10" fill="#34d399">• Status: AVAILABLE in Depot</text>
+
+  <!-- Arrow 1 -> 2 -->
+  <path d="M 300 155 L 420 155" stroke="#10b981" stroke-width="2" marker-end="url(#arrC)"/>
+
+  <!-- Cycle Node 2: Packing & Dispatch -->
+  <rect x="420" y="110" width="220" height="90" rx="10" fill="#1e293b" stroke="#10b981" stroke-width="1.5"/>
+  <text x="440" y="136" font-family="system-ui, sans-serif" font-size="13" font-weight="700" fill="#34d399">2. Cold-Box Packing &amp; Dispatch</text>
+  <text x="440" y="156" font-family="system-ui, sans-serif" font-size="10" fill="#94a3b8">• ₹250 refundable deposit attached</text>
+  <text x="440" y="172" font-family="system-ui, sans-serif" font-size="10" fill="#94a3b8">• QR Code scanned and linked to Order</text>
+  <text x="440" y="188" font-family="system-ui, sans-serif" font-size="10" fill="#38bdf8">• Status: IN_TRANSIT (0°C to 4°C)</text>
+
+  <!-- Arrow 2 -> 3 -->
+  <path d="M 640 155 L 720 155 L 720 250" stroke="#10b981" stroke-width="2" marker-end="url(#arrC)"/>
+
+  <!-- Cycle Node 3: Customer Possession -->
+  <rect x="610" y="250" width="220" height="90" rx="10" fill="#1e293b" stroke="#f59e0b" stroke-width="1.5"/>
+  <text x="630" y="276" font-family="system-ui, sans-serif" font-size="13" font-weight="700" fill="#fbbf24">3. Customer Delivery</text>
+  <text x="630" y="296" font-family="system-ui, sans-serif" font-size="10" fill="#94a3b8">• Chilled cuts transferred to fridge</text>
+  <text x="630" y="312" font-family="system-ui, sans-serif" font-size="10" fill="#94a3b8">• Box kept safely for next return</text>
+  <text x="630" y="328" font-family="system-ui, sans-serif" font-size="10" fill="#fbbf24">• Status: WITH_CUSTOMER</text>
+
+  <!-- Arrow 3 -> 4 -->
+  <path d="M 610 295 L 490 295" stroke="#10b981" stroke-width="2" marker-end="url(#arrC)"/>
+
+  <!-- Cycle Node 4: Return Request & Pickup -->
+  <rect x="270" y="250" width="220" height="90" rx="10" fill="#1e293b" stroke="#a855f7" stroke-width="1.5"/>
+  <text x="290" y="276" font-family="system-ui, sans-serif" font-size="13" font-weight="700" fill="#c084fc">4. Reverse Logistics Pickup</text>
+  <text x="290" y="296" font-family="system-ui, sans-serif" font-size="10" fill="#94a3b8">• Customer taps "Return Box" in App</text>
+  <text x="290" y="312" font-family="system-ui, sans-serif" font-size="10" fill="#94a3b8">• Delivery agent scans box on next trip</text>
+  <text x="290" y="328" font-family="system-ui, sans-serif" font-size="10" fill="#c084fc">• Status: RETURN_REQUESTED</text>
+
+  <!-- Arrow 4 -> 5 -->
+  <path d="M 270 295 L 190 295 L 190 230" stroke="#10b981" stroke-width="2" marker-end="url(#arrC)"/>
+
+  <!-- Callout: Financial & Environmental Impact -->
+  <rect x="80" y="360" width="800" height="90" rx="8" fill="#0f172a" stroke="#334155"/>
+  <text x="100" y="385" font-family="system-ui, sans-serif" font-size="12" font-weight="700" fill="#34d399">The Double Benefit: Economic Viability + Zero Single-Use Thermocol</text>
+  <text x="100" y="405" font-family="system-ui, sans-serif" font-size="10" fill="#cbd5e1">• Each ThermalVault box delivers 50+ fresh meat orders across its operational lifetime, eliminating single-use ice packs.</text>
+  <text x="100" y="422" font-family="system-ui, sans-serif" font-size="10" fill="#cbd5e1">• Instant Refund Protocol: Once depot staff verifies physical integrity, ₹250 is instantly refunded back via UPI/Razorpay.</text>
+  <text x="100" y="439" font-family="system-ui, sans-serif" font-size="10" fill="#cbd5e1">• Prevents double refunds through MongoDB duplicate transaction locks and idempotent status checking.</text>
+</svg>

@@ -1,17 +1,19 @@
 {
-  "name": "sagarfresh",
+  "name": "gomeat-monorepo",
   "version": "1.0.0",
-  "description": "Indian D2C Fresh Meat & Coastal Seafood Platform with Circular Reusable Cold-Box Logistics",
+  "description": "GoMeat - Fresh Quality. Delivered with Care. Full-Stack D2C Fresh Meat & Coastal Seafood Platform with Reusable Cold-Box Logistics",
   "private": true,
   "type": "module",
   "scripts": {
-    "start": "cd server && npm start",
-    "dev:server": "cd server && npm run dev",
-    "dev:client": "cd client && npm run dev",
-    "install:all": "npm --prefix server install && npm --prefix client install",
-    "build": "cd client && npm install && npm run build",
-    "build:client": "cd client && npm run build",
-    "test": "node test-workflows.js"
+    "start": "cd backend && npm start",
+    "dev": "node scripts/start-dev.js",
+    "dev:backend": "cd backend && npm run dev",
+    "dev:frontend": "cd frontend && npm run dev",
+    "install:all": "npm --prefix backend install && npm --prefix frontend install",
+    "build": "cd frontend && npm install && npm run build",
+    "build:frontend": "cd frontend && npm run build",
+    "test": "node scripts/test-workflows.js",
+    "lint": "cd frontend && npm run lint"
   },
   "dependencies": {
     "bcryptjs": "^3.0.3",

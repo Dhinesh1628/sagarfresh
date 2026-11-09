@@ -1,104 +1,161 @@
 # GoMeat
 
-> **Freshness we can trust.**
-> *Farm-to-Fork Indian D2C Fresh Meat & Coastal Seafood Platform with Circular Reusable Cold-Box Logistics*
-
-Modeled after modern fresh delivery platforms like Licious.in, GoMeat brings high-integrity cold-chain meat and seafood to Indian households while eliminating single-use thermocol waste through a circular packaging loop.
+> **Fresh Quality. Delivered with Care.**  
+> *Farm-to-Fork Direct-to-Consumer Fresh Meat & Coastal Seafood Platform with Circular Reusable Cold-Box Logistics*
 
 ---
 
-## 🌟 Key Highlights
+## 🌟 Overview
 
-- **Farm-to-Fork Cold Chain**: Strict 0°C to 4°C temperature regulation across procurement, processing, and delivery.
-- **Zero-Thermocol Packaging Loop**: Orders arrive in food-grade insulated EPP cold boxes with phase-change gel bricks holding 0°C to 4°C for 36 hours.
-- **₹250 Refundable Security Deposit**: Collected at checkout; 100% credited back to the customer's UPI ID upon doorstep box pickup.
-- **AI WhatsApp Commerce Bot**: 24/7 intelligent butcher & cold-chain assistant that answers customer inquiries directly on WhatsApp (or via the interactive web simulator):
-  - Inward 4:00 AM harbor seafood availability (Surmai, Pomfret, Prawns)
-  - Real-time catalog pricing & stock lookup
-  - Reusable box return & ₹250 instant UPI refund instructions
-  - Live core cold-chain temperature telemetry & order tracking
-- **Live IoT Temperature Sensor Telemetry**: Embedded core probe sensors stream internal box temperatures in real time.
-- **Authentic Indian Regional Cuts**:
-  - *Fish & Seafood*: Malabar Seer Fish (Surmai), White Pomfret (Safed Paplet), Sea Tiger Prawns (Jumbo Cleaned & Deveined).
-  - *Tender Mutton*: Mandya & Bannur pasture goat (Biryani & Rogan Josh Cuts, Boneless Chunks).
-  - *Fresh Chicken*: Bio-secured farm breast fillets, Free-range Country Chicken / Nati Koli (skin-on curry cut).
-  - *Ready to Cook*: Chef-crafted Amritsari Fish Tikka.
-  - *Combo Boxes*: Weekend Coastal Feast Variety Packs.
-- **Dual Role System**: Explicit credential-based authentication for Customers and Hub Operations Managers.
+**GoMeat** is an enterprise-grade full-stack e-commerce and cold-chain logistics platform modeled after tier-1 quick-commerce and meat delivery applications (Swiggy Instamart, Licious). GoMeat delivers 100% blast-chilled, never-frozen chicken, tender mutton, and daily coastal seafood directly to doorsteps within 90 minutes.
 
----
-
-## 🏗️ Tech Stack
-
-- **Frontend**: React 19, TypeScript, Tailwind CSS, Lucide icons.
-- **Backend**: Node.js, Express REST API.
-- **Database**: Persistent JSON data layer with atomic synchronous writes (`server/data.json`).
-- **Security**: JWT tokens, bcrypt password hashing.
-- **Testing**: Automated end-to-end integration test suite (`test-workflows.js`).
+### Key Pillars
+- **Strict 0°C–4°C Cold Chain:** Guaranteed optimal freshness from bio-secure farms and night-trawl harbors to the customer's kitchen.
+- **ThermalVault™ Reusable Cold Box System:** High-density EPP insulated boxes with phase-change gel bricks eliminate single-use thermocol and plastic waste.
+- **Protected ₹250 Refundable Deposit:** Tracked transparently at checkout and refunded with 1-click doorstep pickup to the customer's UPI ID or in-app GoMeat Wallet.
+- **Swiggy-Grade Checkout & Tracking:**
+  - Sticky floating bottom cart bar.
+  - Tactile `- 1 +` stepper product card buttons.
+  - "Add ₹X for Free Delivery" real-time progress gauge.
+  - 1-Click discount coupon selector.
+  - 1-Tap delivery instruction pills (e.g. *Leave at door*, *Don't ring bell*).
+  - Optional delivery partner tip.
+  - Unique dynamic 4-digit Handover PIN generated for every order and customer.
+- **Conversational AI Commerce:** Meta WhatsApp Cloud API integration offering 24/7 intelligent meat butchery advice, catch inquiries, and deposit refund status.
+- **Enterprise Operations Dashboard:** Real-time fleet tracking, UV sanitation logging, and courier dispatch controls.
 
 ---
 
-## 🚀 Quick Start
+## 🏗️ Technology Stack
 
-### Prerequisites
-- Node.js (v18+)
-- npm (v9+)
+| Layer | Technologies |
+|:---|:---|
+| **Frontend** | React 19, TypeScript, Vite, Tailwind CSS v4, Lucide Icons, Framer Motion |
+| **Backend** | Node.js (v20+), Express.js 4, RESTful Architecture |
+| **Database** | MongoDB Atlas (Mongoose ODM) with offline persistent document-store fallback |
+| **Authentication** | JWT (JSON Web Tokens), Google OAuth 2.0 (`google-auth-library`), bcryptjs |
+| **Payments** | Razorpay Payment Gateway (UPI, Cards, NetBanking), GoMeat Store Credit Wallet |
+| **Integrations** | Meta WhatsApp Cloud API Webhooks & Intelligent AI Chatbot Engine |
+| **DevOps & Deploy** | Vercel Serverless Edge, Node.js concurrently orchestrated Monorepo |
 
-### Installation
-```bash
-# Clone the repository
-git clone https://github.com/Dhinesh1628/sagarfresh.git
-cd sagarfresh
+---
 
-# Install backend dependencies
-cd server
-npm install
+## 📁 Repository Structure
 
-# Install frontend dependencies
-cd ../client
-npm install
+```
+GoMeat/
+├── frontend/                     # React 19 Client SPA
+│   ├── public/                   # Static assets, product cuts, branding
+│   ├── src/
+│   │   ├── components/           # Reusable UI, Modals, Navbar, Checkout
+│   │   ├── pages/                # Catalog, Customer/Admin Dashboards, Tracking
+│   │   ├── context/              # AuthContext, CartContext
+│   │   ├── utils/                # Invoices, PIN helper, formatters
+│   │   ├── api.ts                # Unified REST API service
+│   │   └── types.ts              # Domain interfaces & TypeScript definitions
+│   ├── package.json
+│   └── vite.config.ts
+│
+├── backend/                      # Node.js + Express API
+│   ├── models/                   # Mongoose schemas (Order, User, Product, Cooler)
+│   ├── routes/                   # Payments, Google Auth, WhatsApp Webhooks
+│   ├── services/                 # AI Butcher Bot & business logic
+│   ├── db.js                     # Unified dual-layer database abstraction
+│   ├── mongo.js                  # Resilient MongoDB connector
+│   ├── data.json                 # Persistent local JSON data store
+│   ├── package.json
+│   └── server.js                 # API server entrypoint
+│
+├── docs/                         # Technical documentation
+│   ├── BRANDING_AUDIT.md         # Comprehensive branding audit trail
+│   ├── PROJECT_ARCHITECTURE.md   # System architecture & mermaid diagrams
+│   ├── DATABASE_SCHEMA.md        # Data dictionary & ER diagrams
+│   ├── API_DOCUMENTATION.md      # REST endpoints & payload examples
+│   ├── DEVELOPMENT_GUIDE.md      # Local setup & testing instructions
+│   ├── REBRANDING_REPORT.md      # Final migration summary
+│   └── presentations/            # Business & technical slide decks
+│
+├── scripts/                      # Developer tooling & integration tests
+│   ├── start-dev.js              # Concurrent dev server starter
+│   ├── test-workflows.js         # End-to-end integration test runner
+│   └── test-mongodb.js           # Database diagnostic utility
+│
+├── api/                          # Vercel Serverless Gateway
+│   └── index.js
+├── .env.example                  # Environment configuration template
+├── .editorconfig                 # Editor style standardization
+├── .gitattributes                # Line-ending normalization
+├── .gitignore                    # Professional monorepo ignore rules
+├── package.json                  # Root monorepo orchestration
+├── GoMeat.code-workspace         # VS Code multi-root workspace file
+└── README.md                     # This document
 ```
 
-### Running the Application
+---
 
+## 🚀 Quick Start Guide
+
+### 1. Prerequisites
+- **Node.js**: v20.x or higher (Tested on Node.js v24.16.0)
+- **npm**: v9.x or higher
+
+### 2. Setup
 ```bash
-# 1. Start the Backend API & Unified Production Server (Port 5000)
-cd server
-npm start
+# Clone the repository
+git clone https://github.com/Dhinesh1628/sagarfresh.git GoMeat
+cd GoMeat
 
-# 2. In a separate terminal, start Vite for hot-reload development (Port 5173)
-cd client
+# Setup environment variables
+cp .env.example .env
+
+# Install dependencies across frontend and backend
+npm run install:all
+```
+
+### 3. Run Development Servers
+Start both backend (port `5000`) and frontend (port `5173`) with a single command:
+```bash
 npm run dev
 ```
 
-Open your browser to:
-- **Production Server**: [http://localhost:5000](http://localhost:5000)
-- **Vite Dev Server**: [http://localhost:5173](http://localhost:5173)
+Visit **`http://localhost:5173/`** in your browser.
 
 ---
 
-## 🔑 Login Credentials
+## 🧪 Available NPM Commands
 
-| Role | Username / Identifier | Password | Access Rights |
-| :--- | :--- | :--- | :--- |
-| **Customer (Pooja Sundaram)** | `pooja.sundaram@gmail.com` *(or `9876543210`)* | `customer123` | Browse cuts, custom butchery styles, cart & checkout, live temperature tracking, and box returns with ₹250 UPI refunds. |
-| **Operations Admin (Rajeshwar Rao)** | `ops@gomeat.in` *(or `ops@sagarfresh.in`)* | `admin123` | Central Hub operations, dispatch management, cooler fleet inventory, return approvals, and catalog inventory CRUD. |
-
----
-
-## 🧪 Running Automated Tests
-
-Run the comprehensive end-to-end integration test suite verifying all 9 critical customer and admin workflows:
-
-```bash
-node test-workflows.js
-```
+| Command | Action |
+|:---|:---|
+| `npm run dev` | Runs both backend API and frontend Vite servers concurrently |
+| `npm run dev:backend` | Runs Express API in watch mode (`backend/`) |
+| `npm run dev:frontend` | Runs Vite frontend with HMR (`frontend/`) |
+| `npm run build` | Builds frontend production bundle (`frontend/dist/`) |
+| `npm run test` | Runs end-to-end integration tests (`scripts/test-workflows.js`) |
+| `npm run lint` | Runs Oxlint linter on frontend code |
 
 ---
 
-## 📜 Regulatory & Food Safety Compliance
+## 🔐 Default Test Accounts
 
-- **FSSAI Central License**: `11224333000491`
-- **FSSC 22000**: Food Safety Management Standard
-- **GSTIN**: `29AAECS4912J1Z8`
-- **Privacy Policy**: Compliant with India's Digital Personal Data Protection (DPDP) Act.
+| Role | Email / Phone | Password | Capabilities |
+|:---|:---|:---|:---|
+| **Customer** | `pooja.sundaram@gmail.com` (or `9876543210`) | `customer123` | Browsing, ordering, tracking, ₹250 cooler return |
+| **Operations Admin**| `ops@gomeat.in` (legacy `ops@sagarfresh.in`) | `admin123` | Order pipeline, courier dispatch, box fleet sanitization |
+
+---
+
+## 📖 Extended Documentation
+
+- [Architecture & System Design](file:///docs/PROJECT_ARCHITECTURE.md)
+- [Database Schema & Data Dictionary](file:///docs/DATABASE_SCHEMA.md)
+- [REST API Reference](file:///docs/API_DOCUMENTATION.md)
+- [Developer & DevOps Guide](file:///docs/DEVELOPMENT_GUIDE.md)
+- [Rebranding & Restructuring Report](file:///docs/REBRANDING_REPORT.md)
+- [Branding Audit Trail](file:///docs/BRANDING_AUDIT.md)
+
+---
+
+## 📄 License & Credits
+
+Copyright © 2026 **GoMeat Technologies Pvt. Ltd.** All rights reserved.  
+*Fresh Quality. Delivered with Care.*

@@ -1,0 +1,105 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 520" width="100%" height="100%">
+  <defs>
+    <linearGradient id="bg2" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#0b1120"/>
+      <stop offset="100%" stop-color="#020617"/>
+    </linearGradient>
+    <marker id="arrB" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1 L 8 5 L 0 9 z" fill="#38bdf8"/>
+    </marker>
+    <marker id="arrG" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1 L 8 5 L 0 9 z" fill="#10b981"/>
+    </marker>
+    <marker id="arrR" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1 L 8 5 L 0 9 z" fill="#f43f5e"/>
+    </marker>
+    <marker id="arrA" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1 L 8 5 L 0 9 z" fill="#f59e0b"/>
+    </marker>
+  </defs>
+
+  <rect width="960" height="520" rx="16" fill="url(#bg2)" stroke="#334155" stroke-width="1.5"/>
+
+  <!-- Title -->
+  <text x="40" y="40" font-family="system-ui, sans-serif" font-size="18" font-weight="800" fill="#f8fafc">Razorpay Cryptographic Checkout &amp; Webhook Lifecycle Sequence</text>
+  <text x="40" y="60" font-family="system-ui, sans-serif" font-size="11" fill="#94a3b8">Zero-Trust Server Price Recalculation + HMAC SHA-256 Dual Verification Flow</text>
+
+  <!-- Lifeline Columns -->
+  <!-- Col 1: Customer Browser -->
+  <rect x="50" y="80" width="140" height="34" rx="6" fill="#1e293b" stroke="#38bdf8"/>
+  <text x="120" y="102" font-family="system-ui, sans-serif" font-size="11" font-weight="700" fill="#38bdf8" text-anchor="middle">Customer Client</text>
+  <line x1="120" y1="114" x2="120" y2="480" stroke="#334155" stroke-dasharray="4 4"/>
+
+  <!-- Col 2: GoMeat Express API -->
+  <rect x="250" y="80" width="160" height="34" rx="6" fill="#1e293b" stroke="#10b981"/>
+  <text x="330" y="102" font-family="system-ui, sans-serif" font-size="11" font-weight="700" fill="#34d399" text-anchor="middle">GoMeat Express Server</text>
+  <line x1="330" y1="114" x2="330" y2="480" stroke="#334155" stroke-dasharray="4 4"/>
+
+  <!-- Col 3: MongoDB Atlas -->
+  <rect x="470" y="80" width="140" height="34" rx="6" fill="#1e293b" stroke="#059669"/>
+  <text x="540" y="102" font-family="system-ui, sans-serif" font-size="11" font-weight="700" fill="#6ee7b7" text-anchor="middle">MongoDB Atlas</text>
+  <line x1="540" y1="114" x2="540" y2="480" stroke="#334155" stroke-dasharray="4 4"/>
+
+  <!-- Col 4: Razorpay Orders API -->
+  <rect x="670" y="80" width="140" height="34" rx="6" fill="#1e293b" stroke="#f59e0b"/>
+  <text x="740" y="102" font-family="system-ui, sans-serif" font-size="11" font-weight="700" fill="#fbbf24" text-anchor="middle">Razorpay API Gateway</text>
+  <line x1="740" y1="114" x2="740" y2="480" stroke="#334155" stroke-dasharray="4 4"/>
+
+  <!-- Col 5: Razorpay Webhook Engine -->
+  <rect x="830" y="80" width="110" height="34" rx="6" fill="#1e293b" stroke="#f43f5e"/>
+  <text x="885" y="102" font-family="system-ui, sans-serif" font-size="11" font-weight="700" fill="#fb7185" text-anchor="middle">Webhook Engine</text>
+  <line x1="885" y1="114" x2="885" y2="480" stroke="#334155" stroke-dasharray="4 4"/>
+
+  <!-- Step 1: POST create-order -->
+  <line x1="120" y1="140" x2="320" y2="140" stroke="#38bdf8" stroke-width="2" marker-end="url(#arrB)"/>
+  <text x="210" y="133" font-family="system-ui, sans-serif" font-size="10" fill="#38bdf8" text-anchor="middle">1. POST /api/payments/create-order {items: [{id, qty}]}</text>
+
+  <!-- Step 2: Query DB -->
+  <line x1="330" y1="165" x2="530" y2="165" stroke="#10b981" stroke-width="2" marker-end="url(#arrG)"/>
+  <text x="430" y="158" font-family="system-ui, sans-serif" font-size="10" fill="#10b981" text-anchor="middle">2. Product.find({ _id: { $in: ids } })</text>
+
+  <!-- Step 3: Authoritative Price Return -->
+  <line x1="530" y1="190" x2="340" y2="190" stroke="#94a3b8" stroke-width="1.5" stroke-dasharray="3 3" marker-end="url(#arrB)"/>
+  <text x="430" y="184" font-family="system-ui, sans-serif" font-size="10" fill="#94a3b8" text-anchor="middle">3. Authoritative DB unit prices</text>
+
+  <!-- Server Note -->
+  <rect x="270" y="202" width="120" height="26" rx="4" fill="#0284c7" fill-opacity="0.15" stroke="#38bdf8"/>
+  <text x="330" y="218" font-family="system-ui, sans-serif" font-size="9" fill="#38bdf8" text-anchor="middle">Recalc total + ₹250 Deposit</text>
+
+  <!-- Step 4: Razorpay Orders Create -->
+  <line x1="330" y1="242" x2="730" y2="242" stroke="#f59e0b" stroke-width="2" marker-end="url(#arrA)"/>
+  <text x="530" y="236" font-family="system-ui, sans-serif" font-size="10" fill="#f59e0b" text-anchor="middle">4. razorpay.orders.create({ amount: total * 100, currency: 'INR' })</text>
+
+  <!-- Step 5: Order id response -->
+  <line x1="730" y1="265" x2="340" y2="265" stroke="#94a3b8" stroke-width="1.5" stroke-dasharray="3 3" marker-end="url(#arrB)"/>
+  <text x="530" y="260" font-family="system-ui, sans-serif" font-size="10" fill="#94a3b8" text-anchor="middle">5. Returns order_id (e.g. order_Q7b9L2...)</text>
+
+  <!-- Step 6: Return payload to client -->
+  <line x1="330" y1="290" x2="130" y2="290" stroke="#94a3b8" stroke-width="1.5" stroke-dasharray="3 3" marker-end="url(#arrB)"/>
+  <text x="220" y="284" font-family="system-ui, sans-serif" font-size="10" fill="#94a3b8" text-anchor="middle">6. { orderId, amount, keyId }</text>
+
+  <!-- Step 7: Razorpay Checkout Modal Interaction -->
+  <rect x="70" y="305" width="100" height="26" rx="4" fill="#f43f5e" fill-opacity="0.15" stroke="#f43f5e"/>
+  <text x="120" y="321" font-family="system-ui, sans-serif" font-size="9" fill="#fb7185" text-anchor="middle">Customer pays via UPI/Card</text>
+
+  <!-- Step 8: POST /api/payments/verify -->
+  <line x1="120" y1="345" x2="320" y2="345" stroke="#38bdf8" stroke-width="2" marker-end="url(#arrB)"/>
+  <text x="220" y="338" font-family="system-ui, sans-serif" font-size="10" fill="#38bdf8" text-anchor="middle">7. POST /api/payments/verify {order_id, payment_id, signature}</text>
+
+  <!-- Server HMAC Check Box -->
+  <rect x="250" y="358" width="160" height="36" rx="4" fill="#059669" fill-opacity="0.2" stroke="#10b981"/>
+  <text x="330" y="373" font-family="system-ui, sans-serif" font-size="9" font-weight="700" fill="#34d399" text-anchor="middle">HMAC SHA-256 Digest Validation</text>
+  <text x="330" y="386" font-family="system-ui, sans-serif" font-size="8" fill="#94a3b8" text-anchor="middle">expectedSig === req.body.signature</text>
+
+  <!-- Step 9: Save order to DB -->
+  <line x1="330" y1="410" x2="530" y2="410" stroke="#10b981" stroke-width="2" marker-end="url(#arrG)"/>
+  <text x="430" y="404" font-family="system-ui, sans-serif" font-size="10" fill="#10b981" text-anchor="middle">8. Order.create({ paymentStatus: 'PAID', ... })</text>
+
+  <!-- Step 10: Asynchronous Webhook -->
+  <line x1="885" y1="435" x2="340" y2="435" stroke="#f43f5e" stroke-width="2" stroke-dasharray="4 2" marker-end="url(#arrR)"/>
+  <text x="610" y="428" font-family="system-ui, sans-serif" font-size="10" fill="#fb7185" text-anchor="middle">9. Webhook: POST /api/payments/webhook [payment.captured] (Raw Body HMAC)</text>
+
+  <!-- Webhook Idempotency Check -->
+  <rect x="250" y="446" width="160" height="24" rx="4" fill="#f43f5e" fill-opacity="0.15" stroke="#f43f5e"/>
+  <text x="330" y="462" font-family="system-ui, sans-serif" font-size="9" fill="#f43f5e" text-anchor="middle">Idempotent check (Prevents duplicate)</text>
+</svg>

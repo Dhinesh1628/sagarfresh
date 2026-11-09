@@ -1,0 +1,1041 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>GoMeat - Full Production Presentation</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+  <style>
+    @page {
+      size: 1920px 1080px;
+      margin: 0;
+    }
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      margin: 0;
+      padding: 0;
+      background: #0b1120;
+      color: #0f172a;
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
+    }
+    .slide {
+      width: 1920px;
+      height: 1080px;
+      page-break-after: always;
+      position: relative;
+      overflow: hidden;
+      box-sizing: border-box;
+      padding: 70px 90px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+    .mono {
+      font-family: 'JetBrains Mono', monospace;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ========================================== -->
+  <!-- SLIDE 1: TITLE SLIDE (Dark Premium) -->
+  <!-- ========================================== -->
+  <section class="slide bg-[#070b14] text-white">
+    <div class="absolute inset-0 opacity-20 pointer-events-none" style="background: radial-gradient(circle at 20% 30%, #d11243 0%, transparent 40%), radial-gradient(circle at 80% 70%, #059669 0%, transparent 40%);"></div>
+    
+    <div class="relative z-10">
+      <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-rose-950/80 border border-rose-500/40 text-rose-300 text-xs font-black tracking-widest uppercase">
+        <span class="w-2.5 h-2.5 rounded-full bg-rose-500 animate-pulse"></span>
+        FSSAI 0°C - 4°C CERTIFIED ACTIVE FRESHCHAIN
+      </div>
+      
+      <h1 class="text-8xl font-black tracking-tight text-white mt-8 mb-3">
+        GO<span class="text-[#d11243]">MEAT</span>
+      </h1>
+      
+      <p class="text-3xl font-extrabold text-slate-200">
+        Full-Stack Production MERN E-Commerce Architecture
+      </p>
+      
+      <p class="text-lg text-slate-400 max-w-3xl mt-4 leading-relaxed font-medium">
+        A comprehensive engineering presentation covering bank-grade Razorpay payment rails, circular ₹250 refundable cold-box logistics, decoupled order lifecycle engines, 6-stage IoT telemetry, and Central Hub operations.
+      </p>
+    </div>
+
+    <div class="relative z-10 grid grid-cols-4 gap-6 pt-8 border-t border-slate-800">
+      <div class="bg-slate-900/90 border border-slate-800 p-5 rounded-2xl backdrop-blur-md">
+        <span class="text-xs font-bold text-[#d11243] uppercase tracking-wider block mb-1">Architecture</span>
+        <div class="text-base font-bold text-white">MERN Enterprise Stack</div>
+        <p class="text-xs text-slate-400 mt-1">React 19 • Express • Node.js • MongoDB Atlas</p>
+      </div>
+
+      <div class="bg-slate-900/90 border border-slate-800 p-5 rounded-2xl backdrop-blur-md">
+        <span class="text-xs font-bold text-emerald-400 uppercase tracking-wider block mb-1">Payment Rails</span>
+        <div class="text-base font-bold text-white">Razorpay Standard Suite</div>
+        <p class="text-xs text-slate-400 mt-1">UPI (GPay, PhonePe, Paytm, QR) • Cards • NetBanking</p>
+      </div>
+
+      <div class="bg-slate-900/90 border border-slate-800 p-5 rounded-2xl backdrop-blur-md">
+        <span class="text-xs font-bold text-sky-400 uppercase tracking-wider block mb-1">Circular Packaging</span>
+        <div class="text-base font-bold text-white">ThermalVault™ System</div>
+        <p class="text-xs text-slate-400 mt-1">₹250 Refundable Security Deposit Reversal</p>
+      </div>
+
+      <div class="bg-slate-900/90 border border-slate-800 p-5 rounded-2xl backdrop-blur-md">
+        <span class="text-xs font-bold text-amber-400 uppercase tracking-wider block mb-1">Live Deployment</span>
+        <div class="text-base font-bold text-white">Vercel Serverless</div>
+        <p class="text-xs text-slate-400 mt-1">CI/CD Production Deployment via GitHub</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========================================== -->
+  <!-- SLIDE 2: INDUSTRY CHALLENGES & SOLUTION -->
+  <!-- ========================================== -->
+  <section class="slide bg-[#f8fafc]">
+    <div>
+      <span class="text-xs font-black tracking-widest uppercase text-[#d11243]">The Market Opportunity</span>
+      <h2 class="text-4xl font-black text-slate-900 mt-1">Industry Challenges & The GoMeat Solution</h2>
+      <div class="w-20 h-1.5 bg-[#d11243] rounded-full mt-3"></div>
+    </div>
+
+    <div class="grid grid-cols-3 gap-8 my-auto">
+      <!-- Pillar 1 -->
+      <div class="bg-white p-8 rounded-3xl border border-slate-200 shadow-sm flex flex-col justify-between">
+        <div>
+          <span class="text-5xl font-black text-[#d11243] block mb-4">01</span>
+          <h3 class="text-2xl font-black text-slate-900 mb-4">The Frozen Meat Illusion</h3>
+          <div class="bg-rose-50 border border-rose-200 p-4 rounded-2xl text-xs text-rose-900 leading-relaxed mb-4">
+            <strong class="text-[#d11243] block mb-1">MARKET DEFECT:</strong>
+            Standard delivery apps deliver rock-frozen cuts with broken cold-chains. Ice crystallization punctures meat cell membranes, leaching vital juices and flavor upon defrosting.
+          </div>
+        </div>
+        <div class="bg-emerald-50 border border-emerald-200 p-4 rounded-2xl text-xs text-emerald-900 leading-relaxed">
+          <strong class="text-emerald-700 block mb-1">GOMEAT SOLUTION:</strong>
+          0°C to 4°C active chilled cold chain dispatched from micro-hubs in under 90 minutes. Fresh cut daily, never frozen.
+        </div>
+      </div>
+
+      <!-- Pillar 2 -->
+      <div class="bg-white p-8 rounded-3xl border border-slate-200 shadow-sm flex flex-col justify-between">
+        <div>
+          <span class="text-5xl font-black text-[#d11243] block mb-4">02</span>
+          <h3 class="text-2xl font-black text-slate-900 mb-4">Single-Use Styrofoam Waste</h3>
+          <div class="bg-rose-50 border border-rose-200 p-4 rounded-2xl text-xs text-rose-900 leading-relaxed mb-4">
+            <strong class="text-[#d11243] block mb-1">ENVIRONMENTAL CRISIS:</strong>
+            Every conventional meat delivery generates 1-2 kg of toxic thermocol (EPS) packaging and plastic bubble wrap that clogs municipal landfills for over 500 years.
+          </div>
+        </div>
+        <div class="bg-emerald-50 border border-emerald-200 p-4 rounded-2xl text-xs text-emerald-900 leading-relaxed">
+          <strong class="text-emerald-700 block mb-1">GOMEAT SOLUTION:</strong>
+          ThermalVault™ reusable EPP insulated boxes with frozen gel packs. ₹250 refundable deposit credited back to UPI in 1 click upon box return.
+        </div>
+      </div>
+
+      <!-- Pillar 3 -->
+      <div class="bg-white p-8 rounded-3xl border border-slate-200 shadow-sm flex flex-col justify-between">
+        <div>
+          <span class="text-5xl font-black text-[#d11243] block mb-4">03</span>
+          <h3 class="text-2xl font-black text-slate-900 mb-4">Insecure & Tampered Checkouts</h3>
+          <div class="bg-rose-50 border border-rose-200 p-4 rounded-2xl text-xs text-rose-900 leading-relaxed mb-4">
+            <strong class="text-[#d11243] block mb-1">COMMERCE VULNERABILITY:</strong>
+            Most amateur stores trust frontend-submitted prices, use fake simulated payments, or static QR codes prone to user tampering and chargeback losses.
+          </div>
+        </div>
+        <div class="bg-emerald-50 border border-emerald-200 p-4 rounded-2xl text-xs text-emerald-900 leading-relaxed">
+          <strong class="text-emerald-700 block mb-1">GOMEAT SOLUTION:</strong>
+          Tamper-proof server-side price calculation from MongoDB, HMAC SHA-256 signatures, and cryptographic raw-body webhook verification.
+        </div>
+      </div>
+    </div>
+
+    <div class="text-xs text-slate-400 font-semibold text-right">
+      GoMeat Production Architecture • Slide 2 of 12
+    </div>
+  </section>
+
+  <!-- ========================================== -->
+  <!-- SLIDE 3: FULL SYSTEM ARCHITECTURE -->
+  <!-- ========================================== -->
+  <section class="slide bg-[#f8fafc]">
+    <div>
+      <span class="text-xs font-black tracking-widest uppercase text-[#d11243]">Technical Architecture</span>
+      <h2 class="text-4xl font-black text-slate-900 mt-1">Full-Stack Production System Architecture</h2>
+      <div class="w-20 h-1.5 bg-[#d11243] rounded-full mt-3"></div>
+    </div>
+
+    <div class="grid grid-cols-4 gap-6 my-auto">
+      <!-- Layer 1 -->
+      <div class="bg-white rounded-3xl border border-slate-200 shadow-sm overflow-hidden flex flex-col">
+        <div class="bg-slate-900 p-5 text-white">
+          <span class="text-[10px] font-bold text-rose-400 uppercase tracking-widest block">Client Layer</span>
+          <h4 class="text-lg font-black mt-0.5">Frontend Client</h4>
+          <span class="text-xs text-slate-400">React 19 • Vite • Tailwind</span>
+        </div>
+        <div class="p-6 text-xs text-slate-600 space-y-3 flex-1 flex flex-col justify-between">
+          <ul class="space-y-2.5">
+            <li>• Responsive mobile-first e-commerce UI with Figma order flow</li>
+            <li>• Ambient radiant lighting mesh with Dark/Light theme toggle</li>
+            <li>• Client state persistence for Cart, Auth, and User Wishlist</li>
+            <li>• Dynamic script injection for Razorpay Standard Checkout SDK</li>
+            <li>• Non-destructive browser back navigation via popstate sync</li>
+          </ul>
+          <span class="text-[10px] font-mono text-slate-400 border-t pt-2 block">Bundle: 527 kB gzip (2.56s)</span>
+        </div>
+      </div>
+
+      <!-- Layer 2 -->
+      <div class="bg-white rounded-3xl border border-slate-200 shadow-sm overflow-hidden flex flex-col">
+        <div class="bg-slate-900 p-5 text-white">
+          <span class="text-[10px] font-bold text-sky-400 uppercase tracking-widest block">API Layer</span>
+          <h4 class="text-lg font-black mt-0.5">Express REST Router</h4>
+          <span class="text-xs text-slate-400">Node.js Express • CORS • JWT</span>
+        </div>
+        <div class="p-6 text-xs text-slate-600 space-y-3 flex-1 flex flex-col justify-between">
+          <ul class="space-y-2.5">
+            <li>• Raw request body retention for cryptographic Webhooks</li>
+            <li>• JWT Authentication & Role-Based Access Control (RBAC)</li>
+            <li>• /api/payments (create-order, verify, webhook, status, refund)</li>
+            <li>• /api/orders (pipeline status updater, customer cancellation)</li>
+            <li>• /api/products (full CRUD, live stock adjustments, filters)</li>
+          </ul>
+          <span class="text-[10px] font-mono text-slate-400 border-t pt-2 block">Vercel Serverless Function</span>
+        </div>
+      </div>
+
+      <!-- Layer 3 -->
+      <div class="bg-white rounded-3xl border border-slate-200 shadow-sm overflow-hidden flex flex-col">
+        <div class="bg-[#d11243] p-5 text-white">
+          <span class="text-[10px] font-bold text-rose-200 uppercase tracking-widest block">Payment Gateway</span>
+          <h4 class="text-lg font-black mt-0.5">Razorpay Engine</h4>
+          <span class="text-xs text-rose-100">HMAC SHA-256 • Crypto API</span>
+        </div>
+        <div class="p-6 text-xs text-slate-600 space-y-3 flex-1 flex flex-col justify-between">
+          <ul class="space-y-2.5">
+            <li>• Server-side order creation calculated from DB product prices</li>
+            <li>• Cryptographic HMAC SHA-256 signature verification</li>
+            <li>• Automated duplicate payment & double-order idempotency</li>
+            <li>• Razorpay Refund API for ₹250 cold-box deposit reversals</li>
+            <li>• Multi-rail support: UPI, Cards, NetBanking, Wallets, and COD</li>
+          </ul>
+          <span class="text-[10px] font-mono text-slate-400 border-t pt-2 block">Paise precision (INR)</span>
+        </div>
+      </div>
+
+      <!-- Layer 4 -->
+      <div class="bg-white rounded-3xl border border-slate-200 shadow-sm overflow-hidden flex flex-col">
+        <div class="bg-slate-900 p-5 text-white">
+          <span class="text-[10px] font-bold text-emerald-400 uppercase tracking-widest block">Persistence</span>
+          <h4 class="text-lg font-black mt-0.5">MongoDB Atlas</h4>
+          <span class="text-xs text-slate-400">Replica Set • Mongoose 9</span>
+        </div>
+        <div class="p-6 text-xs text-slate-600 space-y-3 flex-1 flex flex-col justify-between">
+          <ul class="space-y-2.5">
+            <li>• Cloud hosted database cluster: cluster0.6rm7klj.mongodb.net</li>
+            <li>• Atomic stock decrement upon payment capture</li>
+            <li>• Order price snapshots & complete address hierarchy</li>
+            <li>• Independent decoupled orderStatus & paymentStatus</li>
+            <li>• Dual-engine persistence: Live MongoDB + zero-downtime cache</li>
+          </ul>
+          <span class="text-[10px] font-mono text-slate-400 border-t pt-2 block">sagarfresh production DB</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="text-xs text-slate-400 font-semibold text-right">
+      GoMeat Production Architecture • Slide 3 of 12
+    </div>
+  </section>
+
+  <!-- ========================================== -->
+  <!-- SLIDE 4: MODULE 1 - RAZORPAY INTEGRATION -->
+  <!-- ========================================== -->
+  <section class="slide bg-[#f8fafc]">
+    <div>
+      <span class="text-xs font-black tracking-widest uppercase text-[#d11243]">Payment Engineering</span>
+      <h2 class="text-4xl font-black text-slate-900 mt-1">Module 1: Real Razorpay Payment Gateway Integration</h2>
+      <div class="w-20 h-1.5 bg-[#d11243] rounded-full mt-3"></div>
+    </div>
+
+    <div class="grid grid-cols-2 gap-10 my-auto">
+      <!-- Left side -->
+      <div class="bg-white p-8 rounded-3xl border border-slate-200 shadow-sm space-y-5">
+        <h3 class="text-lg font-black text-[#d11243] uppercase tracking-wide">Enterprise Payment Requirements Met</h3>
+        
+        <div class="space-y-4 text-xs text-slate-700">
+          <div class="p-3 bg-slate-50 rounded-2xl border border-slate-100">
+            <strong class="text-slate-900 block font-bold mb-0.5">1. Server-Side Price Calculation:</strong>
+            Prices are calculated strictly by querying MongoDB product records. Frontend submitted totals are discarded to prevent inspect-element tampering.
+          </div>
+          <div class="p-3 bg-slate-50 rounded-2xl border border-slate-100">
+            <strong class="text-slate-900 block font-bold mb-0.5">2. HMAC SHA-256 Signature Verification:</strong>
+            Crypto engine computes HMAC SHA-256 over (razorpay_order_id + '|' + razorpay_payment_id) with RAZORPAY_KEY_SECRET to guarantee authentic bank confirmation.
+          </div>
+          <div class="p-3 bg-slate-50 rounded-2xl border border-slate-100">
+            <strong class="text-slate-900 block font-bold mb-0.5">3. Raw Body Webhook Verification:</strong>
+            Preserved express raw body for raw byte-matching against x-razorpay-signature, supporting captured, failed, and refund events.
+          </div>
+          <div class="p-3 bg-slate-50 rounded-2xl border border-slate-100">
+            <strong class="text-slate-900 block font-bold mb-0.5">4. Idempotency & Duplicate Prevention:</strong>
+            Re-verifying an already PAID order returns 200 OK immediately with the existing order, preventing duplicate records or multiple debits.
+          </div>
+        </div>
+      </div>
+
+      <!-- Right side: Flow sequence -->
+      <div class="bg-[#0b1120] text-white p-8 rounded-3xl border border-slate-800 shadow-xl flex flex-col justify-between">
+        <h3 class="text-lg font-black text-rose-300 uppercase tracking-wide">Cryptographic Payment Flow</h3>
+
+        <div class="space-y-4 text-xs">
+          <div class="flex items-start gap-4">
+            <div class="w-8 h-8 rounded-full bg-[#d11243] flex items-center justify-center font-black text-sm shrink-0">1</div>
+            <div>
+              <strong class="text-white block font-bold">POST /api/payments/create-order</strong>
+              <p class="text-slate-400 mt-0.5 leading-relaxed">Backend looks up cuts in DB, validates stock, adds ₹250 deposit, and calls Razorpay SDK to generate order_id in paise.</p>
+            </div>
+          </div>
+
+          <div class="flex items-start gap-4">
+            <div class="w-8 h-8 rounded-full bg-[#d11243] flex items-center justify-center font-black text-sm shrink-0">2</div>
+            <div>
+              <strong class="text-white block font-bold">Razorpay Standard Checkout Modal</strong>
+              <p class="text-slate-400 mt-0.5 leading-relaxed">Dynamic checkout.js launches official Razorpay modal. User completes payment via GPay, PhonePe, Cards, or NetBanking.</p>
+            </div>
+          </div>
+
+          <div class="flex items-start gap-4">
+            <div class="w-8 h-8 rounded-full bg-[#d11243] flex items-center justify-center font-black text-sm shrink-0">3</div>
+            <div>
+              <strong class="text-white block font-bold">POST /api/payments/verify</strong>
+              <p class="text-slate-400 mt-0.5 leading-relaxed">Client submits razorpay_order_id, razorpay_payment_id, and signature. Node.js crypto engine authenticates HMAC SHA-256 signature.</p>
+            </div>
+          </div>
+
+          <div class="flex items-start gap-4">
+            <div class="w-8 h-8 rounded-full bg-emerald-600 flex items-center justify-center font-black text-sm shrink-0">4</div>
+            <div>
+              <strong class="text-white block font-bold">Atomic Persistence & Stock Deduction</strong>
+              <p class="text-slate-400 mt-0.5 leading-relaxed">Decrements product inventory in MongoDB, locks cold-box asset serial number, and transitions orderStatus to CONFIRMED.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="p-3 bg-slate-900 rounded-xl border border-slate-800 text-[11px] text-emerald-400 mono">
+          Verified Test Order: GOM-280363 • Status: PAID • HMAC-SHA256 Match OK
+        </div>
+      </div>
+    </div>
+
+    <div class="text-xs text-slate-400 font-semibold text-right">
+      GoMeat Production Architecture • Slide 4 of 12
+    </div>
+  </section>
+
+  <!-- ========================================== -->
+  <!-- SLIDE 5: MODULE 2 & 3 - CHECKOUT & ORDERS -->
+  <!-- ========================================== -->
+  <section class="slide bg-[#f8fafc]">
+    <div>
+      <span class="text-xs font-black tracking-widest uppercase text-[#d11243]">Checkout & Order Engineering</span>
+      <h2 class="text-4xl font-black text-slate-900 mt-1">Module 2 & 3: Complete Checkout & Decoupled Order Lifecycle</h2>
+      <div class="w-20 h-1.5 bg-[#d11243] rounded-full mt-3"></div>
+    </div>
+
+    <div class="grid grid-cols-2 gap-10 my-auto">
+      <!-- Checkout breakdown -->
+      <div class="bg-white p-8 rounded-3xl border border-slate-200 shadow-sm space-y-4">
+        <h3 class="text-lg font-black text-[#d11243] uppercase tracking-wide">Module 2: Complete Checkout Architecture</h3>
+        
+        <div class="space-y-3 text-xs text-slate-700">
+          <div class="p-2.5 bg-slate-50 rounded-xl border border-slate-100">
+            <strong class="text-slate-900 block font-bold">1. Customer Contact Details:</strong>
+            Full Name, Email Address (for automated tax invoices), and 10-digit Indian Mobile number validation.
+          </div>
+          <div class="p-2.5 bg-slate-50 rounded-xl border border-slate-100">
+            <strong class="text-slate-900 block font-bold">2. Delivery Slot Picker:</strong>
+            Choose between "⚡ Express 90 Mins Delivery" (instant dark depot dispatch) or "📅 Scheduled Slots" (Today/Tomorrow).
+          </div>
+          <div class="p-2.5 bg-slate-50 rounded-xl border border-slate-100">
+            <strong class="text-slate-900 block font-bold">3. Hierarchical Delivery Address:</strong>
+            Address type (Home/Work/Other), Flat/House No, Building/Society Name, Street, Locality, City, State, and 6-digit PIN.
+          </div>
+          <div class="p-2.5 bg-slate-50 rounded-xl border border-slate-100">
+            <strong class="text-slate-900 block font-bold">4. Rider Instructions & Landmark Notes:</strong>
+            Quick tags: "Leave with security guard", "Do not ring bell (Sleeping baby)", plus custom delivery directions.
+          </div>
+          <div class="p-2.5 bg-slate-50 rounded-xl border border-slate-100">
+            <strong class="text-slate-900 block font-bold">5. Transparent Order Summary:</strong>
+            Subtotal, separate ₹250 refundable cold-box deposit line item, coupon discounts, shipping fee, and payable total.
+          </div>
+        </div>
+      </div>
+
+      <!-- Order lifecycle -->
+      <div class="bg-white p-8 rounded-3xl border border-slate-200 shadow-sm space-y-4 flex flex-col justify-between">
+        <div>
+          <h3 class="text-lg font-black text-slate-900 uppercase tracking-wide">Module 3: Decoupled Order State Engine</h3>
+          <p class="text-xs text-slate-500 mt-1 mb-4">
+            Payment Status and Order Pipeline Status are independently managed to allow retries, webhooks, cancellations, and refunds without data corruption.
+          </p>
+
+          <div class="space-y-2 text-xs">
+            <div class="flex items-center gap-3 p-2 bg-slate-50 rounded-xl border border-slate-100">
+              <span class="w-24 font-bold text-slate-900">PENDING</span>
+              <span class="text-slate-500">Order created; awaiting bank authorization</span>
+            </div>
+            <div class="flex items-center gap-3 p-2 bg-rose-50 rounded-xl border border-rose-200 font-bold text-[#d11243]">
+              <span class="w-24">CONFIRMED</span>
+              <span>Payment verified; queued for butchery prep</span>
+            </div>
+            <div class="flex items-center gap-3 p-2 bg-slate-50 rounded-xl border border-slate-100">
+              <span class="w-24 font-bold text-slate-900">PREPARING</span>
+              <span class="text-slate-500">Master butchers trimming fresh cuts to spec</span>
+            </div>
+            <div class="flex items-center gap-3 p-2 bg-slate-50 rounded-xl border border-slate-100">
+              <span class="w-24 font-bold text-slate-900">QUALITY_CHECK</span>
+              <span class="text-slate-500">FSSAI inspection, digital scale & 0°C probe</span>
+            </div>
+            <div class="flex items-center gap-3 p-2 bg-slate-50 rounded-xl border border-slate-100">
+              <span class="w-24 font-bold text-slate-900">PACKED</span>
+              <span class="text-slate-500">Sealed in ThermalVault with sub-zero ice gels</span>
+            </div>
+            <div class="flex items-center gap-3 p-2 bg-slate-50 rounded-xl border border-slate-100">
+              <span class="w-24 font-bold text-slate-900">OUT_FOR_DELIVERY</span>
+              <span class="text-slate-500">In transit with EV cold-chain fleet partner</span>
+            </div>
+            <div class="flex items-center gap-3 p-2 bg-emerald-50 rounded-xl border border-emerald-200 font-bold text-emerald-800">
+              <span class="w-24">DELIVERED</span>
+              <span>Delivered chilled; ₹250 refundable deposit recorded</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="p-3 bg-amber-50 rounded-xl border border-amber-200 text-xs text-amber-900">
+          <strong>Order Cancellation Guard:</strong> Customers can cancel anytime prior to PACKED stage to receive an automated refund and restock depot inventory.
+        </div>
+      </div>
+    </div>
+
+    <div class="text-xs text-slate-400 font-semibold text-right">
+      GoMeat Production Architecture • Slide 5 of 12
+    </div>
+  </section>
+
+  <!-- ========================================== -->
+  <!-- SLIDE 6: MODULE 4 - CUSTOMER DASHBOARD -->
+  <!-- ========================================== -->
+  <section class="slide bg-[#f8fafc]">
+    <div>
+      <span class="text-xs font-black tracking-widest uppercase text-[#d11243]">Customer Experience</span>
+      <h2 class="text-4xl font-black text-slate-900 mt-1">Module 4: Customer Dashboard Architecture</h2>
+      <div class="w-20 h-1.5 bg-[#d11243] rounded-full mt-3"></div>
+    </div>
+
+    <div class="grid grid-cols-4 gap-6 my-auto">
+      <div class="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm flex flex-col justify-between">
+        <div>
+          <span class="text-xs font-bold text-[#d11243] uppercase tracking-wider block mb-1">Section 1</span>
+          <h4 class="text-base font-black text-slate-900 mb-2">My Profile</h4>
+          <p class="text-xs text-slate-500 leading-relaxed">
+            Customer credentials, verified Google Sign-In badge, registered mobile number, delivery city, and active refundable deposit balance held.
+          </p>
+        </div>
+        <span class="text-[10px] text-emerald-700 font-bold bg-emerald-50 p-2 rounded-xl mt-4 block">1-Click Profile Update</span>
+      </div>
+
+      <div class="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm flex flex-col justify-between">
+        <div>
+          <span class="text-xs font-bold text-[#d11243] uppercase tracking-wider block mb-1">Section 2</span>
+          <h4 class="text-base font-black text-slate-900 mb-2">My Orders History</h4>
+          <p class="text-xs text-slate-500 leading-relaxed">
+            Historical log of all placed orders with unique order numbers (GOM-XXXX), item snapshots, timestamps, live pipeline tags, and 1-click reorder.
+          </p>
+        </div>
+        <span class="text-[10px] text-rose-700 font-bold bg-rose-50 p-2 rounded-xl mt-4 block">Real-time status tracking</span>
+      </div>
+
+      <div class="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm flex flex-col justify-between">
+        <div>
+          <span class="text-xs font-bold text-[#d11243] uppercase tracking-wider block mb-1">Section 3</span>
+          <h4 class="text-base font-black text-slate-900 mb-2">Order Details Modal</h4>
+          <p class="text-xs text-slate-500 leading-relaxed">
+            Inspect itemized price breakdowns, cut customization specifications, delivery rider contacts, and active cold-probe telemetry logs.
+          </p>
+        </div>
+        <span class="text-[10px] text-sky-700 font-bold bg-sky-50 p-2 rounded-xl mt-4 block">Price & Address Snapshot</span>
+      </div>
+
+      <div class="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm flex flex-col justify-between">
+        <div>
+          <span class="text-xs font-bold text-[#d11243] uppercase tracking-wider block mb-1">Section 4</span>
+          <h4 class="text-base font-black text-slate-900 mb-2">Payment History Ledger</h4>
+          <p class="text-xs text-slate-500 leading-relaxed">
+            Cryptographic ledger displaying Razorpay Order IDs, Payment IDs, payment methods (UPI/Cards/COD), and refund states for complete transparency.
+          </p>
+        </div>
+        <span class="text-[10px] text-purple-700 font-bold bg-purple-50 p-2 rounded-xl mt-4 block">Cryptographic audit trail</span>
+      </div>
+
+      <div class="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm flex flex-col justify-between">
+        <div>
+          <span class="text-xs font-bold text-[#d11243] uppercase tracking-wider block mb-1">Section 5</span>
+          <h4 class="text-base font-black text-slate-900 mb-2">Wishlist Management</h4>
+          <p class="text-xs text-slate-500 leading-relaxed">
+            Heart-tagged favorite seafood, mutton, and poultry cuts stored in persistent client memory with 1-click instant "Add to Cold Box".
+          </p>
+        </div>
+        <span class="text-[10px] text-rose-700 font-bold bg-rose-50 p-2 rounded-xl mt-4 block">Session persistence</span>
+      </div>
+
+      <div class="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm flex flex-col justify-between">
+        <div>
+          <span class="text-xs font-bold text-[#d11243] uppercase tracking-wider block mb-1">Section 6</span>
+          <h4 class="text-base font-black text-slate-900 mb-2">Saved Addresses</h4>
+          <p class="text-xs text-slate-500 leading-relaxed">
+            Address book managing multiple delivery locations (Home, Work, Other) with complete flat, society, landmark, and PIN details.
+          </p>
+        </div>
+        <span class="text-[10px] text-amber-700 font-bold bg-amber-50 p-2 rounded-xl mt-4 block">1-Tap Checkout Autofill</span>
+      </div>
+
+      <div class="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm flex flex-col justify-between">
+        <div>
+          <span class="text-xs font-bold text-[#d11243] uppercase tracking-wider block mb-1">Section 7</span>
+          <h4 class="text-base font-black text-slate-900 mb-2">Cold-Box Returns Portal</h4>
+          <p class="text-xs text-slate-500 leading-relaxed">
+            Track circulating ThermalVault boxes and request free doorstep collection with instant ₹250 UPI refund reversal upon courier pickup.
+          </p>
+        </div>
+        <span class="text-[10px] text-emerald-700 font-bold bg-emerald-50 p-2 rounded-xl mt-4 block">Zero-waste circular flow</span>
+      </div>
+
+      <div class="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm flex flex-col justify-between">
+        <div>
+          <span class="text-xs font-bold text-[#d11243] uppercase tracking-wider block mb-1">Section 8</span>
+          <h4 class="text-base font-black text-slate-900 mb-2">Printable Tax Invoices</h4>
+          <p class="text-xs text-slate-500 leading-relaxed">
+            1-click automated tax invoice generator showing FSSAI license, GSTIN, item breakdowns, and itemized ₹250 deposit for commercial records.
+          </p>
+        </div>
+        <span class="text-[10px] text-indigo-700 font-bold bg-indigo-50 p-2 rounded-xl mt-4 block">Print & PDF Preview</span>
+      </div>
+    </div>
+
+    <div class="text-xs text-slate-400 font-semibold text-right">
+      GoMeat Production Architecture • Slide 6 of 12
+    </div>
+  </section>
+
+  <!-- ========================================== -->
+  <!-- SLIDE 7: MODULE 5 - ORDER TRACKING & IOT -->
+  <!-- ========================================== -->
+  <section class="slide bg-[#f8fafc]">
+    <div>
+      <span class="text-xs font-black tracking-widest uppercase text-[#d11243]">Telemetry & Logistics</span>
+      <h2 class="text-4xl font-black text-slate-900 mt-1">Module 5: Status-Based Tracking & IoT Cold Chain Telemetry</h2>
+      <div class="w-20 h-1.5 bg-[#d11243] rounded-full mt-3"></div>
+    </div>
+
+    <div class="grid grid-cols-12 gap-8 my-auto">
+      <!-- 6-Stage Timeline (7 cols) -->
+      <div class="col-span-7 bg-white p-8 rounded-3xl border border-slate-200 shadow-sm space-y-4">
+        <div class="flex items-center justify-between">
+          <h3 class="text-lg font-black text-[#d11243] uppercase tracking-wide">6-Stage Visual Milestone Pipeline</h3>
+          <span class="text-xs px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-700 font-bold border border-emerald-200">Status-Based (No Fake GPS)</span>
+        </div>
+
+        <div class="space-y-3 pt-2 text-xs">
+          <div class="flex items-center gap-4 p-3 bg-slate-50 rounded-2xl border border-slate-100">
+            <span class="w-7 h-7 rounded-full bg-[#d11243] text-white flex items-center justify-center font-black shrink-0">1</span>
+            <div class="flex-1">
+              <strong class="text-slate-900 text-sm font-bold block">Order Confirmed</strong>
+              <span class="text-slate-500 text-[11px]">Central depot verifies payment and queues cuts for master butchery.</span>
+            </div>
+            <span class="text-slate-400 mono font-bold">0-10 Mins</span>
+          </div>
+
+          <div class="flex items-center gap-4 p-3 bg-slate-50 rounded-2xl border border-slate-100">
+            <span class="w-7 h-7 rounded-full bg-slate-800 text-white flex items-center justify-center font-black shrink-0">2</span>
+            <div class="flex-1">
+              <strong class="text-slate-900 text-sm font-bold block">Preparing Your Order</strong>
+              <span class="text-slate-500 text-[11px]">Master butchers precision-trim, bone, and portion cuts in bio-secure rooms.</span>
+            </div>
+            <span class="text-slate-400 mono font-bold">10-25 Mins</span>
+          </div>
+
+          <div class="flex items-center gap-4 p-3 bg-slate-50 rounded-2xl border border-slate-100">
+            <span class="w-7 h-7 rounded-full bg-slate-800 text-white flex items-center justify-center font-black shrink-0">3</span>
+            <div class="flex-1">
+              <strong class="text-slate-900 text-sm font-bold block">Quality Check</strong>
+              <span class="text-slate-500 text-[11px]">150-point FSSAI inspection, digital weigh-in, and microbial assay check.</span>
+            </div>
+            <span class="text-slate-400 mono font-bold">25-35 Mins</span>
+          </div>
+
+          <div class="flex items-center gap-4 p-3 bg-slate-50 rounded-2xl border border-slate-100">
+            <span class="w-7 h-7 rounded-full bg-slate-800 text-white flex items-center justify-center font-black shrink-0">4</span>
+            <div class="flex-1">
+              <strong class="text-slate-900 text-sm font-bold block">Packed in Cold Box</strong>
+              <span class="text-slate-500 text-[11px]">Sealed inside ThermalVault with sub-zero ice gel packs; digital lock engaged.</span>
+            </div>
+            <span class="text-slate-400 mono font-bold">35-50 Mins</span>
+          </div>
+
+          <div class="flex items-center gap-4 p-3 bg-slate-50 rounded-2xl border border-slate-100">
+            <span class="w-7 h-7 rounded-full bg-slate-800 text-white flex items-center justify-center font-black shrink-0">5</span>
+            <div class="flex-1">
+              <strong class="text-slate-900 text-sm font-bold block">Out for Delivery</strong>
+              <span class="text-slate-500 text-[11px]">Assigned to EV cold-chain partner heading directly to delivery doorstep.</span>
+            </div>
+            <span class="text-slate-400 mono font-bold">50-75 Mins</span>
+          </div>
+
+          <div class="flex items-center gap-4 p-3 bg-emerald-50 rounded-2xl border border-emerald-200">
+            <span class="w-7 h-7 rounded-full bg-emerald-600 text-white flex items-center justify-center font-black shrink-0">6</span>
+            <div class="flex-1">
+              <strong class="text-emerald-950 text-sm font-bold block">Delivered Chilled</strong>
+              <span class="text-emerald-700 text-[11px]">Handover verified; ₹250 refundable cold-box deposit credited to account.</span>
+            </div>
+            <span class="text-emerald-700 mono font-bold">Under 90 Mins</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- IoT Cold Chain Readout (5 cols) -->
+      <div class="col-span-5 bg-[#0b1120] text-white p-8 rounded-3xl border border-slate-800 shadow-xl flex flex-col justify-between">
+        <div>
+          <span class="text-xs font-bold text-emerald-400 uppercase tracking-widest block mb-1">Cold Chain Telemetry</span>
+          <h3 class="text-xl font-black text-white mb-6">ThermalVault™ IoT Sensor Core</h3>
+
+          <div class="bg-slate-900 p-6 rounded-2xl border border-emerald-500/40 text-center space-y-1 mb-6">
+            <span class="text-xs text-slate-400 uppercase tracking-wider block font-bold">Internal Box Probe Temp</span>
+            <div class="text-6xl font-black text-emerald-400 mono my-2">0.8°C - 2.3°C</div>
+            <span class="text-xs font-bold text-emerald-300 bg-emerald-950/80 px-3 py-1 rounded-full border border-emerald-800 inline-block">
+              FSSAI 0°C–4°C Safe FreshZone Verified
+            </span>
+          </div>
+
+          <div class="space-y-3 text-xs">
+            <div class="flex justify-between border-b border-slate-800 pb-2">
+              <span class="text-slate-400 font-semibold">Packaging Status:</span>
+              <span class="font-bold text-white">EPP Ice-Gel Seal Intact</span>
+            </div>
+            <div class="flex justify-between border-b border-slate-800 pb-2">
+              <span class="text-slate-400 font-semibold">Assigned Fleet Executive:</span>
+              <span class="font-bold text-white">Ramesh Kumar (EV Fleet #12)</span>
+            </div>
+            <div class="flex justify-between border-b border-slate-800 pb-2">
+              <span class="text-slate-400 font-semibold">Digital Seal ID:</span>
+              <span class="font-bold text-rose-400 mono">#FS-84920-BLR</span>
+            </div>
+            <div class="flex justify-between">
+              <span class="text-slate-400 font-semibold">Live Courier Contact:</span>
+              <span class="font-bold text-emerald-400">1-Tap Direct Call & WhatsApp</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="pt-4 border-t border-slate-800 text-[11px] text-slate-400">
+          Continuous tamper-evident probe logging prevents spoilage across all transit hops.
+        </div>
+      </div>
+    </div>
+
+    <div class="text-xs text-slate-400 font-semibold text-right">
+      GoMeat Production Architecture • Slide 7 of 12
+    </div>
+  </section>
+
+  <!-- ========================================== -->
+  <!-- SLIDE 8: MODULE 6 - COLD-BOX REFUND WORKFLOW -->
+  <!-- ========================================== -->
+  <section class="slide bg-[#f8fafc]">
+    <div>
+      <span class="text-xs font-black tracking-widest uppercase text-[#d11243]">Circular Packaging Architecture</span>
+      <h2 class="text-4xl font-black text-slate-900 mt-1">Module 6: Signature ₹250 Refundable Cold-Box System</h2>
+      <div class="w-20 h-1.5 bg-[#d11243] rounded-full mt-3"></div>
+    </div>
+
+    <div class="grid grid-cols-3 gap-8 my-auto">
+      <div class="bg-white p-7 rounded-3xl border border-slate-200 shadow-sm space-y-3">
+        <span class="text-xs font-bold text-[#d11243] uppercase tracking-wider block">Stage 1: Checkout</span>
+        <h3 class="text-xl font-black text-slate-900">Transparent Deposit Billing</h3>
+        <p class="text-xs text-slate-600 leading-relaxed">
+          A separate ₹250 refundable security deposit is itemized in the cart, included in the order summary, and clearly recorded on the GST/FSSAI tax invoice.
+        </p>
+        <div class="bg-slate-50 p-3 rounded-xl border border-slate-100 text-[11px] text-slate-700 font-mono">
+          Items Subtotal + ₹250 Box Deposit
+        </div>
+      </div>
+
+      <div class="bg-white p-7 rounded-3xl border border-slate-200 shadow-sm space-y-3">
+        <span class="text-xs font-bold text-[#d11243] uppercase tracking-wider block">Stage 2: Delivery</span>
+        <h3 class="text-xl font-black text-slate-900">ThermalVault Handover</h3>
+        <p class="text-xs text-slate-600 leading-relaxed">
+          Customer receives fresh cuts in pristine sanitized EPP cold box. Customer can immediately return empty box to courier or retain it for doorstep collection.
+        </p>
+        <div class="bg-slate-50 p-3 rounded-xl border border-slate-100 text-[11px] text-slate-700 font-mono">
+          Serial Tag: BOX-BLR-412
+        </div>
+      </div>
+
+      <div class="bg-white p-7 rounded-3xl border border-slate-200 shadow-sm space-y-3">
+        <span class="text-xs font-bold text-[#d11243] uppercase tracking-wider block">Stage 3: Return Request</span>
+        <h3 class="text-xl font-black text-slate-900">1-Click Pickup Initiation</h3>
+        <p class="text-xs text-slate-600 leading-relaxed">
+          Customer opens Dashboard and clicks "Schedule Box Return". Customer specifies convenient pickup window and verifies destination UPI ID for refund.
+        </p>
+        <div class="bg-slate-50 p-3 rounded-xl border border-slate-100 text-[11px] text-slate-700 font-mono">
+          State: REQUESTED
+        </div>
+      </div>
+
+      <div class="bg-white p-7 rounded-3xl border border-slate-200 shadow-sm space-y-3">
+        <span class="text-xs font-bold text-emerald-600 uppercase tracking-wider block">Stage 4: Hub Depot Audit</span>
+        <h3 class="text-xl font-black text-slate-900">Sanitization & Verification</h3>
+        <p class="text-xs text-slate-600 leading-relaxed">
+          Dark depot logistics team inspects the returned EPP box, cleans surfaces with food-grade bio-sanitizer, verifies gel bricks, and logs condition.
+        </p>
+        <div class="bg-emerald-50 p-3 rounded-xl border border-emerald-100 text-[11px] text-emerald-800 font-mono">
+          Inspection: EPP Walls & Bricks Intact
+        </div>
+      </div>
+
+      <div class="bg-white p-7 rounded-3xl border border-slate-200 shadow-sm space-y-3">
+        <span class="text-xs font-bold text-emerald-600 uppercase tracking-wider block">Stage 5: Execution</span>
+        <h3 class="text-xl font-black text-slate-900">Razorpay Refund API Trigger</h3>
+        <p class="text-xs text-slate-600 leading-relaxed">
+          Admin triggers 1-click refund via POST /api/payments/refund-coldbox. Razorpay Refund API processes ₹250 reversal directly back to source payment.
+        </p>
+        <div class="bg-emerald-50 p-3 rounded-xl border border-emerald-100 text-[11px] text-emerald-800 font-mono">
+          API: POST /payments/refund-coldbox
+        </div>
+      </div>
+
+      <div class="bg-white p-7 rounded-3xl border border-slate-200 shadow-sm space-y-3">
+        <span class="text-xs font-bold text-purple-600 uppercase tracking-wider block">Stage 6: Protection</span>
+        <h3 class="text-xl font-black text-slate-900">Duplicate Refund Guard</h3>
+        <p class="text-xs text-slate-600 leading-relaxed">
+          System stores refundTxnId and transitions state to REFUNDED. Subsequent attempts return 400 Bad Request to strictly prevent double refunds.
+        </p>
+        <div class="bg-purple-50 p-3 rounded-xl border border-purple-100 text-[11px] text-purple-800 font-mono">
+          State: REFUNDED (Idempotent Guard)
+        </div>
+      </div>
+    </div>
+
+    <div class="text-xs text-slate-400 font-semibold text-right">
+      GoMeat Production Architecture • Slide 8 of 12
+    </div>
+  </section>
+
+  <!-- ========================================== -->
+  <!-- SLIDE 9: MODULE 7 - ADMIN DASHBOARD -->
+  <!-- ========================================== -->
+  <section class="slide bg-[#f8fafc]">
+    <div>
+      <span class="text-xs font-black tracking-widest uppercase text-[#d11243]">Hub Fulfillment Ops</span>
+      <h2 class="text-4xl font-black text-slate-900 mt-1">Module 7: Central Hub Operations Admin Control Room</h2>
+      <div class="w-20 h-1.5 bg-[#d11243] rounded-full mt-3"></div>
+    </div>
+
+    <!-- 6 KPI Overview Cards -->
+    <div class="grid grid-cols-6 gap-5 pt-2">
+      <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-xs">
+        <span class="text-[10px] text-slate-400 font-bold uppercase block mb-1">Total Revenue</span>
+        <div class="text-2xl font-black text-emerald-600">₹1,48,500</div>
+        <span class="text-[10px] text-slate-400 mt-0.5 block">Razorpay & COD</span>
+      </div>
+
+      <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-xs">
+        <span class="text-[10px] text-slate-400 font-bold uppercase block mb-1">Total Orders</span>
+        <div class="text-2xl font-black text-[#d11243]">142 Orders</div>
+        <span class="text-[10px] text-slate-400 mt-0.5 block">All time volume</span>
+      </div>
+
+      <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-xs">
+        <span class="text-[10px] text-slate-400 font-bold uppercase block mb-1">Pending Orders</span>
+        <div class="text-2xl font-black text-amber-500">24 Active</div>
+        <span class="text-[10px] text-slate-400 mt-0.5 block">In prep / On road</span>
+      </div>
+
+      <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-xs">
+        <span class="text-[10px] text-slate-400 font-bold uppercase block mb-1">Completed</span>
+        <div class="text-2xl font-black text-emerald-600">118 Orders</div>
+        <span class="text-[10px] text-slate-400 mt-0.5 block">Delivered safely</span>
+      </div>
+
+      <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-xs">
+        <span class="text-[10px] text-slate-400 font-bold uppercase block mb-1">Total Customers</span>
+        <div class="text-2xl font-black text-sky-600">86 Profiles</div>
+        <span class="text-[10px] text-slate-400 mt-0.5 block">Registered users</span>
+      </div>
+
+      <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-xs">
+        <span class="text-[10px] text-slate-400 font-bold uppercase block mb-1">Verified Payments</span>
+        <div class="text-2xl font-black text-purple-600">100% SHA256</div>
+        <span class="text-[10px] text-slate-400 mt-0.5 block">HMAC Authenticated</span>
+      </div>
+    </div>
+
+    <!-- 3 Core Admin Control Columns -->
+    <div class="grid grid-cols-3 gap-8 my-auto">
+      <div class="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm space-y-3">
+        <div class="bg-[#d11243] p-3 rounded-2xl text-white font-bold text-xs uppercase">
+          1. Order Pipeline & Dispatch Control
+        </div>
+        <ul class="text-xs text-slate-600 space-y-2.5">
+          <li>• Real-time search by Order ID, Customer Name, or Phone</li>
+          <li>• 7-stage dropdown updater (PENDING to DELIVERED)</li>
+          <li>• Instant status sync across customer tracking view</li>
+          <li>• Order cancellation with automatic inventory restocking</li>
+          <li>• Transparent view of cut custom styles and rider notes</li>
+        </ul>
+      </div>
+
+      <div class="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm space-y-3">
+        <div class="bg-amber-600 p-3 rounded-2xl text-white font-bold text-xs uppercase">
+          2. Inventory Management & Stock Alerts
+        </div>
+        <ul class="text-xs text-slate-600 space-y-2.5">
+          <li>• Real-time automated low-stock warnings for items < 10 units</li>
+          <li>• Critical alert banner identifying impending stockouts</li>
+          <li>• Quick +/- inline stock adjuster (+5, +10, +50 bulk add)</li>
+          <li>• Add new fresh cuts with gross vs net weight transparency</li>
+          <li>• Mark cuts unavailable to prevent checkout failures</li>
+        </ul>
+      </div>
+
+      <div class="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm space-y-3">
+        <div class="bg-emerald-600 p-3 rounded-2xl text-white font-bold text-xs uppercase">
+          3. Payment & Cold-Box Refund Execution
+        </div>
+        <ul class="text-xs text-slate-600 space-y-2.5">
+          <li>• Complete Razorpay transaction ledger with payment IDs</li>
+          <li>• Separate tracking for circulating ₹250 cold-box deposits</li>
+          <li>• 1-click "Refund ₹250" trigger calling Razorpay API directly</li>
+          <li>• Automated idempotent refund logging with refundTxnId</li>
+          <li>• Fleet tracking: ThermalVault units available vs with customer</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="text-xs text-slate-400 font-semibold text-right">
+      GoMeat Production Architecture • Slide 9 of 12
+    </div>
+  </section>
+
+  <!-- ========================================== -->
+  <!-- SLIDE 10: MODULE 8 & 9 - UI/UX & EXPERIENCE -->
+  <!-- ========================================== -->
+  <section class="slide bg-[#f8fafc]">
+    <div>
+      <span class="text-xs font-black tracking-widest uppercase text-[#d11243]">Customer Experience Engineering</span>
+      <h2 class="text-4xl font-black text-slate-900 mt-1">Module 8 & 9: Premium UI/UX & Customer Experience</h2>
+      <div class="w-20 h-1.5 bg-[#d11243] rounded-full mt-3"></div>
+    </div>
+
+    <div class="grid grid-cols-4 gap-6 my-auto">
+      <div class="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm">
+        <span class="text-2xl mb-2 block">⚡</span>
+        <h4 class="text-base font-black text-slate-900 mb-2">Multi-Criteria Sorting</h4>
+        <p class="text-xs text-slate-500 leading-relaxed">
+          Sort cuts by Featured, Price (Low to High), Price (High to Low), or Highest Discount % for rapid customer discovery.
+        </p>
+      </div>
+
+      <div class="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm">
+        <span class="text-2xl mb-2 block">🎯</span>
+        <h4 class="text-base font-black text-slate-900 mb-2">Price Budget Filter Pills</h4>
+        <p class="text-xs text-slate-500 leading-relaxed">
+          One-tap budget filtering: All Prices, Under ₹300, Under ₹500, and Premium Feast cuts (₹500+).
+        </p>
+      </div>
+
+      <div class="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm">
+        <span class="text-2xl mb-2 block">❤️</span>
+        <h4 class="text-base font-black text-slate-900 mb-2">Persistent Wishlist</h4>
+        <p class="text-xs text-slate-500 leading-relaxed">
+          Heart-toggle button on every cut card and detail modal; persists across sessions and syncs to customer dashboard.
+        </p>
+      </div>
+
+      <div class="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm">
+        <span class="text-2xl mb-2 block">🔔</span>
+        <h4 class="text-base font-black text-slate-900 mb-2">Instant Toast Feedback</h4>
+        <p class="text-xs text-slate-500 leading-relaxed">
+          Non-intrusive floating toasts notify users of cart additions, wishlist updates, and background operations.
+        </p>
+      </div>
+
+      <div class="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm">
+        <span class="text-2xl mb-2 block">✨</span>
+        <h4 class="text-base font-black text-slate-900 mb-2">Ambient Lighting & Dark Mode</h4>
+        <p class="text-xs text-slate-500 leading-relaxed">
+          Lush dark and light themes with glowing radial mesh orbs, glassmorphism cards, and neon border transitions.
+        </p>
+      </div>
+
+      <div class="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm">
+        <span class="text-2xl mb-2 block">🔪</span>
+        <h4 class="text-base font-black text-slate-900 mb-2">Custom Butchery Cuts</h4>
+        <p class="text-xs text-slate-500 leading-relaxed">
+          Product modal lets users select custom cuts: Curry Cut, Biryani Cut, Boneless Fillet, or Hand-Minced Keema.
+        </p>
+      </div>
+
+      <div class="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm">
+        <span class="text-2xl mb-2 block">🔓</span>
+        <h4 class="text-base font-black text-slate-900 mb-2">Zero Login Barrier</h4>
+        <p class="text-xs text-slate-500 leading-relaxed">
+          Users explore cuts freely; Google OAuth or credentials only prompted at checkout to maximize conversion rates.
+        </p>
+      </div>
+
+      <div class="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm">
+        <span class="text-2xl mb-2 block">🔙</span>
+        <h4 class="text-base font-black text-slate-900 mb-2">Non-Destructive Back Navigation</h4>
+        <p class="text-xs text-slate-500 leading-relaxed">
+          Browser history synchronization ensures pressing "Back" retreats by 1 step/modal instead of exiting the site.
+        </p>
+      </div>
+    </div>
+
+    <div class="text-xs text-slate-400 font-semibold text-right">
+      GoMeat Production Architecture • Slide 10 of 12
+    </div>
+  </section>
+
+  <!-- ========================================== -->
+  <!-- SLIDE 11: MODULE 10 - TEST MATRIX -->
+  <!-- ========================================== -->
+  <section class="slide bg-[#f8fafc]">
+    <div>
+      <span class="text-xs font-black tracking-widest uppercase text-[#d11243]">Verification & Quality Assurance</span>
+      <h2 class="text-4xl font-black text-slate-900 mt-1">Module 10: Security Engineering & End-to-End Test Matrix</h2>
+      <div class="w-20 h-1.5 bg-[#d11243] rounded-full mt-3"></div>
+    </div>
+
+    <div class="bg-white rounded-3xl border border-slate-200 shadow-sm overflow-hidden my-auto">
+      <table class="w-full text-left text-xs border-collapse">
+        <thead class="bg-slate-900 text-white font-bold text-[11px] uppercase tracking-wider">
+          <tr>
+            <th class="py-4 px-6">Test Scenario</th>
+            <th class="py-4 px-6">Test Methodology & Parameters</th>
+            <th class="py-4 px-6">Result & Observation</th>
+            <th class="py-4 px-6 text-center">Verification Status</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-slate-100 text-slate-700">
+          <tr class="hover:bg-slate-50">
+            <td class="py-3.5 px-6 font-bold text-slate-900">Server-Side Price Calculation</td>
+            <td class="py-3.5 px-6">Submitted fake prices and invalid prod_chicken_curry ID</td>
+            <td class="py-3.5 px-6">Rejected untrusted price; calculated exact DB total (2x ₹289 + ₹250 = ₹868)</td>
+            <td class="py-3.5 px-6 text-center font-bold text-emerald-600 bg-emerald-50">PASSED</td>
+          </tr>
+          <tr class="hover:bg-slate-50">
+            <td class="py-3.5 px-6 font-bold text-slate-900">HMAC SHA-256 Verification</td>
+            <td class="py-3.5 px-6">Crypto hash verification on POST /api/payments/verify</td>
+            <td class="py-3.5 px-6">Signature matched; transitioned order GOM-280363 to PAID & CONFIRMED</td>
+            <td class="py-3.5 px-6 text-center font-bold text-emerald-600 bg-emerald-50">PASSED</td>
+          </tr>
+          <tr class="hover:bg-slate-50">
+            <td class="py-3.5 px-6 font-bold text-slate-900">Idempotency & Double-Charge</td>
+            <td class="py-3.5 px-6">Re-called verification API on already PAID order</td>
+            <td class="py-3.5 px-6">Returned 200 OK with cached order without creating duplicates</td>
+            <td class="py-3.5 px-6 text-center font-bold text-emerald-600 bg-emerald-50">PASSED</td>
+          </tr>
+          <tr class="hover:bg-slate-50">
+            <td class="py-3.5 px-6 font-bold text-slate-900">Razorpay Cold-Box Refund</td>
+            <td class="py-3.5 px-6">POST /api/payments/refund-coldbox on order GOM-280363</td>
+            <td class="py-3.5 px-6">Generated refundId rfnd_df866178; status updated to REFUNDED</td>
+            <td class="py-3.5 px-6 text-center font-bold text-emerald-600 bg-emerald-50">PASSED</td>
+          </tr>
+          <tr class="hover:bg-slate-50">
+            <td class="py-3.5 px-6 font-bold text-slate-900">Duplicate Refund Prevention</td>
+            <td class="py-3.5 px-6">Attempted second refund call on same order</td>
+            <td class="py-3.5 px-6">Blocked with 400 Bad Request: "₹250 deposit already refunded"</td>
+            <td class="py-3.5 px-6 text-center font-bold text-emerald-600 bg-emerald-50">PASSED</td>
+          </tr>
+          <tr class="hover:bg-slate-50">
+            <td class="py-3.5 px-6 font-bold text-slate-900">Client TypeScript Build</td>
+            <td class="py-3.5 px-6">Executed tsc -b && vite build across 2052 modules</td>
+            <td class="py-3.5 px-6">Zero compiler errors; built production bundle in 2.56 seconds</td>
+            <td class="py-3.5 px-6 text-center font-bold text-emerald-600 bg-emerald-50">PASSED</td>
+          </tr>
+          <tr class="hover:bg-slate-50">
+            <td class="py-3.5 px-6 font-bold text-slate-900">Live Vercel Health Check</td>
+            <td class="py-3.5 px-6">Queried GET /api/health on production Vercel deployment</td>
+            <td class="py-3.5 px-6">HTTP 200 OK {"status":"ok","name":"GoMeat API"} verified</td>
+            <td class="py-3.5 px-6 text-center font-bold text-emerald-600 bg-emerald-50">PASSED</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="text-xs text-slate-400 font-semibold text-right">
+      GoMeat Production Architecture • Slide 11 of 12
+    </div>
+  </section>
+
+  <!-- ========================================== -->
+  <!-- SLIDE 12: IMPACT & CONCLUSION -->
+  <!-- ========================================== -->
+  <section class="slide bg-[#070b14] text-white">
+    <div>
+      <span class="text-xs font-black tracking-widest uppercase text-rose-400">Business Impact & Roadmap</span>
+      <h2 class="text-4xl font-black text-white mt-1">A Truly Sustainable, Scalable Meat E-Commerce Platform</h2>
+      <div class="w-20 h-1.5 bg-[#d11243] rounded-full mt-3"></div>
+    </div>
+
+    <div class="grid grid-cols-4 gap-6 my-auto">
+      <div class="bg-slate-900/90 border border-slate-800 p-8 rounded-3xl">
+        <span class="text-5xl font-black text-[#d11243] block mb-2">0 kg</span>
+        <h4 class="text-lg font-bold text-white mb-2">Single-Use Styrofoam</h4>
+        <p class="text-xs text-slate-400 leading-relaxed">
+          100% circular packaging eliminates disposable thermocol boxes and plastic bubble wrap.
+        </p>
+      </div>
+
+      <div class="bg-slate-900/90 border border-slate-800 p-8 rounded-3xl">
+        <span class="text-5xl font-black text-emerald-400 block mb-2">90 Mins</span>
+        <h4 class="text-lg font-bold text-white mb-2">Hyperlocal Delivery</h4>
+        <p class="text-xs text-slate-400 leading-relaxed">
+          Active chilled 0°C–4°C cold chain dispatched directly from neighborhood micro-hub dark stores.
+        </p>
+      </div>
+
+      <div class="bg-slate-900/90 border border-slate-800 p-8 rounded-3xl">
+        <span class="text-5xl font-black text-sky-400 block mb-2">100%</span>
+        <h4 class="text-lg font-bold text-white mb-2">Tamper-Proof Rails</h4>
+        <p class="text-xs text-slate-400 leading-relaxed">
+          Cryptographic SHA-256 signatures, server-side DB pricing, and bank-grade Razorpay checkout.
+        </p>
+      </div>
+
+      <div class="bg-slate-900/90 border border-slate-800 p-8 rounded-3xl">
+        <span class="text-5xl font-black text-purple-400 block mb-2">1-Click</span>
+        <h4 class="text-lg font-bold text-white mb-2">Automated Refunds</h4>
+        <p class="text-xs text-slate-400 leading-relaxed">
+          Instant ₹250 cold-box deposit reversals executed directly through the Razorpay Refund API.
+        </p>
+      </div>
+    </div>
+
+    <!-- Production Links Box -->
+    <div class="bg-slate-900 p-6 rounded-2xl border border-slate-800 flex items-center justify-between">
+      <div class="space-y-1">
+        <span class="text-[10px] text-sky-400 uppercase font-black tracking-widest block">Live Production Links</span>
+        <div class="text-xs text-slate-300 font-mono">
+          Web: <a href="https://gomeat-git-main-dhinesh-s-projects1.vercel.app" class="text-white hover:underline">https://gomeat-git-main-dhinesh-s-projects1.vercel.app</a> • API: <span class="text-emerald-400">/api/health (200 OK)</span>
+        </div>
+      </div>
+      <div class="text-xs text-slate-400 font-bold">
+        Repository: <span class="text-white">Dhinesh1628/sagarfresh (main)</span>
+      </div>
+    </div>
+  </section>
+
+</body>
+</html>
