@@ -519,7 +519,7 @@ export const Navbar: React.FC<NavbarProps> = ({
         <div className="flex items-center justify-between h-16 gap-3 lg:gap-4">
           
           {/* Brand Logo & Location */}
-          <div className="flex items-center gap-2 sm:gap-3 lg:gap-4 shrink-0">
+          <div className="flex items-center gap-1.5 sm:gap-3 lg:gap-4 shrink-0">
             <div 
               onClick={() => setCurrentTab('catalog')} 
               className="flex items-center cursor-pointer shrink-0 py-1"
@@ -527,28 +527,33 @@ export const Navbar: React.FC<NavbarProps> = ({
               <img 
                 src="/images/logo.png" 
                 alt="GoMeat - Freshness we can trust." 
-                className="h-9 sm:h-10 w-auto object-contain hover:opacity-95 transition" 
+                className="h-8 sm:h-10 w-auto object-contain hover:opacity-95 transition dark:hidden" 
+              />
+              <img 
+                src="/images/logo-dark.png" 
+                alt="GoMeat - Freshness we can trust." 
+                className="h-8 sm:h-10 w-auto object-contain hover:opacity-95 transition hidden dark:block" 
               />
             </div>
 
             {/* Location Selector Button */}
             <button
               onClick={onOpenLocationModal}
-              className="flex items-center gap-2 px-2.5 h-10 rounded-xl border border-gray-200/90 dark:border-slate-800 hover:bg-gray-100/80 dark:hover:bg-slate-800/80 text-xs transition cursor-pointer text-left group shrink-0 max-w-[170px] sm:max-w-[210px] xl:max-w-[240px]"
+              className="flex items-center gap-1.5 sm:gap-2 px-2 sm:px-2.5 h-9 sm:h-10 rounded-xl border border-gray-200/90 dark:border-slate-800 hover:bg-gray-100/80 dark:hover:bg-slate-800/80 text-xs transition cursor-pointer text-left group shrink-0 max-w-[125px] sm:max-w-[210px] xl:max-w-[240px]"
               title="Click to enter custom delivery address or detect location"
               type="button"
             >
-              <div className="w-7 h-7 rounded-lg bg-rose-50 dark:bg-rose-950/60 text-[#d11243] flex items-center justify-center group-hover:scale-105 transition-transform shrink-0">
-                <MapPin className="w-3.5 h-3.5" />
+              <div className="w-6 h-6 sm:w-7 sm:h-7 rounded-lg bg-rose-50 dark:bg-rose-950/60 text-[#d11243] flex items-center justify-center group-hover:scale-105 transition-transform shrink-0">
+                <MapPin className="w-3 sm:w-3.5 h-3 sm:h-3.5" />
               </div>
               <div className="leading-tight overflow-hidden">
                 <div className="flex items-center gap-1">
-                  <span className="font-extrabold text-gray-900 dark:text-white group-hover:text-[#d11243] transition-colors truncate">
+                  <span className="font-extrabold text-gray-900 dark:text-white group-hover:text-[#d11243] transition-colors truncate text-[11px] sm:text-xs">
                     {getLocationHeading()}
                   </span>
-                  <ChevronDown className="w-3.5 h-3.5 text-gray-400 group-hover:text-[#d11243] transition-transform group-hover:translate-y-0.5 shrink-0" />
+                  <ChevronDown className="w-3 sm:w-3.5 h-3 sm:h-3.5 text-gray-400 group-hover:text-[#d11243] transition-transform group-hover:translate-y-0.5 shrink-0" />
                 </div>
-                <div className="flex items-center gap-1 mt-0.5">
+                <div className="hidden sm:flex items-center gap-1 mt-0.5">
                   <span className="text-gray-500 dark:text-gray-400 font-medium truncate max-w-[70px] sm:max-w-[100px] xl:max-w-[130px] text-[10px]">
                     {getLocationSubtitle()}
                   </span>
@@ -602,11 +607,11 @@ export const Navbar: React.FC<NavbarProps> = ({
           {/* Right Navigation & Actions */}
           <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
             
-            {/* Swiggy Offers Button */}
+            {/* GoMeat Offers Button */}
             <button
               onClick={handleOffersClick}
               title="Click to apply instant 20% OFF deals"
-              className="h-10 px-2.5 rounded-xl text-xs font-bold transition flex items-center gap-1.5 whitespace-nowrap shrink-0 text-amber-700 dark:text-amber-400 bg-amber-50 hover:bg-amber-100 dark:bg-amber-950/60 dark:hover:bg-amber-900/60 border border-amber-200 dark:border-amber-800/70 shadow-2xs cursor-pointer"
+              className="hidden md:flex h-10 px-2.5 rounded-xl text-xs font-bold transition items-center gap-1.5 whitespace-nowrap shrink-0 text-amber-700 dark:text-amber-400 bg-amber-50 hover:bg-amber-100 dark:bg-amber-950/60 dark:hover:bg-amber-900/60 border border-amber-200 dark:border-amber-800/70 shadow-2xs cursor-pointer"
             >
               <Percent className="w-3.5 h-3.5 text-amber-600 dark:text-amber-400" />
               <span className="hidden xl:inline">Offers</span>
@@ -619,7 +624,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                 if (!user) onOpenAuth('customer');
                 else setCurrentTab('dashboard');
               }}
-              className={`h-10 px-3 rounded-xl text-xs font-bold cursor-pointer transition flex items-center gap-1.5 whitespace-nowrap shrink-0 ${
+              className={`hidden lg:flex h-10 px-3 rounded-xl text-xs font-bold cursor-pointer transition items-center gap-1.5 whitespace-nowrap shrink-0 ${
                 currentTab === 'dashboard' 
                   ? 'bg-rose-50 dark:bg-rose-950/60 text-[#d11243] dark:text-rose-400 border border-rose-200 dark:border-rose-900 shadow-2xs' 
                   : 'text-gray-700 dark:text-gray-200 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-slate-800 border border-transparent'
@@ -633,7 +638,7 @@ export const Navbar: React.FC<NavbarProps> = ({
               <button
                 onClick={() => setCurrentTab('dashboard')}
                 title="GoMeat Vault Wallet - Click to view passbook"
-                className="h-10 px-3 rounded-xl bg-emerald-50 hover:bg-emerald-100 dark:bg-emerald-950/60 dark:hover:bg-emerald-900/60 border border-emerald-300 dark:border-emerald-700/60 text-emerald-800 dark:text-emerald-300 text-xs font-bold flex items-center gap-1.5 cursor-pointer transition shadow-2xs shrink-0 whitespace-nowrap"
+                className="hidden xl:flex h-10 px-3 rounded-xl bg-emerald-50 hover:bg-emerald-100 dark:bg-emerald-950/60 dark:hover:bg-emerald-900/60 border border-emerald-300 dark:border-emerald-700/60 text-emerald-800 dark:text-emerald-300 text-xs font-bold items-center gap-1.5 cursor-pointer transition shadow-2xs shrink-0 whitespace-nowrap"
               >
                 <Wallet className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
                 <span className="hidden xl:inline text-[11px] font-medium text-emerald-700 dark:text-emerald-400">Wallet:</span>
@@ -641,10 +646,10 @@ export const Navbar: React.FC<NavbarProps> = ({
               </button>
             )}
 
-            {/* Dark / Light Theme Toggle with Glowing Light Effect */}
+            {/* Dark / Light Theme Toggle: ALWAYS VISIBLE & PROMINENT ON BOTH MOBILE & DESKTOP */}
             <button
               onClick={toggleTheme}
-              className="h-10 w-10 rounded-xl border border-gray-200 dark:border-slate-700 bg-gray-50 dark:bg-slate-800 text-gray-700 dark:text-amber-400 hover:border-[#d11243] hover:shadow-[0_0_15px_rgba(225,29,67,0.25)] transition-all duration-300 cursor-pointer flex items-center justify-center shrink-0"
+              className="h-9 sm:h-10 w-9 sm:w-10 rounded-xl border border-gray-200 dark:border-slate-700 bg-gray-50 dark:bg-slate-800 text-gray-700 dark:text-amber-400 hover:border-[#d11243] hover:shadow-[0_0_15px_rgba(225,29,67,0.25)] transition-all duration-300 cursor-pointer flex items-center justify-center shrink-0 active:scale-95"
               title={theme === 'dark' ? 'Switch to Light Theme' : 'Switch to Dark Theme'}
               aria-label="Toggle theme"
             >
@@ -657,7 +662,7 @@ export const Navbar: React.FC<NavbarProps> = ({
 
             {/* User Profile or Explicit Login Button */}
             {user ? (
-              <div className="relative shrink-0">
+              <div className="hidden sm:block relative shrink-0">
                 <button
                   onClick={() => setUserDropdownOpen(!userDropdownOpen)}
                   className="h-10 px-2.5 rounded-xl hover:bg-gray-100 dark:hover:bg-slate-800 text-xs font-semibold text-gray-800 dark:text-gray-200 border border-gray-200 dark:border-slate-700 cursor-pointer flex items-center gap-1.5"
@@ -779,17 +784,17 @@ export const Navbar: React.FC<NavbarProps> = ({
             ) : (
               <button
                 onClick={() => onOpenAuth('customer')}
-                className="h-10 px-3.5 rounded-xl bg-gray-900 hover:bg-black dark:bg-white dark:hover:bg-gray-100 dark:text-gray-950 text-white font-bold text-xs cursor-pointer flex items-center gap-1.5 transition shadow-xs shrink-0 whitespace-nowrap"
+                className="hidden sm:flex h-10 px-3.5 rounded-xl bg-gray-900 hover:bg-black dark:bg-white dark:hover:bg-gray-100 dark:text-gray-950 text-white font-bold text-xs cursor-pointer items-center gap-1.5 transition shadow-xs shrink-0 whitespace-nowrap"
               >
                 <UserIcon className="w-3.5 h-3.5" />
                 <span>Sign In</span>
               </button>
             )}
 
-            {/* Cart Button */}
+            {/* Cart Button: ALWAYS ACCESSIBLE */}
             <button
               onClick={() => setIsCartOpen(true)}
-              className="h-10 px-3.5 rounded-xl bg-[#d11243] hover:bg-[#b80f3b] text-white font-bold text-xs flex items-center gap-2 cursor-pointer shadow-md hover:shadow-lg transition shrink-0 whitespace-nowrap"
+              className="h-9 sm:h-10 px-2.5 sm:px-3.5 rounded-xl bg-[#d11243] hover:bg-[#b80f3b] text-white font-bold text-xs flex items-center gap-1.5 sm:gap-2 cursor-pointer shadow-md hover:shadow-lg transition shrink-0 whitespace-nowrap active:scale-95"
             >
               <ShoppingBag className="w-4 h-4 text-white" />
               <span className="hidden sm:inline">Cart</span>

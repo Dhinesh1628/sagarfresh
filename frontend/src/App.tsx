@@ -296,7 +296,12 @@ const MainApp: React.FC = () => {
                 <img 
                   src="/images/logo.png" 
                   alt="GoMeat - Freshness we can trust." 
-                  className="h-9 w-auto object-contain" 
+                  className="h-9 w-auto object-contain dark:hidden" 
+                />
+                <img 
+                  src="/images/logo-dark.png" 
+                  alt="GoMeat - Freshness we can trust." 
+                  className="h-9 w-auto object-contain hidden dark:block" 
                 />
               </div>
               <p className="text-[11px] text-gray-500 dark:text-gray-400 leading-relaxed">
@@ -315,7 +320,7 @@ const MainApp: React.FC = () => {
                 <li>Daily Harbor Fish & Seafood (Surmai, Pomfret)</li>
                 <li>Bio-Secured Farm Fresh Chicken</li>
                 <li>Pasture-Grazed Young Tender Mutton</li>
-                <li>Sea Tiger Prawns (Cleaned & Deveined)</li>
+                <li>Butter Garlic Jumbo Prawns (Cleaned & Deveined)</li>
                 <li>Chef-Crafted Ready to Cook Marinades</li>
               </ul>
             </div>

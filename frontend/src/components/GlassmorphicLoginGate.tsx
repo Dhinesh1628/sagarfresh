@@ -228,7 +228,7 @@ export const GlassmorphicLoginGate: React.FC<GlassmorphicLoginGateProps> = ({
           {/* Brand Header */}
           <div className="text-center mt-2 mb-6">
             <div className="inline-flex items-center gap-2 mb-1">
-              <img src="/images/logo.png" alt="GoMeat" className="h-7 w-auto object-contain brightness-110 drop-shadow-md" />
+              <img src="/images/logo-dark.png" alt="GoMeat" className="h-7 w-auto object-contain drop-shadow-md" />
             </div>
             <p className="text-[11px] text-slate-300/90 font-medium">
               Freshness we can trust • 0°C to 4°C Cold Chain

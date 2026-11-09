@@ -27,7 +27,7 @@ export const PRODUCT_VISUALS_MAP: Record<string, ProductVisualMeta> = {
   prod_3: {
     rawImage: '/images/products/prod_3.jpg',
     cookedImage: '/images/products/cooked_tiger_prawns.jpg',
-    cookedDishName: 'Garlic Chili Butter Jumbo Prawns',
+    cookedDishName: 'Butter Garlic Jumbo Prawns',
     cookedDescription: 'Succulent jumbo tiger prawns wok-tossed in melted butter, roasted garlic, green chili & cilantro.',
     cookingTime: '5 mins quick toss',
     flavorProfile: ['Garlic Butter', 'Juicy Crunch', 'Mild Chili']
