@@ -17,7 +17,9 @@
     "user-app:start": "npm --prefix apps/user-app run start",
     "user-app:web": "npm --prefix apps/user-app run web",
     "delivery-app:start": "npm --prefix apps/delivery-app run start",
-    "delivery-app:web": "npm --prefix apps/delivery-app run web"
+    "delivery-app:web": "npm --prefix apps/delivery-app run web",
+    "partner-app:start": "npm --prefix apps/partner-app run start",
+    "partner-app:web": "npm --prefix apps/partner-app run web"
   },
   "dependencies": {
     "bcryptjs": "^3.0.3",

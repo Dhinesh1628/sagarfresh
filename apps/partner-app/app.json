@@ -1,0 +1,27 @@
+{
+  "expo": {
+    "name": "GoMeat Partner",
+    "slug": "gomeat-partner",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "scheme": "gomeatpartner",
+    "userInterfaceStyle": "light",
+    "primaryColor": "#0f766e",
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.gomeat.partner"
+    },
+    "android": {
+      "adaptiveIcon": {
+        "backgroundColor": "#0f766e",
+        "foregroundImage": "./assets/android-icon-foreground.png"
+      },
+      "package": "com.gomeat.partner",
+      "predictiveBackGestureEnabled": false
+    },
+    "web": {
+      "favicon": "./assets/favicon.png"
+    }
+  }
+}
