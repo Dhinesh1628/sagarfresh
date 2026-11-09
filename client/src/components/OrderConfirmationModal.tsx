@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { CheckCircle2, Zap, Thermometer, ShieldCheck, ArrowRight, RefreshCw, Phone, Clock, RotateCcw, X, MapPin } from 'lucide-react';
 import type { Order } from '../types';
 import { api } from '../api';
+import { getOrderDeliveryPin } from '../utils/pinHelper';
 
 interface OrderConfirmationModalProps {
   order: Order | null;
@@ -161,6 +162,34 @@ export const OrderConfirmationModal: React.FC<OrderConfirmationModalProps> = ({
                 );
               })}
             </div>
+          </div>
+        </div>
+
+        {/* Swiggy Style 4-Digit Handover PIN Card */}
+        <div className="mt-4 p-4 rounded-2xl bg-gradient-to-r from-amber-50 via-orange-50 to-amber-100/70 dark:from-slate-850 dark:to-slate-800 border-2 border-amber-300 dark:border-amber-700/80 flex items-center justify-between gap-4 shadow-sm">
+          <div className="flex items-center gap-3">
+            <div className="w-11 h-11 rounded-xl bg-amber-500 text-white flex items-center justify-center font-black text-xl shadow-sm shrink-0">
+              🔒
+            </div>
+            <div>
+              <div className="flex items-center gap-2">
+                <span className="text-xs font-black text-amber-950 dark:text-amber-200 uppercase tracking-wider">
+                  Cold Box Handover PIN
+                </span>
+                <span className="px-2 py-0.5 rounded-full bg-amber-200 dark:bg-amber-900/80 text-amber-950 dark:text-amber-200 text-[10px] font-black">
+                  Required on Arrival
+                </span>
+              </div>
+              <p className="text-[11px] text-amber-900/90 dark:text-amber-300/90 mt-0.5">
+                Share this 4-digit PIN with your delivery partner on arrival to safely receive your insulated cold box.
+              </p>
+            </div>
+          </div>
+          <div className="bg-white dark:bg-slate-900 px-3.5 py-2 rounded-xl border-2 border-amber-400 dark:border-amber-500 text-center shrink-0 shadow-xs">
+            <span className="text-[10px] font-bold text-gray-500 dark:text-gray-400 uppercase block tracking-wider">PIN</span>
+            <span className="text-xl sm:text-2xl font-black font-mono tracking-widest text-[#d11243] dark:text-rose-400">
+              {getOrderDeliveryPin(currentOrder)}
+            </span>
           </div>
         </div>
 

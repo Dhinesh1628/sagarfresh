@@ -34,6 +34,7 @@ import {
 import type { AdminMetrics, Order, Cooler, CoolerReturn, Product, OrderPipelineStatus, User } from '../types';
 import { api } from '../api';
 import { useAuth } from '../context/AuthContext';
+import { getOrderDeliveryPin } from '../utils/pinHelper';
 
 export const AdminDashboardPage: React.FC = () => {
   const { user } = useAuth();
@@ -908,6 +909,10 @@ export const AdminDashboardPage: React.FC = () => {
                         <div className="text-gray-500 dark:text-gray-400 mt-1 flex flex-wrap items-center gap-2 text-[11px]">
                           <span>Box ID: <strong className="text-gray-900 dark:text-white font-mono">{order.coolerId}</strong></span>
                           <span>•</span>
+                          <span className="px-2 py-0.5 rounded-md bg-amber-50 dark:bg-amber-950/70 text-amber-900 dark:text-amber-200 border border-amber-200 dark:border-amber-800/60 font-mono font-bold">
+                            PIN: {getOrderDeliveryPin(order)}
+                          </span>
+                          <span>•</span>
                           <span>Total: <strong className="text-[#d11243] font-bold">₹{order.total}</strong></span>
                           <span>•</span>
                           <span>Executive: <strong className="text-gray-800 dark:text-gray-200">{order.deliveryExecutive || 'Unassigned'}</strong></span>
@@ -1642,7 +1647,10 @@ export const AdminDashboardPage: React.FC = () => {
                 </div>
                 <div>
                   <div className="font-extrabold text-emerald-950 dark:text-emerald-200">
-                    ThermalVault™ Box: {selectedOrder.coolerId}
+                    <span>ThermalVault™ Box: {selectedOrder.coolerId}</span>
+                    <span className="px-2 py-0.5 rounded-md bg-amber-100 dark:bg-amber-950 text-amber-950 dark:text-amber-200 border border-amber-300 dark:border-amber-700 text-[10px] font-mono font-black ml-2">
+                      Delivery PIN: {getOrderDeliveryPin(selectedOrder)}
+                    </span>
                   </div>
                   <div className="text-[11px] text-emerald-800 dark:text-emerald-400">
                     Live Temperature: <strong>1.4°C (Safe 0-4°C)</strong> • Assigned: {selectedOrder.deliveryExecutive || 'In Depot Queue'}

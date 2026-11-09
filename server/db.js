@@ -369,6 +369,7 @@ const INITIAL_DATA = {
       ],
       deliverySlot: "Today, Express in 90 Mins",
       trackingCode: "SAGAR-TRK-4412",
+      deliveryPin: "6314",
       paymentMethod: "UPI (Google Pay)",
       createdAt: "2026-10-30T01:30:00.000Z",
       deliveryNotes: "Leave at security desk or ring Flat 402 doorbell."

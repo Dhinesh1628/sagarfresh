@@ -1,4 +1,5 @@
 import type { Order } from '../types';
+import { getOrderDeliveryPin } from './pinHelper';
 
 export function generateAndPrintInvoice(order: Order) {
   const invoiceWindow = window.open('', '_blank', 'width=850,height=900');
@@ -63,6 +64,7 @@ export function generateAndPrintInvoice(order: Order) {
           <div class="invoice-title">
             <h2>Tax Invoice</h2>
             <p><strong>Order #:</strong> ${order.orderNumber || order.id}</p>
+            <p><strong>Handover PIN:</strong> <span style="font-family: monospace; font-size: 13px; font-weight: 900; color: #d11243; background: #fff1f2; padding: 2px 6px; border-radius: 4px; border: 1px solid #fecdd3;">${order.deliveryPin || getOrderDeliveryPin(order)}</span></p>
             <p><strong>Date:</strong> ${orderDate}</p>
             <p><strong>Status:</strong> ${order.paymentStatus || 'PAID'}</p>
           </div>

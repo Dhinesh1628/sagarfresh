@@ -21,6 +21,7 @@ import {
 import type { Order } from '../types';
 import { api } from '../api';
 import { generateAndPrintInvoice } from '../utils/invoiceGenerator';
+import { getOrderDeliveryPin } from '../utils/pinHelper';
 
 interface OrderTrackingPageProps {
   onNavigateToReturns: () => void;
@@ -89,7 +90,7 @@ export const OrderTrackingPage: React.FC<OrderTrackingPageProps> = ({ onNavigate
     ],
     deliverySlot: '⚡ Express Delivery in 90 Mins (Live EV Courier)',
     trackingCode: 'SAGAR-TRK-84920',
-    deliveryPin: '4892',
+    deliveryPin: '6133',
     createdAt: new Date().toISOString(),
     deliveryNotes: 'Leave with building security or ring Flat 402 doorbell.'
   };
@@ -202,8 +203,7 @@ export const OrderTrackingPage: React.FC<OrderTrackingPageProps> = ({ onNavigate
   ];
 
   const currentOrder = selectedOrder || demoOrder;
-  const orderPin = currentOrder.deliveryPin || 
-    ((parseInt((currentOrder.orderNumber || currentOrder.id).replace(/\D/g, '').slice(-4), 10) || 4892).toString().padStart(4, '0'));
+  const orderPin = getOrderDeliveryPin(currentOrder);
 
   const getStageIndex = (order: Order): number => {
     const rawStatus = (order.orderStatus || order.status || '').toUpperCase().replace(/[\s-]/g, '_');
@@ -390,9 +390,14 @@ export const OrderTrackingPage: React.FC<OrderTrackingPageProps> = ({ onNavigate
                       <strong className="text-gray-900 dark:text-gray-200 font-mono">{ord.coolerId}</strong>
                     </div>
 
-                    <div className="flex items-center gap-1 text-emerald-700 dark:text-emerald-400 font-black">
-                      <Thermometer className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" />
-                      <span>{ord.liveTemp || 2.1}°C (Optimal)</span>
+                    <div className="flex items-center gap-2">
+                      <span className="px-1.5 py-0.5 rounded bg-amber-50 dark:bg-amber-950/60 text-amber-800 dark:text-amber-300 font-mono text-[10px] font-bold border border-amber-200 dark:border-amber-800">
+                        PIN: {getOrderDeliveryPin(ord)}
+                      </span>
+                      <div className="flex items-center gap-1 text-emerald-700 dark:text-emerald-400 font-black">
+                        <Thermometer className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" />
+                        <span>{ord.liveTemp || 2.1}°C</span>
+                      </div>
                     </div>
                   </div>
                 </div>
