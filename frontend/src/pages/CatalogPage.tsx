@@ -96,29 +96,33 @@ export const CatalogPage: React.FC<CatalogPageProps> = ({
     catalogGridRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
   };
 
-  const fetchProducts = async () => {
-    try {
-      setLoading(true);
-      // When searching, search across all categories (do not restrict to selectedCategory)
-      const isSearching = Boolean(searchQuery && searchQuery.trim());
-      const categoryToFilter = isSearching ? 'All' : selectedCategory;
-      const data = await api.getProducts({
-        category: categoryToFilter,
-        search: isSearching ? searchQuery.trim() : undefined
-      });
-      setProducts(data);
-    } catch (err) {
-      console.error('Failed to load cuts:', err);
-    } finally {
-      setLoading(false);
-    }
-  };
-
   useEffect(() => {
-    fetchProducts();
-    if (searchQuery && searchQuery.trim()) {
-      handleScrollToCatalog();
-    }
+    let isCurrent = true;
+    const isSearching = Boolean(searchQuery && searchQuery.trim());
+
+    // Debounce search input (250ms) to prevent network storms & race conditions
+    const timer = setTimeout(async () => {
+      try {
+        setLoading(true);
+        const categoryToFilter = isSearching ? 'All' : selectedCategory;
+        const data = await api.getProducts({
+          category: categoryToFilter,
+          search: isSearching ? searchQuery.trim() : undefined
+        });
+        if (isCurrent) {
+          setProducts(data);
+        }
+      } catch (err) {
+        if (isCurrent) console.error('Failed to load cuts:', err);
+      } finally {
+        if (isCurrent) setLoading(false);
+      }
+    }, isSearching ? 250 : 0);
+
+    return () => {
+      isCurrent = false;
+      clearTimeout(timer);
+    };
   }, [selectedCategory, searchQuery]);
 
   const getItemQuantity = (productId: string) => {

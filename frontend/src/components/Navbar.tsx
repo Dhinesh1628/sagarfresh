@@ -189,7 +189,7 @@ export const Navbar: React.FC<NavbarProps> = ({
 
   const handleQuickAdd = (product: Product, e: React.MouseEvent) => {
     e.stopPropagation();
-    addItem(product, 1, product.cutStyle || 'Standard Cut', '500g', product.price, product.mrp);
+    addItem(product, 1, product.cutStyle || 'Standard Cut', product.unit || '500g', product.price, product.mrp);
   };
 
   const handleQuickUpdateQuantity = (productId: string, newQty: number, e: React.MouseEvent) => {
@@ -859,14 +859,7 @@ export const Navbar: React.FC<NavbarProps> = ({
       {/* Mobile Drawer */}
       {mobileMenuOpen && (
         <div className="md:hidden px-4 pt-2 pb-4 bg-white dark:bg-slate-900 border-b border-gray-200 dark:border-slate-800 space-y-2 text-xs">
-          <div className="pb-2 border-b border-gray-100 dark:border-slate-800 space-y-2">
-            <input
-              type="text"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Search chicken, fish, mutton..."
-              className="w-full px-3 py-2 rounded-lg bg-gray-100 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 text-gray-800 dark:text-gray-100 text-xs"
-            />
+          <div className="pb-2 border-b border-gray-100 dark:border-slate-800">
             {/* Mobile Location Selector */}
             <button
               onClick={() => {
