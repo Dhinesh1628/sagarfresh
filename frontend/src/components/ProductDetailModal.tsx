@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { X, Plus, Minus, Zap, ShieldCheck, Star, Award, CheckCircle2, ChevronRight, HelpCircle, Heart, MessageSquare, ThumbsUp, Send } from 'lucide-react';
+import { X, Plus, Minus, Zap, ShieldCheck, Star, Award, CheckCircle2, ChevronRight, HelpCircle, Heart, MessageSquare, ThumbsUp, Send, Flame } from 'lucide-react';
 import type { Product } from '../types';
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
 import { getProductWeightOptions } from '../utils/weightUtils';
+import { getProductVisual } from '../data/productVisuals';
 
 interface ProductDetailModalProps {
   product: Product | null;
@@ -198,11 +199,12 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
 
   const existingItem = items.find(i => i.product.id === product.id);
   const discountPct = product.mrp ? Math.round(((product.mrp - product.price) / product.mrp) * 100) : 0;
+  const visual = getProductVisual(product.id, product.image || product.imageUrl);
 
-  // Alternate gallery images for rich visual fidelity
+  // Alternate gallery images for rich visual fidelity: Raw Cut -> Chef Cooked Dish -> Packaging
   const fallbackGallery = [
-    product.image || product.imageUrl || `/images/products/${product.id}.jpg`,
-    'https://images.unsplash.com/photo-1604503468506-a8da13d82791?auto=format&fit=crop&w=800&q=80',
+    product.image || visual.rawImage,
+    visual.cookedImage,
     'https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&w=800&q=80'
   ];
 
@@ -264,7 +266,35 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
             
             {/* Left Column: Image Gallery & Freshness Badges */}
             <div className="lg:col-span-5 space-y-3.5">
-              <div className="relative rounded-2xl overflow-hidden bg-gray-100 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 aspect-4/3 shadow-xs">
+              {/* Interactive Raw vs Cooked Mode Switcher */}
+              <div className="flex items-center gap-1.5 p-1 bg-gray-100 dark:bg-slate-800 rounded-xl">
+                <button
+                  type="button"
+                  onClick={() => setSelectedImageIndex(0)}
+                  className={`flex-1 py-1.5 px-3 rounded-lg text-xs font-bold transition-all flex items-center justify-center gap-1.5 ${
+                    selectedImageIndex === 0
+                      ? 'bg-white dark:bg-slate-900 text-cyan-700 dark:text-cyan-400 shadow-sm border border-gray-200/80 dark:border-slate-700'
+                      : 'text-gray-500 hover:text-gray-900 dark:hover:text-gray-200'
+                  }`}
+                >
+                  <span>❄️</span>
+                  <span>0°C Raw Cut</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setSelectedImageIndex(1)}
+                  className={`flex-1 py-1.5 px-3 rounded-lg text-xs font-bold transition-all flex items-center justify-center gap-1.5 ${
+                    selectedImageIndex === 1
+                      ? 'bg-amber-500 text-white shadow-sm'
+                      : 'text-gray-500 hover:text-gray-900 dark:hover:text-gray-200'
+                  }`}
+                >
+                  <Flame className="w-3.5 h-3.5 text-white" />
+                  <span>Cooked Sizzle</span>
+                </button>
+              </div>
+
+              <div className="relative rounded-2xl overflow-hidden bg-slate-950 border border-gray-200 dark:border-slate-700 aspect-4/3 shadow-xs">
                 <img 
                   src={fallbackGallery[selectedImageIndex]} 
                   alt={product.name}
@@ -274,10 +304,19 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
                   }}
                 />
 
-                {/* FreshSeal Chilled Badge */}
+                {/* State Tag */}
                 <div className="absolute top-3 left-3 bg-white/95 dark:bg-slate-900/95 backdrop-blur-xs px-2.5 py-1 rounded-lg text-[11px] font-extrabold text-gray-900 dark:text-gray-100 shadow-sm flex items-center gap-1.5 border border-gray-200 dark:border-slate-700">
-                  <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-                  <span>0°C - 4°C FreshChilled™</span>
+                  {selectedImageIndex === 1 ? (
+                    <>
+                      <Flame className="w-3.5 h-3.5 text-amber-500 fill-amber-500" />
+                      <span className="text-amber-600 dark:text-amber-400 font-bold">{visual.cookedDishName}</span>
+                    </>
+                  ) : (
+                    <>
+                      <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+                      <span>0°C - 4°C FreshChilled™</span>
+                    </>
+                  )}
                 </div>
 
                 {/* Discount Tag */}
@@ -304,7 +343,7 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
                   <button
                     key={idx}
                     onClick={() => setSelectedImageIndex(idx)}
-                    className={`relative w-20 h-16 rounded-xl overflow-hidden border-2 transition ${
+                    className={`relative flex-1 h-16 rounded-xl overflow-hidden border-2 transition ${
                       selectedImageIndex === idx 
                         ? 'border-[#d11243] ring-2 ring-rose-200 dark:ring-rose-950' 
                         : 'border-gray-200 dark:border-slate-700 hover:border-gray-400 opacity-75'
@@ -318,9 +357,37 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
                         (e.target as HTMLImageElement).src = `/images/products/${product.id}.jpg`;
                       }}
                     />
+                    <div className="absolute inset-x-0 bottom-0 bg-black/70 text-[9px] text-white text-center py-0.5 font-bold">
+                      {idx === 0 ? '❄️ Raw' : idx === 1 ? '🔥 Cooked' : '📦 Cold Pack'}
+                    </div>
                   </button>
                 ))}
               </div>
+
+              {/* Cooked Dish Recipe Preview Card if Cooked View Active */}
+              {selectedImageIndex === 1 && (
+                <div className="p-3.5 rounded-xl bg-amber-50/90 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-800/60 text-xs space-y-1.5 animate-in fade-in duration-200">
+                  <div className="flex items-center justify-between font-bold text-amber-950 dark:text-amber-300">
+                    <div className="flex items-center gap-1.5">
+                      <Flame className="w-4 h-4 text-amber-600 dark:text-amber-400" />
+                      <span>{visual.cookedDishName}</span>
+                    </div>
+                    <span className="text-[10px] bg-amber-200/90 dark:bg-amber-900/60 text-amber-900 dark:text-amber-200 px-2 py-0.5 rounded-full font-bold">
+                      ⏱️ {visual.cookingTime}
+                    </span>
+                  </div>
+                  <p className="text-[11px] text-amber-900/80 dark:text-amber-200/80 leading-relaxed">
+                    {visual.cookedDescription}
+                  </p>
+                  <div className="flex flex-wrap gap-1 pt-1">
+                    {visual.flavorProfile.map(flavor => (
+                      <span key={flavor} className="px-2 py-0.5 rounded-md bg-amber-100 dark:bg-amber-900/50 text-amber-800 dark:text-amber-300 text-[10px] font-bold">
+                        #{flavor}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              )}
 
               {/* Quality Guarantee Mini Card */}
               <div className="p-3.5 rounded-xl bg-emerald-50/70 dark:bg-emerald-950/40 border border-emerald-200/80 dark:border-emerald-800/60 text-xs space-y-1.5">

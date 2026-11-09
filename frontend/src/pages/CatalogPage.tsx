@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Eye, Plus, Minus, Zap, ShieldCheck, Heart, ArrowUpDown, Filter, CheckCircle2, Star, TrendingDown, Search, X, Sparkles, RotateCcw } from 'lucide-react';
+import { Eye, Plus, Minus, Zap, ShieldCheck, Heart, ArrowUpDown, Filter, CheckCircle2, Star, TrendingDown, Search, X, Sparkles, RotateCcw, Flame } from 'lucide-react';
 import type { Product } from '../types';
 import { api } from '../api';
 import { useCart } from '../context/CartContext';
@@ -7,6 +7,7 @@ import { ProductDetailModal } from '../components/ProductDetailModal';
 import { HeroSection } from '../components/HeroSection';
 import { CategorySection } from '../components/CategorySection';
 import { getProductWeightOptions } from '../utils/weightUtils';
+import { getProductVisual } from '../data/productVisuals';
 
 const POPULAR_SEARCH_CHIPS = [
   { label: '🍗 Curry Cut', term: 'Curry Cut' },
@@ -42,7 +43,16 @@ export const CatalogPage: React.FC<CatalogPageProps> = ({
   const [priceBudget, setPriceBudget] = useState<'all' | 'under300' | 'under500' | 'above500'>('all');
   const [wishlist, setWishlist] = useState<string[]>([]);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
+  const [mobileCookedView, setMobileCookedView] = useState<Record<string, boolean>>({});
   const catalogGridRef = useRef<HTMLDivElement>(null);
+
+  const toggleMobileCooked = (productId: string, e: React.MouseEvent) => {
+    e.stopPropagation();
+    setMobileCookedView(prev => ({
+      ...prev,
+      [productId]: !prev[productId]
+    }));
+  };
 
   const { items, addItem, updateQuantity } = useCart();
 
@@ -346,50 +356,98 @@ export const CatalogPage: React.FC<CatalogPageProps> = ({
             const qty = cartItem ? cartItem.quantity : 0;
             const isWishlisted = wishlist.includes(product.id);
 
+            const visual = getProductVisual(product.id, product.image || product.imageUrl);
+            const isCookedActive = Boolean(mobileCookedView[product.id]);
+
             return (
               <div
                 key={product.id}
                 onClick={() => handleOpenProductDetail(product, currentOption.weight)}
                 className="group bg-white dark:bg-slate-900/90 rounded-2xl border border-gray-200 dark:border-slate-800/80 hover:border-[#d11243]/50 dark:hover:border-rose-500/50 shadow-2xs hover:shadow-lg dark:hover:shadow-[0_8px_30px_rgba(225,29,67,0.2)] transition-all duration-300 flex flex-col justify-between overflow-hidden cursor-pointer card-light-hover"
               >
-                {/* Image & Badges */}
-                <div className="relative h-48 bg-gray-100 dark:bg-slate-800 overflow-hidden">
+                {/* Image & Badges: Dual-Layer Raw-to-Cooked Cross-Fade */}
+                <div className="relative h-52 bg-slate-950 overflow-hidden select-none">
+                  {/* Layer 1 (Underneath): Real Authentic Indian Cooked Dish */}
                   <img
-                    src={product.image || product.imageUrl || `/images/products/${product.id}.jpg`}
+                    src={visual.cookedImage}
+                    alt={`${visual.cookedDishName} cooked`}
+                    className="absolute inset-0 w-full h-full object-cover scale-100 group-hover:scale-105 transition-transform duration-700 ease-out"
+                    loading="lazy"
+                  />
+
+                  {/* Cooked Dish Warm Sizzle Vignette */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/20 to-transparent pointer-events-none" />
+
+                  {/* Layer 2 (Top Layer): Fresh 0°C Raw Cut with Smooth Cross-Fade */}
+                  <img
+                    src={product.image || visual.rawImage}
                     alt={product.name}
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                    className={`absolute inset-0 w-full h-full object-cover transition-all duration-700 ease-in-out ${
+                      isCookedActive 
+                        ? 'opacity-0 scale-105 pointer-events-none' 
+                        : 'opacity-100 scale-100 group-hover:opacity-0 group-hover:scale-105'
+                    }`}
                     loading="lazy"
                     onError={(e) => {
-                      (e.target as HTMLImageElement).src = `/images/products/${product.id}.jpg`;
+                      (e.target as HTMLImageElement).src = visual.rawImage;
                     }}
                   />
-                  
-                  {/* Delivery time tag */}
-                  <div className="absolute top-2 left-2 bg-white/95 dark:bg-slate-900/90 backdrop-blur-xs px-2 py-0.5 rounded text-[10px] font-bold text-gray-800 dark:text-gray-200 shadow-2xs flex items-center gap-1 border border-gray-100 dark:border-slate-700">
-                    <Zap className="w-2.5 h-2.5 fill-amber-500 text-amber-500" />
-                    <span>{product.eta || '⚡ Arrives in 90 mins'}</span>
+
+                  {/* Raw Cold Vapor Vignette (fades out as cooked reveals) */}
+                  <div className={`absolute inset-0 bg-gradient-to-t from-black/80 via-black/15 to-transparent pointer-events-none transition-opacity duration-700 ${
+                    isCookedActive ? 'opacity-0' : 'group-hover:opacity-0'
+                  }`} />
+
+                  {/* Interactive Raw vs Cooked Toggle Pill */}
+                  <div className="absolute top-2.5 left-2.5 z-20 flex items-center">
+                    <button
+                      type="button"
+                      onClick={(e) => toggleMobileCooked(product.id, e)}
+                      title="Tap to toggle Raw vs Cooked view"
+                      className="flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-extrabold backdrop-blur-md shadow-lg transition-all duration-300 border border-white/20 active:scale-95 cursor-pointer bg-black/65 hover:bg-black/85 text-white"
+                    >
+                      <span className={`inline-block w-2 h-2 rounded-full transition-colors duration-300 ${
+                        isCookedActive ? 'bg-amber-400 animate-pulse' : 'bg-cyan-400 group-hover:bg-amber-400'
+                      }`} />
+                      <span className="hidden group-hover:inline text-amber-300 font-black">
+                        🔥 {visual.cookedDishName}
+                      </span>
+                      <span className={`group-hover:hidden ${isCookedActive ? 'text-amber-300 font-black' : 'text-cyan-200'}`}>
+                        {isCookedActive ? `🔥 ${visual.cookedDishName}` : '❄️ 0°C Raw Cut'}
+                      </span>
+                    </button>
+                  </div>
+
+                  {/* Delivery time tag (top right next to wishlist) */}
+                  <div className="absolute top-2.5 right-11 z-20 bg-black/60 dark:bg-slate-900/80 backdrop-blur-md px-2 py-1 rounded-full text-[10px] font-bold text-amber-300 shadow-sm flex items-center gap-1 border border-white/10">
+                    <Zap className="w-2.5 h-2.5 fill-amber-400 text-amber-400" />
+                    <span>90 mins</span>
                   </div>
 
                   {/* Save for Later Heart Button */}
                   <button
+                    type="button"
                     onClick={(e) => toggleWishlist(product.id, product.name, e)}
-                    className="absolute top-2 right-2 w-7 h-7 rounded-full bg-white/90 dark:bg-slate-900/90 backdrop-blur-xs flex items-center justify-center text-gray-600 dark:text-gray-300 hover:text-[#d11243] dark:hover:text-rose-400 shadow-2xs transition z-10 cursor-pointer"
+                    className="absolute top-2.5 right-2.5 w-7 h-7 rounded-full bg-white/90 dark:bg-slate-900/90 backdrop-blur-xs flex items-center justify-center text-gray-600 dark:text-gray-300 hover:text-[#d11243] dark:hover:text-rose-400 shadow-md transition z-20 cursor-pointer"
                     title={isWishlisted ? 'Remove from Saved' : 'Save for Later'}
                   >
                     <Heart className={`w-3.5 h-3.5 ${isWishlisted ? 'fill-[#d11243] text-[#d11243]' : ''}`} />
                   </button>
 
-                  {/* Net weight tag based on current selected option */}
-                  <div className="absolute bottom-2 left-2 bg-black/80 backdrop-blur-xs px-2 py-0.5 rounded text-[10px] text-white font-medium flex items-center gap-1">
-                    <span>Net wt: {currentOption.netWeight}</span>
-                    <span className="text-gray-400">• Gross: {currentOption.grossWeight}</span>
+                  {/* Net weight tag based on current selected option (bottom left) */}
+                  <div className="absolute bottom-2.5 left-2.5 z-20 bg-black/80 backdrop-blur-md px-2.5 py-0.5 rounded-md text-[10px] text-white font-medium flex items-center gap-1.5 border border-white/10">
+                    <span className="font-bold text-white">{currentOption.netWeight}</span>
+                    <span className="text-gray-300">• Gross {currentOption.grossWeight}</span>
                   </div>
 
-                  {/* Click to view detail on hover */}
-                  <div className="absolute inset-0 bg-black/35 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                    <span className="px-3 py-1.5 rounded-full bg-white/95 dark:bg-slate-900/95 text-gray-900 dark:text-white font-extrabold text-[11px] shadow-md flex items-center gap-1.5 border border-white/20">
-                      <Eye className="w-3.5 h-3.5 text-[#d11243]" />
-                      <span>View Details</span>
+                  {/* Sizzle Prompt Pill (bottom right) */}
+                  <div className="absolute bottom-2.5 right-2.5 z-20 pointer-events-none">
+                    <span className={`text-[10px] font-bold px-2 py-0.5 rounded-md backdrop-blur-md transition-all duration-300 border ${
+                      isCookedActive 
+                        ? 'bg-amber-500/95 text-white border-amber-300/60 shadow-amber-500/40 shadow-sm' 
+                        : 'bg-black/65 text-amber-200 border-white/15 group-hover:bg-amber-500/95 group-hover:text-white group-hover:border-amber-300/60'
+                    }`}>
+                      {isCookedActive ? '🔥 Sizzling Ready' : 'Tap / Hover to Cook 🔥'}
                     </span>
                   </div>
                 </div>
