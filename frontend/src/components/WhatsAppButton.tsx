@@ -6,12 +6,14 @@ interface WhatsAppButtonProps {
   isChatbotOpen?: boolean;
   onOpenChatbot?: () => void;
   onCloseChatbot?: () => void;
+  onNavigateTab?: (tab: 'catalog' | 'tracking' | 'dashboard' | 'coolers' | 'admin') => void;
 }
 
 export const WhatsAppButton: React.FC<WhatsAppButtonProps> = ({
   isChatbotOpen: controlledIsOpen,
   onOpenChatbot,
-  onCloseChatbot
+  onCloseChatbot,
+  onNavigateTab
 }) => {
   const [internalChatbotOpen, setInternalChatbotOpen] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -198,6 +200,7 @@ export const WhatsAppButton: React.FC<WhatsAppButtonProps> = ({
         isOpen={isChatbotOpen}
         onClose={closeChatbot}
         whatsappNumber={phoneNumber}
+        onNavigateTab={onNavigateTab}
       />
     </>
   );

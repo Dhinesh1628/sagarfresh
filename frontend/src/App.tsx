@@ -444,6 +444,7 @@ const MainApp: React.FC = () => {
         isChatbotOpen={isAiButcherOpen}
         onOpenChatbot={handleOpenAiButcher}
         onCloseChatbot={handleCloseAiButcher}
+        onNavigateTab={handleTabChange}
       />
 
     </div>
