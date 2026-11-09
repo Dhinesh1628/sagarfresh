@@ -1,0 +1,27 @@
+{
+  "expo": {
+    "name": "GoMeat",
+    "slug": "gomeat-user",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "scheme": "gomeat",
+    "userInterfaceStyle": "light",
+    "primaryColor": "#d11243",
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.gomeat.user"
+    },
+    "android": {
+      "adaptiveIcon": {
+        "backgroundColor": "#ffffff",
+        "foregroundImage": "./assets/android-icon-foreground.png"
+      },
+      "package": "com.gomeat.user",
+      "predictiveBackGestureEnabled": false
+    },
+    "web": {
+      "favicon": "./assets/favicon.png"
+    }
+  }
+}

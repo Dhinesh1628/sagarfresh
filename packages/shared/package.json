@@ -1,0 +1,8 @@
+{
+  "name": "@gomeat/shared",
+  "version": "1.0.0",
+  "description": "Shared domain models, types, and cold-chain utilities for GoMeat Web and Mobile Apps",
+  "main": "src/index.ts",
+  "types": "src/index.ts",
+  "private": true
+}

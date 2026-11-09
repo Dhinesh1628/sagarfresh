@@ -1,0 +1,27 @@
+{
+  "expo": {
+    "name": "GoMeat Delivery",
+    "slug": "gomeat-delivery",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "scheme": "gomeatdelivery",
+    "userInterfaceStyle": "light",
+    "primaryColor": "#0f172a",
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.gomeat.delivery"
+    },
+    "android": {
+      "adaptiveIcon": {
+        "backgroundColor": "#0f172a",
+        "foregroundImage": "./assets/android-icon-foreground.png"
+      },
+      "package": "com.gomeat.delivery",
+      "predictiveBackGestureEnabled": false
+    },
+    "web": {
+      "favicon": "./assets/favicon.png"
+    }
+  }
+}

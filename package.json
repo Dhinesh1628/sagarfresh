@@ -13,7 +13,11 @@
     "build": "cd frontend && npm install && npm run build",
     "build:frontend": "cd frontend && npm run build",
     "test": "node scripts/test-workflows.js",
-    "lint": "cd frontend && npm run lint"
+    "lint": "cd frontend && npm run lint",
+    "user-app:start": "npm --prefix apps/user-app run start",
+    "user-app:web": "npm --prefix apps/user-app run web",
+    "delivery-app:start": "npm --prefix apps/delivery-app run start",
+    "delivery-app:web": "npm --prefix apps/delivery-app run web"
   },
   "dependencies": {
     "bcryptjs": "^3.0.3",
