@@ -293,10 +293,11 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
   // 3D Parallax Tilt state
   const stageRef = useRef<HTMLDivElement>(null);
   const [tilt, setTilt] = useState({ x: 0, y: 0 });
+  const touchStartRef = useRef<{ x: number; y: number } | null>(null);
 
   const currentSlide = SLIDES[currentIndex];
 
-  // Mousemove Parallax listener
+  // Mousemove Parallax listener (Desktop)
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
     if (!stageRef.current || isAnimating) return;
     const rect = stageRef.current.getBoundingClientRect();
@@ -308,6 +309,64 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
   const handleMouseLeave = () => {
     setTilt({ x: 0, y: 0 });
   };
+
+  // Touch Swipe & Parallax listeners (Mobile Phones & Tablets)
+  const handleTouchStart = (e: React.TouchEvent<HTMLDivElement>) => {
+    const touch = e.touches[0];
+    touchStartRef.current = { x: touch.clientX, y: touch.clientY };
+  };
+
+  const handleTouchMove = (e: React.TouchEvent<HTMLDivElement>) => {
+    if (!stageRef.current || !touchStartRef.current || isAnimating) return;
+    const touch = e.touches[0];
+    const rect = stageRef.current.getBoundingClientRect();
+    const x = ((touch.clientX - rect.left) / rect.width - 0.5) * 2;
+    const y = ((touch.clientY - rect.top) / rect.height - 0.5) * 2;
+    setTilt({ 
+      x: Math.max(-1, Math.min(1, x)), 
+      y: Math.max(-1, Math.min(1, y)) 
+    });
+  };
+
+  const handleTouchEnd = (e: React.TouchEvent<HTMLDivElement>) => {
+    if (!touchStartRef.current) return;
+    const touch = e.changedTouches[0];
+    const deltaX = touch.clientX - touchStartRef.current.x;
+    const deltaY = touch.clientY - touchStartRef.current.y;
+
+    // Horizontal swipe threshold: 45px
+    if (Math.abs(deltaX) > 45 && Math.abs(deltaX) > Math.abs(deltaY)) {
+      if (deltaX < 0) {
+        handleNext(); // Swiped left -> Next
+      } else {
+        handlePrev(); // Swiped right -> Prev
+      }
+    }
+
+    touchStartRef.current = null;
+    setTilt({ x: 0, y: 0 });
+  };
+
+  // Mobile Gyroscope Parallax (Tilting physical phone moves the 3D platter)
+  useEffect(() => {
+    const handleOrientation = (e: DeviceOrientationEvent) => {
+      if (isAnimating) return;
+      if (e.gamma !== null && e.beta !== null) {
+        // gamma: left-to-right tilt [-90, 90]
+        // beta: front-to-back tilt [-180, 180]
+        const clampedGamma = Math.max(-30, Math.min(30, e.gamma)) / 30;
+        const clampedBeta = Math.max(-30, Math.min(30, e.beta - 45)) / 30; // normalized around 45deg viewing angle
+        setTilt({ x: clampedGamma, y: clampedBeta });
+      }
+    };
+
+    if (window.DeviceOrientationEvent) {
+      window.addEventListener('deviceorientation', handleOrientation);
+    }
+    return () => {
+      window.removeEventListener('deviceorientation', handleOrientation);
+    };
+  }, [isAnimating]);
 
   const changeSlide = (newIndex: number) => {
     if (isAnimating || newIndex === currentIndex) return;
@@ -358,6 +417,9 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
       ref={stageRef}
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
+      onTouchStart={handleTouchStart}
+      onTouchMove={handleTouchMove}
+      onTouchEnd={handleTouchEnd}
       className="relative w-full rounded-3xl overflow-hidden shadow-2xl border border-white/10 select-none transition-colors duration-700"
       style={{
         background: currentSlide.bgGradient,
