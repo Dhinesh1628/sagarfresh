@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Eye, Plus, Minus, Zap, ShieldCheck, Heart, ArrowUpDown, Filter, CheckCircle2, Star, TrendingDown } from 'lucide-react';
+import { Eye, Plus, Minus, Zap, ShieldCheck, Heart, ArrowUpDown, Filter, CheckCircle2, Star, TrendingDown, Search, X, Sparkles, RotateCcw } from 'lucide-react';
 import type { Product } from '../types';
 import { api } from '../api';
 import { useCart } from '../context/CartContext';
@@ -8,16 +8,29 @@ import { HeroSection } from '../components/HeroSection';
 import { CategorySection } from '../components/CategorySection';
 import { getProductWeightOptions } from '../utils/weightUtils';
 
+const POPULAR_SEARCH_CHIPS = [
+  { label: '🍗 Curry Cut', term: 'Curry Cut' },
+  { label: '🥩 Biryani Cut', term: 'Biryani' },
+  { label: '🐟 Surmai Fish', term: 'Surmai' },
+  { label: '🍗 Boneless Fillets', term: 'Boneless' },
+  { label: '🦐 Jumbo Prawns', term: 'Prawns' },
+  { label: '🐟 Pomfret', term: 'Pomfret' },
+  { label: '🍢 Fish Tikka', term: 'Tikka' },
+  { label: '🎁 Feast Combo', term: 'Feast' },
+];
+
 interface CatalogPageProps {
   onNavigateToReturns: () => void;
   selectedCity: string;
   searchQuery: string;
+  onSetSearchQuery?: (query: string) => void;
 }
 
 export const CatalogPage: React.FC<CatalogPageProps> = ({ 
   onNavigateToReturns, 
   selectedCity,
-  searchQuery 
+  searchQuery,
+  onSetSearchQuery 
 }) => {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
@@ -181,6 +194,47 @@ export const CatalogPage: React.FC<CatalogPageProps> = ({
           </button>
         </div>
 
+        {/* Quick Search Trending Chips */}
+        <div className="flex items-center gap-2 overflow-x-auto py-1">
+          <div className="flex items-center gap-1 text-amber-700 dark:text-amber-400 font-bold text-xs shrink-0 mr-1">
+            <Sparkles className="w-3.5 h-3.5" />
+            <span>Trending:</span>
+          </div>
+          {POPULAR_SEARCH_CHIPS.map((chip) => (
+            <button
+              key={chip.term}
+              onClick={() => onSetSearchQuery?.(chip.term)}
+              className={`px-3 py-1 rounded-full text-xs font-semibold whitespace-nowrap cursor-pointer transition border ${
+                searchQuery.toLowerCase() === chip.term.toLowerCase()
+                  ? 'bg-rose-50 dark:bg-rose-950/80 text-[#d11243] dark:text-rose-400 border-[#d11243]'
+                  : 'bg-white dark:bg-slate-900 text-gray-700 dark:text-gray-300 border-gray-200 dark:border-slate-800 hover:border-gray-400'
+              }`}
+            >
+              {chip.label}
+            </button>
+          ))}
+        </div>
+
+        {/* Active Search Filter Banner */}
+        {searchQuery.trim() && (
+          <div className="flex items-center justify-between bg-rose-50 dark:bg-rose-950/60 border border-rose-200 dark:border-rose-900 rounded-xl px-4 py-2 text-xs">
+            <div className="flex items-center gap-2">
+              <Search className="w-4 h-4 text-[#d11243]" />
+              <span className="text-gray-900 dark:text-gray-100">
+                Search results for <span className="font-bold text-[#d11243]">"{searchQuery}"</span>
+              </span>
+              <span className="text-gray-400 font-medium">({sortedProducts.length} items found)</span>
+            </div>
+            <button
+              onClick={() => onSetSearchQuery?.('')}
+              className="flex items-center gap-1 text-[#d11243] hover:text-[#b80f3b] font-bold cursor-pointer"
+            >
+              <X className="w-3.5 h-3.5" />
+              <span>Clear</span>
+            </button>
+          </div>
+        )}
+
         {/* Sorting, Price Budget Filters & Results Count Bar */}
         <div className="bg-white dark:bg-slate-900 p-3 rounded-2xl border border-gray-200 dark:border-slate-800 shadow-2xs flex flex-wrap items-center justify-between gap-3 text-xs">
           {/* Price Budget Pills */}
@@ -237,8 +291,35 @@ export const CatalogPage: React.FC<CatalogPageProps> = ({
           ))}
         </div>
       ) : sortedProducts.length === 0 ? (
-        <div className="p-12 text-center bg-white dark:bg-slate-900 rounded-2xl border border-gray-200 dark:border-slate-800 text-xs text-gray-500 dark:text-gray-400">
-          No products match your search. Try another category!
+        <div className="p-12 text-center bg-white dark:bg-slate-900 rounded-2xl border border-gray-200 dark:border-slate-800 flex flex-col items-center justify-center space-y-3 max-w-lg mx-auto">
+          <div className="w-14 h-14 rounded-full bg-gray-100 dark:bg-slate-800 flex items-center justify-center text-gray-400">
+            <Search className="w-6 h-6" />
+          </div>
+          <h3 className="font-bold text-gray-900 dark:text-white text-base">
+            {searchQuery ? `No cuts matching "${searchQuery}"` : 'No products found'}
+          </h3>
+          <p className="text-xs text-gray-500 dark:text-gray-400 max-w-sm">
+            {searchQuery 
+              ? 'Try searching with generic terms like "chicken", "biryani", "prawns", "fish", or explore our freshly inwarded cuts below.' 
+              : 'Try selecting another category above or reset your filters.'}
+          </p>
+          <div className="pt-2 flex flex-wrap gap-2 justify-center">
+            {searchQuery && (
+              <button
+                onClick={() => onSetSearchQuery?.('')}
+                className="px-4 py-2 bg-[#d11243] hover:bg-[#b80f3b] text-white rounded-xl text-xs font-bold transition flex items-center gap-1.5 cursor-pointer shadow-xs"
+              >
+                <RotateCcw className="w-3.5 h-3.5" />
+                <span>Show All Fresh Cuts</span>
+              </button>
+            )}
+            <button
+              onClick={() => setSelectedCategory('All')}
+              className="px-4 py-2 bg-gray-100 dark:bg-slate-800 hover:bg-gray-200 dark:hover:bg-slate-700 text-gray-800 dark:text-gray-200 rounded-xl text-xs font-bold transition cursor-pointer"
+            >
+              Reset Category
+            </button>
+          </div>
         </div>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">

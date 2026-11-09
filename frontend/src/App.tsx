@@ -209,6 +209,7 @@ const MainApp: React.FC = () => {
             }}
             selectedCity={selectedCity}
             searchQuery={searchQuery}
+            onSetSearchQuery={setSearchQuery}
           />
         )}
 

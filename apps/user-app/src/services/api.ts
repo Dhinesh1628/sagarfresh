@@ -85,8 +85,15 @@ class ApiService {
   }
 
   // Catalog
-  async getProducts(category?: string) {
-    const query = category && category !== 'All' ? `?category=${encodeURIComponent(category)}` : '';
+  async getProducts(category?: string, search?: string) {
+    const params: string[] = [];
+    if (category && category !== 'All') {
+      params.push(`category=${encodeURIComponent(category)}`);
+    }
+    if (search && search.trim()) {
+      params.push(`search=${encodeURIComponent(search.trim())}`);
+    }
+    const query = params.length > 0 ? `?${params.join('&')}` : '';
     return this.request<any[]>(`/products${query}`);
   }
 

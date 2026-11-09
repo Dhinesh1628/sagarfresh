@@ -220,11 +220,14 @@ app.get('/api/products', (req, res) => {
   }
 
   if (search) {
-    const q = search.toLowerCase();
+    const q = search.toLowerCase().trim();
     products = products.filter(p =>
-      p.name.toLowerCase().includes(q) ||
-      p.description.toLowerCase().includes(q) ||
-      p.origin.toLowerCase().includes(q)
+      (p.name && p.name.toLowerCase().includes(q)) ||
+      (p.category && p.category.toLowerCase().includes(q)) ||
+      (p.cutStyle && p.cutStyle.toLowerCase().includes(q)) ||
+      (p.description && p.description.toLowerCase().includes(q)) ||
+      (p.origin && p.origin.toLowerCase().includes(q)) ||
+      (p.chillingMethod && p.chillingMethod.toLowerCase().includes(q))
     );
   }
 

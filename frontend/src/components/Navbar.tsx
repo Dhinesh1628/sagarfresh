@@ -192,10 +192,25 @@ export const Navbar: React.FC<NavbarProps> = ({
               <input
                 type="text"
                 value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
+                onChange={(e) => {
+                  setSearchQuery(e.target.value);
+                  if (currentTab !== 'catalog') {
+                    setCurrentTab('catalog');
+                  }
+                }}
                 placeholder="Search fresh chicken, mutton, seafood, eggs..."
-                className="w-full h-10 pl-10 pr-4 rounded-xl bg-gray-100/90 dark:bg-slate-800/90 hover:bg-gray-100 dark:hover:bg-slate-800 focus:bg-white dark:focus:bg-slate-900 border border-gray-200 dark:border-slate-700/80 focus:border-[#d11243] text-gray-900 dark:text-gray-100 text-xs placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-1 focus:ring-[#d11243] transition-all"
+                className="w-full h-10 pl-10 pr-9 rounded-xl bg-gray-100/90 dark:bg-slate-800/90 hover:bg-gray-100 dark:hover:bg-slate-800 focus:bg-white dark:focus:bg-slate-900 border border-gray-200 dark:border-slate-700/80 focus:border-[#d11243] text-gray-900 dark:text-gray-100 text-xs placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-1 focus:ring-[#d11243] transition-all"
               />
+              {searchQuery && (
+                <button
+                  type="button"
+                  onClick={() => setSearchQuery('')}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 p-1 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 cursor-pointer"
+                  title="Clear search"
+                >
+                  <X className="w-3.5 h-3.5" />
+                </button>
+              )}
             </div>
           </div>
 
@@ -414,10 +429,24 @@ export const Navbar: React.FC<NavbarProps> = ({
           <input
             type="text"
             value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
+            onChange={(e) => {
+              setSearchQuery(e.target.value);
+              if (currentTab !== 'catalog') {
+                setCurrentTab('catalog');
+              }
+            }}
             placeholder="Search chicken, mutton, fish, cold cuts..."
-            className="w-full h-9 pl-9 pr-3 rounded-xl bg-gray-100/90 dark:bg-slate-800/90 border border-gray-200 dark:border-slate-700 text-gray-900 dark:text-gray-100 text-xs placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:border-[#d11243]"
+            className="w-full h-9 pl-9 pr-8 rounded-xl bg-gray-100/90 dark:bg-slate-800/90 border border-gray-200 dark:border-slate-700 text-gray-900 dark:text-gray-100 text-xs placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:border-[#d11243]"
           />
+          {searchQuery && (
+            <button
+              type="button"
+              onClick={() => setSearchQuery('')}
+              className="absolute right-2.5 top-1/2 -translate-y-1/2 p-1 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 cursor-pointer"
+            >
+              <X className="w-3.5 h-3.5" />
+            </button>
+          )}
         </div>
       </div>
 

@@ -140,7 +140,7 @@ export const OrderTrackingScreen: React.FC<OrderTrackingScreenProps> = ({
           </View>
 
           <View style={styles.pinDisplayBox}>
-            {deliveryPin.split('').map((char, i) => (
+            {deliveryPin.split('').map((char: string, i: number) => (
               <View key={i} style={styles.pinDigitBox}>
                 <Text style={styles.pinDigit}>{char}</Text>
               </View>
