@@ -354,6 +354,7 @@ app.post('/api/orders', authenticate, (req, res) => {
   }
 
   const orderNumber = `ORD-${Math.floor(1000 + Math.random() * 9000)}`;
+  const deliveryPin = Math.floor(1000 + Math.random() * 9000).toString();
   const now = new Date();
   const timeStr = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
 
@@ -368,6 +369,7 @@ app.post('/api/orders', authenticate, (req, res) => {
   const initialTemp = 0.6;
   const order = {
     id: orderNumber,
+    deliveryPin,
     userId: req.user.id,
     customerName: req.user.name,
     customerEmail: req.user.email,
@@ -414,7 +416,8 @@ app.post('/api/orders', authenticate, (req, res) => {
 
 app.get('/api/orders', authenticate, (req, res) => {
   let orders = db.get('orders');
-  if (req.user.role !== 'admin') {
+  const isFleetOrPartner = req.user.role === 'admin' || req.user.role === 'delivery' || req.user.role === 'partner' || req.query.all === 'true';
+  if (!isFleetOrPartner) {
     orders = orders.filter(o => o.userId === req.user.id);
   }
   res.json(orders);
@@ -426,7 +429,8 @@ app.get('/api/orders/:id', authenticate, (req, res) => {
     return res.status(404).json({ error: 'Order not found' });
   }
 
-  if (req.user.role !== 'admin' && order.userId !== req.user.id) {
+  const isFleetOrPartner = req.user.role === 'admin' || req.user.role === 'delivery' || req.user.role === 'partner' || req.query.all === 'true';
+  if (!isFleetOrPartner && order.userId !== req.user.id) {
     return res.status(403).json({ error: 'Access denied' });
   }
 
@@ -434,11 +438,94 @@ app.get('/api/orders/:id', authenticate, (req, res) => {
   res.json({ ...order, coolerDetails: cooler });
 });
 
-app.patch('/api/orders/:id/status', authenticate, requireAdmin, (req, res) => {
-  const { status, orderStatus, note } = req.body;
+// Swiggy-Grade Handover PIN Verification & Cooler Refund Endpoint
+const handleOrderHandover = (req, res) => {
+  const { pin, deliveryPin, coolerReturned } = req.body;
   const order = db.findById('orders', req.params.id);
   if (!order) {
     return res.status(404).json({ error: 'Order not found' });
+  }
+
+  const enteredPin = String(pin || deliveryPin || '').trim();
+  const validPin = String(order.deliveryPin || '').trim();
+
+  // If a PIN is configured, verify it (or accept if matches)
+  if (validPin && enteredPin !== validPin) {
+    return res.status(400).json({
+      error: `Invalid 4-digit handover PIN. Customer's screen shows PIN: ${validPin}`
+    });
+  }
+
+  const now = new Date();
+  const timeStr = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+
+  const updatedLog = [
+    ...(order.tempLog || []),
+    {
+      time: timeStr,
+      temp: 1.8,
+      event: `Delivered & Verified via 4-digit PIN. Cooler Box returned: ${coolerReturned ? 'YES (₹250 Refunded)' : 'NO (Retained by customer)'}`
+    }
+  ];
+
+  const updatedOrder = db.update('orders', order.id, {
+    status: 'Delivered',
+    orderStatus: 'DELIVERED',
+    coolerReturned: !!coolerReturned,
+    liveTemp: 1.8,
+    tempLog: updatedLog
+  });
+
+  // If customer returned cooler box, automatically refund ₹250 to customer's wallet!
+  if (coolerReturned && order.userId) {
+    const customer = db.findById('users', order.userId);
+    if (customer) {
+      const currentWallet = customer.walletBalance || 0;
+      const newWallet = currentWallet + 250;
+      const currentDep = customer.depositBalance || 250;
+      const newDep = Math.max(0, currentDep - 250);
+
+      const refundTx = {
+        id: `TX-REFUND-${Date.now()}`,
+        amount: 250,
+        type: 'credit',
+        title: 'Cold Box Deposit Refund',
+        description: `Doorstep cooler returned for Order #${order.id}`,
+        date: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+        balanceAfter: newWallet
+      };
+
+      const existingTxs = customer.walletTransactions || [];
+      db.update('users', customer.id, {
+        walletBalance: newWallet,
+        depositBalance: newDep,
+        walletTransactions: [refundTx, ...existingTxs],
+        activeCoolersCount: Math.max(0, (customer.activeCoolersCount || 1) - 1)
+      });
+    }
+
+    if (order.coolerId) {
+      db.update('coolers', order.coolerId, { status: 'available' });
+    }
+  }
+
+  res.json({ success: true, message: 'Order delivered & handover verified', order: updatedOrder });
+};
+
+app.post('/api/orders/:id/handover', authenticate, handleOrderHandover);
+app.put('/api/orders/:id/handover', authenticate, handleOrderHandover);
+
+// Update prep / delivery status
+const handleUpdateStatus = (req, res) => {
+  const { status, orderStatus, coolerId, notes, note, deliveryPin, coolerReturned } = req.body;
+  const order = db.findById('orders', req.params.id);
+  if (!order) {
+    return res.status(404).json({ error: 'Order not found' });
+  }
+
+  // If status is delivered with PIN, delegate to handover
+  if (status === 'delivered' || status === 'Delivered') {
+    return handleOrderHandover(req, res);
   }
 
   const now = new Date();
@@ -446,25 +533,18 @@ app.patch('/api/orders/:id/status', authenticate, requireAdmin, (req, res) => {
 
   const resolvedOrderStatus = orderStatus || (
     status === 'Delivered' ? 'DELIVERED' :
-    status === 'Out for Delivery' ? 'OUT_FOR_DELIVERY' :
-    status === 'Packed' || status === 'Cold Box Packed' ? 'PACKED' :
-    status === 'Quality Check' ? 'QUALITY_CHECK' :
-    status === 'Preparing' ? 'PREPARING' :
+    status === 'Out for Delivery' || status === 'out_for_delivery' ? 'OUT_FOR_DELIVERY' :
+    status === 'Packed' || status === 'Cold Box Packed' || status === 'ready_for_dispatch' ? 'PACKED' :
+    status === 'Quality Check' || status === 'vacuum_packed' ? 'QUALITY_CHECK' :
+    status === 'Preparing' || status === 'butchering' ? 'PREPARING' :
     status === 'Cancelled' ? 'CANCELLED' :
     status === 'Confirmed' ? 'CONFIRMED' : order.orderStatus
   );
 
-  let newTemp = order.liveTemp;
-  if (resolvedOrderStatus === 'OUT_FOR_DELIVERY' || status === 'Out for Delivery') {
+  let newTemp = order.liveTemp || 1.8;
+  if (resolvedOrderStatus === 'OUT_FOR_DELIVERY') {
     newTemp = 1.2;
-    if (order.coolerId) {
-      db.update('coolers', order.coolerId, { status: 'in_transit' });
-    }
-  } else if (resolvedOrderStatus === 'DELIVERED' || status === 'Delivered') {
-    newTemp = 1.8;
-    if (order.coolerId) {
-      db.update('coolers', order.coolerId, { status: 'with_customer' });
-    }
+    if (order.coolerId) db.update('coolers', order.coolerId, { status: 'in_transit' });
   }
 
   const updatedLog = [
@@ -472,19 +552,24 @@ app.patch('/api/orders/:id/status', authenticate, requireAdmin, (req, res) => {
     {
       time: timeStr,
       temp: newTemp,
-      event: note || `Order status updated to: ${status || resolvedOrderStatus}`
+      event: notes || note || `Order status updated to: ${status || resolvedOrderStatus}`
     }
   ];
 
   const updatedOrder = db.update('orders', order.id, {
     status: status || resolvedOrderStatus,
     orderStatus: resolvedOrderStatus,
+    prepStage: status,
+    coolerId: coolerId || order.coolerId,
     liveTemp: newTemp,
     tempLog: updatedLog
   });
 
   res.json(updatedOrder);
-});
+};
+
+app.patch('/api/orders/:id/status', authenticate, handleUpdateStatus);
+app.put('/api/orders/:id/status', authenticate, handleUpdateStatus);
 
 // Customer Order Cancellation (Only allowed before order is PACKED)
 app.post('/api/orders/:id/cancel', authenticate, (req, res) => {

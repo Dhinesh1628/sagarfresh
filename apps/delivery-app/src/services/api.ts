@@ -76,13 +76,11 @@ class DeliveryApiService {
   }
 
   async confirmHandover(orderId: string, pin: string, coolerReturned: boolean) {
-    return this.request<any>(`/orders/${orderId}/status`, {
-      method: 'PUT',
+    return this.request<any>(`/orders/${orderId}/handover`, {
+      method: 'POST',
       body: JSON.stringify({
-        status: 'delivered',
-        deliveryPin: pin,
+        pin,
         coolerReturned,
-        notes: `Handover verified via customer PIN ${pin}. Cooler returned: ${coolerReturned ? 'YES' : 'NO'}.`,
       }),
     });
   }

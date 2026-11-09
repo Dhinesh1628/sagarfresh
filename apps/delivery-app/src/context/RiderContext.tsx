@@ -52,6 +52,13 @@ export const RiderProvider: React.FC<{ children: React.ReactNode }> = ({ childre
 
   useEffect(() => {
     fetchOrders();
+
+    // Swiggy-grade live order dispatch polling
+    const interval = setInterval(() => {
+      fetchOrders();
+    }, 4000);
+
+    return () => clearInterval(interval);
   }, []);
 
   const toggleDuty = () => {
@@ -64,13 +71,13 @@ export const RiderProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     coolerReturned: boolean
   ): Promise<{ success: boolean; message?: string }> => {
     const targetOrder = orders.find((o) => (o.id || o.orderNumber) === orderId) || { id: orderId };
-    const expectedPin = getOrderDeliveryPin(targetOrder);
+    const expectedPin = targetOrder.deliveryPin || getOrderDeliveryPin(targetOrder);
 
     // 1. PIN verification
-    if (enteredPin.trim() !== expectedPin.trim()) {
+    if (enteredPin.trim() !== String(expectedPin).trim()) {
       return {
         success: false,
-        message: `Incorrect Handover PIN. Customer must read the 4-digit PIN directly from their GoMeat Tracking screen.`,
+        message: `Incorrect Handover PIN. Ask the customer to check their GoMeat App screen.`,
       };
     }
 

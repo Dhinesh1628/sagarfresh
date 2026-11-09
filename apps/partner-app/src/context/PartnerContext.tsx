@@ -89,6 +89,13 @@ export const PartnerProvider: React.FC<{ children: React.ReactNode }> = ({ child
   useEffect(() => {
     fetchOrders();
     fetchProducts();
+
+    // Swiggy-grade live KDS prep order sync
+    const interval = setInterval(() => {
+      fetchOrders();
+    }, 4000);
+
+    return () => clearInterval(interval);
   }, []);
 
   const advanceOrderStage = async (orderId: string, nextStage: string, coolerId?: string) => {

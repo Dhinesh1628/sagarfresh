@@ -26,11 +26,33 @@
       "phone": "+91 98765 43210",
       "city": "Bengaluru",
       "address": "Flat 402, Alpine Eco Apartments, Doddanekkundi, Marathahalli, Bengaluru 560037",
-      "depositBalance": 1250,
+      "depositBalance": 1500,
       "upiId": "pooja@okhdfcbank",
       "createdAt": "2026-02-10T11:20:00.000Z",
       "__v": 0,
-      "updatedAt": "2026-11-09T03:40:06.623Z"
+      "updatedAt": "2026-11-09T03:50:53.147Z",
+      "walletBalance": 500,
+      "walletTransactions": [
+        {
+          "id": "TX-REFUND-1794199951306",
+          "amount": 250,
+          "type": "credit",
+          "title": "Cold Box Deposit Refund",
+          "description": "Doorstep cooler returned for Order #ORD-2936",
+          "date": "10:22 AM",
+          "balanceAfter": 500
+        },
+        {
+          "id": "TX-REFUND-1794199886099",
+          "amount": 250,
+          "type": "credit",
+          "title": "Cold Box Deposit Refund",
+          "description": "Doorstep cooler returned for Order #ORD-2498",
+          "date": "10:21 AM",
+          "balanceAfter": 250
+        }
+      ],
+      "activeCoolersCount": 0
     }
   ],
   "products": [
@@ -52,14 +74,14 @@
       "catchDate": "Daily 4:00 AM Harbor Catch",
       "origin": "Mangalore Old Port Jetty, Karnataka",
       "cutStyle": "Curry Cut & Tawa Fry Steaks",
-      "stock": 37,
+      "stock": 34,
       "rating": 4.8,
       "reviewsCount": 120,
       "badge": "",
       "imageUrl": "/images/products/prod_1.jpg",
       "__v": 0,
       "createdAt": "2026-10-30T19:00:48.193Z",
-      "updatedAt": "2026-11-09T03:40:06.617Z",
+      "updatedAt": "2026-11-09T03:50:53.134Z",
       "image": "/images/products/prod_1.jpg"
     },
     {
@@ -261,11 +283,25 @@
   ],
   "coolers": [
     {
-      "id": "BOX-BLR-417",
-      "qrCode": "GOMEAT-BOX-BLR-417",
+      "id": "BOX-BLR-633",
+      "qrCode": "GOMEAT-BOX-BLR-633",
       "model": "ThermalVault 18L - Reusable EPP Cold-Gel Box",
-      "status": "with_customer",
-      "currentOrderId": "ORD-1406",
+      "status": "available",
+      "currentOrderId": "ORD-2936",
+      "currentUserId": "usr_customer",
+      "currentUserName": "Pooja Sundaram",
+      "cyclesUsed": 1,
+      "lastSanitizedDate": "2026-11-09",
+      "depositAmount": 250,
+      "maxHoldingHours": 36,
+      "assignedHub": "Bengaluru Regional Hub Depot"
+    },
+    {
+      "id": "BOX-BLR-182",
+      "qrCode": "GOMEAT-BOX-BLR-182",
+      "model": "ThermalVault 18L - Reusable EPP Cold-Gel Box",
+      "status": "assigned",
+      "currentOrderId": "ORD-6662",
       "currentUserId": "usr_customer",
       "currentUserName": "Pooja Sundaram",
       "cyclesUsed": 1,
@@ -291,11 +327,159 @@
       "createdAt": "2026-10-30T19:02:30.911Z",
       "updatedAt": "2026-10-30T19:02:30.917Z",
       "__v": 0
+    },
+    {
+      "_id": "6af1431d8597919bceb1567f",
+      "id": "BOX-BLR-417",
+      "qrCode": "GOMEAT-BOX-BLR-417",
+      "coolerCode": "GOMEAT-BOX-BLR-417",
+      "model": "ThermalVault 18L - Reusable EPP Cold-Gel Box",
+      "status": "with_customer",
+      "currentOrderId": null,
+      "currentUserId": "usr_customer",
+      "currentUserName": "Pooja Sundaram",
+      "cyclesUsed": 1,
+      "lastSanitizedDate": "2026-11-09",
+      "depositAmount": 250,
+      "maxHoldingHours": 36,
+      "assignedHub": "Bengaluru Regional Hub Depot",
+      "createdAt": "2026-11-09T03:50:53.158Z",
+      "updatedAt": "2026-11-09T03:50:53.179Z",
+      "__v": 0
     }
   ],
   "orders": [
     {
-      "id": "ORD-1406",
+      "id": "ORD-2936",
+      "deliveryPin": "1877",
+      "userId": "usr_customer",
+      "customerName": "Pooja Sundaram",
+      "customerEmail": "pooja.sundaram@gmail.com",
+      "customerPhone": "+91 98765 43210",
+      "deliveryAddress": "Flat 402, Alpine Eco, Doddanekkundi, Bengaluru",
+      "city": "Bengaluru",
+      "items": [
+        {
+          "productId": "prod_1",
+          "name": "Seer Fish / Surmai (Large Steaks)",
+          "price": 799,
+          "quantity": 1,
+          "unit": "500g",
+          "netWeight": "450g",
+          "chillingMethod": "0°C to 4°C FreshSeal™ Cold Chain",
+          "cutStyle": "Medium Curry Cut",
+          "image": "/images/products/prod_1.jpg"
+        }
+      ],
+      "subtotal": 799,
+      "discountAmount": 0,
+      "couponCode": null,
+      "coolerDeposit": 250,
+      "shippingFee": 0,
+      "total": 1049,
+      "status": "Delivered",
+      "coolerId": "BOX-BLR-633",
+      "coolerModel": "ThermalVault 18L - Reusable EPP Cold-Gel Box",
+      "liveTemp": 1.8,
+      "deliveryExecutive": "Sunil Gowda (EV Delivery #14, +91 97412 88301)",
+      "tempLog": [
+        {
+          "time": "10:22",
+          "temp": 0.6,
+          "event": "Order Confirmed. Packed in sanitized box BOX-BLR-633."
+        },
+        {
+          "time": "10:22",
+          "temp": 0.6,
+          "event": "Cleaned, vacuum sealed, packed into EPP cooler with -18°C gel bricks"
+        },
+        {
+          "time": "10:22",
+          "temp": 1.2,
+          "event": "Rider is 1.2km away with active cold-vault probe at 1.8°C"
+        },
+        {
+          "time": "10:22",
+          "temp": 1.8,
+          "event": "Delivered & Verified via 4-digit PIN. Cooler Box returned: YES (₹250 Refunded)"
+        }
+      ],
+      "deliverySlot": "Today, Express in 90 Mins",
+      "trackingCode": "GOMEAT-TRK-4137",
+      "paymentMethod": "razorpay",
+      "createdAt": "2026-11-09T04:52:31.174Z",
+      "deliveryNotes": "",
+      "orderStatus": "DELIVERED",
+      "prepStage": "Out for Delivery",
+      "coolerReturned": true
+    },
+    {
+      "id": "ORD-2498",
+      "deliveryPin": "9201",
+      "userId": "usr_customer",
+      "customerName": "Pooja Sundaram",
+      "customerEmail": "pooja.sundaram@gmail.com",
+      "customerPhone": "+91 98765 43210",
+      "deliveryAddress": "Flat 402, Alpine Eco, Doddanekkundi, Bengaluru",
+      "city": "Bengaluru",
+      "items": [
+        {
+          "productId": "prod_1",
+          "name": "Seer Fish / Surmai (Large Steaks)",
+          "price": 799,
+          "quantity": 1,
+          "unit": "500g",
+          "netWeight": "450g",
+          "chillingMethod": "0°C to 4°C FreshSeal™ Cold Chain",
+          "cutStyle": "Medium Curry Cut",
+          "image": "/images/products/prod_1.jpg"
+        }
+      ],
+      "subtotal": 799,
+      "discountAmount": 0,
+      "couponCode": null,
+      "coolerDeposit": 250,
+      "shippingFee": 0,
+      "total": 1049,
+      "status": "Delivered",
+      "coolerId": "BOX-BLR-633",
+      "coolerModel": "ThermalVault 18L - Reusable EPP Cold-Gel Box",
+      "liveTemp": 1.8,
+      "deliveryExecutive": "Manjunath K (+91 98801 44520)",
+      "tempLog": [
+        {
+          "time": "10:21",
+          "temp": 0.6,
+          "event": "Order Confirmed. Packed in sanitized box BOX-BLR-633."
+        },
+        {
+          "time": "10:21",
+          "temp": 0.6,
+          "event": "Cleaned, vacuum sealed, packed into EPP cooler with -18°C gel bricks"
+        },
+        {
+          "time": "10:21",
+          "temp": 1.2,
+          "event": "Rider is 1.2km away with active cold-vault probe at 1.8°C"
+        },
+        {
+          "time": "10:21",
+          "temp": 1.8,
+          "event": "Delivered & Verified via 4-digit PIN. Cooler Box returned: YES (₹250 Refunded)"
+        }
+      ],
+      "deliverySlot": "Today, Express in 90 Mins",
+      "trackingCode": "GOMEAT-TRK-9879",
+      "paymentMethod": "razorpay",
+      "createdAt": "2026-11-09T04:51:25.911Z",
+      "deliveryNotes": "",
+      "orderStatus": "DELIVERED",
+      "prepStage": "Out for Delivery",
+      "coolerReturned": true
+    },
+    {
+      "id": "ORD-6662",
+      "deliveryPin": "1350",
       "userId": "usr_customer",
       "customerName": "Pooja Sundaram",
       "customerEmail": "pooja.sundaram@gmail.com",
@@ -321,11 +505,73 @@
       "coolerDeposit": 250,
       "shippingFee": 0,
       "total": 1049,
+      "status": "Cold Box Packed",
+      "coolerId": "BOX-BLR-182",
+      "coolerModel": "ThermalVault 18L - Reusable EPP Cold-Gel Box",
+      "liveTemp": 0.6,
+      "deliveryExecutive": "Sunil Gowda (EV Delivery #14, +91 97412 88301)",
+      "tempLog": [
+        {
+          "time": "10:18",
+          "temp": 0.6,
+          "event": "Order Confirmed. Packed in sanitized box BOX-BLR-182."
+        }
+      ],
+      "deliverySlot": "Today, Express in 90 Mins",
+      "trackingCode": "GOMEAT-TRK-5721",
+      "paymentMethod": "UPI (Google Pay)",
+      "createdAt": "2026-11-09T04:48:54.344Z",
+      "deliveryNotes": ""
+    },
+    {
+      "_id": "6af1431d8597919bceb15680",
+      "id": "ORD-1406",
+      "orderNumber": "ORD-1406",
+      "userId": "usr_customer",
+      "customerName": "Pooja Sundaram",
+      "customerEmail": "pooja.sundaram@gmail.com",
+      "customerPhone": "+91 98765 43210",
+      "items": [
+        {
+          "productId": "prod_1",
+          "name": "Seer Fish / Surmai (Large Steaks)",
+          "price": 799,
+          "quantity": 1,
+          "cutStyle": "Curry Cut & Tawa Fry Steaks",
+          "unit": "500g",
+          "netWeight": "450g",
+          "imageUrl": "",
+          "image": "/images/products/prod_1.jpg"
+        }
+      ],
+      "subtotal": 799,
+      "discountAmount": 0,
+      "couponCode": null,
+      "coolerDeposit": 250,
+      "deliveryFee": 0,
+      "total": 1049,
+      "totalAmount": 1049,
+      "deliveryAddress": "Flat 402, Alpine Eco, Doddanekkundi, Bengaluru - 560037",
+      "addressDetails": {
+        "city": "Bengaluru",
+        "state": "Karnataka"
+      },
+      "deliverySlot": "Today, Express in 90 Mins",
+      "city": "Bengaluru",
+      "deliveryNotes": "",
+      "orderStatus": "DELIVERED",
       "status": "Delivered",
+      "paymentMethod": "UPI (Google Pay)",
+      "paymentStatus": "PENDING",
+      "razorpayOrderId": "",
+      "razorpayPaymentId": "",
+      "razorpaySignature": "",
       "coolerId": "BOX-BLR-417",
       "coolerModel": "ThermalVault 18L - Reusable EPP Cold-Gel Box",
+      "coldBoxRefundStatus": "NOT_REQUESTED",
+      "refundId": "",
+      "refundTxnId": "",
       "liveTemp": 1.8,
-      "deliveryExecutive": "Karthik S (+91 99014 55210)",
       "tempLog": [
         {
           "time": "09:20",
@@ -338,393 +584,14 @@
           "event": "Box delivered to Flat 402"
         }
       ],
-      "deliverySlot": "Today, Express in 90 Mins",
       "trackingCode": "GOMEAT-TRK-1388",
-      "paymentMethod": "UPI (Google Pay)",
+      "etaMinutes": 35,
+      "deliveryExecutive": "Karthik S (+91 99014 55210)",
       "createdAt": "2026-11-09T03:50:53.106Z",
-      "deliveryNotes": "",
-      "orderStatus": "DELIVERED"
-    },
-    {
-      "id": "ORD-5050",
-      "userId": "usr_customer",
-      "customerName": "Pooja Sundaram",
-      "customerEmail": "pooja.sundaram@gmail.com",
-      "customerPhone": "+91 98765 43210",
-      "deliveryAddress": "Flat 402, Alpine Eco, Doddanekkundi, Bengaluru - 560037",
-      "city": "Bengaluru",
-      "items": [
-        {
-          "productId": "prod_1",
-          "name": "Seer Fish / Surmai (Large Steaks)",
-          "price": 799,
-          "quantity": 1,
-          "unit": "500g",
-          "netWeight": "450g",
-          "chillingMethod": "0°C to 4°C FreshSeal™ Cold Chain",
-          "cutStyle": "Curry Cut & Tawa Fry Steaks",
-          "image": "/images/products/prod_1.jpg"
-        }
-      ],
-      "subtotal": 799,
-      "discountAmount": 0,
-      "couponCode": null,
-      "coolerDeposit": 250,
       "shippingFee": 0,
-      "total": 1049,
-      "status": "Delivered",
-      "coolerId": "BOX-BLR-216",
-      "coolerModel": "ThermalVault 18L - Reusable EPP Cold-Gel Box",
-      "liveTemp": 1.8,
-      "deliveryExecutive": "Sunil Gowda (EV Delivery #14, +91 97412 88301)",
-      "tempLog": [
-        {
-          "time": "09:10",
-          "temp": 0.6,
-          "event": "Order Confirmed. Packed in sanitized box BOX-BLR-216."
-        },
-        {
-          "time": "09:10",
-          "temp": 1.8,
-          "event": "Box delivered to Flat 402"
-        }
-      ],
-      "deliverySlot": "Today, Express in 90 Mins",
-      "trackingCode": "GOMEAT-TRK-4097",
-      "paymentMethod": "UPI (Google Pay)",
-      "createdAt": "2026-11-09T03:40:06.602Z",
-      "deliveryNotes": "",
-      "orderStatus": "DELIVERED"
-    },
-    {
-      "id": "GOM-623840",
-      "orderNumber": "GOM-623840",
-      "userId": "guest_0c97693c",
-      "customerName": "Customer",
-      "customerEmail": "customer@gomeat.in",
-      "customerPhone": "+91 98765 43210",
-      "deliveryAddress": {
-        "fullName": "Test Cancel",
-        "mobile": "9999999999",
-        "email": "cancel@example.com",
-        "line1": "Flat 12",
-        "city": "Bengaluru",
-        "pincode": "560001"
-      },
-      "city": "Bengaluru",
-      "items": [
-        {
-          "productId": "prod_6",
-          "name": "Country Chicken / Nati Koli (Curry Cut)",
-          "price": 389,
-          "quantity": 1,
-          "unit": "600g",
-          "netWeight": "550g",
-          "cutStyle": "Medium Bone-In Curry Pieces",
-          "image": "/images/products/prod_6.jpg"
-        }
-      ],
-      "subtotal": 389,
-      "discountAmount": 0,
-      "couponCode": null,
-      "coolerDeposit": 250,
-      "shippingFee": 40,
-      "total": 679,
-      "totalAmount": 679,
-      "status": "Blast-Chilling",
-      "orderStatus": "PENDING",
-      "paymentMethod": "razorpay",
-      "paymentStatus": "PENDING",
-      "razorpayOrderId": "order_test_e83739af38bd42",
-      "razorpayPaymentId": "",
-      "razorpaySignature": "",
-      "coolerId": "BOX-BLR-643",
-      "coolerModel": "ThermalVault 18L - Reusable EPP Cold-Gel Box",
-      "coldBoxRefundStatus": "NOT_REQUESTED",
-      "liveTemp": 0.8,
-      "deliveryExecutive": "Sunil Gowda (EV Delivery #14)",
-      "tempLog": [
-        {
-          "time": "13:15",
-          "temp": 0.8,
-          "event": "Order Confirmed. Chilled cut locked inside BOX-BLR-643."
-        }
-      ],
-      "deliverySlot": "Today, Express in 90 Mins",
-      "trackingCode": "GOMEAT-TRK-8538",
-      "createdAt": "2026-11-03T07:45:57.389Z",
-      "deliveryNotes": "",
-      "deliveryPin": "3829"
-    },
-    {
-      "id": "GOM-280363",
-      "orderNumber": "GOM-280363",
-      "userId": "guest_e6154139",
-      "customerName": "Customer",
-      "customerEmail": "customer@gomeat.in",
-      "customerPhone": "+91 98765 43210",
-      "deliveryAddress": {
-        "fullName": "Dinesh Kandukuri",
-        "mobile": "9741288301",
-        "email": "dinesh@example.com",
-        "line1": "Flat 402, Alpine Eco",
-        "city": "Bengaluru",
-        "pincode": "560037"
-      },
-      "city": "Bengaluru",
-      "items": [
-        {
-          "productId": "prod_5",
-          "name": "Fresh Chicken Breast (Boneless Fillets)",
-          "price": 289,
-          "quantity": 2,
-          "unit": "450g",
-          "netWeight": "450g",
-          "cutStyle": "Boneless Breast Fillet",
-          "image": "/images/products/prod_5.jpg"
-        }
-      ],
-      "subtotal": 578,
-      "discountAmount": 0,
-      "couponCode": null,
-      "coolerDeposit": 250,
-      "shippingFee": 40,
-      "total": 868,
-      "totalAmount": 868,
-      "status": "Order Confirmed",
-      "orderStatus": "CONFIRMED",
-      "paymentMethod": "razorpay",
-      "paymentStatus": "PAID",
-      "razorpayOrderId": "order_test_b5d671d7000740",
-      "razorpayPaymentId": "pay_test_984321",
-      "razorpaySignature": "test_signature",
-      "coolerId": "BOX-BLR-293",
-      "coolerModel": "ThermalVault 18L - Reusable EPP Cold-Gel Box",
-      "coldBoxRefundStatus": "REFUNDED",
-      "liveTemp": 0.8,
-      "deliveryExecutive": "Sunil Gowda (EV Delivery #14)",
-      "tempLog": [
-        {
-          "time": "13:14",
-          "temp": 0.8,
-          "event": "Payment of ₹868 received via Razorpay (pay_test_984321). Order confirmed."
-        }
-      ],
-      "deliverySlot": "Today, Express in 90 Mins",
-      "trackingCode": "GOMEAT-TRK-4979",
-      "createdAt": "2026-11-03T07:43:27.579Z",
-      "deliveryNotes": "",
-      "refundId": "rfnd_df866178967e41",
-      "refundTxnId": "rfnd_df866178967e41",
-      "refundProcessedAt": "2026-11-03T07:45:15.478Z",
-      "deliveryPin": "7145"
-    },
-    {
-      "id": "ORD-1484",
-      "userId": "usr_customer",
-      "customerName": "Pooja Sundaram",
-      "customerEmail": "pooja.sundaram@gmail.com",
-      "customerPhone": "+91 98765 43210",
-      "deliveryAddress": "Flat 402, Alpine Eco, Doddanekkundi, Bengaluru - 560037",
-      "city": "Bengaluru",
-      "items": [
-        {
-          "productId": "prod_1",
-          "name": "Seer Fish / Surmai (Large Steaks)",
-          "price": 799,
-          "quantity": 1,
-          "unit": "500g",
-          "netWeight": "450g",
-          "chillingMethod": "0°C to 4°C FreshSeal™ Cold Chain",
-          "cutStyle": "Curry Cut & Tawa Fry Steaks"
-        }
-      ],
-      "subtotal": 799,
-      "coolerDeposit": 250,
-      "shippingFee": 0,
-      "total": 1049,
-      "status": "Delivered",
-      "coolerId": "BOX-BLR-983",
-      "coolerModel": "ThermalVault 18L - Reusable EPP Cold-Gel Box",
-      "liveTemp": 1.8,
-      "deliveryExecutive": "Karthik S (+91 99014 55210)",
-      "tempLog": [
-        {
-          "time": "00:32",
-          "temp": 0.6,
-          "event": "Order Confirmed. Packed in sanitized box BOX-BLR-983."
-        },
-        {
-          "time": "00:32",
-          "temp": 1.8,
-          "event": "Box delivered to Flat 402"
-        }
-      ],
-      "deliverySlot": "Today, Express in 90 Mins",
-      "trackingCode": "GOMEAT-TRK-1483",
-      "paymentMethod": "UPI (Google Pay)",
-      "createdAt": "2026-10-30T19:02:30.898Z",
-      "deliveryNotes": "",
-      "deliveryPin": "5291"
-    },
-    {
-      "id": "ORD-4165",
-      "userId": "usr_customer",
-      "customerName": "Pooja Sundaram",
-      "customerEmail": "pooja.sundaram@gmail.com",
-      "customerPhone": "+91 98765 43210",
-      "deliveryAddress": "Flat 402, Alpine Eco, Doddanekkundi, Bengaluru - 560037",
-      "city": "Bengaluru",
-      "items": [
-        {
-          "productId": "prod_1",
-          "name": "Seer Fish / Surmai (Large Steaks)",
-          "price": 799,
-          "quantity": 1,
-          "unit": "500g",
-          "netWeight": "450g",
-          "chillingMethod": "0°C to 4°C FreshSeal™ Cold Chain",
-          "cutStyle": "Curry Cut & Tawa Fry Steaks",
-          "image": "https://images.unsplash.com/photo-1534422298391-e4f8c172dddb?auto=format&fit=crop&w=800&q=80"
-        }
-      ],
-      "subtotal": 799,
-      "coolerDeposit": 250,
-      "shippingFee": 0,
-      "total": 1049,
-      "status": "Delivered",
-      "coolerId": "BOX-BLR-105",
-      "coolerModel": "ThermalVault 14L - Compact ColdGel Box",
-      "liveTemp": 1.8,
-      "deliveryExecutive": "Sunil Gowda (EV Delivery #14, +91 97412 88301)",
-      "tempLog": [
-        {
-          "time": "00:21",
-          "temp": 0.6,
-          "event": "Order Confirmed. Packed in sanitized box BOX-BLR-105."
-        },
-        {
-          "time": "00:21",
-          "temp": 1.8,
-          "event": "Box delivered to Flat 402"
-        }
-      ],
-      "deliverySlot": "Today, Express in 90 Mins",
-      "trackingCode": "GOMEAT-TRK-3643",
-      "paymentMethod": "UPI (Google Pay)",
-      "createdAt": "2026-10-30T18:51:39.123Z",
-      "deliveryNotes": "",
-      "deliveryPin": "8403"
-    },
-    {
-      "id": "ORD-7551",
-      "userId": "usr_customer",
-      "customerName": "Pooja Sundaram",
-      "customerEmail": "pooja.sundaram@gmail.com",
-      "customerPhone": "+91 98765 43210",
-      "deliveryAddress": "Flat 402, Alpine Eco, Doddanekkundi, Bengaluru - 560037",
-      "city": "Bengaluru",
-      "items": [
-        {
-          "productId": "prod_1",
-          "name": "Seer Fish / Surmai (Large Steaks)",
-          "price": 799,
-          "quantity": 1,
-          "unit": "500g",
-          "netWeight": "450g",
-          "chillingMethod": "0°C to 4°C FreshSeal™ Cold Chain",
-          "cutStyle": "Curry Cut & Tawa Fry Steaks",
-          "image": "https://images.unsplash.com/photo-1534422298391-e4f8c172dddb?auto=format&fit=crop&w=800&q=80"
-        }
-      ],
-      "subtotal": 799,
-      "coolerDeposit": 250,
-      "shippingFee": 0,
-      "total": 1049,
-      "status": "Delivered",
-      "coolerId": "BOX-BLR-104",
-      "coolerModel": "ThermalVault 18L - Reusable EPP Cold-Gel Box",
-      "liveTemp": 1.8,
-      "deliveryExecutive": "Karthik S (+91 99014 55210)",
-      "tempLog": [
-        {
-          "time": "19:29",
-          "temp": 0.6,
-          "event": "Order Confirmed. Packed in sanitized box BOX-BLR-104."
-        },
-        {
-          "time": "19:29",
-          "temp": 1.8,
-          "event": "Box delivered to Flat 402"
-        }
-      ],
-      "deliverySlot": "Today, Express in 90 Mins",
-      "trackingCode": "GOMEAT-TRK-4184",
-      "paymentMethod": "UPI (Google Pay)",
-      "createdAt": "2026-10-30T13:59:51.826Z",
-      "deliveryNotes": "",
-      "deliveryPin": "2967"
-    },
-    {
-      "id": "ORD-9281",
-      "userId": "usr_customer",
-      "customerName": "Pooja Sundaram",
-      "customerEmail": "pooja.sundaram@gmail.com",
-      "customerPhone": "+91 98765 43210",
-      "deliveryAddress": "Flat 402, Alpine Eco Apartments, Doddanekkundi, Marathahalli, Bengaluru 560037",
-      "city": "Bengaluru",
-      "items": [
-        {
-          "productId": "prod_1",
-          "name": "Seer Fish / Surmai (Large Steaks)",
-          "price": 799,
-          "quantity": 1,
-          "unit": "500g",
-          "netWeight": "450g",
-          "chillingMethod": "0°C to 4°C FreshSeal™ Cold Chain"
-        },
-        {
-          "productId": "prod_4",
-          "name": "Rich Tender Goat (Biryani & Rogan Josh Cut)",
-          "price": 549,
-          "quantity": 1,
-          "unit": "500g",
-          "netWeight": "450g",
-          "chillingMethod": "0°C to 4°C Temperature Regulated"
-        }
-      ],
-      "subtotal": 1348,
-      "coolerDeposit": 250,
-      "shippingFee": 0,
-      "total": 1598,
-      "status": "Out for Delivery",
-      "coolerId": "BOX-BLR-103",
-      "coolerModel": "ThermalVault 24L - Dual Phase ColdGel Box",
-      "liveTemp": 1.2,
-      "deliveryExecutive": "Sunil Gowda (EV Delivery #14, +91 97412 88301)",
-      "tempLog": [
-        {
-          "time": "06:15",
-          "temp": 0.2,
-          "event": "Cuts packed with chilled gel bricks at Mahadevapura Hub"
-        },
-        {
-          "time": "07:00",
-          "temp": 0.8,
-          "event": "Loaded onto insulated delivery electric vehicle"
-        },
-        {
-          "time": "07:45",
-          "temp": 1.2,
-          "event": "Delivery partner en route near Marathahalli"
-        }
-      ],
-      "deliverySlot": "Today, Express in 90 Mins",
-      "trackingCode": "GOMEAT-TRK-4412",
-      "paymentMethod": "UPI (Google Pay)",
-      "createdAt": "2026-10-30T01:30:00.000Z",
-      "deliveryNotes": "Leave at security desk or ring Flat 402 doorbell.",
-      "deliveryPin": "6314"
+      "temperatureLog": [],
+      "updatedAt": "2026-11-09T03:50:53.179Z",
+      "__v": 0
     }
   ],
   "coolerReturns": [

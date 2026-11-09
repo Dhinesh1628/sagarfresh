@@ -66,6 +66,11 @@ export const OrderTrackingScreen: React.FC<OrderTrackingScreenProps> = ({
   useEffect(() => {
     fetchOrder();
 
+    // Swiggy-grade real-time order polling
+    const pollInterval = setInterval(() => {
+      fetchOrder();
+    }, 3000);
+
     // Gentle live temperature fluctuation between 1.8°C and 2.7°C
     const timer = setInterval(() => {
       setTempReading((prev) => {
@@ -75,17 +80,24 @@ export const OrderTrackingScreen: React.FC<OrderTrackingScreenProps> = ({
       });
     }, 4000);
 
-    return () => clearInterval(timer);
+    return () => {
+      clearInterval(pollInterval);
+      clearInterval(timer);
+    };
   }, [orderId]);
 
-  const deliveryPin = getOrderDeliveryPin(order);
+  const deliveryPin = order?.deliveryPin || getOrderDeliveryPin(order);
+
+  const isDelivered = order?.status === 'Delivered' || order?.orderStatus === 'DELIVERED';
+  const isOutForDelivery = isDelivered || order?.status === 'Out for Delivery' || order?.orderStatus === 'OUT_FOR_DELIVERY';
+  const isPacked = isOutForDelivery || order?.status === 'Cold Box Packed' || order?.status === 'Packed' || order?.orderStatus === 'PACKED' || order?.prepStage === 'ready_for_dispatch';
 
   const trackingSteps = [
     { title: 'Order Confirmed', desc: 'Received & routed to dark store', done: true },
-    { title: 'Chilled Pack Sealed', desc: 'Packed in wholesale EPP box with eutectic gel', done: true },
-    { title: 'Dispatched with Fleet', desc: 'Assigned to cold-chain delivery rider', done: true },
-    { title: 'Out for Delivery', desc: 'Rider is 1.8 km away (12 mins)', done: true },
-    { title: 'Doorstep Handover', desc: 'Verify 4-digit PIN upon cooler handover', done: false },
+    { title: 'Chilled Pack Sealed', desc: order?.coolerId ? `Packed in EPP Box #${order.coolerId} with -18°C gel bricks` : 'Packed in wholesale EPP box with eutectic gel', done: isPacked },
+    { title: 'Dispatched with Fleet', desc: order?.deliveryExecutive || 'Assigned to cold-chain delivery rider', done: isOutForDelivery },
+    { title: 'Out for Delivery', desc: isDelivered ? 'Arrived at your gate' : 'Rider is on the way with your cold box', done: isOutForDelivery },
+    { title: 'Doorstep Handover', desc: isDelivered ? '✓ Handover verified with 4-digit PIN' : 'Verify 4-digit PIN upon cooler handover', done: isDelivered },
   ];
 
   if (loading) {
