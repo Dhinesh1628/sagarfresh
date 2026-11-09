@@ -68,14 +68,15 @@ export const WhatsAppChatbotModal: React.FC<WhatsAppChatbotModalProps> = ({
   whatsappNumber,
   onNavigateTab
 }) => {
-  const { addItem, applyCoupon, setIsCartOpen } = useCart();
+  const { items, subtotal, total, couponCode, addItem, applyCoupon, setIsCartOpen } = useCart();
   const [messages, setMessages] = useState<Message[]>([
     {
       id: 'msg_welcome',
       sender: 'bot',
-      text: `👋 *Namaste! Welcome to GoMeat — Freshness We Can Trust.*\n\nI am your *24/7 AI Master Butcher & Culinary Concierge* 👨‍🍳✨\n\nI don't just answer questions — *tell me what you need and I will do all the work:*\n\n• 🛒 *"Add 500g Surmai and 1kg Mutton to my cart"*\n• 👨‍🍳 *"How to cook Surmai Tawa Fry?"* or *"Mutton Rogan Josh recipe"*\n• ⚖️ *"Dinner for 6 people, how much meat should I order?"*\n• 🎟️ *"Apply 20% discount coupon"*\n• 📦 *"How do I get my ₹250 box refund?"*\n• ❄️ *"Is the meat fresh or frozen?"*\n\nHow can I serve you today?`,
+      text: `👋 *Namaste! Welcome to GoMeat — Freshness We Can Trust.*\n\nI am your *24/7 AI Master Butcher & Culinary Concierge* 👨‍🍳✨\n\nI don't just answer questions — *tell me what you need and I will do all the work:*\n\n• 🛒 *"Add 500g Surmai and 1kg Mutton to my cart"*\n• 🛍️ *"View my cart"* (check items & total)\n• 👨‍🍳 *"How to cook Surmai Tawa Fry?"* or *"Mutton Rogan Josh recipe"*\n• ⚖️ *"Dinner for 6 people, how much meat should I order?"*\n• 🎟️ *"Apply 20% discount coupon"*\n• 📦 *"How do I get my ₹250 box refund?"*\n• ❄️ *"Is the meat fresh or frozen?"*\n\nHow can I serve you today?`,
       time: getCurrentTime(),
       suggestedReplies: [
+        "View my cart",
         "Today's Harbor Seafood",
         "Kashmiri Mutton Rogan Josh",
         "Dinner for 4 people?",
@@ -126,8 +127,8 @@ export const WhatsAppChatbotModal: React.FC<WhatsAppChatbotModalProps> = ({
       showToast(toast);
       return `Coupon ${action.code || 'FRESH20'} applied (20% OFF)`;
     } else if (action.type === 'OPEN_CART') {
-      setIsCartOpen(true);
-      onClose();
+      // Keep chat modal open so customer can read the full cart breakdown; ActionCard opens drawer on tap
+      return `Cart reviewed`;
     } else if (action.type === 'OPEN_TRACKING') {
       if (onNavigateTab) {
         onNavigateTab('tracking');
@@ -186,10 +187,23 @@ export const WhatsAppChatbotModal: React.FC<WhatsAppChatbotModalProps> = ({
     setLoading(true);
 
     try {
+      const cartSummary = {
+        itemsCount: items.length,
+        items: items.map(i => ({
+          name: i.product.name,
+          qty: i.quantity,
+          weight: i.selectedWeight || '500g',
+          price: i.unitPrice || i.product.price
+        })),
+        subtotal,
+        total,
+        couponCode
+      };
+
       const response = await fetch('/api/chatbot/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ message: text, phone: whatsappNumber })
+        body: JSON.stringify({ message: text, phone: whatsappNumber, cartSummary })
       });
 
       const data = await response.json();

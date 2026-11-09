@@ -57,7 +57,7 @@ const INITIAL_DATA = {
   products: [
     {
       id: "prod_1",
-      name: "Seer Fish / Surmai (Large Steaks)",
+      name: "Mangalore Surmai Tawa Fry (Large Steaks)",
       category: "Fish & Seafood",
       description: "Center-cut neat steaks from daily fresh catches off the Mangalore-Malabar coast. Shucked, scale-scraped, cleaned in RO water, and immediately blast-chilled to 0°C - 2°C.",
       price: 799,
@@ -80,7 +80,7 @@ const INITIAL_DATA = {
     },
     {
       id: "prod_2",
-      name: "White Pomfret (Paplet) - Whole Cleaned",
+      name: "Crispy Rechado White Pomfret (Whole Cleaned)",
       category: "Fish & Seafood",
       description: "Whole cleaned pristine silver-scaled pomfret. Degilled, gutted and scored with neat diamond slits on both sides. Ideal for tawa fry or rechado masala.",
       price: 689,
@@ -103,7 +103,7 @@ const INITIAL_DATA = {
     },
     {
       id: "prod_3",
-      name: "Sea Tiger Prawns (Jumbo Cleaned & Deveined)",
+      name: "Butter Garlic Jumbo Prawns (Cleaned & Deveined)",
       category: "Fish & Seafood",
       description: "Large sea prawns peeled and completely deveined with tail-on. Crisp sweet bite, fresh from daily trawlers.",
       price: 599,
@@ -126,7 +126,7 @@ const INITIAL_DATA = {
     },
     {
       id: "prod_4",
-      name: "Rich Tender Goat (Biryani & Rogan Josh Cut)",
+      name: "Kashmiri Mutton Rogan Josh (Curry & Biryani Cut)",
       category: "Tender Mutton",
       description: "Young pasture-grazed tender goat (under 9 months). Balanced mix of succulent bone-in shoulder, ribs, and marrow pieces. Bone-dust washed in chilled water.",
       price: 549,
@@ -149,7 +149,7 @@ const INITIAL_DATA = {
     },
     {
       id: "prod_5",
-      name: "Fresh Chicken Breast (Boneless Fillets)",
+      name: "Golden Herb Butter Chicken Breast (Boneless Fillets)",
       category: "Fresh Chicken",
       description: "Tender boneless chicken breast fillets trimmed of all excess fat. Bio-secured farm chicken, 100% antibiotic residue-free.",
       price: 289,
@@ -172,7 +172,7 @@ const INITIAL_DATA = {
     },
     {
       id: "prod_6",
-      name: "Country Chicken / Nati Koli (Curry Cut)",
+      name: "Andhra Nati Koli Pepper Roast (Country Chicken Cut)",
       category: "Fresh Chicken",
       description: "Free-range desi country chicken with firm meat and rich yellow skin fat. Skin-on, thoroughly singed and cleaned for authentic village broth flavor.",
       price: 389,
@@ -195,7 +195,7 @@ const INITIAL_DATA = {
     },
     {
       id: "prod_7",
-      name: "Amritsari Fish Tikka (Ready to Cook)",
+      name: "Crispy Amritsari Fish Tikka (Ready to Cook)",
       category: "Ready to Cook",
       description: "Fresh boneless fish cubes marinated in crushed ajwain, roasted besan, mustard oil, and Punjabi spices. Pan-sear or air-fry in 8 minutes.",
       price: 369,
@@ -218,7 +218,7 @@ const INITIAL_DATA = {
     },
     {
       id: "prod_8",
-      name: "Weekend Coastal Feast Box (Fish + Prawns + Mutton)",
+      name: "Grand Coastal Feast Box (Surmai + Prawns + Mutton)",
       category: "Combo Box",
       description: "The ultimate Sunday banquet pack: 500g Seer Fish Steaks + 350g Sea Tiger Prawns + 500g Tender Goat Biryani Cut. Delivered inside an extra-capacity reusable cold box.",
       price: 1799,

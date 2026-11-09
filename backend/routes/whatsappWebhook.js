@@ -84,12 +84,12 @@ router.post('/webhook/whatsapp', async (req, res) => {
  */
 router.post('/chatbot/chat', async (req, res) => {
   try {
-    const { message, phone } = req.body;
+    const { message, phone, cartSummary } = req.body;
     if (!message || typeof message !== 'string') {
       return res.status(400).json({ error: 'Message text is required' });
     }
 
-    const botResponse = await processCustomerMessage(message, phone || '+91 98765 00000');
+    const botResponse = await processCustomerMessage(message, phone || '+91 98765 00000', cartSummary);
     res.json({
       success: true,
       timestamp: new Date().toISOString(),

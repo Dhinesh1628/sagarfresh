@@ -6,7 +6,7 @@ import { db } from '../db.js';
  * portion planning, cold-chain telemetry, and automated cart execution.
  */
 
-export async function processCustomerMessage(userMessage, userPhone = '') {
+export async function processCustomerMessage(userMessage, userPhone = '', cartSummary = null) {
   const text = (userMessage || '').trim();
   const lower = text.toLowerCase();
 
@@ -24,6 +24,65 @@ export async function processCustomerMessage(userMessage, userPhone = '') {
   const natiKoli = getProd('prod_6');
   const fishTikka = getProd('prod_7');
   const feastBox = getProd('prod_8');
+
+  // =========================================================================
+  // 0. DIRECT ACTION: VIEW / OPEN / CHECK CART & CHECKOUT
+  // =========================================================================
+  if (
+    lower.includes('view my cart') ||
+    lower.includes('view cart') ||
+    lower.includes('show cart') ||
+    lower.includes('open cart') ||
+    lower.includes('my cart') ||
+    lower.includes('check cart') ||
+    lower.includes('what is in my cart') ||
+    lower.includes('cart me kya hai') ||
+    lower.includes('cart items') ||
+    lower === 'cart' ||
+    lower.includes('checkout') ||
+    lower.includes('proceed to pay')
+  ) {
+    if (cartSummary && cartSummary.items && cartSummary.items.length > 0) {
+      const itemsList = cartSummary.items.map(i => `• ${i.qty}x *${i.name}* (${i.weight || '500g'}) — ₹${i.price * i.qty}`).join('\n');
+      return {
+        reply: `🛒 *Here is what is currently in your GoMeat Cart:*\n\n${itemsList}\n\n• *Subtotal:* ₹${cartSummary.subtotal}\n• *ThermalVault Cold Box Deposit:* ₹250 *(100% Refundable Deposit)*\n• *Total Payable:* ₹${cartSummary.total || (cartSummary.subtotal + 250)}\n${cartSummary.couponCode ? `• *Applied Deal:* ${cartSummary.couponCode} (20% OFF applied!)` : '• *Tip:* Type *"Apply 20% OFF"* to save 20% on your cart!'}\n\n⚡ *90-Minute Express Dispatch:* Ready to pack in 0°C to 4°C chilled box!\n\nI have unlocked the Cart Drawer for you below:`,
+        action: {
+          type: 'OPEN_CART'
+        },
+        actionCard: {
+          title: `Active Cart (${cartSummary.items.length} items • ₹${cartSummary.total || (cartSummary.subtotal + 250)})`,
+          subtitle: 'Click below to review delivery address & proceed to pay',
+          buttonText: 'Open Cart Drawer & Checkout →',
+          actionType: 'OPEN_CART'
+        },
+        suggestedReplies: [
+          cartSummary.couponCode ? "Proceed to Checkout" : "Apply 20% OFF Deal",
+          "Add 500g Surmai Steaks",
+          "How to get ₹250 box refund?"
+        ]
+      };
+    } else {
+      return {
+        reply: `🛒 *Your GoMeat Cart is currently empty!*\n\nOur depot is stocked with fresh coastal catches landed at 4:00 AM today and blast-chilled to 0°C.\n\nHere are the top picks you can add with 1 click:\n1. *${surmai?.name || 'Mangalore Surmai Tawa Steaks'}* (₹799 / 500g)\n2. *${mutton?.name || 'Kashmiri Mutton Rogan Josh'}* (₹549 / 500g)\n3. *${prawns?.name || 'Butter Garlic Jumbo Prawns'}* (₹449 / 500g)\n\nTell me what you'd like (e.g. *"Add 500g Surmai to my cart"*), or click below to view the catalog!`,
+        action: {
+          type: 'OPEN_CART'
+        },
+        actionCard: {
+          title: 'Browse Fresh Cuts Catalog',
+          subtitle: 'Daily 0°C blast-chilled chicken, mutton & coastal seafood',
+          buttonText: 'Explore Fresh Cuts',
+          actionType: 'OPEN_CART'
+        },
+        products: [surmai, mutton, prawns].filter(Boolean),
+        suggestedReplies: [
+          "Add Surmai Tawa Steaks (₹799)",
+          "Add Mutton Rogan Josh (₹549)",
+          "Add Jumbo Prawns (₹449)",
+          "Apply 20% OFF Deal"
+        ]
+      };
+    }
+  }
 
   // =========================================================================
   // 1. DIRECT ACTION: APPLY COUPON / OFFERS
