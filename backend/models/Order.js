@@ -20,7 +20,7 @@ const tempLogSchema = new mongoose.Schema({
 
 const orderSchema = new mongoose.Schema({
   id: { type: String, required: true, unique: true },
-  orderNumber: { type: String, required: true, unique: true },
+  orderNumber: { type: String, default: function() { return this.id || `ORD-${Date.now()}`; } },
   userId: { type: String, required: true },
   customerName: { type: String, required: true },
   customerEmail: { type: String, required: true },
@@ -34,7 +34,7 @@ const orderSchema = new mongoose.Schema({
   coolerDeposit: { type: Number, default: 250 },
   deliveryFee: { type: Number, default: 0 },
   total: { type: Number, required: true },
-  totalAmount: { type: Number, required: true },
+  totalAmount: { type: Number, default: function() { return this.total || 0; } },
 
   // Delivery & Address details
   deliveryAddress: { type: String, required: true },
@@ -73,7 +73,7 @@ const orderSchema = new mongoose.Schema({
   status: { type: String, default: 'Order Confirmed' },
 
   // Payment Tracking
-  paymentMethod: { type: String, enum: ['razorpay', 'cod', 'UPI (Google Pay / PhonePe)', 'Credit / Debit Card'], default: 'razorpay' },
+  paymentMethod: { type: String, default: 'razorpay' },
   paymentStatus: {
     type: String,
     enum: ['PENDING', 'PAID', 'FAILED', 'REFUNDED'],

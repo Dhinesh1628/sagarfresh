@@ -26,11 +26,11 @@
       "phone": "+91 98765 43210",
       "city": "Bengaluru",
       "address": "Flat 402, Alpine Eco Apartments, Doddanekkundi, Marathahalli, Bengaluru 560037",
-      "depositBalance": 1000,
+      "depositBalance": 1250,
       "upiId": "pooja@okhdfcbank",
       "createdAt": "2026-02-10T11:20:00.000Z",
       "__v": 0,
-      "updatedAt": "2026-10-30T19:02:30.909Z"
+      "updatedAt": "2026-11-09T03:40:06.623Z"
     }
   ],
   "products": [
@@ -52,14 +52,14 @@
       "catchDate": "Daily 4:00 AM Harbor Catch",
       "origin": "Mangalore Old Port Jetty, Karnataka",
       "cutStyle": "Curry Cut & Tawa Fry Steaks",
-      "stock": 38,
+      "stock": 37,
       "rating": 4.8,
       "reviewsCount": 120,
       "badge": "",
       "imageUrl": "/images/products/prod_1.jpg",
       "__v": 0,
       "createdAt": "2026-10-30T19:00:48.193Z",
-      "updatedAt": "2026-10-30T19:02:30.906Z",
+      "updatedAt": "2026-11-09T03:40:06.617Z",
       "image": "/images/products/prod_1.jpg"
     },
     {
@@ -261,11 +261,11 @@
   ],
   "coolers": [
     {
-      "id": "BOX-BLR-216",
-      "qrCode": "GOMEAT-BOX-BLR-216",
+      "id": "BOX-BLR-417",
+      "qrCode": "GOMEAT-BOX-BLR-417",
       "model": "ThermalVault 18L - Reusable EPP Cold-Gel Box",
       "status": "with_customer",
-      "currentOrderId": "ORD-5050",
+      "currentOrderId": "ORD-1406",
       "currentUserId": "usr_customer",
       "currentUserName": "Pooja Sundaram",
       "cyclesUsed": 1,
@@ -294,6 +294,57 @@
     }
   ],
   "orders": [
+    {
+      "id": "ORD-1406",
+      "userId": "usr_customer",
+      "customerName": "Pooja Sundaram",
+      "customerEmail": "pooja.sundaram@gmail.com",
+      "customerPhone": "+91 98765 43210",
+      "deliveryAddress": "Flat 402, Alpine Eco, Doddanekkundi, Bengaluru - 560037",
+      "city": "Bengaluru",
+      "items": [
+        {
+          "productId": "prod_1",
+          "name": "Seer Fish / Surmai (Large Steaks)",
+          "price": 799,
+          "quantity": 1,
+          "unit": "500g",
+          "netWeight": "450g",
+          "chillingMethod": "0°C to 4°C FreshSeal™ Cold Chain",
+          "cutStyle": "Curry Cut & Tawa Fry Steaks",
+          "image": "/images/products/prod_1.jpg"
+        }
+      ],
+      "subtotal": 799,
+      "discountAmount": 0,
+      "couponCode": null,
+      "coolerDeposit": 250,
+      "shippingFee": 0,
+      "total": 1049,
+      "status": "Delivered",
+      "coolerId": "BOX-BLR-417",
+      "coolerModel": "ThermalVault 18L - Reusable EPP Cold-Gel Box",
+      "liveTemp": 1.8,
+      "deliveryExecutive": "Karthik S (+91 99014 55210)",
+      "tempLog": [
+        {
+          "time": "09:20",
+          "temp": 0.6,
+          "event": "Order Confirmed. Packed in sanitized box BOX-BLR-417."
+        },
+        {
+          "time": "09:20",
+          "temp": 1.8,
+          "event": "Box delivered to Flat 402"
+        }
+      ],
+      "deliverySlot": "Today, Express in 90 Mins",
+      "trackingCode": "GOMEAT-TRK-1388",
+      "paymentMethod": "UPI (Google Pay)",
+      "createdAt": "2026-11-09T03:50:53.106Z",
+      "deliveryNotes": "",
+      "orderStatus": "DELIVERED"
+    },
     {
       "id": "ORD-5050",
       "userId": "usr_customer",

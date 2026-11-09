@@ -483,7 +483,15 @@ class Database {
     if (mongoose.connection.readyState === 1) {
       const Model = getModel(collection);
       if (Model) {
-        Model.create(item).catch(err => console.error(`[MongoDB] Error inserting into ${collection}:`, err.message));
+        const mongoItem = { ...item };
+        if (collection === 'coolers' && !mongoItem.coolerCode) {
+          mongoItem.coolerCode = mongoItem.qrCode || mongoItem.id;
+        }
+        if (collection === 'orders') {
+          if (!mongoItem.orderNumber) mongoItem.orderNumber = mongoItem.id;
+          if (mongoItem.totalAmount === undefined) mongoItem.totalAmount = mongoItem.total || 0;
+        }
+        Model.create(mongoItem).catch(err => console.error(`[MongoDB] Error inserting into ${collection}:`, err.message));
       }
     }
     return item;

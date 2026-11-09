@@ -3,7 +3,7 @@ import mongoose from 'mongoose';
 const coolerSchema = new mongoose.Schema({
   id: { type: String, required: true, unique: true },
   qrCode: { type: String },
-  coolerCode: { type: String },
+  coolerCode: { type: String, default: function() { return this.qrCode || this.id; } },
   rfidTag: { type: String },
   model: { type: String, default: 'ThermalVault Reusable ColdGel Box' },
   status: { type: String, default: 'available' },
