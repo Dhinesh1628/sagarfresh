@@ -216,7 +216,7 @@ export const Navbar: React.FC<NavbarProps> = ({
 
   const handleOffersClick = () => {
     applyCoupon('FRESH20');
-    setOffersToast('🎉 Swiggy Special Deal Applied: 20% OFF coupon (FRESH20) added to your cart!');
+    setOffersToast('🎉 GoMeat Exclusive Deal Applied: 20% OFF coupon (FRESH20) added to your cart!');
     setTimeout(() => setOffersToast(null), 4000);
   };
 
