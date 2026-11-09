@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { 
   ShoppingBag, 
   MapPin, 
@@ -13,12 +13,22 @@ import {
   Sun,
   Moon,
   ChevronDown,
-  Wallet
+  Wallet,
+  Clock,
+  Sparkles,
+  Percent,
+  Plus,
+  Minus,
+  ArrowRight,
+  Check,
+  TrendingUp,
+  HelpCircle
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { useCart } from '../context/CartContext';
 import { useTheme } from '../context/ThemeContext';
-import type { DeliveryAddress } from '../types';
+import { api } from '../api';
+import type { DeliveryAddress, Product } from '../types';
 
 interface NavbarProps {
   currentTab: string;
@@ -32,6 +42,17 @@ interface NavbarProps {
   onOpenLocationModal?: () => void;
 }
 
+const TRENDING_SEARCH_CHIPS = [
+  { label: '🍗 Curry Cut', term: 'Curry Cut' },
+  { label: '🥩 Biryani Cut', term: 'Biryani' },
+  { label: '🐟 Surmai Steaks', term: 'Surmai' },
+  { label: '🍗 Boneless Fillets', term: 'Boneless' },
+  { label: '🦐 Jumbo Prawns', term: 'Prawns' },
+  { label: '🐟 White Pomfret', term: 'Pomfret' },
+  { label: '🍢 Amritsari Tikka', term: 'Tikka' },
+  { label: '🎁 Feast Combo Box', term: 'Feast' },
+];
+
 export const Navbar: React.FC<NavbarProps> = ({
   currentTab,
   setCurrentTab,
@@ -44,10 +65,365 @@ export const Navbar: React.FC<NavbarProps> = ({
   onOpenLocationModal
 }) => {
   const { user, logout } = useAuth();
-  const { totalItems, subtotal, setIsCartOpen } = useCart();
+  const { totalItems, subtotal, setIsCartOpen, items, addItem, updateQuantity, applyCoupon } = useCart();
   const { theme, toggleTheme } = useTheme();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [userDropdownOpen, setUserDropdownOpen] = useState(false);
+  const [offersToast, setOffersToast] = useState<string | null>(null);
+
+  // Swiggy-Grade Search & Autocomplete Engine
+  const [allProducts, setAllProducts] = useState<Product[]>([]);
+  const [isSearchFocused, setIsSearchFocused] = useState(false);
+  const [placeholderIndex, setPlaceholderIndex] = useState(0);
+  const [recentSearches, setRecentSearches] = useState<string[]>(() => {
+    try {
+      const saved = localStorage.getItem('gomeat_recent_searches');
+      return saved ? JSON.parse(saved) : ['Surmai', 'Biryani Cut', 'Boneless', 'Prawns'];
+    } catch {
+      return ['Surmai', 'Biryani Cut', 'Boneless', 'Prawns'];
+    }
+  });
+
+  const searchContainerRef = useRef<HTMLDivElement>(null);
+  const mobileSearchRef = useRef<HTMLDivElement>(null);
+  const searchInputRef = useRef<HTMLInputElement>(null);
+
+  const searchPlaceholders = useMemo(() => [
+    'Search for "fresh chicken curry cut"...',
+    'Search for "mutton biryani cut"...',
+    'Search for "surmai fish steaks"...',
+    'Search for "jumbo sea tiger prawns"...',
+    'Search for "boneless chicken breast fillets"...',
+    'Search for "white pomfret tawa fry"...',
+    'Search for "ready to cook fish tikka"...',
+    'Search for "weekend coastal feast box"...'
+  ], []);
+
+  // Cycling placeholder text every 2.8 seconds when inactive (Swiggy pattern)
+  useEffect(() => {
+    if (isSearchFocused || searchQuery.trim()) return;
+    const interval = setInterval(() => {
+      setPlaceholderIndex((prev) => (prev + 1) % searchPlaceholders.length);
+    }, 2800);
+    return () => clearInterval(interval);
+  }, [isSearchFocused, searchQuery, searchPlaceholders.length]);
+
+  // Pre-load products into memory for instantaneous 0ms search autocomplete
+  useEffect(() => {
+    let isMounted = true;
+    api.getProducts().then((data) => {
+      if (isMounted && data && Array.isArray(data)) {
+        setAllProducts(data);
+      }
+    }).catch((err) => {
+      console.warn('Could not prefetch products for search:', err);
+    });
+    return () => { isMounted = false; };
+  }, []);
+
+  // Close dropdown upon outside click
+  useEffect(() => {
+    const handleOutsideClick = (e: MouseEvent) => {
+      const target = e.target as Node;
+      if (
+        searchContainerRef.current && 
+        !searchContainerRef.current.contains(target) &&
+        (!mobileSearchRef.current || !mobileSearchRef.current.contains(target))
+      ) {
+        setIsSearchFocused(false);
+      }
+    };
+    document.addEventListener('mousedown', handleOutsideClick);
+    return () => document.removeEventListener('mousedown', handleOutsideClick);
+  }, []);
+
+  // Live matching cuts
+  const matchingProducts = useMemo(() => {
+    const q = searchQuery.trim().toLowerCase();
+    if (!q) return [];
+    return allProducts.filter(p =>
+      (p.name && p.name.toLowerCase().includes(q)) ||
+      (p.category && p.category.toLowerCase().includes(q)) ||
+      (p.cutStyle && p.cutStyle.toLowerCase().includes(q)) ||
+      (p.description && p.description.toLowerCase().includes(q)) ||
+      (p.origin && p.origin.toLowerCase().includes(q)) ||
+      (p.chillingMethod && p.chillingMethod.toLowerCase().includes(q))
+    ).slice(0, 5);
+  }, [allProducts, searchQuery]);
+
+  const handleSelectSearchTerm = (term: string) => {
+    const cleanTerm = term.replace(/^[^\w]+/, '').trim();
+    setSearchQuery(cleanTerm);
+    setIsSearchFocused(false);
+    if (currentTab !== 'catalog') {
+      setCurrentTab('catalog');
+    }
+    // Record to recent searches
+    const updated = [cleanTerm, ...recentSearches.filter(s => s.toLowerCase() !== cleanTerm.toLowerCase())].slice(0, 6);
+    setRecentSearches(updated);
+    try {
+      localStorage.setItem('gomeat_recent_searches', JSON.stringify(updated));
+    } catch {}
+  };
+
+  const handleClearRecent = () => {
+    setRecentSearches([]);
+    try {
+      localStorage.removeItem('gomeat_recent_searches');
+    } catch {}
+  };
+
+  const handleRemoveRecentItem = (termToRemove: string, e: React.MouseEvent) => {
+    e.stopPropagation();
+    const updated = recentSearches.filter(s => s !== termToRemove);
+    setRecentSearches(updated);
+    try {
+      localStorage.setItem('gomeat_recent_searches', JSON.stringify(updated));
+    } catch {}
+  };
+
+  const getItemQuantityInCart = (productId: string) => {
+    const item = items.find(i => i.product.id === productId);
+    return item ? item.quantity : 0;
+  };
+
+  const handleQuickAdd = (product: Product, e: React.MouseEvent) => {
+    e.stopPropagation();
+    addItem(product, 1, product.cutStyle || 'Standard Cut', '500g', product.price, product.mrp);
+  };
+
+  const handleQuickUpdateQuantity = (productId: string, newQty: number, e: React.MouseEvent) => {
+    e.stopPropagation();
+    updateQuantity(productId, newQty);
+  };
+
+  const handleViewAllResults = () => {
+    setIsSearchFocused(false);
+    if (currentTab !== 'catalog') {
+      setCurrentTab('catalog');
+    }
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Escape') {
+      setIsSearchFocused(false);
+    } else if (e.key === 'Enter') {
+      if (searchQuery.trim()) {
+        handleSelectSearchTerm(searchQuery.trim());
+      }
+    }
+  };
+
+  const handleOffersClick = () => {
+    applyCoupon('FRESH20');
+    setOffersToast('🎉 Swiggy Special Deal Applied: 20% OFF coupon (FRESH20) added to your cart!');
+    setTimeout(() => setOffersToast(null), 4000);
+  };
+
+  const renderSearchDropdown = () => {
+    if (!isSearchFocused) return null;
+
+    const isSearching = Boolean(searchQuery.trim());
+
+    return (
+      <div className="absolute left-0 right-0 top-full mt-2 bg-white dark:bg-slate-900 rounded-2xl border border-gray-200 dark:border-slate-800 shadow-2xl overflow-hidden z-50 text-xs animate-in fade-in slide-in-from-top-2 duration-150">
+        {!isSearching ? (
+          <div className="p-4 space-y-4">
+            {/* Recent Searches */}
+            {recentSearches.length > 0 && (
+              <div>
+                <div className="flex items-center justify-between mb-2">
+                  <div className="flex items-center gap-1.5 text-gray-500 dark:text-gray-400 font-bold text-[11px] uppercase tracking-wider">
+                    <Clock className="w-3.5 h-3.5 text-gray-400" />
+                    <span>Recent Searches</span>
+                  </div>
+                  <button
+                    onClick={handleClearRecent}
+                    className="text-[11px] text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 cursor-pointer"
+                  >
+                    Clear All
+                  </button>
+                </div>
+                <div className="flex flex-wrap gap-1.5">
+                  {recentSearches.map((term) => (
+                    <div
+                      key={term}
+                      onClick={() => handleSelectSearchTerm(term)}
+                      className="group flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-gray-100 hover:bg-gray-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-gray-800 dark:text-gray-200 cursor-pointer transition text-xs font-medium"
+                    >
+                      <span>{term}</span>
+                      <button
+                        onClick={(e) => handleRemoveRecentItem(term, e)}
+                        className="text-gray-400 hover:text-gray-700 dark:hover:text-white"
+                        title="Remove from history"
+                      >
+                        <X className="w-3 h-3" />
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Trending Searches */}
+            <div>
+              <div className="flex items-center gap-1.5 text-amber-700 dark:text-amber-400 font-bold text-[11px] uppercase tracking-wider mb-2">
+                <Sparkles className="w-3.5 h-3.5 text-amber-500" />
+                <span>Trending Searches</span>
+              </div>
+              <div className="flex flex-wrap gap-1.5">
+                {TRENDING_SEARCH_CHIPS.map((chip) => (
+                  <button
+                    key={chip.term}
+                    onClick={() => handleSelectSearchTerm(chip.term)}
+                    className="px-3 py-1.5 rounded-full bg-rose-50 hover:bg-rose-100 dark:bg-rose-950/50 dark:hover:bg-rose-900/60 border border-rose-200/80 dark:border-rose-900/60 text-gray-800 dark:text-gray-200 text-xs font-semibold cursor-pointer transition flex items-center gap-1"
+                  >
+                    <span>{chip.label}</span>
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Trust badge */}
+            <div className="pt-2 border-t border-gray-100 dark:border-slate-800 flex items-center justify-between text-[11px] text-gray-500 dark:text-gray-400">
+              <span className="flex items-center gap-1 font-semibold text-emerald-600 dark:text-emerald-400">
+                <Zap className="w-3.5 h-3.5" /> Express 90-Min Delivery
+              </span>
+              <span>0°C to 4°C ThermalVault Cold Box</span>
+            </div>
+          </div>
+        ) : (
+          <div className="py-2">
+            <div className="px-4 py-1.5 flex items-center justify-between border-b border-gray-100 dark:border-slate-800">
+              <span className="text-[11px] font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                Matching Cuts ({matchingProducts.length})
+              </span>
+              <button
+                onClick={handleViewAllResults}
+                className="text-[11px] font-bold text-[#d11243] hover:underline flex items-center gap-1 cursor-pointer"
+              >
+                <span>View all in catalog</span>
+                <ArrowRight className="w-3 h-3" />
+              </button>
+            </div>
+
+            {matchingProducts.length === 0 ? (
+              <div className="p-6 text-center space-y-2">
+                <Search className="w-6 h-6 text-gray-400 mx-auto" />
+                <p className="font-bold text-gray-800 dark:text-gray-200 text-xs">
+                  No fresh cuts matching "{searchQuery}"
+                </p>
+                <p className="text-[11px] text-gray-500 dark:text-gray-400">
+                  Try searching for general terms like Chicken, Mutton, Fish, Prawns, or Biryani.
+                </p>
+                <div className="pt-2 flex flex-wrap gap-1.5 justify-center">
+                  {['Chicken', 'Mutton', 'Fish', 'Prawns'].map((term) => (
+                    <button
+                      key={term}
+                      onClick={() => handleSelectSearchTerm(term)}
+                      className="px-2.5 py-1 rounded-full bg-gray-100 dark:bg-slate-800 text-gray-700 dark:text-gray-300 text-xs hover:bg-gray-200 dark:hover:bg-slate-700 cursor-pointer font-medium"
+                    >
+                      {term}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            ) : (
+              <div className="divide-y divide-gray-100 dark:divide-slate-800/60 max-h-96 overflow-y-auto">
+                {matchingProducts.map((product) => {
+                  const qty = getItemQuantityInCart(product.id);
+                  return (
+                    <div
+                      key={product.id}
+                      onClick={() => {
+                        handleSelectSearchTerm(product.name);
+                      }}
+                      className="px-4 py-3 hover:bg-gray-50 dark:hover:bg-slate-800/60 transition flex items-center justify-between gap-3 cursor-pointer group"
+                    >
+                      <div className="flex items-center gap-3 min-w-0">
+                        <img
+                          src={product.imageUrl || product.image || '/images/products/prod_1.jpg'}
+                          alt={product.name}
+                          className="w-12 h-12 rounded-xl object-cover border border-gray-200 dark:border-slate-700 shrink-0"
+                          onError={(e) => {
+                            (e.target as HTMLImageElement).src = '/images/products/prod_1.jpg';
+                          }}
+                        />
+                        <div className="min-w-0">
+                          <h4 className="font-bold text-gray-900 dark:text-white truncate group-hover:text-[#d11243] transition-colors text-xs">
+                            {product.name}
+                          </h4>
+                          <div className="flex items-center gap-2 mt-0.5">
+                            {product.cutStyle && (
+                              <span className="px-1.5 py-0.2 rounded bg-gray-100 dark:bg-slate-800 text-gray-600 dark:text-gray-400 text-[10px] font-medium truncate max-w-[140px]">
+                                {product.cutStyle}
+                              </span>
+                            )}
+                            <span className="text-gray-400 text-[10px]">
+                              {product.unit || '500g'}
+                            </span>
+                          </div>
+                          <div className="flex items-center gap-1.5 mt-1">
+                            <span className="font-extrabold text-gray-950 dark:text-white text-xs">
+                              ₹{product.price}
+                            </span>
+                            {product.mrp && product.mrp > product.price && (
+                              <span className="line-through text-gray-400 text-[10px]">
+                                ₹{product.mrp}
+                              </span>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Swiggy-Style "+ ADD" / Quantity Stepper Button */}
+                      <div className="shrink-0" onClick={(e) => e.stopPropagation()}>
+                        {qty === 0 ? (
+                          <button
+                            onClick={(e) => handleQuickAdd(product, e)}
+                            className="px-4 py-1.5 rounded-lg border border-emerald-600 bg-white dark:bg-slate-800 text-emerald-700 dark:text-emerald-400 hover:bg-emerald-50 dark:hover:bg-emerald-950/60 font-extrabold text-xs shadow-2xs hover:shadow-xs transition flex items-center gap-1 cursor-pointer"
+                          >
+                            <Plus className="w-3.5 h-3.5 text-emerald-600" />
+                            <span>ADD</span>
+                          </button>
+                        ) : (
+                          <div className="flex items-center rounded-lg border border-emerald-600 bg-emerald-600 text-white font-extrabold text-xs shadow-2xs overflow-hidden">
+                            <button
+                              onClick={(e) => handleQuickUpdateQuantity(product.id, qty - 1, e)}
+                              className="px-2.5 py-1.5 hover:bg-emerald-700 transition cursor-pointer"
+                            >
+                              <Minus className="w-3 h-3 text-white" />
+                            </button>
+                            <span className="px-2 font-bold text-white text-xs">
+                              {qty}
+                            </span>
+                            <button
+                              onClick={(e) => handleQuickUpdateQuantity(product.id, qty + 1, e)}
+                              className="px-2.5 py-1.5 hover:bg-emerald-700 transition cursor-pointer"
+                            >
+                              <Plus className="w-3 h-3 text-white" />
+                            </button>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  );
+                })}
+
+                <div 
+                  onClick={handleViewAllResults}
+                  className="px-4 py-2.5 bg-gray-50 dark:bg-slate-800/40 hover:bg-rose-50 dark:hover:bg-rose-950/40 text-center font-bold text-[#d11243] text-xs cursor-pointer transition flex items-center justify-center gap-1.5"
+                >
+                  <span>View all results for "{searchQuery}" in catalog</span>
+                  <ArrowRight className="w-3.5 h-3.5" />
+                </div>
+              </div>
+            )}
+          </div>
+        )}
+      </div>
+    );
+  };
 
   const indianCities = [
     { name: 'Bengaluru', locality: 'Indiranagar, 560038' },
@@ -185,21 +561,27 @@ export const Navbar: React.FC<NavbarProps> = ({
             </button>
           </div>
 
-          {/* Search Bar - Center Zone (Spacious & Flex-1) */}
-          <div className="hidden sm:flex flex-1 min-w-[180px] max-w-xl mx-2 lg:mx-4">
+          {/* Swiggy-Grade Search Bar - Center Zone */}
+          <div ref={searchContainerRef} className="hidden sm:flex flex-1 min-w-[200px] max-w-xl mx-2 lg:mx-4 relative">
             <div className="relative w-full">
-              <Search className="w-4 h-4 text-gray-400 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+              <Search className={`w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none transition-colors ${
+                isSearchFocused ? 'text-[#d11243]' : 'text-gray-400'
+              }`} />
               <input
+                ref={searchInputRef}
                 type="text"
                 value={searchQuery}
+                onFocus={() => setIsSearchFocused(true)}
+                onKeyDown={handleKeyDown}
                 onChange={(e) => {
                   setSearchQuery(e.target.value);
+                  setIsSearchFocused(true);
                   if (currentTab !== 'catalog') {
                     setCurrentTab('catalog');
                   }
                 }}
-                placeholder="Search fresh chicken, mutton, seafood, eggs..."
-                className="w-full h-10 pl-10 pr-9 rounded-xl bg-gray-100/90 dark:bg-slate-800/90 hover:bg-gray-100 dark:hover:bg-slate-800 focus:bg-white dark:focus:bg-slate-900 border border-gray-200 dark:border-slate-700/80 focus:border-[#d11243] text-gray-900 dark:text-gray-100 text-xs placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-1 focus:ring-[#d11243] transition-all"
+                placeholder={isSearchFocused ? 'Search chicken, mutton, surmai, prawns, cuts...' : searchPlaceholders[placeholderIndex]}
+                className="w-full h-10 pl-10 pr-9 rounded-xl bg-gray-100/90 dark:bg-slate-800/90 hover:bg-gray-100 dark:hover:bg-slate-800 focus:bg-white dark:focus:bg-slate-900 border border-gray-200 dark:border-slate-700/80 focus:border-[#d11243] text-gray-900 dark:text-gray-100 text-xs placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[#d11243]/20 shadow-xs transition-all"
               />
               {searchQuery && (
                 <button
@@ -212,10 +594,24 @@ export const Navbar: React.FC<NavbarProps> = ({
                 </button>
               )}
             </div>
+
+            {/* Desktop Autocomplete Dropdown Popover */}
+            {renderSearchDropdown()}
           </div>
 
           {/* Right Navigation & Actions */}
           <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
+            
+            {/* Swiggy Offers Button */}
+            <button
+              onClick={handleOffersClick}
+              title="Click to apply instant 20% OFF deals"
+              className="h-10 px-2.5 rounded-xl text-xs font-bold transition flex items-center gap-1.5 whitespace-nowrap shrink-0 text-amber-700 dark:text-amber-400 bg-amber-50 hover:bg-amber-100 dark:bg-amber-950/60 dark:hover:bg-amber-900/60 border border-amber-200 dark:border-amber-800/70 shadow-2xs cursor-pointer"
+            >
+              <Percent className="w-3.5 h-3.5 text-amber-600 dark:text-amber-400" />
+              <span className="hidden xl:inline">Offers</span>
+              <span className="text-[10px] bg-amber-600 text-white font-extrabold px-1.5 py-0.2 rounded-full">20%</span>
+            </button>
             
             {/* My Orders / Dashboard Button */}
             <button
@@ -423,19 +819,24 @@ export const Navbar: React.FC<NavbarProps> = ({
       </div>
 
       {/* Mobile Inline Search Bar (visible only on < sm screens) */}
-      <div className="sm:hidden px-4 pb-2.5 pt-0.5">
+      <div ref={mobileSearchRef} className="sm:hidden px-4 pb-2.5 pt-0.5 relative">
         <div className="relative w-full">
-          <Search className="w-4 h-4 text-gray-400 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+          <Search className={`w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none transition-colors ${
+            isSearchFocused ? 'text-[#d11243]' : 'text-gray-400'
+          }`} />
           <input
             type="text"
             value={searchQuery}
+            onFocus={() => setIsSearchFocused(true)}
+            onKeyDown={handleKeyDown}
             onChange={(e) => {
               setSearchQuery(e.target.value);
+              setIsSearchFocused(true);
               if (currentTab !== 'catalog') {
                 setCurrentTab('catalog');
               }
             }}
-            placeholder="Search chicken, mutton, fish, cold cuts..."
+            placeholder={isSearchFocused ? 'Search chicken, fish, mutton, cuts...' : searchPlaceholders[placeholderIndex]}
             className="w-full h-9 pl-9 pr-8 rounded-xl bg-gray-100/90 dark:bg-slate-800/90 border border-gray-200 dark:border-slate-700 text-gray-900 dark:text-gray-100 text-xs placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:border-[#d11243]"
           />
           {searchQuery && (
@@ -448,6 +849,9 @@ export const Navbar: React.FC<NavbarProps> = ({
             </button>
           )}
         </div>
+
+        {/* Mobile Autocomplete Dropdown Popover */}
+        {renderSearchDropdown()}
       </div>
 
 
@@ -571,6 +975,14 @@ export const Navbar: React.FC<NavbarProps> = ({
           >
             Operations Hub Admin
           </button>
+        </div>
+      )}
+
+      {/* Swiggy Offers Toast */}
+      {offersToast && (
+        <div className="fixed top-20 right-6 z-50 bg-emerald-900/95 text-white px-4 py-3 rounded-2xl shadow-2xl text-xs font-bold flex items-center gap-2 border border-emerald-500/30 animate-in fade-in duration-200">
+          <Sparkles className="w-4 h-4 text-emerald-400 shrink-0" />
+          <span>{offersToast}</span>
         </div>
       )}
 

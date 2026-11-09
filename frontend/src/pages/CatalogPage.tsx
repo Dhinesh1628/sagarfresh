@@ -99,9 +99,12 @@ export const CatalogPage: React.FC<CatalogPageProps> = ({
   const fetchProducts = async () => {
     try {
       setLoading(true);
+      // When searching, search across all categories (do not restrict to selectedCategory)
+      const isSearching = Boolean(searchQuery && searchQuery.trim());
+      const categoryToFilter = isSearching ? 'All' : selectedCategory;
       const data = await api.getProducts({
-        category: selectedCategory,
-        search: searchQuery
+        category: categoryToFilter,
+        search: isSearching ? searchQuery.trim() : undefined
       });
       setProducts(data);
     } catch (err) {
@@ -113,6 +116,9 @@ export const CatalogPage: React.FC<CatalogPageProps> = ({
 
   useEffect(() => {
     fetchProducts();
+    if (searchQuery && searchQuery.trim()) {
+      handleScrollToCatalog();
+    }
   }, [selectedCategory, searchQuery]);
 
   const getItemQuantity = (productId: string) => {

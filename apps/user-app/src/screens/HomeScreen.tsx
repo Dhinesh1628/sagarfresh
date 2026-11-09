@@ -42,6 +42,25 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ onNavigateToCart }) => {
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [placeholderIdx, setPlaceholderIdx] = useState(0);
+
+  const placeholders = useMemo(() => [
+    'Search chicken, mutton, prawns, fish...',
+    'Search "mutton biryani cut"...',
+    'Search "surmai fish steaks"...',
+    'Search "chicken curry cut"...',
+    'Search "jumbo sea prawns"...',
+    'Search "boneless chicken fillets"...',
+  ], []);
+
+  // Cycling placeholder text (Swiggy mobile pattern)
+  useEffect(() => {
+    if (searchQuery.trim()) return;
+    const id = setInterval(() => {
+      setPlaceholderIdx(prev => (prev + 1) % placeholders.length);
+    }, 2800);
+    return () => clearInterval(id);
+  }, [searchQuery, placeholders.length]);
 
   // Debounce search query to prevent excessive queries while typing
   useEffect(() => {
@@ -54,7 +73,9 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ onNavigateToCart }) => {
   const fetchProducts = useCallback(async () => {
     try {
       setError(null);
-      const data = await api.getProducts(selectedCategory, debouncedQuery);
+      // When searching, search across all categories (Swiggy standard)
+      const catToFilter = debouncedQuery.trim() ? 'All' : selectedCategory;
+      const data = await api.getProducts(catToFilter, debouncedQuery.trim());
       setProducts(data || []);
     } catch (err: any) {
       console.log('Error fetching products:', err);
@@ -99,7 +120,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ onNavigateToCart }) => {
             <Search size={18} color={theme.colors.primary} />
             <TextInput
               style={styles.searchInput}
-              placeholder="Search chicken, mutton, prawns, fish cuts..."
+              placeholder={placeholders[placeholderIdx]}
               placeholderTextColor={theme.colors.textMuted}
               value={searchQuery}
               onChangeText={setSearchQuery}

@@ -215,10 +215,6 @@ app.get('/api/products', (req, res) => {
   const { category, search } = req.query;
   let products = db.get('products');
 
-  if (category && category !== 'All') {
-    products = products.filter(p => p.category.toLowerCase() === category.toLowerCase());
-  }
-
   if (search) {
     const q = search.toLowerCase().trim();
     products = products.filter(p =>
@@ -229,6 +225,8 @@ app.get('/api/products', (req, res) => {
       (p.origin && p.origin.toLowerCase().includes(q)) ||
       (p.chillingMethod && p.chillingMethod.toLowerCase().includes(q))
     );
+  } else if (category && category !== 'All') {
+    products = products.filter(p => p.category.toLowerCase() === category.toLowerCase());
   }
 
   res.json(products);
