@@ -19,6 +19,14 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 const JWT_SECRET = process.env.JWT_SECRET || 'gomeat-cuts-india-secret-2026';
 
+process.on('uncaughtException', (err) => {
+  console.error('[Server Error: Uncaught Exception]:', err?.message || err);
+});
+
+process.on('unhandledRejection', (reason) => {
+  console.error('[Server Error: Unhandled Rejection]:', reason?.message || reason);
+});
+
 // Initiate MongoDB connection asynchronously
 connectMongoDB().then(connected => {
   if (connected) {
