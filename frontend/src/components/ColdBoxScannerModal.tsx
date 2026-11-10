@@ -226,6 +226,47 @@ export const ColdBoxScannerModal: React.FC<ColdBoxScannerModalProps> = ({
     }
   };
 
+  const playAudioChime = (type: 'scan' | 'success' | 'alert') => {
+    try {
+      const AudioCtx = window.AudioContext || (window as any).webkitAudioContext;
+      if (!AudioCtx) return;
+      const ctx = new AudioCtx();
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+
+      if (type === 'scan') {
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(880, ctx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(1320, ctx.currentTime + 0.1);
+        gain.gain.setValueAtTime(0.15, ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.15);
+        osc.start(ctx.currentTime);
+        osc.stop(ctx.currentTime + 0.15);
+      } else if (type === 'success') {
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(523.25, ctx.currentTime);
+        osc.frequency.setValueAtTime(659.25, ctx.currentTime + 0.1);
+        osc.frequency.setValueAtTime(783.99, ctx.currentTime + 0.2);
+        gain.gain.setValueAtTime(0.2, ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.35);
+        osc.start(ctx.currentTime);
+        osc.stop(ctx.currentTime + 0.35);
+      } else {
+        osc.type = 'sawtooth';
+        osc.frequency.setValueAtTime(320, ctx.currentTime);
+        osc.frequency.setValueAtTime(220, ctx.currentTime + 0.15);
+        gain.gain.setValueAtTime(0.18, ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.3);
+        osc.start(ctx.currentTime);
+        osc.stop(ctx.currentTime + 0.3);
+      }
+    } catch (e) {
+      // AudioContext policy fallback
+    }
+  };
+
   const handleInspectBox = async (coolerIdToInspect: string) => {
     const id = coolerIdToInspect.trim();
     if (!id) return;
@@ -239,10 +280,16 @@ export const ColdBoxScannerModal: React.FC<ColdBoxScannerModalProps> = ({
       const data = await api.inspectCooler(id);
       setInspectionData(data);
       setInputBoxId(data.cooler.id);
+      if (data.telemetry?.isCompliant) {
+        playAudioChime('scan');
+      } else {
+        playAudioChime('alert');
+      }
       if (data.returnRecord?.upiId) {
         setUpiIdInput(data.returnRecord.upiId);
       }
     } catch (err: any) {
+      playAudioChime('alert');
       setError(err.message || `ThermalVault Box #${id} not found.`);
       setInspectionData(null);
     } finally {
@@ -262,6 +309,7 @@ export const ColdBoxScannerModal: React.FC<ColdBoxScannerModalProps> = ({
         inspectorNotes: `Doorstep QR Inspection: Insulation intact, internal temp verified at ${inspectionData.telemetry?.liveTemp}°C.`
       });
 
+      playAudioChime('success');
       setRefundSuccess(res.message);
       if (onRefundApproved) onRefundApproved();
       
@@ -270,6 +318,7 @@ export const ColdBoxScannerModal: React.FC<ColdBoxScannerModalProps> = ({
         handleInspectBox(inspectionData.cooler.id);
       }, 1200);
     } catch (err: any) {
+      playAudioChime('alert');
       setError(err.message || 'Failed to approve refund.');
     } finally {
       setProcessingRefund(false);
@@ -331,6 +380,39 @@ export const ColdBoxScannerModal: React.FC<ColdBoxScannerModalProps> = ({
           >
             <X className="w-4 h-4" />
           </button>
+        </div>
+
+        {/* 3-Step Guided Process Indicator (Crystal clear to every user) */}
+        <div className="px-5 py-2.5 bg-slate-900 border-b border-slate-800 flex items-center justify-between text-xs overflow-x-auto gap-3">
+          <div className="flex items-center gap-2 shrink-0">
+            <span className="flex items-center justify-center w-5 h-5 rounded-full bg-emerald-500 text-black font-black text-[10px]">1</span>
+            <span className="font-extrabold text-white">Scan Box QR</span>
+            <span className="hidden md:inline text-[10px] text-gray-400">(Camera or 1-Tap)</span>
+          </div>
+
+          <ArrowRight className="w-3.5 h-3.5 text-gray-600 shrink-0" />
+
+          <div className="flex items-center gap-2 shrink-0">
+            <span className={`flex items-center justify-center w-5 h-5 rounded-full font-black text-[10px] transition-colors ${
+              inspectionData ? 'bg-emerald-500 text-black' : 'bg-slate-800 text-gray-400'
+            }`}>2</span>
+            <span className={`font-extrabold transition-colors ${inspectionData ? 'text-white' : 'text-gray-400'}`}>
+              Check 0°C–4°C Freshness
+            </span>
+            <span className="hidden md:inline text-[10px] text-gray-500">(IoT Log)</span>
+          </div>
+
+          <ArrowRight className="w-3.5 h-3.5 text-gray-600 shrink-0" />
+
+          <div className="flex items-center gap-2 shrink-0">
+            <span className={`flex items-center justify-center w-5 h-5 rounded-full font-black text-[10px] transition-colors ${
+              refundSuccess ? 'bg-emerald-500 text-black' : 'bg-slate-800 text-gray-400'
+            }`}>3</span>
+            <span className={`font-extrabold transition-colors ${refundSuccess ? 'text-emerald-400' : 'text-gray-400'}`}>
+              Instant ₹250 Refund
+            </span>
+            <span className="hidden md:inline text-[10px] text-gray-500">(Wallet / UPI)</span>
+          </div>
         </div>
 
         {/* Mode Tabs */}
@@ -826,12 +908,104 @@ export const ColdBoxScannerModal: React.FC<ColdBoxScannerModalProps> = ({
 
               </div>
             ) : (
-              <div className="h-full min-h-[340px] flex flex-col items-center justify-center space-y-3 p-8 rounded-2xl bg-slate-950/30 border border-slate-800 text-center">
-                <QrCode className="w-12 h-12 text-slate-700" />
-                <p className="font-extrabold text-sm text-gray-400">Ready to Scan</p>
-                <p className="text-xs text-gray-500 max-w-xs">
-                  Scan a QR code with your camera or tap any sample box on the left to review telemetry & approve deposit returns.
-                </p>
+              <div className="p-5 rounded-2xl bg-slate-950/40 border border-slate-800 space-y-4">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <div className="w-8 h-8 rounded-xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center font-black">
+                      <Sparkles className="w-4 h-4" />
+                    </div>
+                    <div>
+                      <h4 className="font-extrabold text-sm text-white">How Cold Box Inward Returns Work</h4>
+                      <p className="text-[11px] text-gray-400">Tap any scenario below to test live thermal diagnostics & refunds</p>
+                    </div>
+                  </div>
+                  <span className="hidden sm:inline-block px-2.5 py-1 rounded-full bg-emerald-950 border border-emerald-800 text-emerald-300 font-mono text-[10px] font-bold">
+                    FSSC-22000 Loop
+                  </span>
+                </div>
+
+                {/* 3 Live Interactive Scenario Cards */}
+                <div className="grid grid-cols-1 gap-2.5">
+                  <button
+                    onClick={() => handleInspectBox('BOX-BLR-417')}
+                    className="p-3.5 rounded-xl bg-slate-900 hover:bg-slate-850 border border-slate-800 hover:border-emerald-500 transition-all text-left flex items-center justify-between group cursor-pointer shadow-xs"
+                  >
+                    <div className="flex items-start gap-3">
+                      <div className="w-8 h-8 rounded-lg bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 flex items-center justify-center font-black text-xs shrink-0 mt-0.5">
+                        ❄️
+                      </div>
+                      <div>
+                        <div className="font-bold text-xs text-white group-hover:text-emerald-400 transition flex items-center gap-2">
+                          <span>Standard Chilled Return (Box #417)</span>
+                          <span className="px-1.5 py-0.5 rounded text-[9px] font-extrabold bg-emerald-500/20 text-emerald-300 border border-emerald-500/40">
+                            1.8°C Safe
+                          </span>
+                        </div>
+                        <p className="text-[11px] text-gray-400 mt-0.5">
+                          EPP walls intact, gel bricks cold. Tap to simulate 1-click ₹250 refund to GoMeat Wallet or UPI.
+                        </p>
+                      </div>
+                    </div>
+                    <ArrowRight className="w-4 h-4 text-gray-600 group-hover:text-emerald-400 group-hover:translate-x-0.5 transition shrink-0 ml-2" />
+                  </button>
+
+                  <button
+                    onClick={() => handleInspectBox('BOX-BLR-103')}
+                    className="p-3.5 rounded-xl bg-slate-900 hover:bg-slate-850 border border-slate-800 hover:border-rose-500 transition-all text-left flex items-center justify-between group cursor-pointer shadow-xs"
+                  >
+                    <div className="flex items-start gap-3">
+                      <div className="w-8 h-8 rounded-lg bg-rose-500/20 text-rose-400 border border-rose-500/30 flex items-center justify-center font-black text-xs shrink-0 mt-0.5">
+                        ⚠️
+                      </div>
+                      <div>
+                        <div className="font-bold text-xs text-white group-hover:text-rose-400 transition flex items-center gap-2">
+                          <span>Temperature Breach Anomaly (Box #103)</span>
+                          <span className="px-1.5 py-0.5 rounded text-[9px] font-extrabold bg-rose-500/20 text-rose-300 border border-rose-500/40">
+                            5.8°C Warning
+                          </span>
+                        </div>
+                        <p className="text-[11px] text-gray-400 mt-0.5">
+                          Simulates Ashik's anomaly detector: Gasket seal degraded. Demonstrates safety lock & quarantine flag.
+                        </p>
+                      </div>
+                    </div>
+                    <ArrowRight className="w-4 h-4 text-gray-600 group-hover:text-rose-400 group-hover:translate-x-0.5 transition shrink-0 ml-2" />
+                  </button>
+
+                  <button
+                    onClick={() => handleInspectBox('BOX-BLR-182')}
+                    className="p-3.5 rounded-xl bg-slate-900 hover:bg-slate-850 border border-slate-800 hover:border-cyan-500 transition-all text-left flex items-center justify-between group cursor-pointer shadow-xs"
+                  >
+                    <div className="flex items-start gap-3">
+                      <div className="w-8 h-8 rounded-lg bg-cyan-500/20 text-cyan-400 border border-cyan-500/30 flex items-center justify-center font-black text-xs shrink-0 mt-0.5">
+                        🚚
+                      </div>
+                      <div>
+                        <div className="font-bold text-xs text-white group-hover:text-cyan-400 transition flex items-center gap-2">
+                          <span>Active Delivery In-Transit (Box #182)</span>
+                          <span className="px-1.5 py-0.5 rounded text-[9px] font-extrabold bg-cyan-500/20 text-cyan-300 border border-cyan-500/40">
+                            2.1°C In Route
+                          </span>
+                        </div>
+                        <p className="text-[11px] text-gray-400 mt-0.5">
+                          Courier Sunil Gowda assigned. View active telemetry timeline pings & doorstep collection schedule.
+                        </p>
+                      </div>
+                    </div>
+                    <ArrowRight className="w-4 h-4 text-gray-600 group-hover:text-cyan-400 group-hover:translate-x-0.5 transition shrink-0 ml-2" />
+                  </button>
+                </div>
+
+                {/* Friendly Explanatory Footer */}
+                <div className="p-3 rounded-xl bg-slate-900/60 border border-slate-800 text-[11px] text-gray-400 space-y-1">
+                  <div className="flex items-center gap-1.5 text-gray-300 font-bold">
+                    <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
+                    <span>₹250 Refund Protocol Guarantee:</span>
+                  </div>
+                  <p>
+                    GoMeat charges a 100% refundable ₹250 security deposit on cold boxes to eliminate thermocol waste. Upon QR scan at doorstep or depot, ₹250 is instantly credited back to your GoMeat Wallet (0 seconds) or bank via UPI.
+                  </p>
+                </div>
               </div>
             )}
 
