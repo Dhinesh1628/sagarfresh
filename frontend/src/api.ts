@@ -390,5 +390,51 @@ export const api = {
     });
     if (!res.ok) throw new Error('Failed to assign courier');
     return res.json();
+  },
+
+  // Cold Box QR Scanner, Diagnostics & Telemetry Inspection (Ashik Spec)
+  async inspectCooler(coolerId: string): Promise<any> {
+    const res = await fetch(`${API_BASE}/coolers/inspect/${encodeURIComponent(coolerId)}`, {
+      headers: getHeaders()
+    });
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      throw new Error(err.error || 'Failed to inspect cold box QR code');
+    }
+    return res.json();
+  },
+
+  async approveCoolerRefund(coolerId: string, data: { refundPreference?: 'wallet' | 'upi'; upiId?: string; inspectorNotes?: string }): Promise<any> {
+    const res = await fetch(`${API_BASE}/coolers/inspect/${encodeURIComponent(coolerId)}/approve-refund`, {
+      method: 'POST',
+      headers: getHeaders(),
+      body: JSON.stringify(data)
+    });
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      throw new Error(err.error || 'Failed to approve cooler refund');
+    }
+    return res.json();
+  },
+
+  async flagCoolerDamage(coolerId: string, reason: string): Promise<any> {
+    const res = await fetch(`${API_BASE}/coolers/inspect/${encodeURIComponent(coolerId)}/flag-damage`, {
+      method: 'POST',
+      headers: getHeaders(),
+      body: JSON.stringify({ reason })
+    });
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      throw new Error(err.error || 'Failed to flag cooler damage');
+    }
+    return res.json();
+  },
+
+  async getCoolerAnalytics(): Promise<any> {
+    const res = await fetch(`${API_BASE}/admin/cooler-analytics`, {
+      headers: getHeaders()
+    });
+    if (!res.ok) throw new Error('Failed to fetch cooler analytics');
+    return res.json();
   }
 };
