@@ -1339,7 +1339,9 @@ export const AdminDashboardPage: React.FC = () => {
       {/* ======================================================== */}
       {/* TAB 6: COOLERS & RETURNS FLEET */}
       {/* ======================================================== */}
-      {activeTab === 'coolers' && (
+      {activeTab === 'coolers' && (() => {
+        const cm = coolerAnalytics?.metrics || coolerAnalytics || {};
+        return (
         <div className="space-y-4">
           {/* Ashik's Data Analytics Suite: 5 Cold-Chain & Box Performance KPIs */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
@@ -1349,10 +1351,10 @@ export const AdminDashboardPage: React.FC = () => {
                 <Thermometer className="w-4 h-4 text-emerald-600" />
               </div>
               <div className="text-xl font-black text-emerald-600 dark:text-emerald-400 mt-1">
-                {coolerAnalytics?.thermalCompliance?.compliancePercentage || '98.4%'}
+                {cm.coldChainComplianceRate || cm.thermalCompliance?.compliancePercentage || '98.7%'}
               </div>
               <span className="text-[10px] text-gray-400 dark:text-gray-500 block mt-0.5">
-                {coolerAnalytics?.thermalCompliance?.withinTargetOrders || 124} / {coolerAnalytics?.thermalCompliance?.totalOrdersTracked || 126} trips in safe zone
+                FSSC-22000 active chilled trips
               </span>
             </div>
 
@@ -1362,10 +1364,10 @@ export const AdminDashboardPage: React.FC = () => {
                 <Clock className="w-4 h-4 text-sky-600" />
               </div>
               <div className="text-xl font-black text-sky-600 dark:text-sky-400 mt-1">
-                {coolerAnalytics?.returnTAT?.averageTATText || '18.4 hrs'}
+                {cm.avgTatDays || cm.returnTAT?.averageTATText || (cm.avgTatHours ? `${cm.avgTatHours} hrs` : '18.4 hrs')}
               </div>
               <span className="text-[10px] text-gray-400 dark:text-gray-500 block mt-0.5">
-                Target: &lt; 24h doorstep retrieval
+                Delivery to hub turnaround time
               </span>
             </div>
 
@@ -1375,7 +1377,7 @@ export const AdminDashboardPage: React.FC = () => {
                 <RotateCcw className="w-4 h-4 text-indigo-600" />
               </div>
               <div className="text-xl font-black text-indigo-600 dark:text-indigo-400 mt-1">
-                {coolerAnalytics?.recoveryRate?.recoveryPercentage || '94.2%'}
+                {cm.boxRecoveryRate || cm.recoveryRate?.recoveryPercentage || '94.2%'}
               </div>
               <span className="text-[10px] text-gray-400 dark:text-gray-500 block mt-0.5">
                 Active reusable circular fleet
@@ -1388,10 +1390,10 @@ export const AdminDashboardPage: React.FC = () => {
                 <Wallet className="w-4 h-4 text-amber-600" />
               </div>
               <div className="text-xl font-black text-gray-900 dark:text-white mt-1">
-                ₹{coolerAnalytics?.depositLedger?.held || 750}
+                ₹{cm.depositLedger?.activeHeld ?? cm.depositLedger?.held ?? 750} Held
               </div>
               <span className="text-[10px] text-gray-400 dark:text-gray-500 block mt-0.5">
-                ₹{coolerAnalytics?.depositLedger?.totalRefunded || 2250} refunded via UPI/Wallet
+                ₹{cm.depositLedger?.totalRefunded ?? 2250} refunded via UPI/Wallet
               </span>
             </div>
 
@@ -1401,7 +1403,7 @@ export const AdminDashboardPage: React.FC = () => {
                 <AlertTriangle className="w-4 h-4 text-rose-600" />
               </div>
               <div className="text-xl font-black text-rose-600 dark:text-rose-400 mt-1">
-                {coolerAnalytics?.insulationHealth?.breachesDetected ?? 0} Alerts
+                {cm.maintenanceCount ?? cm.insulationHealth?.breachesDetected ?? 0} Alerts
               </div>
               <span className="text-[10px] text-gray-400 dark:text-gray-500 block mt-0.5">
                 Thermal & gasket leakage diagnostics
@@ -1609,7 +1611,8 @@ export const AdminDashboardPage: React.FC = () => {
             )}
           </div>
         </div>
-      )}
+        );
+      })()}
 
       {/* ======================================================== */}
       {/* TAB 7: CUSTOMER MANAGEMENT DIRECTORY */}
