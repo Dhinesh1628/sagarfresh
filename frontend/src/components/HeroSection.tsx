@@ -38,7 +38,7 @@ interface SlideData {
 // 100% reliable inline vector garnishes
 const Garnishes = {
   iceCube: (
-    <svg viewBox="0 0 120 120" className="w-full h-full drop-shadow-[0_15px_25px_rgba(0,0,0,0.8)]">
+    <svg viewBox="0 0 120 120" className="w-full h-full drop-shadow-[0_4px_8px_rgba(0,0,0,0.35)]">
       <defs>
         <linearGradient id="iceGrad" x1="0" y1="0" x2="1" y2="1">
           <stop offset="0%" stopColor="#ffffff" stopOpacity="0.95" />
@@ -56,7 +56,7 @@ const Garnishes = {
   ),
 
   lemonSlice: (
-    <svg viewBox="0 0 140 140" className="w-full h-full drop-shadow-[0_15px_25px_rgba(0,0,0,0.8)]">
+    <svg viewBox="0 0 140 140" className="w-full h-full drop-shadow-[0_4px_8px_rgba(0,0,0,0.35)]">
       <circle cx="70" cy="70" r="65" fill="#facc15" stroke="#eab308" strokeWidth="5" />
       <circle cx="70" cy="70" r="54" fill="#fef08a" />
       <circle cx="70" cy="70" r="50" fill="#facc15" />
@@ -75,7 +75,7 @@ const Garnishes = {
   ),
 
   dillSprig: (
-    <svg viewBox="0 0 100 120" className="w-full h-full drop-shadow-[0_15px_25px_rgba(0,0,0,0.8)]">
+    <svg viewBox="0 0 100 120" className="w-full h-full drop-shadow-[0_4px_8px_rgba(0,0,0,0.35)]">
       <path d="M50,110 Q52,60 48,15" stroke="#15803d" strokeWidth="4" fill="none" strokeLinecap="round" />
       <g stroke="#22c55e" strokeWidth="3" fill="none" strokeLinecap="round">
         <path d="M49,85 Q30,75 18,80" />
@@ -89,7 +89,7 @@ const Garnishes = {
   ),
 
   starAnise: (
-    <svg viewBox="0 0 120 120" className="w-full h-full drop-shadow-[0_15px_25px_rgba(0,0,0,0.8)]">
+    <svg viewBox="0 0 120 120" className="w-full h-full drop-shadow-[0_4px_8px_rgba(0,0,0,0.35)]">
       <g fill="#78350f" stroke="#290e03" strokeWidth="2.5">
         <path d="M60,60 C55,40 50,20 60,8 C70,20 65,40 60,60 Z" />
         <path d="M60,60 C75,45 95,40 107,50 C95,60 75,55 60,60 Z" transform="rotate(45 60 60)" />
@@ -105,7 +105,7 @@ const Garnishes = {
   ),
 
   cinnamon: (
-    <svg viewBox="0 0 140 60" className="w-full h-full drop-shadow-[0_15px_25px_rgba(0,0,0,0.8)]">
+    <svg viewBox="0 0 140 60" className="w-full h-full drop-shadow-[0_4px_8px_rgba(0,0,0,0.35)]">
       <rect x="15" y="15" width="110" height="30" rx="15" fill="#7c2d12" stroke="#1c0a00" strokeWidth="2.5" />
       <ellipse cx="25" cy="30" rx="8" ry="14" fill="#451a03" stroke="#9a3412" strokeWidth="2" />
       <ellipse cx="115" cy="30" rx="8" ry="14" fill="#290e03" />
@@ -113,28 +113,28 @@ const Garnishes = {
   ),
 
   bayLeaf: (
-    <svg viewBox="0 0 100 140" className="w-full h-full drop-shadow-[0_15px_25px_rgba(0,0,0,0.8)]">
+    <svg viewBox="0 0 100 140" className="w-full h-full drop-shadow-[0_4px_8px_rgba(0,0,0,0.35)]">
       <path d="M50,130 Q10,75 50,10 Q90,75 50,130 Z" fill="#4d7c0f" stroke="#1a3d04" strokeWidth="3" />
       <path d="M50,130 Q50,70 50,10" stroke="#bef264" strokeWidth="2" fill="none" />
     </svg>
   ),
 
   redChili: (
-    <svg viewBox="0 0 140 100" className="w-full h-full drop-shadow-[0_15px_25px_rgba(0,0,0,0.8)]">
+    <svg viewBox="0 0 140 100" className="w-full h-full drop-shadow-[0_4px_8px_rgba(0,0,0,0.35)]">
       <path d="M25,25 Q60,15 110,40 Q130,55 125,75 Q85,85 25,25 Z" fill="#dc2626" stroke="#5f0d0d" strokeWidth="3" />
       <path d="M25,25 Q18,20 15,10 Q20,12 25,25" fill="#15803d" stroke="#14532d" strokeWidth="2" />
     </svg>
   ),
 
   garlic: (
-    <svg viewBox="0 0 100 100" className="w-full h-full drop-shadow-[0_15px_25px_rgba(0,0,0,0.8)]">
+    <svg viewBox="0 0 100 100" className="w-full h-full drop-shadow-[0_4px_8px_rgba(0,0,0,0.35)]">
       <path d="M50,15 Q20,50 35,80 Q50,92 65,80 Q80,50 50,15 Z" fill="#fef3c7" stroke="#b45309" strokeWidth="3" />
       <path d="M50,15 Q46,55 48,85" stroke="#d97706" strokeWidth="2" fill="none" />
     </svg>
   ),
 
   lime: (
-    <svg viewBox="0 0 120 120" className="w-full h-full drop-shadow-[0_15px_25px_rgba(0,0,0,0.8)]">
+    <svg viewBox="0 0 120 120" className="w-full h-full drop-shadow-[0_4px_8px_rgba(0,0,0,0.35)]">
       <path d="M15,95 A80,80 0 0,1 95,15 L15,95 Z" fill="#65a30d" stroke="#365314" strokeWidth="4" />
       <path d="M22,88 A68,68 0 0,1 88,22 L22,88 Z" fill="#bef264" />
       <g stroke="#f7fee7" strokeWidth="2.5">
@@ -147,7 +147,7 @@ const Garnishes = {
   ),
 
   saltCrystal: (
-    <svg viewBox="0 0 90 90" className="w-full h-full drop-shadow-[0_15px_25px_rgba(0,0,0,0.8)]">
+    <svg viewBox="0 0 90 90" className="w-full h-full drop-shadow-[0_4px_8px_rgba(0,0,0,0.35)]">
       <polygon points="45,10 75,30 80,65 50,85 15,65 20,30" fill="#ffffff" stroke="#94a3b8" strokeWidth="3" opacity="0.95" />
       <line x1="45" y1="10" x2="50" y2="85" stroke="#cbd5e1" strokeWidth="2" />
       <line x1="75" y1="30" x2="15" y2="65" stroke="#cbd5e1" strokeWidth="2" />
@@ -426,7 +426,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
       onTouchStart={handleTouchStart}
       onTouchMove={handleTouchMove}
       onTouchEnd={handleTouchEnd}
-      className="relative w-full rounded-3xl overflow-hidden shadow-[0_30px_90px_-20px_rgba(0,0,0,0.95)] ring-1 ring-white/10 select-none transition-colors duration-700 group/hero"
+      className="relative w-full rounded-3xl overflow-hidden shadow-lg shadow-black/15 ring-1 ring-black/5 dark:ring-white/10 select-none transition-colors duration-700 group/hero"
       style={{
         background: currentSlide.bgGradient,
         perspective: '1600px'
@@ -522,7 +522,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
               fontSize: 'clamp(3.2rem, 11vw, 9.5rem)',
               lineHeight: '0.85',
               fontFamily: 'Montserrat, system-ui, -apple-system, sans-serif',
-              textShadow: '0 25px 50px rgba(0, 0, 0, 0.95)'
+              textShadow: '0 4px 16px rgba(0, 0, 0, 0.4)'
             }}
           >
             {currentSlide.giantText}
@@ -580,7 +580,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
           }`}>
             
             {/* Frosted Glass Culinary Platter */}
-            <div className="relative w-48 h-48 sm:w-60 sm:h-60 md:w-72 md:h-72 lg:w-76 lg:h-76 rounded-full p-2.5 sm:p-3 bg-gradient-to-tr from-white/15 via-white/5 to-transparent backdrop-blur-3xl ring-1 ring-white/20 shadow-[0_0_50px_rgba(255,255,255,0.08),0_25px_60px_rgba(0,0,0,0.95)] overflow-hidden flex items-center justify-center group">
+            <div className="relative w-48 h-48 sm:w-60 sm:h-60 md:w-72 md:h-72 lg:w-76 lg:h-76 rounded-full p-2.5 sm:p-3 bg-gradient-to-tr from-white/15 via-white/5 to-transparent backdrop-blur-3xl ring-1 ring-white/20 shadow-[0_10px_28px_rgba(0,0,0,0.35)] overflow-hidden flex items-center justify-center group">
               <img 
                 src={currentSlide.image} 
                 alt={currentSlide.title}
