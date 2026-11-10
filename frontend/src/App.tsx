@@ -177,7 +177,7 @@ const MainApp: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#f7f7f9] dark:bg-[#080c14] text-gray-800 dark:text-gray-100 flex flex-col font-sans selection:bg-[#d11243] selection:text-white transition-colors duration-300 relative">
+    <div className="min-h-screen max-w-full overflow-x-hidden bg-[#f7f7f9] dark:bg-[#080c14] text-gray-800 dark:text-gray-100 flex flex-col font-sans selection:bg-[#d11243] selection:text-white transition-colors duration-300 relative">
       
       {/* Radiant Ambient Light Effects */}
       <div className="light-glow-ambient" aria-hidden="true">
@@ -200,7 +200,7 @@ const MainApp: React.FC = () => {
       />
 
       {/* Main Container */}
-      <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 pt-5">
+      <main className="flex-1 max-w-7xl w-full mx-auto px-3 sm:px-6 lg:px-8 pt-3 sm:pt-5 overflow-x-hidden">
         {currentTab === 'catalog' && (
           <CatalogPage 
             onNavigateToReturns={() => {

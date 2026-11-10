@@ -425,7 +425,7 @@ export const CatalogPage: React.FC<CatalogPageProps> = ({
   };
 
   return (
-    <div className="space-y-12 sm:space-y-16 pb-24 relative">
+    <div className="space-y-10 sm:space-y-16 pb-24 relative max-w-full overflow-x-hidden">
       
       {/* Toast Notification */}
       {toastMessage && (
@@ -442,7 +442,7 @@ export const CatalogPage: React.FC<CatalogPageProps> = ({
       />
 
       {/* Explore Categories Section */}
-      <div ref={catalogGridRef} className="scroll-mt-24 space-y-6">
+      <div ref={catalogGridRef} className="scroll-mt-24 space-y-4 sm:space-y-6">
         <CategorySection
           selectedCategory={selectedCategory}
           onSelectCategory={setSelectedCategory}
@@ -450,9 +450,9 @@ export const CatalogPage: React.FC<CatalogPageProps> = ({
         />
 
         {/* Always Chilled 0°C to 4°C Assurance Strip */}
-        <div className="bg-white dark:bg-slate-900 rounded-2xl border border-gray-200 dark:border-slate-800 p-4 sm:p-5 shadow-xs flex flex-col md:flex-row items-start md:items-center justify-between gap-4 transition-colors">
-          <div className="flex items-center gap-3.5">
-            <div className="w-11 h-11 rounded-2xl bg-rose-50 dark:bg-rose-950/70 border border-rose-100 dark:border-rose-900 flex items-center justify-center text-[#d11243] dark:text-rose-400 font-black text-sm shrink-0 shadow-xs">
+        <div className="bg-white dark:bg-slate-900 rounded-2xl border border-gray-200 dark:border-slate-800 p-3 sm:p-5 shadow-xs flex flex-col md:flex-row items-start md:items-center justify-between gap-3 sm:gap-4 transition-colors">
+          <div className="flex items-center gap-2.5 sm:gap-3.5">
+            <div className="w-9 h-9 sm:w-11 sm:h-11 rounded-xl sm:rounded-2xl bg-rose-50 dark:bg-rose-950/70 border border-rose-100 dark:border-rose-900 flex items-center justify-center text-[#d11243] dark:text-rose-400 font-black text-xs sm:text-sm shrink-0 shadow-xs">
               0°C
             </div>
             <div>
@@ -460,11 +460,11 @@ export const CatalogPage: React.FC<CatalogPageProps> = ({
                 <span className="font-extrabold text-xs sm:text-sm text-gray-950 dark:text-white">
                   Always Chilled at 0°C to 4°C
                 </span>
-                <span className="px-2 py-0.5 rounded-full bg-emerald-50 dark:bg-emerald-950/70 text-emerald-800 dark:text-emerald-300 text-[10px] font-black border border-emerald-200 dark:border-emerald-800">
+                <span className="px-2 py-0.5 rounded-full bg-emerald-50 dark:bg-emerald-950/70 text-emerald-800 dark:text-emerald-300 text-[9px] sm:text-[10px] font-black border border-emerald-200 dark:border-emerald-800">
                   Never Frozen
                 </span>
               </div>
-              <p className="text-[11px] text-gray-500 dark:text-gray-400 mt-0.5">
+              <p className="text-[10px] sm:text-[11px] text-gray-500 dark:text-gray-400 mt-0.5">
                 Delivered fresh in reusable cold boxes across {selectedCity}. Get ₹250 back when you return the box.
               </p>
             </div>
@@ -472,7 +472,7 @@ export const CatalogPage: React.FC<CatalogPageProps> = ({
 
           <button
             onClick={onNavigateToReturns}
-            className="w-full md:w-auto px-4 py-2 rounded-xl bg-gray-950 hover:bg-black dark:bg-white dark:hover:bg-gray-100 text-white dark:text-gray-950 text-xs font-bold cursor-pointer shrink-0 transition shadow-xs flex items-center justify-center gap-1.5"
+            className="w-full md:w-auto px-3.5 py-2 rounded-xl bg-gray-950 hover:bg-black dark:bg-white dark:hover:bg-gray-100 text-white dark:text-gray-950 text-xs font-bold cursor-pointer shrink-0 transition shadow-xs flex items-center justify-center gap-1.5"
           >
             <RotateCcw className="w-3.5 h-3.5 text-emerald-400 dark:text-emerald-600" />
             <span>Return Box for ₹250 Refund</span>
@@ -480,7 +480,7 @@ export const CatalogPage: React.FC<CatalogPageProps> = ({
         </div>
 
         {/* Quick Search Trending Chips */}
-        <div className="flex items-center gap-2 overflow-x-auto py-1">
+        <div className="flex items-center gap-2 overflow-x-auto py-1 max-w-full">
           <div className="flex items-center gap-1 text-amber-700 dark:text-amber-400 font-bold text-xs shrink-0 mr-1">
             <Sparkles className="w-3.5 h-3.5" />
             <span>Trending:</span>
@@ -502,17 +502,17 @@ export const CatalogPage: React.FC<CatalogPageProps> = ({
 
         {/* Active Search Filter Banner */}
         {searchQuery.trim() && (
-          <div className="flex items-center justify-between bg-rose-50 dark:bg-rose-950/60 border border-rose-200 dark:border-rose-900 rounded-xl px-4 py-2 text-xs">
-            <div className="flex items-center gap-2">
-              <Search className="w-4 h-4 text-[#d11243]" />
-              <span className="text-gray-900 dark:text-gray-100">
+          <div className="flex items-center justify-between bg-rose-50 dark:bg-rose-950/60 border border-rose-200 dark:border-rose-900 rounded-xl px-3 sm:px-4 py-2 text-xs">
+            <div className="flex items-center gap-2 min-w-0 truncate">
+              <Search className="w-4 h-4 text-[#d11243] shrink-0" />
+              <span className="text-gray-900 dark:text-gray-100 truncate">
                 Search results for <span className="font-bold text-[#d11243]">"{searchQuery}"</span>
               </span>
-              <span className="text-gray-400 font-medium">({sortedProducts.length} items found)</span>
+              <span className="text-gray-400 font-medium shrink-0">({sortedProducts.length})</span>
             </div>
             <button
               onClick={() => onSetSearchQuery?.('')}
-              className="flex items-center gap-1 text-[#d11243] hover:text-[#b80f3b] font-bold cursor-pointer"
+              className="flex items-center gap-1 text-[#d11243] hover:text-[#b80f3b] font-bold cursor-pointer shrink-0 ml-2"
             >
               <X className="w-3.5 h-3.5" />
               <span>Clear</span>
@@ -521,10 +521,10 @@ export const CatalogPage: React.FC<CatalogPageProps> = ({
         )}
 
         {/* Sorting, Price Budget Filters & Results Count Bar */}
-        <div className="bg-white dark:bg-slate-900 p-3 rounded-2xl border border-gray-200 dark:border-slate-800 shadow-xs flex flex-wrap items-center justify-between gap-3 text-xs">
+        <div className="bg-white dark:bg-slate-900 p-2.5 sm:p-3 rounded-2xl border border-gray-200 dark:border-slate-800 shadow-xs flex flex-wrap items-center justify-between gap-2.5 sm:gap-3 text-xs max-w-full overflow-hidden">
           {/* Price Budget Pills */}
-          <div className="flex items-center gap-1.5 overflow-x-auto">
-            <span className="text-gray-400 font-bold text-[11px] mr-1 hidden sm:inline">Price:</span>
+          <div className="flex items-center gap-1.5 overflow-x-auto max-w-full">
+            <span className="text-gray-400 font-bold text-[10px] sm:text-[11px] mr-1 hidden sm:inline">Price:</span>
             {[
               { id: 'all', label: 'All Prices' },
               { id: 'under300', label: 'Under ₹300' },
@@ -534,7 +534,7 @@ export const CatalogPage: React.FC<CatalogPageProps> = ({
               <button
                 key={b.id}
                 onClick={() => setPriceBudget(b.id as any)}
-                className={`px-3 py-1 rounded-xl font-bold text-xs cursor-pointer transition whitespace-nowrap ${
+                className={`px-2.5 sm:px-3 py-1 rounded-xl font-bold text-[11px] sm:text-xs cursor-pointer transition whitespace-nowrap ${
                   priceBudget === b.id
                     ? 'bg-[#d11243] text-white shadow-xs'
                     : 'bg-gray-100 dark:bg-slate-800 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-slate-700'
@@ -546,13 +546,13 @@ export const CatalogPage: React.FC<CatalogPageProps> = ({
           </div>
 
           {/* Sort Selector */}
-          <div className="flex items-center gap-2 ml-auto">
+          <div className="flex items-center gap-1.5 sm:gap-2 ml-auto shrink-0">
             <ArrowUpDown className="w-3.5 h-3.5 text-gray-400" />
-            <span className="text-gray-500 dark:text-gray-400 font-semibold text-[11px]">Sort By:</span>
+            <span className="text-gray-500 dark:text-gray-400 font-semibold text-[10px] sm:text-[11px]">Sort By:</span>
             <select
               value={sortBy}
               onChange={(e) => setSortBy(e.target.value as any)}
-              className="px-2.5 py-1 rounded-xl bg-gray-100 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 text-gray-800 dark:text-gray-200 font-bold text-xs focus:outline-none focus:border-[#d11243] cursor-pointer"
+              className="px-2 py-1 rounded-xl bg-gray-100 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 text-gray-800 dark:text-gray-200 font-bold text-[11px] sm:text-xs focus:outline-none focus:border-[#d11243] cursor-pointer"
             >
               <option value="featured">Featured</option>
               <option value="price-asc">Price: Low to High</option>
@@ -706,13 +706,13 @@ export const CatalogPage: React.FC<CatalogPageProps> = ({
           </section>
 
           {/* PROMOTIONAL VALUE BANNER (Between sections 2 and 3) */}
-          <div className="relative rounded-3xl overflow-hidden shadow-md border border-rose-200/70 dark:border-rose-900/50 bg-gradient-to-r from-[#b00f37] via-[#d11243] to-[#800a26] text-white p-6 sm:p-8 flex flex-col md:flex-row items-center justify-between gap-6">
-            <div className="space-y-2.5 max-w-xl text-center md:text-left">
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/20 backdrop-blur-md text-[11px] font-black uppercase tracking-wider">
+          <div className="relative rounded-3xl overflow-hidden shadow-md border border-rose-200/70 dark:border-rose-900/50 bg-gradient-to-r from-[#b00f37] via-[#d11243] to-[#800a26] text-white p-5 sm:p-8 flex flex-col md:flex-row items-center justify-between gap-5 sm:gap-6">
+            <div className="space-y-2 max-w-xl text-center md:text-left">
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/20 backdrop-blur-md text-[10px] sm:text-[11px] font-black uppercase tracking-wider">
                 <Sparkles className="w-3.5 h-3.5 text-amber-300" />
                 <span>Weekend Culinary Feast</span>
               </div>
-              <h3 className="text-2xl sm:text-3xl font-black tracking-tight leading-tight">
+              <h3 className="text-xl sm:text-3xl font-black tracking-tight leading-tight">
                 FLAT 20% OFF ON ORDERS ABOVE ₹799
               </h3>
               <p className="text-xs sm:text-sm text-rose-100 font-medium">
@@ -720,19 +720,19 @@ export const CatalogPage: React.FC<CatalogPageProps> = ({
               </p>
             </div>
 
-            <div className="flex items-center gap-3 shrink-0">
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5 sm:gap-3 w-full sm:w-auto shrink-0">
               <button
                 onClick={() => {
                   navigator.clipboard?.writeText('GOMEAT20');
                   showToast('Coupon code "GOMEAT20" copied to clipboard! 🎟️');
                 }}
-                className="px-5 py-3 rounded-2xl bg-white text-[#d11243] hover:bg-rose-50 font-black text-xs uppercase tracking-wider shadow-lg transition-transform active:scale-95 cursor-pointer"
+                className="w-full sm:w-auto text-center px-4 sm:px-5 py-2.5 sm:py-3 rounded-2xl bg-white text-[#d11243] hover:bg-rose-50 font-black text-xs uppercase tracking-wider shadow-md transition-transform active:scale-95 cursor-pointer"
               >
                 Copy Code: GOMEAT20
               </button>
               <button
                 onClick={handleScrollToCatalog}
-                className="px-5 py-3 rounded-2xl bg-black/40 hover:bg-black/60 text-white font-bold text-xs ring-1 ring-white/20 transition cursor-pointer"
+                className="w-full sm:w-auto text-center px-4 sm:px-5 py-2.5 sm:py-3 rounded-2xl bg-black/40 hover:bg-black/60 text-white font-bold text-xs ring-1 ring-white/20 transition cursor-pointer"
               >
                 Shop Now →
               </button>
@@ -816,14 +816,14 @@ export const CatalogPage: React.FC<CatalogPageProps> = ({
         <div className="rounded-3xl border border-gray-200 dark:border-slate-800 bg-white dark:bg-slate-900/90 shadow-sm overflow-hidden">
           
           {/* Header pill strip */}
-          <div className="px-6 sm:px-8 py-3.5 bg-gray-50/80 dark:bg-slate-800/50 border-b border-gray-200 dark:border-slate-800 flex flex-wrap items-center justify-between gap-3 text-xs">
-            <div className="flex items-center gap-2">
-              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-              <span className="font-black text-gray-950 dark:text-white uppercase tracking-wider text-[11px]">
+          <div className="px-3.5 sm:px-8 py-3 bg-gray-50/80 dark:bg-slate-800/50 border-b border-gray-200 dark:border-slate-800 flex flex-wrap items-center justify-between gap-2 text-xs">
+            <div className="flex items-center gap-2 min-w-0">
+              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse shrink-0" />
+              <span className="font-black text-gray-950 dark:text-white uppercase tracking-wider text-[10px] sm:text-[11px] truncate">
                 The GoMeat Freshness & Circular Sustainability Protocol
               </span>
             </div>
-            <div className="flex items-center gap-3 text-[11px] font-bold text-gray-500 dark:text-gray-400">
+            <div className="flex items-center gap-2 sm:gap-3 text-[10px] sm:text-[11px] font-bold text-gray-500 dark:text-gray-400 shrink-0">
               <span>0°C Blast-Chilled</span>
               <span>•</span>
               <span>100% RO Washed</span>
@@ -836,14 +836,14 @@ export const CatalogPage: React.FC<CatalogPageProps> = ({
           <div className="grid grid-cols-1 lg:grid-cols-12 divide-y lg:divide-y-0 lg:divide-x divide-gray-200 dark:divide-slate-800">
             
             {/* LEFT COLUMN: ThermalVault Reusable Box & ₹250 Refund Protocol */}
-            <div className="lg:col-span-6 p-6 sm:p-8 flex flex-col justify-between space-y-6 bg-gradient-to-br from-emerald-50/40 via-white to-transparent dark:from-emerald-950/20 dark:via-slate-900 dark:to-slate-900">
-              <div className="space-y-3">
-                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-100 dark:bg-emerald-950/80 text-emerald-800 dark:text-emerald-300 text-[11px] font-black border border-emerald-300 dark:border-emerald-800">
+            <div className="lg:col-span-6 p-4 sm:p-8 flex flex-col justify-between space-y-5 sm:space-y-6 bg-gradient-to-br from-emerald-50/40 via-white to-transparent dark:from-emerald-950/20 dark:via-slate-900 dark:to-slate-900">
+              <div className="space-y-2.5 sm:space-y-3">
+                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-100 dark:bg-emerald-950/80 text-emerald-800 dark:text-emerald-300 text-[10px] sm:text-[11px] font-black border border-emerald-300 dark:border-emerald-800">
                   <Leaf className="w-3.5 h-3.5" />
                   <span>Zero Thermocol Waste • 100% Circular Cooler</span>
                 </div>
                 
-                <h3 className="text-xl sm:text-2xl font-black text-gray-950 dark:text-white tracking-tight">
+                <h3 className="text-lg sm:text-2xl font-black text-gray-950 dark:text-white tracking-tight leading-tight">
                   Return Your Empty Cold Box. Get ₹250 Back Instantly.
                 </h3>
                 
@@ -889,20 +889,20 @@ export const CatalogPage: React.FC<CatalogPageProps> = ({
               <div className="pt-2 flex flex-wrap items-center gap-3">
                 <button
                   onClick={onNavigateToReturns}
-                  className="px-5 py-2.5 rounded-xl bg-[#d11243] hover:bg-[#b80f3b] text-white font-extrabold text-xs transition cursor-pointer shadow-xs flex items-center gap-2"
+                  className="w-full sm:w-auto px-5 py-2.5 rounded-xl bg-[#d11243] hover:bg-[#b80f3b] text-white font-extrabold text-xs transition cursor-pointer shadow-xs flex items-center justify-center gap-2"
                 >
                   <QrCode className="w-4 h-4" />
                   <span>Scan QR / Return Box for ₹250</span>
                 </button>
-                <div className="flex items-center gap-1.5 text-xs text-gray-500 dark:text-gray-400 font-semibold">
-                  <span className="w-2 h-2 rounded-full bg-emerald-500" />
-                  <span>Over 48,000+ boxes recycled in Bengaluru</span>
+                <div className="flex items-center gap-1.5 text-[11px] text-gray-500 dark:text-gray-400 font-semibold">
+                  <span className="w-2 h-2 rounded-full bg-emerald-500 shrink-0" />
+                  <span>48,000+ boxes recycled in Bengaluru</span>
                 </div>
               </div>
             </div>
 
             {/* RIGHT COLUMN: Farm-to-Kitchen 3 Certified Steps */}
-            <div className="lg:col-span-6 p-6 sm:p-8 flex flex-col justify-between space-y-6">
+            <div className="lg:col-span-6 p-4 sm:p-8 flex flex-col justify-between space-y-5 sm:space-y-6">
               <div className="space-y-3">
                 <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-rose-100 dark:bg-rose-950/80 text-[#d11243] dark:text-rose-300 text-[11px] font-black border border-rose-300 dark:border-rose-900">
                   <ShieldCheck className="w-3.5 h-3.5" />

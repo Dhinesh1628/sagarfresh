@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { MessageCircle, X, ChevronRight, Sparkles, RefreshCw, Bot, ExternalLink } from 'lucide-react';
 import { WhatsAppChatbotModal } from './WhatsAppChatbotModal';
+import { useCart } from '../context/CartContext';
 
 interface WhatsAppButtonProps {
   isChatbotOpen?: boolean;
@@ -15,6 +16,7 @@ export const WhatsAppButton: React.FC<WhatsAppButtonProps> = ({
   onCloseChatbot,
   onNavigateTab
 }) => {
+  const { totalItems } = useCart();
   const [internalChatbotOpen, setInternalChatbotOpen] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [showTooltip, setShowTooltip] = useState(false);
@@ -69,7 +71,7 @@ export const WhatsAppButton: React.FC<WhatsAppButtonProps> = ({
 
   return (
     <>
-      <div className="fixed bottom-5 right-4 sm:right-6 z-40 flex flex-col items-end gap-2.5">
+      <div className={`fixed ${totalItems > 0 ? 'bottom-20 sm:bottom-5' : 'bottom-4 sm:bottom-5'} right-3 sm:right-6 z-40 flex flex-col items-end gap-2 transition-all duration-300`}>
         
         {/* Floating Callout Tooltip */}
         {showTooltip && !isMenuOpen && !isChatbotOpen && (

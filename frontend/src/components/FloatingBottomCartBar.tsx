@@ -18,7 +18,7 @@ export const FloatingBottomCartBar: React.FC<FloatingBottomCartBarProps> = ({
   }
 
   return (
-    <div className="fixed bottom-4 left-1/2 -translate-x-1/2 z-40 w-[92%] sm:w-auto sm:min-w-[420px] max-w-lg transition-all duration-300 animate-slide-up">
+    <div className="fixed bottom-3 sm:bottom-4 left-1/2 -translate-x-1/2 z-40 w-[94%] max-w-md sm:w-auto sm:min-w-[420px] transition-all duration-300 animate-slide-up">
       <button
         onClick={onViewCart}
         type="button"

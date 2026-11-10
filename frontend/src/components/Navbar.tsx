@@ -490,14 +490,14 @@ export const Navbar: React.FC<NavbarProps> = ({
     <header className="sticky top-0 z-40 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md border-b border-gray-200 dark:border-slate-800 shadow-2xs transition-colors duration-300">
       
       {/* Top announcement */}
-      <div className="bg-[#fcf8f9] dark:bg-slate-950 border-b border-rose-100/70 dark:border-slate-800/80 px-4 py-1 text-[11px] text-gray-600 dark:text-gray-400">
-        <div className="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-2">
-          <div className="flex items-center gap-2">
-            <span className="font-semibold text-[#d11243]">FSSAI FSSC-22000 CERTIFIED:</span>
-            <span>0°C to 4°C Chilled Fresh • Delivered in Reusable Cold Box (₹250 Refundable Deposit)</span>
+      <div className="bg-[#fcf8f9] dark:bg-slate-950 border-b border-rose-100/70 dark:border-slate-800/80 px-3 sm:px-4 py-1 text-[10px] sm:text-[11px] text-gray-600 dark:text-gray-400 overflow-hidden">
+        <div className="max-w-7xl mx-auto flex items-center justify-between gap-2">
+          <div className="flex items-center gap-1.5 min-w-0 truncate">
+            <span className="font-extrabold text-[#d11243] shrink-0 text-[10px] sm:text-[11px]">0°C CHILLED FRESH:</span>
+            <span className="truncate">Reusable Cold Box (₹250 Deposit Refund) • Never Frozen</span>
           </div>
 
-          <div className="hidden sm:flex items-center gap-4 text-gray-500 dark:text-gray-400">
+          <div className="hidden sm:flex items-center gap-4 text-gray-500 dark:text-gray-400 shrink-0">
             <button 
               onClick={() => {
                 if (!user) {
@@ -515,11 +515,11 @@ export const Navbar: React.FC<NavbarProps> = ({
       </div>
 
       {/* Main Navbar */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16 gap-3 lg:gap-4">
+      <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
+        <div className="flex items-center justify-between h-14 sm:h-16 gap-1.5 sm:gap-3 lg:gap-4">
           
           {/* Brand Logo & Location */}
-          <div className="flex items-center gap-1.5 sm:gap-3 lg:gap-4 shrink-0">
+          <div className="flex items-center gap-1.5 sm:gap-3 lg:gap-4 min-w-0 shrink">
             <div 
               onClick={() => setCurrentTab('catalog')} 
               className="flex items-center cursor-pointer shrink-0 py-1"
@@ -527,31 +527,31 @@ export const Navbar: React.FC<NavbarProps> = ({
               <img 
                 src="/images/logo.png" 
                 alt="GoMeat - Freshness we can trust." 
-                className="h-8 sm:h-10 w-auto object-contain hover:opacity-95 transition dark:hidden" 
+                className="h-7 sm:h-10 w-auto object-contain hover:opacity-95 transition dark:hidden" 
               />
               <img 
                 src="/images/logo-dark.png" 
                 alt="GoMeat - Freshness we can trust." 
-                className="h-8 sm:h-10 w-auto object-contain hover:opacity-95 transition hidden dark:block" 
+                className="h-7 sm:h-10 w-auto object-contain hover:opacity-95 transition hidden dark:block" 
               />
             </div>
 
             {/* Location Selector Button */}
             <button
               onClick={onOpenLocationModal}
-              className="flex items-center gap-1.5 sm:gap-2 px-2 sm:px-2.5 h-9 sm:h-10 rounded-xl border border-gray-200/90 dark:border-slate-800 hover:bg-gray-100/80 dark:hover:bg-slate-800/80 text-xs transition cursor-pointer text-left group shrink-0 max-w-[125px] sm:max-w-[210px] xl:max-w-[240px]"
+              className="flex items-center gap-1 sm:gap-2 px-1.5 sm:px-2.5 h-8 sm:h-10 rounded-xl border border-gray-200/90 dark:border-slate-800 hover:bg-gray-100/80 dark:hover:bg-slate-800/80 text-xs transition cursor-pointer text-left group shrink min-w-0 max-w-[110px] sm:max-w-[210px] xl:max-w-[240px]"
               title="Click to enter custom delivery address or detect location"
               type="button"
             >
-              <div className="w-6 h-6 sm:w-7 sm:h-7 rounded-lg bg-rose-50 dark:bg-rose-950/60 text-[#d11243] flex items-center justify-center group-hover:scale-105 transition-transform shrink-0">
-                <MapPin className="w-3 sm:w-3.5 h-3 sm:h-3.5" />
+              <div className="w-5 h-5 sm:w-7 sm:h-7 rounded-lg bg-rose-50 dark:bg-rose-950/60 text-[#d11243] flex items-center justify-center group-hover:scale-105 transition-transform shrink-0">
+                <MapPin className="w-2.5 sm:w-3.5 h-2.5 sm:h-3.5" />
               </div>
-              <div className="leading-tight overflow-hidden">
-                <div className="flex items-center gap-1">
-                  <span className="font-extrabold text-gray-900 dark:text-white group-hover:text-[#d11243] transition-colors truncate text-[11px] sm:text-xs">
+              <div className="leading-tight overflow-hidden min-w-0">
+                <div className="flex items-center gap-0.5 sm:gap-1 min-w-0">
+                  <span className="font-extrabold text-gray-900 dark:text-white group-hover:text-[#d11243] transition-colors truncate text-[10px] sm:text-xs">
                     {getLocationHeading()}
                   </span>
-                  <ChevronDown className="w-3 sm:w-3.5 h-3 sm:h-3.5 text-gray-400 group-hover:text-[#d11243] transition-transform group-hover:translate-y-0.5 shrink-0" />
+                  <ChevronDown className="w-3 h-3 text-gray-400 group-hover:text-[#d11243] transition-transform group-hover:translate-y-0.5 shrink-0" />
                 </div>
                 <div className="hidden sm:flex items-center gap-1 mt-0.5">
                   <span className="text-gray-500 dark:text-gray-400 font-medium truncate max-w-[70px] sm:max-w-[100px] xl:max-w-[130px] text-[10px]">
@@ -649,14 +649,14 @@ export const Navbar: React.FC<NavbarProps> = ({
             {/* Dark / Light Theme Toggle: ALWAYS VISIBLE & PROMINENT ON BOTH MOBILE & DESKTOP */}
             <button
               onClick={toggleTheme}
-              className="h-9 sm:h-10 w-9 sm:w-10 rounded-xl border border-gray-200 dark:border-slate-700 bg-gray-50 dark:bg-slate-800 text-gray-700 dark:text-amber-400 hover:border-[#d11243] hover:shadow-[0_0_15px_rgba(225,29,67,0.25)] transition-all duration-300 cursor-pointer flex items-center justify-center shrink-0 active:scale-95"
+              className="h-8 sm:h-10 w-8 sm:w-10 rounded-xl border border-gray-200 dark:border-slate-700 bg-gray-50 dark:bg-slate-800 text-gray-700 dark:text-amber-400 hover:border-[#d11243] hover:shadow-[0_0_15px_rgba(225,29,67,0.25)] transition-all duration-300 cursor-pointer flex items-center justify-center shrink-0 active:scale-95"
               title={theme === 'dark' ? 'Switch to Light Theme' : 'Switch to Dark Theme'}
               aria-label="Toggle theme"
             >
               {theme === 'dark' ? (
-                <Sun className="w-4 h-4 text-amber-400 hover:rotate-45 transition-transform" />
+                <Sun className="w-3.5 sm:w-4 h-3.5 sm:h-4 text-amber-400 hover:rotate-45 transition-transform" />
               ) : (
-                <Moon className="w-4 h-4 text-gray-700 hover:text-[#d11243] transition-colors" />
+                <Moon className="w-3.5 sm:w-4 h-3.5 sm:h-4 text-gray-700 hover:text-[#d11243] transition-colors" />
               )}
             </button>
 
@@ -794,12 +794,12 @@ export const Navbar: React.FC<NavbarProps> = ({
             {/* Cart Button: ALWAYS ACCESSIBLE */}
             <button
               onClick={() => setIsCartOpen(true)}
-              className="h-9 sm:h-10 px-2.5 sm:px-3.5 rounded-xl bg-[#d11243] hover:bg-[#b80f3b] text-white font-bold text-xs flex items-center gap-1.5 sm:gap-2 cursor-pointer shadow-md hover:shadow-lg transition shrink-0 whitespace-nowrap active:scale-95"
+              className="h-8 sm:h-10 px-2 sm:px-3.5 rounded-xl bg-[#d11243] hover:bg-[#b80f3b] text-white font-bold text-xs flex items-center gap-1 sm:gap-2 cursor-pointer shadow-sm hover:shadow-md transition shrink-0 whitespace-nowrap active:scale-95"
             >
-              <ShoppingBag className="w-4 h-4 text-white" />
+              <ShoppingBag className="w-3.5 sm:w-4 h-3.5 sm:h-4 text-white" />
               <span className="hidden sm:inline">Cart</span>
               {totalItems > 0 && (
-                <span className="px-1.5 py-0.5 bg-white text-[#d11243] rounded-full text-[11px] font-extrabold leading-none">
+                <span className="px-1.5 py-0.5 bg-white text-[#d11243] rounded-full text-[10px] sm:text-[11px] font-extrabold leading-none">
                   {totalItems}
                 </span>
               )}
@@ -813,9 +813,9 @@ export const Navbar: React.FC<NavbarProps> = ({
             {/* Mobile Menu Toggle (screens < sm) */}
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="sm:hidden h-10 w-10 flex items-center justify-center rounded-xl border border-gray-200 dark:border-slate-700 text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white"
+              className="sm:hidden h-8 w-8 flex items-center justify-center rounded-xl border border-gray-200 dark:border-slate-700 text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white shrink-0"
             >
-              {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+              {mobileMenuOpen ? <X className="w-4 h-4" /> : <Menu className="w-4 h-4" />}
             </button>
 
           </div>
@@ -824,9 +824,9 @@ export const Navbar: React.FC<NavbarProps> = ({
       </div>
 
       {/* Mobile Inline Search Bar (visible only on < sm screens) */}
-      <div ref={mobileSearchRef} className="sm:hidden px-4 pb-2.5 pt-0.5 relative">
+      <div ref={mobileSearchRef} className="sm:hidden px-3 pb-2 pt-0.5 relative w-full">
         <div className="relative w-full">
-          <Search className={`w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none transition-colors ${
+          <Search className={`w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none transition-colors ${
             isSearchFocused ? 'text-[#d11243]' : 'text-gray-400'
           }`} />
           <input

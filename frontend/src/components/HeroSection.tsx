@@ -475,24 +475,24 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
       {/* ======================================================== */}
       {/* 2. TOP METADATA BAR (Seamless Floating Capsule Design)   */}
       {/* ======================================================== */}
-      <div className="relative z-30 px-6 sm:px-10 pt-4 pb-1.5 flex items-center justify-between">
-        <div className="flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-black/40 backdrop-blur-xl ring-1 ring-white/10 shadow-lg">
-          <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping" />
-          <span className="text-[11px] sm:text-xs font-black uppercase tracking-wider text-white">
+      <div className="relative z-30 px-3 sm:px-10 pt-3 sm:pt-4 pb-1.5 flex items-center justify-between gap-1.5">
+        <div className="flex items-center gap-1.5 sm:gap-2 px-2.5 sm:px-3.5 py-1 sm:py-1.5 rounded-full bg-black/40 backdrop-blur-xl ring-1 ring-white/10 shadow-sm shrink">
+          <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-emerald-400 animate-ping shrink-0" />
+          <span className="text-[10px] sm:text-xs font-black uppercase tracking-wider text-white truncate">
             0°C – 4°C Active Cold Chain
           </span>
           <span className="text-gray-500 hidden sm:inline">•</span>
-          <span className="text-[11px] sm:text-xs text-gray-300 font-semibold hidden sm:inline">
+          <span className="text-[10px] sm:text-xs text-gray-300 font-semibold hidden sm:inline">
             ⚡ 90-Min Express
           </span>
         </div>
 
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2 shrink-0">
           <button
             onClick={onNavigateToReturns}
-            className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-black/40 hover:bg-white/15 text-white text-[11px] sm:text-xs font-bold ring-1 ring-white/15 hover:ring-white/30 transition-all cursor-pointer backdrop-blur-xl shadow-lg"
+            className="flex items-center gap-1.5 px-2.5 sm:px-3.5 py-1 sm:py-1.5 rounded-full bg-black/40 hover:bg-white/15 text-white text-[10px] sm:text-xs font-bold ring-1 ring-white/15 hover:ring-white/30 transition-all cursor-pointer backdrop-blur-xl shadow-sm"
           >
-            <RotateCcw className="w-3.5 h-3.5 text-emerald-300" />
+            <RotateCcw className="w-3 sm:w-3.5 h-3 sm:h-3.5 text-emerald-300" />
             <span>₹250 Box Refund</span>
           </button>
         </div>
@@ -501,25 +501,25 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
       {/* ======================================================== */}
       {/* 3. MAIN 3D SHOWCASE HERO STAGE                           */}
       {/* ======================================================== */}
-      <div className="relative min-h-[270px] sm:min-h-[320px] md:min-h-[360px] lg:min-h-[390px] flex items-center justify-center px-4 overflow-hidden">
+      <div className="relative min-h-[250px] sm:min-h-[320px] md:min-h-[360px] lg:min-h-[390px] flex items-center justify-center px-2 sm:px-4 overflow-hidden">
         
         {/* ---------------------------------------------------- */}
         {/* LAYER 1: SOLID GIGANTIC TYPOGRAPHY (BEHIND MEAT CUT) */}
         {/* Plain, clean, high-contrast, pure white bold letters */}
         {/* ---------------------------------------------------- */}
         <div 
-          className="absolute inset-0 flex items-center justify-center pointer-events-none select-none z-0"
+          className="absolute inset-0 flex items-center justify-center pointer-events-none select-none z-0 overflow-hidden"
           style={{
             transform: `translate(${tilt.x * -30}px, ${tilt.y * -16}px)`,
             transition: isAnimating ? 'all 0.4s ease' : 'transform 0.15s ease-out'
           }}
         >
           <span 
-            className={`font-black uppercase tracking-[0.14em] text-white select-none transition-all duration-500 ${
+            className={`font-black uppercase tracking-[0.12em] sm:tracking-[0.14em] text-white select-none transition-all duration-500 truncate max-w-full text-center ${
               isAnimating ? 'opacity-0 scale-90 translate-y-8' : 'opacity-90 scale-100 translate-y-0'
             }`}
             style={{
-              fontSize: 'clamp(3.2rem, 11vw, 9.5rem)',
+              fontSize: 'clamp(2.4rem, 10vw, 9.5rem)',
               lineHeight: '0.85',
               fontFamily: 'Montserrat, system-ui, -apple-system, sans-serif',
               textShadow: '0 4px 16px rgba(0, 0, 0, 0.4)'
@@ -580,7 +580,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
           }`}>
             
             {/* Frosted Glass Culinary Platter */}
-            <div className="relative w-48 h-48 sm:w-60 sm:h-60 md:w-72 md:h-72 lg:w-76 lg:h-76 rounded-full p-2.5 sm:p-3 bg-gradient-to-tr from-white/15 via-white/5 to-transparent backdrop-blur-3xl ring-1 ring-white/20 shadow-[0_10px_28px_rgba(0,0,0,0.35)] overflow-hidden flex items-center justify-center group">
+            <div className="relative w-44 h-44 sm:w-60 sm:h-60 md:w-72 md:h-72 lg:w-76 lg:h-76 rounded-full p-2.5 sm:p-3 bg-gradient-to-tr from-white/15 via-white/5 to-transparent backdrop-blur-3xl ring-1 ring-white/20 shadow-[0_10px_28px_rgba(0,0,0,0.35)] overflow-hidden flex items-center justify-center group">
               <img 
                 src={currentSlide.image} 
                 alt={currentSlide.title}
@@ -588,7 +588,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
               />
 
               {/* Cold-Chain Telemetry Capsule Inside Platter */}
-              <div className="absolute bottom-3 sm:bottom-4 inset-x-3 sm:inset-x-6 bg-black/85 backdrop-blur-2xl rounded-xl py-1.5 px-2.5 sm:px-3 text-center shadow-2xl ring-1 ring-white/20">
+              <div className="absolute bottom-2.5 sm:bottom-4 inset-x-2.5 sm:inset-x-6 bg-black/85 backdrop-blur-2xl rounded-xl py-1 sm:py-1.5 px-2 sm:px-3 text-center shadow-2xl ring-1 ring-white/20">
                 <div className="flex items-center justify-center gap-1.5 text-white font-black text-[9px] sm:text-[10px] uppercase tracking-wider">
                   <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
                   <span className="truncate">{currentSlide.cutStyle}</span>
@@ -607,29 +607,29 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
       {/* ======================================================== */}
       {/* 4. BOTTOM CONTROL PANEL (Seamless Obsidian Glass)        */}
       {/* ======================================================== */}
-      <div className="relative z-40 px-6 sm:px-10 py-3.5 sm:py-4 bg-gradient-to-t from-black/90 via-black/60 to-transparent backdrop-blur-md">
-        <div className="flex flex-col md:flex-row items-center justify-between gap-4">
+      <div className="relative z-40 px-3.5 sm:px-10 py-3 sm:py-4 bg-gradient-to-t from-black/90 via-black/60 to-transparent backdrop-blur-md">
+        <div className="flex flex-col md:flex-row items-center justify-between gap-3.5 sm:gap-4">
           
           {/* Bottom Left: Title, Tagline, Description & Shop Now Button */}
           <div className="flex-1 space-y-1 text-center md:text-left">
             <div>
-              <span className="text-[10px] sm:text-[11px] font-black uppercase tracking-widest text-emerald-400">
+              <span className="text-[9px] sm:text-[11px] font-black uppercase tracking-widest text-emerald-400">
                 {currentSlide.category}
               </span>
-              <h2 className="text-xl sm:text-2xl md:text-3xl font-black text-white tracking-tight leading-tight">
+              <h2 className="text-lg sm:text-2xl md:text-3xl font-black text-white tracking-tight leading-tight">
                 {currentSlide.title}
               </h2>
             </div>
 
-            <p className="text-[11px] sm:text-xs text-gray-300 max-w-md leading-relaxed font-medium line-clamp-2">
+            <p className="text-[10px] sm:text-xs text-gray-300 max-w-md leading-relaxed font-medium line-clamp-2">
               {currentSlide.description}
             </p>
 
-            <div className="pt-1.5 flex flex-wrap items-center justify-center md:justify-start gap-2.5">
+            <div className="pt-1.5 flex flex-wrap items-center justify-center md:justify-start gap-2">
               {/* Authentic Video "Shop now" Pill Button */}
               <button
                 onClick={handleAddToCart}
-                className={`px-7 py-2 rounded-full font-black text-xs shadow-xl transition-all cursor-pointer tracking-wider uppercase flex items-center gap-2 ${
+                className={`px-5 sm:px-7 py-2 rounded-full font-black text-xs shadow-xl transition-all cursor-pointer tracking-wider uppercase flex items-center gap-2 ${
                   addedCutId === currentSlide.id
                     ? 'bg-emerald-400 text-black scale-105 ring-2 ring-emerald-300'
                     : 'bg-white text-black hover:bg-gray-200 hover:scale-105 active:scale-95'
@@ -658,12 +658,12 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
           </div>
 
           {/* Bottom Center: Bold Price Tag Capsule */}
-          <div className="text-center shrink-0 px-5 py-2 rounded-full bg-black/50 ring-1 ring-white/15 backdrop-blur-xl shadow-xl">
+          <div className="text-center shrink-0 px-4 py-1.5 sm:px-5 sm:py-2 rounded-full bg-black/50 ring-1 ring-white/15 backdrop-blur-xl shadow-xl">
             <span className="text-[9px] uppercase font-black text-gray-400 tracking-widest block mb-0.5">
               Price (500g)
             </span>
             <div className="flex items-baseline justify-center gap-1.5">
-              <span className="text-2xl sm:text-3xl font-black text-white tracking-tight">
+              <span className="text-xl sm:text-3xl font-black text-white tracking-tight">
                 {currentSlide.price}
               </span>
               <span className="text-xs text-gray-500 line-through font-bold">
@@ -673,12 +673,12 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
           </div>
 
           {/* Bottom Right: Next / Prev Circular Buttons & Thumbnails */}
-          <div className="flex items-center gap-3 shrink-0 md:pr-10 lg:pr-20">
+          <div className="flex flex-wrap sm:flex-nowrap items-center justify-center gap-2 sm:gap-3 shrink-0 md:pr-10 lg:pr-20">
             {/* Prev / Next buttons */}
             <div className="flex items-center gap-1.5">
               <button 
                 onClick={handlePrev}
-                className="w-9 h-9 rounded-full bg-black/50 hover:bg-white text-white hover:text-black transition-all flex items-center justify-center shadow-lg cursor-pointer hover:scale-110 active:scale-95 ring-1 ring-white/15"
+                className="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-black/50 hover:bg-white text-white hover:text-black transition-all flex items-center justify-center shadow-lg cursor-pointer hover:scale-110 active:scale-95 ring-1 ring-white/15"
                 title="Previous Cut (Left Arrow)"
               >
                 <ChevronLeft className="w-4 h-4" />
@@ -686,7 +686,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
               
               <button 
                 onClick={handleNext}
-                className="w-9 h-9 rounded-full bg-white text-black hover:bg-gray-200 transition-all flex items-center justify-center shadow-lg cursor-pointer hover:scale-110 active:scale-95"
+                className="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-white text-black hover:bg-gray-200 transition-all flex items-center justify-center shadow-lg cursor-pointer hover:scale-110 active:scale-95"
                 title="Next Cut (Right Arrow)"
               >
                 <ChevronRight className="w-4 h-4" />
@@ -694,12 +694,12 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
             </div>
 
             {/* Thumbnail Navigation Bar */}
-            <div className="flex items-center gap-1.5 bg-black/50 p-1 rounded-full ring-1 ring-white/15 backdrop-blur-xl">
+            <div className="flex items-center gap-1 sm:gap-1.5 bg-black/50 p-1 rounded-full ring-1 ring-white/15 backdrop-blur-xl">
               {SLIDES.map((slide, idx) => (
                 <button
                   key={slide.id}
                   onClick={() => changeSlide(idx)}
-                  className={`w-8 h-8 sm:w-9 sm:h-9 rounded-full overflow-hidden transition-all cursor-pointer ${
+                  className={`w-7 h-7 sm:w-9 sm:h-9 rounded-full overflow-hidden transition-all cursor-pointer ${
                     idx === currentIndex
                       ? 'ring-2 ring-white scale-110 shadow-xl'
                       : 'opacity-40 hover:opacity-90'
