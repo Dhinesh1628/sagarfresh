@@ -30,7 +30,7 @@
       "upiId": "pooja@okhdfcbank",
       "createdAt": "2026-02-10T11:20:00.000Z",
       "__v": 0,
-      "updatedAt": "2026-11-09T04:52:31.310Z",
+      "updatedAt": "2026-11-10T07:55:17.022Z",
       "activeCoolersCount": 0,
       "walletBalance": 750,
       "walletTransactions": [
@@ -293,6 +293,20 @@
   ],
   "coolers": [
     {
+      "id": "BOX-BLR-103",
+      "qrCode": "GOMEAT-BOX-BLR-103",
+      "model": "ThermalVault Ultra-3L EPP",
+      "status": "with_customer",
+      "currentOrderId": "ORD-9281",
+      "currentUserId": "usr_customer",
+      "currentUserName": "Pooja Sundaram",
+      "cyclesUsed": 8,
+      "lastSanitizedDate": "2026-11-06",
+      "depositAmount": 250,
+      "maxHoldingHours": 36,
+      "assignedHub": "Mahadevapura Dark Hub"
+    },
+    {
       "_id": "6ae4e9c6d3dfa1be68125774",
       "id": "BOX-BLR-983",
       "qrCode": "SAGAR-BOX-BLR-983",
@@ -307,7 +321,7 @@
       "maxHoldingHours": 36,
       "assignedHub": "Bengaluru Regional Hub Depot",
       "createdAt": "2026-10-30T19:02:30.911Z",
-      "updatedAt": "2026-10-30T19:02:30.917Z",
+      "updatedAt": "2026-11-10T07:55:17.023Z",
       "__v": 0
     },
     {
@@ -674,6 +688,7 @@
   ],
   "coolerReturns": [
     {
+      "_id": "6af2cde575806674016f60ae",
       "id": "RET-623",
       "coolerId": "BOX-BLR-983",
       "orderId": "ORD-AUTO",
@@ -683,28 +698,17 @@
       "userAddress": "Flat 402, Alpine Eco Apartments, Doddanekkundi, Marathahalli, Bengaluru 560037",
       "status": "refunded",
       "requestDate": "2026-11-10T07:55:17.011Z",
-      "completedAt": "2026-11-10T07:55:17.011Z",
-      "refundAmount": 250,
-      "refundPreference": "wallet",
-      "refundMode": "GoMeat Wallet (Instant Store Credit)",
-      "conditionNotes": "Doorstep scan verified: Gel bricks cold, insulation intact.",
-      "courierAssigned": "Hub Inward Specialist Rajeshwar Rao"
-    },
-    {
-      "id": "RET-702",
-      "coolerId": "BOX-BLR-102",
-      "orderId": "ORD-8890",
-      "userId": "usr_customer",
-      "userName": "Pooja Sundaram",
-      "userPhone": "+91 98765 43210",
-      "userAddress": "Flat 402, Alpine Eco Apartments, Doddanekkundi, Marathahalli, Bengaluru 560037",
-      "status": "pickup_requested",
-      "requestDate": "2026-10-29T16:00:00.000Z",
       "scheduledPickupSlot": "Tomorrow Morning, 7:00 AM - 10:00 AM",
       "refundAmount": 250,
-      "refundMode": "UPI (pooja@okhdfcbank)",
-      "notes": "Empty box rinsed with gel packs kept inside the building security reception.",
-      "courierAssigned": "Return Partner Chetan (+91 99002 11842)"
+      "refundMode": "GoMeat Wallet (Instant Store Credit)",
+      "notes": "",
+      "courierAssigned": "Hub Inward Specialist Rajeshwar Rao",
+      "completedAt": "2026-11-10T07:55:17.011Z",
+      "refundPreference": "wallet",
+      "conditionNotes": "Doorstep scan verified: Gel bricks cold, insulation intact.",
+      "createdAt": "2026-11-10T07:55:17.026Z",
+      "updatedAt": "2026-11-10T07:55:17.026Z",
+      "__v": 0
     }
   ]
 }
