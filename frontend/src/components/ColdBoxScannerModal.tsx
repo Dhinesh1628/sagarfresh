@@ -5,6 +5,7 @@ import {
   Zap, Check, Building, Phone, Clock, Wallet, Smartphone, 
   ShieldAlert, Box, Sparkles
 } from 'lucide-react';
+import jsQR from 'jsqr';
 import { api } from '../api';
 
 interface ColdBoxScannerModalProps {
@@ -23,6 +24,10 @@ export const ColdBoxScannerModal: React.FC<ColdBoxScannerModalProps> = ({
   const [activeMode, setActiveMode] = useState<'camera' | 'mock' | 'manual'>('camera');
   const [inputBoxId, setInputBoxId] = useState(initialCoolerId || '');
   const [cameraPermission, setCameraPermission] = useState<'prompt' | 'granted' | 'denied'>('prompt');
+  const [cameraError, setCameraError] = useState<string | null>(null);
+  const [facingMode, setFacingMode] = useState<'environment' | 'user'>('environment');
+  const [isScanning, setIsScanning] = useState(false);
+  const [detectedCode, setDetectedCode] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [inspectionData, setInspectionData] = useState<any | null>(null);
@@ -37,6 +42,8 @@ export const ColdBoxScannerModal: React.FC<ColdBoxScannerModalProps> = ({
 
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const streamRef = useRef<MediaStream | null>(null);
+  const canvasRef = useRef<HTMLCanvasElement | null>(null);
+  const scanLoopRef = useRef<number | null>(null);
 
   // Available sample boxes for instant 1-click inspection testing
   const sampleBoxes = [
@@ -84,7 +91,7 @@ export const ColdBoxScannerModal: React.FC<ColdBoxScannerModalProps> = ({
     return () => {
       stopCamera();
     };
-  }, [isOpen, activeMode]);
+  }, [isOpen, activeMode, facingMode]);
 
   useEffect(() => {
     if (isOpen && initialCoolerId) {
@@ -94,30 +101,122 @@ export const ColdBoxScannerModal: React.FC<ColdBoxScannerModalProps> = ({
 
   const startCamera = async () => {
     try {
-      setError(null);
-      if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+      setCameraError(null);
+      stopCamera();
+
+      if (typeof navigator === 'undefined' || !navigator.mediaDevices?.getUserMedia) {
         setCameraPermission('denied');
-        setActiveMode('mock');
+        setCameraError('Camera API is not supported in this browser environment.');
         return;
       }
 
-      const stream = await navigator.mediaDevices.getUserMedia({
-        video: { facingMode: 'environment', width: { ideal: 1280 }, height: { ideal: 720 } }
-      });
+      let stream: MediaStream;
+      try {
+        stream = await navigator.mediaDevices.getUserMedia({
+          video: {
+            facingMode: { ideal: facingMode },
+            width: { ideal: 1280 },
+            height: { ideal: 720 }
+          },
+          audio: false
+        });
+      } catch (e) {
+        console.warn('Ideal facingMode constraint failed, trying basic camera:', e);
+        // Fallback for laptop webcams or environments that reject facingMode
+        stream = await navigator.mediaDevices.getUserMedia({
+          video: true,
+          audio: false
+        });
+      }
+
       streamRef.current = stream;
       setCameraPermission('granted');
+      setIsScanning(true);
+
       if (videoRef.current) {
         videoRef.current.srcObject = stream;
+        videoRef.current.setAttribute('playsinline', 'true');
+        videoRef.current.onloadedmetadata = () => {
+          videoRef.current?.play().catch(pErr => console.warn('Video play prevented:', pErr));
+          startQrLoop();
+        };
+        // Also call play directly in case loadedmetadata already fired
         videoRef.current.play().catch(() => {});
+        startQrLoop();
       }
     } catch (err: any) {
-      console.warn('Camera access error or desktop environment:', err.message);
+      console.warn('Camera access error or desktop environment:', err);
       setCameraPermission('denied');
-      setActiveMode('mock'); // Gracefully fallback to interactive mock selector
+      setCameraError(
+        err.name === 'NotAllowedError'
+          ? 'Camera permission was denied. Please allow camera permissions in your browser URL bar.'
+          : `Camera could not start: ${err.message || 'Device busy or disconnected'}`
+      );
     }
   };
 
+  const startQrLoop = () => {
+    if (scanLoopRef.current) {
+      cancelAnimationFrame(scanLoopRef.current);
+    }
+
+    if (!canvasRef.current) {
+      canvasRef.current = document.createElement('canvas');
+    }
+    const canvas = canvasRef.current;
+    const ctx = canvas.getContext('2d', { willReadFrequently: true });
+    if (!ctx) return;
+
+    let lastTick = 0;
+
+    const scanFrame = (timestamp: number) => {
+      const video = videoRef.current;
+      if (video && video.readyState === video.HAVE_ENOUGH_DATA) {
+        if (timestamp - lastTick > 150) {
+          lastTick = timestamp;
+          const w = video.videoWidth || 640;
+          const h = video.videoHeight || 480;
+          if (w > 0 && h > 0) {
+            canvas.width = w;
+            canvas.height = h;
+            ctx.drawImage(video, 0, 0, w, h);
+            try {
+              const imageData = ctx.getImageData(0, 0, w, h);
+              const code = jsQR(imageData.data, imageData.width, imageData.height, {
+                inversionAttempts: 'attemptBoth'
+              });
+
+              if (code && code.data) {
+                const raw = code.data.trim();
+                console.log('✅ QR Code Detected:', raw);
+                
+                // Extract BOX-BLR-xxx or raw code
+                const match = raw.match(/BOX-BLR-\d+/i);
+                const foundId = match ? match[0].toUpperCase() : raw;
+
+                setDetectedCode(foundId);
+                handleInspectBox(foundId);
+                setIsScanning(false);
+                return;
+              }
+            } catch (qrErr) {
+              // frame decode error ignored
+            }
+          }
+        }
+      }
+      scanLoopRef.current = requestAnimationFrame(scanFrame);
+    };
+
+    scanLoopRef.current = requestAnimationFrame(scanFrame);
+  };
+
   const stopCamera = () => {
+    if (scanLoopRef.current) {
+      cancelAnimationFrame(scanLoopRef.current);
+      scanLoopRef.current = null;
+    }
+    setIsScanning(false);
     if (streamRef.current) {
       streamRef.current.getTracks().forEach(track => track.stop());
       streamRef.current = null;
@@ -298,15 +397,50 @@ export const ColdBoxScannerModal: React.FC<ColdBoxScannerModalProps> = ({
             
             {/* Viewport Card */}
             {activeMode === 'camera' ? (
-              <div className="relative aspect-square max-h-[340px] rounded-2xl bg-black border border-slate-800 overflow-hidden flex flex-col items-center justify-center shadow-inner">
+              <div className="relative aspect-square max-h-[340px] rounded-2xl bg-black border border-slate-800 overflow-hidden flex flex-col items-center justify-center shadow-inner group">
+                {/* Real Video Stream - ALWAYS mounted to receive stream immediately */}
+                <video
+                  ref={(el) => {
+                    videoRef.current = el;
+                    if (el && streamRef.current && el.srcObject !== streamRef.current) {
+                      el.srcObject = streamRef.current;
+                      el.play().catch(() => {});
+                      startQrLoop();
+                    }
+                  }}
+                  autoPlay
+                  playsInline
+                  muted
+                  className={`w-full h-full object-cover transition-opacity duration-300 ${
+                    cameraPermission === 'granted' ? 'opacity-100' : 'opacity-0'
+                  }`}
+                />
+
                 {cameraPermission === 'granted' ? (
                   <>
-                    <video
-                      ref={videoRef}
-                      playsInline
-                      muted
-                      className="w-full h-full object-cover"
-                    />
+                    {/* Top HUD Bar */}
+                    <div className="absolute top-3 inset-x-3 flex items-center justify-between pointer-events-auto">
+                      <div className="px-2.5 py-1 rounded-full bg-black/70 backdrop-blur-md border border-emerald-500/40 flex items-center gap-1.5 shadow-sm">
+                        <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
+                        <span className="w-2 h-2 rounded-full bg-emerald-400 absolute"></span>
+                        <span className="text-[10px] font-black uppercase tracking-wider text-emerald-300 ml-1.5">
+                          {isScanning ? 'Scanner Active' : 'QR Detected'}
+                        </span>
+                      </div>
+
+                      <div className="flex items-center gap-1.5">
+                        <button
+                          onClick={() => {
+                            setFacingMode(prev => prev === 'environment' ? 'user' : 'environment');
+                          }}
+                          className="px-2.5 py-1 rounded-full bg-black/70 backdrop-blur-md border border-white/10 hover:border-white/30 text-gray-300 hover:text-white text-[10px] font-bold flex items-center gap-1 transition cursor-pointer"
+                          title="Flip camera (Front/Back/Webcam)"
+                        >
+                          <RefreshCw className="w-3 h-3 text-sky-400" />
+                          <span>{facingMode === 'environment' ? 'Rear' : 'Front'}</span>
+                        </button>
+                      </div>
+                    </div>
 
                     {/* Animated Scanning Reticle */}
                     <div className="absolute inset-8 pointer-events-none border-2 border-emerald-400/50 rounded-2xl flex flex-col justify-between p-2 shadow-[0_0_25px_rgba(16,185,129,0.2)]">
@@ -325,29 +459,57 @@ export const ColdBoxScannerModal: React.FC<ColdBoxScannerModalProps> = ({
                       </div>
                     </div>
 
-                    <div className="absolute bottom-3 inset-x-3 bg-black/75 backdrop-blur-md rounded-xl py-1.5 px-3 text-center border border-white/10">
-                      <p className="text-[11px] text-emerald-300 font-bold">
-                        Align the ThermalVault QR code inside the box frame
-                      </p>
+                    {/* Detected Code Flash Notice */}
+                    {detectedCode && (
+                      <div className="absolute top-1/2 -translate-y-1/2 inset-x-6 py-2 px-3 bg-emerald-500 text-black font-black text-xs rounded-xl shadow-2xl flex items-center justify-center gap-2 animate-bounce pointer-events-none">
+                        <CheckCircle2 className="w-4 h-4" />
+                        <span>Box Verified: {detectedCode}</span>
+                      </div>
+                    )}
+
+                    {/* Bottom Status & Quick Action Bar */}
+                    <div className="absolute bottom-3 inset-x-3 flex flex-col gap-1.5 pointer-events-auto">
+                      <div className="bg-black/80 backdrop-blur-md rounded-xl py-1 px-3 text-center border border-white/10">
+                        <p className="text-[11px] text-emerald-300 font-bold">
+                          Align box QR code inside the reticle frame
+                        </p>
+                      </div>
+
+                      <button
+                        onClick={() => handleInspectBox('BOX-BLR-417')}
+                        className="py-1 px-2.5 rounded-lg bg-emerald-500/90 hover:bg-emerald-400 text-black font-extrabold text-[10px] flex items-center justify-center gap-1.5 transition cursor-pointer shadow-md"
+                      >
+                        <Zap className="w-3 h-3" />
+                        <span>Simulate Scan on Live Camera (BOX-BLR-417)</span>
+                      </button>
                     </div>
                   </>
                 ) : (
-                  <div className="p-6 text-center space-y-3">
-                    <div className="w-12 h-12 rounded-full bg-slate-800 text-gray-400 flex items-center justify-center mx-auto">
+                  <div className="absolute inset-0 p-6 flex flex-col items-center justify-center text-center space-y-3 bg-slate-950">
+                    <div className="w-12 h-12 rounded-full bg-slate-800 text-gray-400 flex items-center justify-center">
                       <Camera className="w-6 h-6" />
                     </div>
                     <div>
-                      <p className="font-bold text-sm text-gray-300">Camera Feed Inactive</p>
-                      <p className="text-xs text-gray-500 mt-1 max-w-xs mx-auto">
-                        Allow browser camera permissions or click any sample box below to test with 1-click.
+                      <p className="font-bold text-sm text-gray-200">Camera Feed Inactive</p>
+                      <p className="text-xs text-gray-400 mt-1 max-w-xs">
+                        {cameraError || 'Please allow camera permission in your browser address bar.'}
                       </p>
                     </div>
-                    <button
-                      onClick={() => setActiveMode('mock')}
-                      className="px-4 py-2 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-black font-extrabold text-xs shadow-md transition cursor-pointer"
-                    >
-                      Use Interactive Sample Boxes
-                    </button>
+                    <div className="flex flex-col sm:flex-row gap-2">
+                      <button
+                        onClick={() => startCamera()}
+                        className="px-4 py-2 rounded-xl bg-sky-600 hover:bg-sky-500 text-white font-extrabold text-xs shadow-md transition cursor-pointer flex items-center justify-center gap-1.5"
+                      >
+                        <RefreshCw className="w-3.5 h-3.5" />
+                        <span>Retry Camera</span>
+                      </button>
+                      <button
+                        onClick={() => setActiveMode('mock')}
+                        className="px-4 py-2 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-black font-extrabold text-xs shadow-md transition cursor-pointer"
+                      >
+                        Use Sample Boxes
+                      </button>
+                    </div>
                   </div>
                 )}
               </div>
