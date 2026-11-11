@@ -623,46 +623,97 @@ export const OrderTrackingPage: React.FC<OrderTrackingPageProps> = ({ onNavigate
             </div>
           </div>
 
-          {/* Assigned Delivery Courier Partner Card */}
-          <div className="bg-white dark:bg-slate-900 p-4 sm:p-5 rounded-3xl border border-gray-200 dark:border-slate-800 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-            <div className="flex items-center gap-3.5">
-              <div className="w-12 h-12 rounded-2xl bg-gray-100 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 flex items-center justify-center text-xl shrink-0">
-                🛵
-              </div>
-              <div>
-                <span className="text-[10px] text-gray-400 uppercase font-bold tracking-wider">
-                  Delivery Partner
-                </span>
-                <div className="font-black text-sm text-gray-950 dark:text-white">
-                  {currentOrder.deliveryExecutive || 'Ramesh Kumar (Delivery Partner)'}
+          {/* YOUR DELIVERY PARTNER (Sanitized Privacy-Preserving Rider Card) */}
+          {currentOrder.assignedRider ? (
+            <div className="bg-white dark:bg-slate-900 p-4 sm:p-5 rounded-3xl border border-gray-200 dark:border-slate-800 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+              <div className="flex items-center gap-3.5">
+                {currentOrder.assignedRider.profilePhoto ? (
+                  <img
+                    src={currentOrder.assignedRider.profilePhoto}
+                    alt={currentOrder.assignedRider.firstName}
+                    className="w-12 h-12 rounded-2xl object-cover border border-gray-200 dark:border-slate-700 shadow-2xs shrink-0"
+                  />
+                ) : (
+                  <div className="w-12 h-12 rounded-2xl bg-rose-50 dark:bg-rose-950 text-[#d11243] border border-rose-200 dark:border-rose-900 flex items-center justify-center text-xl shrink-0">
+                    🛵
+                  </div>
+                )}
+                <div>
+                  <span className="text-[10px] text-gray-400 uppercase font-black tracking-wider">
+                    YOUR DELIVERY PARTNER
+                  </span>
+                  <div className="flex items-center gap-2 mt-0.5">
+                    <span className="font-black text-sm text-gray-950 dark:text-white">
+                      Rider: {currentOrder.assignedRider.firstName}
+                    </span>
+                    <span className="px-1.5 py-0.2 rounded bg-rose-100 dark:bg-rose-950 text-[#d11243] dark:text-rose-300 text-[10px] font-bold font-mono">
+                      {currentOrder.assignedRider.riderId}
+                    </span>
+                  </div>
+                  <div className="text-[11px] text-gray-500 dark:text-gray-400 flex items-center gap-2 mt-0.5">
+                    <span>Vehicle: <strong className="text-gray-800 dark:text-gray-200">{currentOrder.assignedRider.vehicle}</strong></span>
+                    <span>•</span>
+                    <span className="text-emerald-700 dark:text-emerald-400 font-bold">⚡ Arrival: {currentOrder.assignedRider.estimatedArrival}</span>
+                  </div>
+                  <div className="text-[11px] text-gray-500 dark:text-gray-400 flex items-center gap-1.5 mt-0.5">
+                    <ShieldCheck className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" />
+                    <span>Contact: <strong className="font-mono text-gray-700 dark:text-gray-300">{currentOrder.assignedRider.maskedPhone}</strong></span>
+                  </div>
                 </div>
-                <div className="text-[11px] text-emerald-700 dark:text-emerald-400 font-semibold flex items-center gap-1.5 mt-0.5">
-                  <ShieldCheck className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" />
-                  <span>Trained for safe handling & cold delivery</span>
-                </div>
               </div>
-            </div>
 
-            <div className="flex items-center gap-2">
-              <button 
-                type="button"
-                onClick={() => alert('Calling your delivery partner...')}
-                className="flex-1 sm:flex-none px-3.5 py-2 bg-gray-900 dark:bg-slate-800 hover:bg-black dark:hover:bg-slate-700 text-white text-xs font-bold rounded-xl flex items-center justify-center gap-1.5 transition cursor-pointer"
-              >
-                <Phone className="w-3.5 h-3.5" />
-                <span>Call Partner</span>
-              </button>
-              
-              <button
-                type="button"
-                onClick={() => alert('Opening WhatsApp chat with customer support...')}
-                className="px-3.5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold rounded-xl flex items-center justify-center gap-1.5 transition cursor-pointer"
-              >
-                <MessageSquare className="w-3.5 h-3.5" />
-                <span>Chat with Us</span>
-              </button>
+              <div className="flex items-center gap-2">
+                <button 
+                  type="button"
+                  onClick={() => alert(`Secure call connected to Delivery Partner ${currentOrder.assignedRider?.firstName || 'Rider'}`)}
+                  className="flex-1 sm:flex-none px-3.5 py-2 bg-gray-900 dark:bg-slate-800 hover:bg-black dark:hover:bg-slate-700 text-white text-xs font-bold rounded-xl flex items-center justify-center gap-1.5 transition cursor-pointer shadow-xs"
+                >
+                  <Phone className="w-3.5 h-3.5 text-emerald-400" />
+                  <span>Secure Call Option</span>
+                </button>
+                
+                <button
+                  type="button"
+                  onClick={() => alert('Opening WhatsApp chat with customer support...')}
+                  className="px-3.5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold rounded-xl flex items-center justify-center gap-1.5 transition cursor-pointer shadow-xs"
+                >
+                  <MessageSquare className="w-3.5 h-3.5" />
+                  <span>Chat with Us</span>
+                </button>
+              </div>
             </div>
-          </div>
+          ) : (
+            <div className="bg-white dark:bg-slate-900 p-4 sm:p-5 rounded-3xl border border-gray-200 dark:border-slate-800 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+              <div className="flex items-center gap-3.5">
+                <div className="w-12 h-12 rounded-2xl bg-gray-100 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 flex items-center justify-center text-xl shrink-0">
+                  🛵
+                </div>
+                <div>
+                  <span className="text-[10px] text-gray-400 uppercase font-black tracking-wider">
+                    YOUR DELIVERY PARTNER
+                  </span>
+                  <div className="font-black text-sm text-gray-950 dark:text-white">
+                    {currentOrder.deliveryExecutive ? currentOrder.deliveryExecutive.split(' ')[0] : 'Assigning Fleet Executive...'}
+                  </div>
+                  <div className="text-[11px] text-emerald-700 dark:text-emerald-400 font-semibold flex items-center gap-1.5 mt-0.5">
+                    <ShieldCheck className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" />
+                    <span>Cold-chain verified • 0°C to 4°C express dispatch</span>
+                  </div>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-2">
+                <button
+                  type="button"
+                  onClick={() => alert('Opening WhatsApp chat with customer support...')}
+                  className="px-3.5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold rounded-xl flex items-center justify-center gap-1.5 transition cursor-pointer shadow-xs"
+                >
+                  <MessageSquare className="w-3.5 h-3.5" />
+                  <span>Chat with Us</span>
+                </button>
+              </div>
+            </div>
+          )}
 
           {/* Order Details & Summary */}
           <div className="bg-white dark:bg-slate-900 p-5 rounded-3xl border border-gray-200 dark:border-slate-800 shadow-sm space-y-4">

@@ -508,5 +508,195 @@ export const api = {
       throw new Error(err.error || 'Failed to submit contact message');
     }
     return res.json();
+  },
+
+  // --- RIDER ECOSYSTEM ---
+  async riderRegister(data: any): Promise<any> {
+    const res = await fetch(`${API_BASE}/rider/register`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data)
+    });
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      throw new Error(err.error || 'Rider registration failed');
+    }
+    return res.json();
+  },
+
+  async riderLogin(data: { email: string; password: string }): Promise<any> {
+    const res = await fetch(`${API_BASE}/rider/login`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data)
+    });
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      const errorObj: any = new Error(err.error || 'Rider authentication failed');
+      errorObj.approvalStatus = err.approvalStatus;
+      throw errorObj;
+    }
+    return res.json();
+  },
+
+  async getRiderProfile(): Promise<any> {
+    const res = await fetch(`${API_BASE}/rider/me`, { headers: getHeaders() });
+    if (!res.ok) throw new Error('Failed to fetch rider profile');
+    return res.json();
+  },
+
+  async setRiderOnline(online: boolean): Promise<any> {
+    const res = await fetch(`${API_BASE}/rider/status`, {
+      method: 'PATCH',
+      headers: getHeaders(),
+      body: JSON.stringify({ online })
+    });
+    if (!res.ok) throw new Error('Failed to update rider online status');
+    return res.json();
+  },
+
+  async getRiderOrders(): Promise<any[]> {
+    const res = await fetch(`${API_BASE}/rider/orders`, { headers: getHeaders() });
+    if (!res.ok) throw new Error('Failed to fetch assigned rider runs');
+    return res.json();
+  },
+
+  async updateRiderLifecycle(orderId: string, data: any): Promise<any> {
+    const res = await fetch(`${API_BASE}/rider/orders/${orderId}/lifecycle`, {
+      method: 'PATCH',
+      headers: getHeaders(),
+      body: JSON.stringify(data)
+    });
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      throw new Error(err.error || 'Failed to update delivery run status');
+    }
+    return res.json();
+  },
+
+  // --- BUTCHER / PARTNER SHOP ECOSYSTEM ---
+  async partnerRegister(data: any): Promise<any> {
+    const res = await fetch(`${API_BASE}/partner/register`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data)
+    });
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      throw new Error(err.error || 'Partner shop registration failed');
+    }
+    return res.json();
+  },
+
+  async partnerLogin(data: { email: string; password: string }): Promise<any> {
+    const res = await fetch(`${API_BASE}/partner/login`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data)
+    });
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      const errorObj: any = new Error(err.error || 'Partner shop login failed');
+      errorObj.approvalStatus = err.approvalStatus;
+      throw errorObj;
+    }
+    return res.json();
+  },
+
+  async getPartnerProfile(): Promise<any> {
+    const res = await fetch(`${API_BASE}/partner/me`, { headers: getHeaders() });
+    if (!res.ok) throw new Error('Failed to fetch partner shop details');
+    return res.json();
+  },
+
+  async getPartnerProducts(): Promise<any[]> {
+    const res = await fetch(`${API_BASE}/partner/products`, { headers: getHeaders() });
+    if (!res.ok) throw new Error('Failed to fetch shop inventory');
+    return res.json();
+  },
+
+  async addPartnerProduct(data: any): Promise<any> {
+    const res = await fetch(`${API_BASE}/partner/products`, {
+      method: 'POST',
+      headers: getHeaders(),
+      body: JSON.stringify(data)
+    });
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      throw new Error(err.error || 'Failed to add cut to catalog');
+    }
+    return res.json();
+  },
+
+  async updatePartnerStock(productId: string, data: { stock?: number; inStock?: boolean }): Promise<any> {
+    const res = await fetch(`${API_BASE}/partner/products/${productId}/stock`, {
+      method: 'PATCH',
+      headers: getHeaders(),
+      body: JSON.stringify(data)
+    });
+    if (!res.ok) throw new Error('Failed to update stock');
+    return res.json();
+  },
+
+  async getPartnerOrders(): Promise<any[]> {
+    const res = await fetch(`${API_BASE}/partner/orders`, { headers: getHeaders() });
+    if (!res.ok) throw new Error('Failed to fetch partner shop prep orders');
+    return res.json();
+  },
+
+  async updatePartnerOrderStatus(orderId: string, data: any): Promise<any> {
+    const res = await fetch(`${API_BASE}/partner/orders/${orderId}/status`, {
+      method: 'PATCH',
+      headers: getHeaders(),
+      body: JSON.stringify(data)
+    });
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      throw new Error(err.error || 'Failed to update butcher order status');
+    }
+    return res.json();
+  },
+
+  // --- ADMIN PORTAL MANAGEMENT ---
+  async getAdminRiders(): Promise<any[]> {
+    const res = await fetch(`${API_BASE}/admin/riders`, { headers: getHeaders() });
+    if (!res.ok) throw new Error('Failed to fetch riders list');
+    return res.json();
+  },
+
+  async updateRiderApproval(riderId: string, approvalStatus: string): Promise<any> {
+    const res = await fetch(`${API_BASE}/admin/riders/${riderId}/approval`, {
+      method: 'PATCH',
+      headers: getHeaders(),
+      body: JSON.stringify({ approvalStatus })
+    });
+    if (!res.ok) throw new Error('Failed to update rider approval status');
+    return res.json();
+  },
+
+  async getAdminPartners(): Promise<any[]> {
+    const res = await fetch(`${API_BASE}/admin/partners`, { headers: getHeaders() });
+    if (!res.ok) throw new Error('Failed to fetch partner shops');
+    return res.json();
+  },
+
+  async updatePartnerApproval(partnerId: string, approvalStatus: string): Promise<any> {
+    const res = await fetch(`${API_BASE}/admin/partners/${partnerId}/approval`, {
+      method: 'PATCH',
+      headers: getHeaders(),
+      body: JSON.stringify({ approvalStatus })
+    });
+    if (!res.ok) throw new Error('Failed to update partner shop approval status');
+    return res.json();
+  },
+
+  async assignOrderRiderPartner(orderId: string, data: { riderId?: string; partnerId?: string }): Promise<any> {
+    const res = await fetch(`${API_BASE}/admin/orders/${orderId}/assign`, {
+      method: 'PATCH',
+      headers: getHeaders(),
+      body: JSON.stringify(data)
+    });
+    if (!res.ok) throw new Error('Failed to assign rider or shop to order');
+    return res.json();
   }
 };

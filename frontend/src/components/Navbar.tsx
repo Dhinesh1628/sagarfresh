@@ -771,59 +771,25 @@ export const Navbar: React.FC<NavbarProps> = ({
                       Order & Temperature Status
                     </button>
 
-                    <div className="border-t border-gray-100 dark:border-slate-800 my-1 pt-1">
-                      <div className="px-3 py-1 text-[9px] font-black uppercase tracking-wider text-gray-400 dark:text-gray-500">
-                        Staff & Partner Portals
+                    {user.role === 'admin' && (
+                      <div className="border-t border-gray-100 dark:border-slate-800 my-1 pt-1">
+                        <button
+                          onClick={() => {
+                            handleAdminTabClick();
+                            setUserDropdownOpen(false);
+                          }}
+                          className="w-full text-left px-3 py-2 hover:bg-amber-50 dark:hover:bg-amber-950/60 text-amber-900 dark:text-amber-300 font-semibold flex items-center justify-between cursor-pointer"
+                        >
+                          <span className="flex items-center gap-1.5">
+                            <span>⚙️</span>
+                            <span>Central Hub Operations</span>
+                          </span>
+                          <span className="px-1.5 py-0.2 rounded bg-amber-100 dark:bg-amber-900/60 text-amber-900 dark:text-amber-200 text-[9px] font-black">
+                            Admin
+                          </span>
+                        </button>
                       </div>
-
-                      <button
-                        onClick={() => {
-                          setCurrentTab('rider');
-                          setUserDropdownOpen(false);
-                        }}
-                        className="w-full text-left px-3 py-2 hover:bg-rose-50 dark:hover:bg-rose-950/40 text-rose-700 dark:text-rose-300 font-bold flex items-center justify-between cursor-pointer"
-                      >
-                        <span className="flex items-center gap-1.5">
-                          <span>🛵</span>
-                          <span>Delivery Rider App</span>
-                        </span>
-                        <span className="px-1.5 py-0.2 rounded bg-rose-100 dark:bg-rose-900 text-[#d11243] dark:text-rose-200 text-[9px] font-black">
-                          Partner
-                        </span>
-                      </button>
-
-                      <button
-                        onClick={() => {
-                          setCurrentTab('butcher');
-                          setUserDropdownOpen(false);
-                        }}
-                        className="w-full text-left px-3 py-2 hover:bg-slate-100 dark:hover:bg-slate-800 text-gray-800 dark:text-gray-200 font-bold flex items-center justify-between cursor-pointer"
-                      >
-                        <span className="flex items-center gap-1.5">
-                          <span>🥩</span>
-                          <span>Butcher Station KDS</span>
-                        </span>
-                        <span className="px-1.5 py-0.2 rounded bg-gray-200 dark:bg-slate-700 text-gray-700 dark:text-gray-300 text-[9px] font-black">
-                          KDS
-                        </span>
-                      </button>
-
-                      <button
-                        onClick={() => {
-                          handleAdminTabClick();
-                          setUserDropdownOpen(false);
-                        }}
-                        className="w-full text-left px-3 py-2 hover:bg-amber-50 dark:hover:bg-amber-950/60 text-amber-900 dark:text-amber-300 font-semibold flex items-center justify-between cursor-pointer"
-                      >
-                        <span className="flex items-center gap-1.5">
-                          <span>⚙️</span>
-                          <span>Central Hub Operations</span>
-                        </span>
-                        <span className="px-1.5 py-0.2 rounded bg-amber-100 dark:bg-amber-900/60 text-amber-900 dark:text-amber-200 text-[9px] font-black">
-                          Admin
-                        </span>
-                      </button>
-                    </div>
+                    )}
 
                     <div className="border-t border-gray-100 dark:border-slate-800 my-1"></div>
 
@@ -1019,35 +985,6 @@ export const Navbar: React.FC<NavbarProps> = ({
             className="w-full text-left py-2 px-3 rounded-lg bg-rose-50 dark:bg-rose-950/60 text-[#d11243] dark:text-rose-400 font-semibold"
           >
             Box Returns (₹250 Refund)
-          </button>
-          <button
-            onClick={() => { 
-              setCurrentTab('rider'); 
-              setMobileMenuOpen(false); 
-            }}
-            className="w-full text-left py-2 px-3 rounded-lg bg-rose-100 dark:bg-rose-950 text-[#d11243] dark:text-rose-300 font-bold flex items-center justify-between"
-          >
-            <span>🛵 Rider App (Delivery Partner)</span>
-            <span className="text-[10px] px-1.5 py-0.5 rounded bg-[#d11243] text-white font-bold">Rider</span>
-          </button>
-          <button
-            onClick={() => { 
-              setCurrentTab('butcher'); 
-              setMobileMenuOpen(false); 
-            }}
-            className="w-full text-left py-2 px-3 rounded-lg bg-gray-100 dark:bg-slate-800 text-gray-900 dark:text-gray-100 font-bold flex items-center justify-between"
-          >
-            <span>🥩 Butcher Station (KDS & Prep)</span>
-            <span className="text-[10px] px-1.5 py-0.5 rounded bg-gray-800 text-white font-bold">Butcher</span>
-          </button>
-          <button
-            onClick={() => { 
-              handleAdminTabClick(); 
-              setMobileMenuOpen(false); 
-            }}
-            className="w-full text-left py-2 px-3 rounded-lg bg-amber-50 dark:bg-amber-950/60 text-amber-900 dark:text-amber-300 font-semibold"
-          >
-            Operations Hub Admin
           </button>
         </div>
       )}

@@ -14,7 +14,18 @@ export interface User {
   id: string;
   name: string;
   email: string;
-  role: 'customer' | 'admin';
+  role: 'customer' | 'admin' | 'rider' | 'partner' | 'delivery';
+  approvalStatus?: 'approved' | 'rejected' | 'suspended' | 'pending_approval';
+  shopId?: string;
+  shopName?: string;
+  vehicleType?: string;
+  vehicleNumber?: string;
+  licenseNumber?: string;
+  online?: boolean;
+  earningsToday?: number;
+  deliveriesToday?: number;
+  rating?: number;
+  fssaiNumber?: string;
   phone?: string;
   city?: string;
   address?: string;
@@ -68,6 +79,9 @@ export interface Product {
   imageUrl?: string;
   vacuumSealed?: boolean;
   featured?: boolean;
+  partnerId?: string;
+  partnerName?: string;
+  inStock?: boolean;
   weightOptions?: WeightOption[];
   priceUpdatedAt?: string;
 }
@@ -189,6 +203,7 @@ export interface Order {
   deliveryNotes?: string;
   tipAmount?: number;
   deliveryPin?: string;
+  coolerReturned?: boolean;
   coolerDetails?: Cooler;
   weighedWeight?: string;
   batchLotId?: string;
@@ -197,6 +212,25 @@ export interface Order {
   podImage?: string;
   handoverNotes?: string;
   deliveredAt?: string;
+  riderId?: string;
+  riderName?: string;
+  riderFullName?: string;
+  riderPhone?: string;
+  riderVehicle?: string;
+  riderEta?: string;
+  partnerId?: string;
+  partnerName?: string;
+  lifecycleStatus?: string;
+  assignedRider?: {
+    firstName: string;
+    riderId: string;
+    vehicle: string;
+    status: string;
+    estimatedArrival: string;
+    maskedPhone: string;
+    secureCall: boolean;
+    profilePhoto?: string;
+  };
   riderLocation?: {
     lat: number;
     lng: number;

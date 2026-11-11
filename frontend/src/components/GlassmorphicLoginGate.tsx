@@ -57,7 +57,12 @@ export const GlassmorphicLoginGate: React.FC<GlassmorphicLoginGateProps> = ({
       await login(identifier.trim(), password);
       if (onCloseModal) onCloseModal();
     } catch (err: any) {
-      setError(err.message || 'Invalid credentials. Please verify your details.');
+      const msg = err.message || '';
+      if (msg.includes('JSON') || msg.includes('token') || msg.includes('server error')) {
+        setError('Invalid credentials or service temporarily initializing. Please try again.');
+      } else {
+        setError(msg || 'Invalid credentials. Please verify your details.');
+      }
     } finally {
       setLoading(false);
     }

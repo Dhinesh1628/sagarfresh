@@ -32,7 +32,9 @@ import {
   Wallet,
   QrCode,
   Camera,
-  Activity
+  Activity,
+  Bike,
+  Store
 } from 'lucide-react';
 import type { AdminMetrics, Order, Cooler, CoolerReturn, Product, OrderPipelineStatus, User } from '../types';
 import { api } from '../api';
@@ -42,13 +44,15 @@ import { ColdBoxScannerModal } from '../components/ColdBoxScannerModal';
 
 export const AdminDashboardPage: React.FC = () => {
   const { user } = useAuth();
-  const [activeTab, setActiveTab] = useState<'overview' | 'orders' | 'products' | 'inventory' | 'payments' | 'coolers' | 'customers'>('overview');
+  const [activeTab, setActiveTab] = useState<'overview' | 'orders' | 'products' | 'inventory' | 'payments' | 'coolers' | 'customers' | 'riders' | 'partners'>('overview');
   const [metrics, setMetrics] = useState<AdminMetrics | null>(null);
   const [orders, setOrders] = useState<Order[]>([]);
   const [coolers, setCoolers] = useState<Cooler[]>([]);
   const [returns, setReturns] = useState<CoolerReturn[]>([]);
   const [products, setProducts] = useState<Product[]>([]);
   const [customers, setCustomers] = useState<User[]>([]);
+  const [adminRiders, setAdminRiders] = useState<User[]>([]);
+  const [adminPartners, setAdminPartners] = useState<User[]>([]);
   const [actionNotice, setActionNotice] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -112,14 +116,16 @@ export const AdminDashboardPage: React.FC = () => {
   const loadAllData = async () => {
     try {
       setLoading(true);
-      const [m, o, c, r, p, u, ca] = await Promise.all([
+      const [m, o, c, r, p, u, ca, ridersList, partnersList] = await Promise.all([
         api.getAdminMetrics().catch(() => null),
         api.getOrders().catch(() => []),
         api.getCoolers().catch(() => []),
         api.getReturns().catch(() => []),
         api.getProducts().catch(() => []),
         api.getAdminUsers().catch(() => []),
-        api.getCoolerAnalytics().catch(() => null)
+        api.getCoolerAnalytics().catch(() => null),
+        api.getAdminRiders().catch(() => []),
+        api.getAdminPartners().catch(() => [])
       ]);
       if (m) setMetrics(m);
       setOrders(o || []);
@@ -128,10 +134,32 @@ export const AdminDashboardPage: React.FC = () => {
       setProducts(p || []);
       setCustomers(u || []);
       if (ca) setCoolerAnalytics(ca);
+      if (Array.isArray(ridersList)) setAdminRiders(ridersList);
+      if (Array.isArray(partnersList)) setAdminPartners(partnersList);
     } catch (err) {
       console.error('Failed to load operations data:', err);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleRiderApproval = async (riderId: string, status: string) => {
+    try {
+      await api.updateRiderApproval(riderId, status);
+      showNotification(`Rider status set to: ${status.toUpperCase()}`);
+      setAdminRiders(prev => prev.map(r => r.id === riderId ? { ...r, approvalStatus: status as any } : r));
+    } catch (err: any) {
+      alert(err.message || 'Failed to update rider approval');
+    }
+  };
+
+  const handlePartnerApproval = async (partnerId: string, status: string) => {
+    try {
+      await api.updatePartnerApproval(partnerId, status);
+      showNotification(`Shop partner status set to: ${status.toUpperCase()}`);
+      setAdminPartners(prev => prev.map(p => p.id === partnerId ? { ...p, approvalStatus: status as any } : p));
+    } catch (err: any) {
+      alert(err.message || 'Failed to update partner approval');
     }
   };
 
@@ -697,6 +725,40 @@ export const AdminDashboardPage: React.FC = () => {
           <Users className="w-3.5 h-3.5" />
           <span>Customer Details</span>
           <span className="px-1.5 py-0.2 bg-sky-500 text-white rounded text-[10px] font-black">{totalCustomersCount}</span>
+        </button>
+
+        <button
+          onClick={() => setActiveTab('riders')}
+          className={`px-3 py-1.5 rounded-xl text-xs font-bold cursor-pointer transition flex items-center gap-1.5 ${
+            activeTab === 'riders'
+              ? 'bg-[#d11243] text-white shadow-2xs'
+              : 'bg-white dark:bg-slate-800 text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-slate-700'
+          }`}
+        >
+          <Bike className="w-3.5 h-3.5" />
+          <span>Rider Applications</span>
+          <span className="px-1.5 py-0.2 bg-amber-500 text-white rounded text-[10px] font-black">
+            {adminRiders.filter(r => r.approvalStatus === 'pending_approval').length > 0
+              ? `${adminRiders.filter(r => r.approvalStatus === 'pending_approval').length} pending`
+              : adminRiders.length}
+          </span>
+        </button>
+
+        <button
+          onClick={() => setActiveTab('partners')}
+          className={`px-3 py-1.5 rounded-xl text-xs font-bold cursor-pointer transition flex items-center gap-1.5 ${
+            activeTab === 'partners'
+              ? 'bg-[#d11243] text-white shadow-2xs'
+              : 'bg-white dark:bg-slate-800 text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-slate-700'
+          }`}
+        >
+          <Store className="w-3.5 h-3.5" />
+          <span>Partner Shops</span>
+          <span className="px-1.5 py-0.2 bg-purple-500 text-white rounded text-[10px] font-black">
+            {adminPartners.filter(p => p.approvalStatus === 'pending_approval').length > 0
+              ? `${adminPartners.filter(p => p.approvalStatus === 'pending_approval').length} pending`
+              : adminPartners.length}
+          </span>
         </button>
       </div>
 
@@ -1712,7 +1774,271 @@ export const AdminDashboardPage: React.FC = () => {
       )}
 
       {/* ======================================================== */}
+      {/* TAB 8: RIDER FLEET & APPLICATIONS MANAGEMENT */}
+      {/* ======================================================== */}
+      {activeTab === 'riders' && (
+        <div className="space-y-4">
+          <div className="bg-white dark:bg-slate-900 rounded-2xl border border-gray-200 dark:border-slate-800 overflow-hidden shadow-2xs text-xs">
+            <div className="p-4 border-b border-gray-100 dark:border-slate-800 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+              <div>
+                <span className="font-extrabold text-gray-950 dark:text-white text-sm">
+                  Rider Applications & Electric Vehicle Fleet ({adminRiders.length} Registered)
+                </span>
+                <span className="text-[11px] font-normal text-gray-500 block">
+                  Review applicant licenses, approve onboarding applications, and monitor delivery fleet status.
+                </span>
+              </div>
+
+              <div className="flex items-center gap-2">
+                <span className="px-2.5 py-1 rounded-xl bg-amber-50 dark:bg-amber-950/60 text-amber-800 dark:text-amber-300 font-bold text-[11px] border border-amber-200 dark:border-amber-800">
+                  {adminRiders.filter(r => r.approvalStatus === 'pending_approval').length} Pending Review
+                </span>
+                <span className="px-2.5 py-1 rounded-xl bg-emerald-50 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300 font-bold text-[11px] border border-emerald-200 dark:border-emerald-800">
+                  {adminRiders.filter(r => r.approvalStatus === 'approved').length} Approved Riders
+                </span>
+              </div>
+            </div>
+
+            <div className="overflow-x-auto">
+              <table className="w-full text-left">
+                <thead className="bg-gray-50 dark:bg-slate-800/80 text-gray-500 dark:text-gray-400 border-b border-gray-200 dark:border-slate-700 text-[11px]">
+                  <tr>
+                    <th className="py-3 px-4">Rider Executive</th>
+                    <th className="py-3 px-4">Phone / City</th>
+                    <th className="py-3 px-4">Vehicle & Registration</th>
+                    <th className="py-3 px-4">Driving License</th>
+                    <th className="py-3 px-4">Status</th>
+                    <th className="py-3 px-4 text-right">Operations Action</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-gray-100 dark:divide-slate-800 text-gray-700 dark:text-gray-200">
+                  {adminRiders.length === 0 ? (
+                    <tr>
+                      <td colSpan={6} className="py-8 text-center text-gray-500">
+                        No registered riders found.
+                      </td>
+                    </tr>
+                  ) : (
+                    adminRiders.map((r) => {
+                      const isPending = r.approvalStatus === 'pending_approval';
+                      const isApproved = r.approvalStatus === 'approved';
+                      const isSuspended = r.approvalStatus === 'suspended';
+
+                      return (
+                        <tr key={r.id} className="hover:bg-gray-50 dark:hover:bg-slate-800/50">
+                          <td className="py-3 px-4">
+                            <div className="font-extrabold text-gray-950 dark:text-white flex items-center gap-1.5">
+                              <span>{r.name}</span>
+                              {r.online && (
+                                <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" title="Online & Ready" />
+                              )}
+                            </div>
+                            <div className="text-gray-400 text-[10px] font-mono">{r.email}</div>
+                          </td>
+                          <td className="py-3 px-4">
+                            <div>{r.phone || '+91 97412 •••01'}</div>
+                            <div className="text-gray-400 text-[10px]">{r.city || 'Bengaluru'}</div>
+                          </td>
+                          <td className="py-3 px-4">
+                            <div className="font-bold">{r.vehicleType || 'Electric 2-Wheeler'}</div>
+                            <div className="text-gray-400 font-mono text-[10px]">{r.vehicleNumber || 'KA-04-EV-TEMP'}</div>
+                          </td>
+                          <td className="py-3 px-4 font-mono text-[11px]">
+                            {r.licenseNumber || 'DL-TEMP-PENDING'}
+                          </td>
+                          <td className="py-3 px-4">
+                            <span className={`px-2 py-0.5 rounded-full text-[10px] font-extrabold uppercase ${
+                              isApproved
+                                ? 'bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300'
+                                : isPending
+                                ? 'bg-amber-100 text-amber-800 dark:bg-amber-950 dark:text-amber-300'
+                                : 'bg-rose-100 text-rose-800 dark:bg-rose-950 dark:text-rose-300'
+                            }`}>
+                              {r.approvalStatus || 'APPROVED'}
+                            </span>
+                          </td>
+                          <td className="py-3 px-4 text-right">
+                            <div className="flex items-center justify-end gap-1.5">
+                              {isPending && (
+                                <>
+                                  <button
+                                    onClick={() => handleRiderApproval(r.id, 'approved')}
+                                    className="px-2.5 py-1 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg font-bold text-[11px] cursor-pointer shadow-xs"
+                                  >
+                                    Approve
+                                  </button>
+                                  <button
+                                    onClick={() => handleRiderApproval(r.id, 'rejected')}
+                                    className="px-2.5 py-1 bg-rose-600 hover:bg-rose-700 text-white rounded-lg font-bold text-[11px] cursor-pointer"
+                                  >
+                                    Reject
+                                  </button>
+                                </>
+                              )}
+
+                              {isApproved && (
+                                <button
+                                  onClick={() => handleRiderApproval(r.id, 'suspended')}
+                                  className="px-2.5 py-1 bg-gray-100 dark:bg-slate-800 hover:bg-amber-100 dark:hover:bg-amber-950 text-amber-700 dark:text-amber-300 rounded-lg font-bold text-[11px] cursor-pointer"
+                                >
+                                  Suspend
+                                </button>
+                              )}
+
+                              {(isSuspended || r.approvalStatus === 'rejected') && (
+                                <button
+                                  onClick={() => handleRiderApproval(r.id, 'approved')}
+                                  className="px-2.5 py-1 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg font-bold text-[11px] cursor-pointer"
+                                >
+                                  Re-Activate
+                                </button>
+                              )}
+                            </div>
+                          </td>
+                        </tr>
+                      );
+                    })
+                  )}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ======================================================== */}
+      {/* TAB 9: BUTCHER / PARTNER SHOP MANAGEMENT */}
+      {/* ======================================================== */}
+      {activeTab === 'partners' && (
+        <div className="space-y-4">
+          <div className="bg-white dark:bg-slate-900 rounded-2xl border border-gray-200 dark:border-slate-800 overflow-hidden shadow-2xs text-xs">
+            <div className="p-4 border-b border-gray-100 dark:border-slate-800 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+              <div>
+                <span className="font-extrabold text-gray-950 dark:text-white text-sm">
+                  Partner Butcher Shops & Seafood Stations ({adminPartners.length} Registered)
+                </span>
+                <span className="text-[11px] font-normal text-gray-500 block">
+                  Verify FSSAI licenses, approve shop applications, and audit partner preparation stations.
+                </span>
+              </div>
+
+              <div className="flex items-center gap-2">
+                <span className="px-2.5 py-1 rounded-xl bg-purple-50 dark:bg-purple-950/60 text-purple-800 dark:text-purple-300 font-bold text-[11px] border border-purple-200 dark:border-purple-800">
+                  {adminPartners.filter(p => p.approvalStatus === 'pending_approval').length} Pending Review
+                </span>
+                <span className="px-2.5 py-1 rounded-xl bg-emerald-50 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300 font-bold text-[11px] border border-emerald-200 dark:border-emerald-800">
+                  {adminPartners.filter(p => p.approvalStatus === 'approved').length} Approved Stations
+                </span>
+              </div>
+            </div>
+
+            <div className="overflow-x-auto">
+              <table className="w-full text-left">
+                <thead className="bg-gray-50 dark:bg-slate-800/80 text-gray-500 dark:text-gray-400 border-b border-gray-200 dark:border-slate-700 text-[11px]">
+                  <tr>
+                    <th className="py-3 px-4">Partner Shop</th>
+                    <th className="py-3 px-4">Owner / Contact</th>
+                    <th className="py-3 px-4">Location & Address</th>
+                    <th className="py-3 px-4">FSSAI License</th>
+                    <th className="py-3 px-4">Status</th>
+                    <th className="py-3 px-4 text-right">Operations Action</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-gray-100 dark:divide-slate-800 text-gray-700 dark:text-gray-200">
+                  {adminPartners.length === 0 ? (
+                    <tr>
+                      <td colSpan={6} className="py-8 text-center text-gray-500">
+                        No partner shops registered yet.
+                      </td>
+                    </tr>
+                  ) : (
+                    adminPartners.map((p) => {
+                      const isPending = p.approvalStatus === 'pending_approval';
+                      const isApproved = p.approvalStatus === 'approved';
+                      const isSuspended = p.approvalStatus === 'suspended';
+
+                      return (
+                        <tr key={p.id} className="hover:bg-gray-50 dark:hover:bg-slate-800/50">
+                          <td className="py-3 px-4">
+                            <div className="font-extrabold text-gray-950 dark:text-white">
+                              {p.shopName || p.name}
+                            </div>
+                            <div className="text-gray-400 text-[10px] font-mono">ID: {p.shopId || p.id}</div>
+                          </td>
+                          <td className="py-3 px-4">
+                            <div className="font-bold">{p.name}</div>
+                            <div className="text-gray-400 text-[10px]">{p.phone || p.email}</div>
+                          </td>
+                          <td className="py-3 px-4">
+                            <div className="max-w-xs truncate">{p.address || 'Bengaluru Central'}</div>
+                            <div className="text-gray-400 text-[10px]">{p.city || 'Bengaluru'}</div>
+                          </td>
+                          <td className="py-3 px-4 font-mono text-[11px]">
+                            {p.fssaiNumber || '11224330000491'}
+                          </td>
+                          <td className="py-3 px-4">
+                            <span className={`px-2 py-0.5 rounded-full text-[10px] font-extrabold uppercase ${
+                              isApproved
+                                ? 'bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300'
+                                : isPending
+                                ? 'bg-amber-100 text-amber-800 dark:bg-amber-950 dark:text-amber-300'
+                                : 'bg-rose-100 text-rose-800 dark:bg-rose-950 dark:text-rose-300'
+                            }`}>
+                              {p.approvalStatus || 'APPROVED'}
+                            </span>
+                          </td>
+                          <td className="py-3 px-4 text-right">
+                            <div className="flex items-center justify-end gap-1.5">
+                              {isPending && (
+                                <>
+                                  <button
+                                    onClick={() => handlePartnerApproval(p.id, 'approved')}
+                                    className="px-2.5 py-1 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg font-bold text-[11px] cursor-pointer shadow-xs"
+                                  >
+                                    Approve
+                                  </button>
+                                  <button
+                                    onClick={() => handlePartnerApproval(p.id, 'rejected')}
+                                    className="px-2.5 py-1 bg-rose-600 hover:bg-rose-700 text-white rounded-lg font-bold text-[11px] cursor-pointer"
+                                  >
+                                    Reject
+                                  </button>
+                                </>
+                              )}
+
+                              {isApproved && (
+                                <button
+                                  onClick={() => handlePartnerApproval(p.id, 'suspended')}
+                                  className="px-2.5 py-1 bg-gray-100 dark:bg-slate-800 hover:bg-amber-100 dark:hover:bg-amber-950 text-amber-700 dark:text-amber-300 rounded-lg font-bold text-[11px] cursor-pointer"
+                                >
+                                  Suspend
+                                </button>
+                              )}
+
+                              {(isSuspended || p.approvalStatus === 'rejected') && (
+                                <button
+                                  onClick={() => handlePartnerApproval(p.id, 'approved')}
+                                  className="px-2.5 py-1 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg font-bold text-[11px] cursor-pointer"
+                                >
+                                  Re-Activate
+                                </button>
+                              )}
+                            </div>
+                          </td>
+                        </tr>
+                      );
+                    })
+                  )}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ======================================================== */}
       {/* MODAL 1: ORDER INSPECTION DRAWER */}
+      {/* ======================================================== */}
       {/* ======================================================== */}
       {selectedOrder && (
         <div className="fixed inset-0 z-50 overflow-y-auto flex items-center justify-center p-4">

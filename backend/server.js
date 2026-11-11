@@ -195,9 +195,26 @@ const requireAdmin = (req, res, next) => {
   next();
 };
 
+const requireRole = (...roles) => (req, res, next) => {
+  if (!req.user || (!roles.includes(req.user.role) && req.user.role !== 'admin')) {
+    return res.status(403).json({ error: `Access forbidden: Requires ${roles.join(' or ')} permission` });
+  }
+  next();
+};
+
+const requireApproved = (req, res, next) => {
+  if (['rider', 'partner'].includes(req.user?.role) && req.user.approvalStatus !== 'approved' && req.user.role !== 'admin') {
+    return res.status(403).json({ 
+      error: `Your account is pending administrator approval. Please wait for operations verification.`,
+      approvalStatus: req.user.approvalStatus || 'pending_approval'
+    });
+  }
+  next();
+};
+
 const createToken = (user) => {
   return jwt.sign(
-    { id: user.id, email: user.email, role: user.role, name: user.name },
+    { id: user.id, email: user.email, role: user.role, name: user.name, shopId: user.shopId },
     JWT_SECRET,
     { expiresIn: '7d' }
   );
@@ -525,13 +542,430 @@ app.get('/api/orders/:id', authenticate, (req, res) => {
     return res.status(404).json({ error: 'Order not found' });
   }
 
-  const isFleetOrPartner = req.user.role === 'admin' || req.user.role === 'delivery' || req.user.role === 'partner' || req.query.all === 'true';
+  const isFleetOrPartner = req.user.role === 'admin' || req.user.role === 'delivery' || req.user.role === 'rider' || req.user.role === 'partner' || req.query.all === 'true';
   if (!isFleetOrPartner && order.userId !== req.user.id) {
     return res.status(403).json({ error: 'Access denied' });
   }
 
   const cooler = db.findById('coolers', order.coolerId);
-  res.json({ ...order, coolerDetails: cooler });
+
+  // Sanitize rider data for customer view (Privacy Guardrail)
+  let assignedRider = null;
+  if (order.riderId || order.riderName || order.deliveryExecutive) {
+    const rawRider = order.riderId ? db.findById('users', order.riderId) : null;
+    const fullName = order.riderFullName || rawRider?.name || order.riderName || 'Rahul';
+    assignedRider = {
+      firstName: fullName.split(' ')[0],
+      riderId: rawRider?.id ? `RD-${rawRider.id.slice(-4).toUpperCase()}` : 'RD-819',
+      vehicle: order.riderVehicle || (rawRider?.vehicleType ? `${rawRider.vehicleType} (${rawRider.vehicleNumber || ''})` : 'EV 2-Wheeler (KA-04-EV-819)'),
+      status: order.lifecycleStatus || order.status || 'Out for Delivery',
+      estimatedArrival: order.riderEta || '25–35 minutes',
+      maskedPhone: order.riderPhone || (rawRider?.phone ? `${rawRider.phone.slice(0, 9)} •••${rawRider.phone.slice(-2)}` : '+91 97412 •••01'),
+      secureCall: true,
+      profilePhoto: rawRider?.avatar || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=200&q=80'
+    };
+  }
+
+  res.json({
+    ...order,
+    coolerDetails: cooler,
+    assignedRider
+  });
+});
+
+// ==========================================
+// 4A. RIDER ECOSYSTEM ENDPOINTS
+// ==========================================
+
+app.post('/api/rider/register', (req, res) => {
+  const { name, email, phone, password, address, vehicleType, vehicleNumber, licenseNumber } = req.body;
+  if (!name || !email || !password || !phone) {
+    return res.status(400).json({ error: 'Name, email, phone, and password are required for rider onboarding' });
+  }
+
+  const existing = db.get('users').find(u => u.email.toLowerCase() === email.toLowerCase());
+  if (existing) {
+    return res.status(409).json({ error: 'An account with this email already exists' });
+  }
+
+  const newRider = {
+    id: `usr_rider_${uuidv4().slice(0, 6)}`,
+    name,
+    email: email.toLowerCase(),
+    phone,
+    password: bcrypt.hashSync(password, 10),
+    role: 'rider',
+    approvalStatus: 'pending_approval',
+    address: address || 'Bengaluru',
+    vehicleType: vehicleType || 'Electric 2-Wheeler (EV)',
+    vehicleNumber: vehicleNumber || 'KA-04-EV-TEMP',
+    licenseNumber: licenseNumber || 'DL-TEMP-PENDING',
+    online: false,
+    earningsToday: 0,
+    deliveriesToday: 0,
+    rating: 4.9,
+    createdAt: new Date().toISOString()
+  };
+
+  db.insert('users', newRider);
+  const { password: _, ...safeRider } = newRider;
+  res.status(201).json({
+    message: 'Rider registration submitted. Your application is under review by Operations.',
+    rider: safeRider
+  });
+});
+
+app.post('/api/rider/login', (req, res) => {
+  const { email, password } = req.body;
+  const input = (email || '').toLowerCase().trim();
+  if (!input || !password) {
+    return res.status(400).json({ error: 'Rider email/phone and password required' });
+  }
+
+  const user = db.get('users').find(u => {
+    if (u.email && u.email.toLowerCase() === input) return true;
+    if (u.phone && u.phone.replace(/[^0-9]/g, '').endsWith(input.replace(/[^0-9]/g, ''))) return true;
+    return false;
+  });
+
+  if (!user || !bcrypt.compareSync(password, user.password)) {
+    return res.status(401).json({ error: 'Invalid credentials. Please verify your rider credentials.' });
+  }
+
+  if (user.role !== 'rider' && user.role !== 'admin') {
+    return res.status(403).json({ error: 'Access denied: This login is exclusively for GoMeat Delivery Riders.' });
+  }
+
+  if (user.approvalStatus === 'pending_approval') {
+    return res.status(403).json({
+      error: 'Your rider application is currently Pending Approval from the Operations Admin.',
+      approvalStatus: 'pending_approval'
+    });
+  }
+
+  if (user.approvalStatus === 'rejected') {
+    return res.status(403).json({
+      error: 'Your rider application was not approved by Operations.',
+      approvalStatus: 'rejected'
+    });
+  }
+
+  if (user.approvalStatus === 'suspended') {
+    return res.status(403).json({
+      error: 'Your rider partner account is currently suspended.',
+      approvalStatus: 'suspended'
+    });
+  }
+
+  const token = createToken(user);
+  const { password: _, ...userWithoutPw } = user;
+  res.json({ user: userWithoutPw, token });
+});
+
+app.get('/api/rider/me', authenticate, requireRole('rider'), (req, res) => {
+  const { password: _, ...safeRider } = req.user;
+  res.json(safeRider);
+});
+
+app.patch('/api/rider/status', authenticate, requireRole('rider'), (req, res) => {
+  const { online } = req.body;
+  const updated = db.update('users', req.user.id, { online: !!online });
+  const { password: _, ...safeRider } = updated;
+  res.json(safeRider);
+});
+
+app.get('/api/rider/orders', authenticate, requireRole('rider'), (req, res) => {
+  const allOrders = db.get('orders');
+  const assigned = allOrders.filter(o => o.riderId === req.user.id || (o.riderFullName === req.user.name));
+  res.json(assigned);
+});
+
+app.patch('/api/rider/orders/:id/lifecycle', authenticate, requireRole('rider'), (req, res) => {
+  const { lifecycleStatus, pin, coolerReturned, podImage, notes } = req.body;
+  const order = db.findById('orders', req.params.id);
+  if (!order) {
+    return res.status(404).json({ error: 'Order not found' });
+  }
+
+  if (order.riderId && order.riderId !== req.user.id && req.user.role !== 'admin') {
+    return res.status(403).json({ error: 'You are not assigned to this delivery run' });
+  }
+
+  if (lifecycleStatus === 'DELIVERED') {
+    return handleOrderHandover(req, res);
+  }
+
+  const updates = {
+    lifecycleStatus: lifecycleStatus || order.lifecycleStatus,
+    status: lifecycleStatus === 'OUT_FOR_DELIVERY' ? 'Out for Delivery' : (order.status || lifecycleStatus),
+    riderId: req.user.id,
+    riderName: req.user.name.split(' ')[0],
+    riderFullName: req.user.name,
+    riderPhone: req.user.phone || '+91 97412 •••01',
+    riderVehicle: req.user.vehicleType ? `${req.user.vehicleType} (${req.user.vehicleNumber || ''})` : 'EV 2-Wheeler'
+  };
+
+  const now = new Date();
+  const timeStr = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+  updates.tempLog = [
+    ...(order.tempLog || []),
+    {
+      time: timeStr,
+      temp: order.liveTemp || 1.4,
+      event: `Rider update: ${lifecycleStatus} by ${req.user.name}`
+    }
+  ];
+
+  const updatedOrder = db.update('orders', order.id, updates);
+  res.json(updatedOrder);
+});
+
+// ==========================================
+// 4B. BUTCHER / PARTNER SHOP ENDPOINTS
+// ==========================================
+
+app.post('/api/partner/register', (req, res) => {
+  const { shopName, ownerName, email, phone, password, address, fssaiNumber, categories, operatingHours, description } = req.body;
+  if (!shopName || !ownerName || !email || !password) {
+    return res.status(400).json({ error: 'Shop name, owner name, email, and password are required' });
+  }
+
+  const existing = db.get('users').find(u => u.email.toLowerCase() === email.toLowerCase());
+  if (existing) {
+    return res.status(409).json({ error: 'An account with this email already exists' });
+  }
+
+  const shopId = `shop_${uuidv4().slice(0, 8)}`;
+  const newPartner = {
+    id: `usr_partner_${uuidv4().slice(0, 6)}`,
+    name: ownerName,
+    shopName,
+    shopId,
+    email: email.toLowerCase(),
+    phone: phone || '+91 98000 00000',
+    password: bcrypt.hashSync(password, 10),
+    role: 'partner',
+    approvalStatus: 'pending_approval',
+    address: address || 'Bengaluru Coastal Harbor Depot',
+    fssaiNumber: fssaiNumber || 'FSSAI-REG-PENDING',
+    categories: categories || ['Fresh Chicken', 'Tender Mutton', 'Fish & Seafood'],
+    operatingHours: operatingHours || '05:30 AM - 09:30 PM',
+    description: description || 'Daily artisanal meat butchering station & seafood lot',
+    createdAt: new Date().toISOString()
+  };
+
+  db.insert('users', newPartner);
+  const { password: _, ...safePartner } = newPartner;
+  res.status(201).json({
+    message: 'Partner shop application submitted successfully. Pending Admin verification.',
+    partner: safePartner
+  });
+});
+
+app.post('/api/partner/login', (req, res) => {
+  const { email, password } = req.body;
+  const input = (email || '').toLowerCase().trim();
+  if (!input || !password) {
+    return res.status(400).json({ error: 'Partner business email and password required' });
+  }
+
+  const user = db.get('users').find(u => {
+    if (u.email && u.email.toLowerCase() === input) return true;
+    if (u.phone && u.phone.replace(/[^0-9]/g, '').endsWith(input.replace(/[^0-9]/g, ''))) return true;
+    return false;
+  });
+
+  if (!user || !bcrypt.compareSync(password, user.password)) {
+    return res.status(401).json({ error: 'Invalid credentials. Please verify your shop partner login.' });
+  }
+
+  if (user.role !== 'partner' && user.role !== 'admin') {
+    return res.status(403).json({ error: 'Access denied: This login is exclusively for Butcher / Partner Shops.' });
+  }
+
+  if (user.approvalStatus === 'pending_approval') {
+    return res.status(403).json({
+      error: 'Your partner shop application is currently Pending Approval from GoMeat Operations Admin.',
+      approvalStatus: 'pending_approval'
+    });
+  }
+
+  if (user.approvalStatus === 'suspended') {
+    return res.status(403).json({
+      error: 'Your shop partner account is currently suspended.',
+      approvalStatus: 'suspended'
+    });
+  }
+
+  const token = createToken(user);
+  const { password: _, ...userWithoutPw } = user;
+  res.json({ user: userWithoutPw, token });
+});
+
+app.get('/api/partner/me', authenticate, requireRole('partner'), (req, res) => {
+  const { password: _, ...safePartner } = req.user;
+  res.json(safePartner);
+});
+
+app.get('/api/partner/products', authenticate, requireRole('partner'), (req, res) => {
+  const allProds = db.get('products');
+  const partnerProds = allProds.filter(p => p.partnerId === req.user.shopId || (!p.partnerId && req.user.role === 'admin'));
+  res.json(partnerProds.length > 0 ? partnerProds : allProds);
+});
+
+app.post('/api/partner/products', authenticate, requireRole('partner'), (req, res) => {
+  const { name, category, description, price, mrp, unit, netWeight, pieces, serves, origin, cutStyle, stock, image } = req.body;
+  if (!name || !price || !category) {
+    return res.status(400).json({ error: 'Name, price, and category are required' });
+  }
+
+  const newProd = {
+    id: `prod_${uuidv4().slice(0, 8)}`,
+    partnerId: req.user.shopId || 'shop_central_butcher',
+    partnerName: req.user.shopName || req.user.name,
+    name,
+    category,
+    description: description || 'Daily fresh dressed cuts chilled to 0°C - 4°C.',
+    price: parseInt(price, 10),
+    mrp: parseInt(mrp || price, 10),
+    unit: unit || '500g',
+    netWeight: netWeight || '450g',
+    grossWeight: '550g',
+    pieces: pieces || '4-6 Pieces',
+    serves: serves || 'Serves 2-3',
+    eta: '⚡ Today in 90 mins',
+    chillingMethod: '0°C to 4°C FreshSeal™ Cold Chain',
+    origin: origin || 'Certified Farm / Coastal Lot',
+    cutStyle: cutStyle || 'Butcher Fresh Cut',
+    stock: parseInt(stock, 10) || 30,
+    image: image || '/images/products/prod_1.jpg',
+    imageUrl: image || '/images/products/prod_1.jpg',
+    vacuumSealed: true,
+    inStock: true
+  };
+
+  db.insert('products', newProd);
+  res.status(201).json(newProd);
+});
+
+app.patch('/api/partner/products/:id/stock', authenticate, requireRole('partner'), (req, res) => {
+  const { stock, inStock } = req.body;
+  const prod = db.findById('products', req.params.id);
+  if (!prod) return res.status(404).json({ error: 'Product not found' });
+
+  const updates = {};
+  if (typeof stock === 'number') updates.stock = stock;
+  if (typeof inStock === 'boolean') updates.inStock = inStock;
+
+  const updated = db.update('products', prod.id, updates);
+  res.json(updated);
+});
+
+app.get('/api/partner/orders', authenticate, requireRole('partner'), (req, res) => {
+  const allOrders = db.get('orders');
+  const partnerOrders = allOrders.filter(o => o.partnerId === req.user.shopId || req.user.role === 'admin' || !o.partnerId);
+  res.json(partnerOrders);
+});
+
+app.patch('/api/partner/orders/:id/status', authenticate, requireRole('partner'), (req, res) => {
+  const { status, lifecycleStatus, prepStage, weighedWeight, sealTag } = req.body;
+  const order = db.findById('orders', req.params.id);
+  if (!order) return res.status(404).json({ error: 'Order not found' });
+
+  const now = new Date();
+  const timeStr = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+
+  const updates = {
+    lifecycleStatus: lifecycleStatus || order.lifecycleStatus || 'PREPARING',
+    status: status || 'Preparing',
+    prepStage: prepStage || status,
+    partnerId: req.user.shopId || order.partnerId,
+    partnerName: req.user.shopName || req.user.name || order.partnerName,
+    weighedWeight: weighedWeight || order.weighedWeight,
+    sealTag: sealTag || order.sealTag
+  };
+
+  updates.tempLog = [
+    ...(order.tempLog || []),
+    {
+      time: timeStr,
+      temp: order.liveTemp || 1.0,
+      event: `Butcher station: ${status || lifecycleStatus} (Cut & Sealed)`
+    }
+  ];
+
+  const updatedOrder = db.update('orders', order.id, updates);
+  res.json(updatedOrder);
+});
+
+// ==========================================
+// 4C. ADMIN MULTI-PORTAL MANAGEMENT ENDPOINTS
+// ==========================================
+
+app.get('/api/admin/riders', authenticate, requireAdmin, (req, res) => {
+  const riders = db.get('users').filter(u => u.role === 'rider');
+  const safeRiders = riders.map(({ password: _, ...r }) => r);
+  res.json(safeRiders);
+});
+
+app.patch('/api/admin/riders/:id/approval', authenticate, requireAdmin, (req, res) => {
+  const { approvalStatus } = req.body;
+  if (!['approved', 'rejected', 'suspended', 'pending_approval'].includes(approvalStatus)) {
+    return res.status(400).json({ error: 'Invalid approval status' });
+  }
+
+  const updated = db.update('users', req.params.id, { approvalStatus });
+  if (!updated) return res.status(404).json({ error: 'Rider not found' });
+  const { password: _, ...safeRider } = updated;
+  res.json(safeRider);
+});
+
+app.get('/api/admin/partners', authenticate, requireAdmin, (req, res) => {
+  const partners = db.get('users').filter(u => u.role === 'partner');
+  const safePartners = partners.map(({ password: _, ...p }) => p);
+  res.json(safePartners);
+});
+
+app.patch('/api/admin/partners/:id/approval', authenticate, requireAdmin, (req, res) => {
+  const { approvalStatus } = req.body;
+  if (!['approved', 'rejected', 'suspended', 'pending_approval'].includes(approvalStatus)) {
+    return res.status(400).json({ error: 'Invalid approval status' });
+  }
+
+  const updated = db.update('users', req.params.id, { approvalStatus });
+  if (!updated) return res.status(404).json({ error: 'Partner shop not found' });
+  const { password: _, ...safePartner } = updated;
+  res.json(safePartner);
+});
+
+app.patch('/api/admin/orders/:id/assign', authenticate, requireAdmin, (req, res) => {
+  const { riderId, partnerId } = req.body;
+  const order = db.findById('orders', req.params.id);
+  if (!order) return res.status(404).json({ error: 'Order not found' });
+
+  const updates = {};
+  if (riderId) {
+    const rider = db.findById('users', riderId);
+    if (rider) {
+      updates.riderId = rider.id;
+      updates.riderName = rider.name.split(' ')[0];
+      updates.riderFullName = rider.name;
+      updates.riderPhone = rider.phone;
+      updates.riderVehicle = rider.vehicleType ? `${rider.vehicleType} (${rider.vehicleNumber || ''})` : 'EV 2-Wheeler';
+      updates.lifecycleStatus = 'RIDER_ASSIGNED';
+    }
+  }
+
+  if (partnerId) {
+    const partner = db.get('users').find(u => u.shopId === partnerId || u.id === partnerId);
+    if (partner) {
+      updates.partnerId = partner.shopId || partner.id;
+      updates.partnerName = partner.shopName || partner.name;
+    }
+  }
+
+  const updatedOrder = db.update('orders', order.id, updates);
+  res.json(updatedOrder);
 });
 
 // Swiggy-Grade Handover PIN Verification & Cooler Refund Endpoint

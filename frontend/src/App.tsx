@@ -21,13 +21,23 @@ import { LocationSelectorModal } from './components/LocationSelectorModal';
 import { FloatingBottomCartBar } from './components/FloatingBottomCartBar';
 import type { Order, DeliveryAddress } from './types';
 
+const getInitialTab = (): 'catalog' | 'tracking' | 'dashboard' | 'coolers' | 'admin' | 'rider' | 'butcher' => {
+  if (typeof window === 'undefined') return 'catalog';
+  const path = window.location.pathname.replace(/^\//, '').toLowerCase();
+  const hash = window.location.hash.replace(/^#/, '').toLowerCase();
+  if (path === 'rider' || hash === 'rider') return 'rider';
+  if (['partner', 'butcher'].includes(path) || ['partner', 'butcher'].includes(hash)) return 'butcher';
+  if (path === 'admin' || hash === 'admin') return 'admin';
+  if (path === 'tracking' || hash === 'tracking') return 'tracking';
+  if (path === 'dashboard' || hash === 'dashboard') return 'dashboard';
+  if (path === 'coolers' || hash === 'coolers') return 'coolers';
+  return 'catalog';
+};
+
 const MainApp: React.FC = () => {
   const { user, loading: authLoading } = useAuth();
   const { isCartOpen, setIsCartOpen } = useCart();
-  const [currentTab, setCurrentTab] = useState<'catalog' | 'tracking' | 'dashboard' | 'coolers' | 'admin' | 'rider' | 'butcher'>(() => {
-    const hash = typeof window !== 'undefined' ? window.location.hash.replace('#', '') as any : 'catalog';
-    return ['catalog', 'tracking', 'dashboard', 'coolers', 'admin', 'rider', 'butcher'].includes(hash) ? hash : 'catalog';
-  });
+  const [currentTab, setCurrentTab] = useState<'catalog' | 'tracking' | 'dashboard' | 'coolers' | 'admin' | 'rider' | 'butcher'>(getInitialTab);
   // Modals and Overlays
   const [isAuthOpen, setIsAuthOpen] = useState(false);
   const [authRoleHint, setAuthRoleHint] = useState<'customer' | 'admin'>('customer');
@@ -478,7 +488,7 @@ const MainApp: React.FC = () => {
       />
 
       {/* Floating AI Butcher & WhatsApp Concierge */}
-      {!['rider', 'butcher'].includes(currentTab) && (
+      {!['rider', 'butcher', 'admin'].includes(currentTab) && (
         <WhatsAppButton 
           isChatbotOpen={isAiButcherOpen}
           onOpenChatbot={handleOpenAiButcher}
@@ -486,64 +496,6 @@ const MainApp: React.FC = () => {
           onNavigateTab={handleTabChange}
         />
       )}
-
-      {/* Creative Ecosystem Role Switcher Dock */}
-      <aside 
-        aria-label="Platform Switcher"
-        className="fixed bottom-3 left-3 sm:bottom-4 sm:left-4 z-40 flex items-center gap-1 p-1 bg-slate-900/95 dark:bg-black/95 backdrop-blur-md rounded-2xl border border-slate-700/80 shadow-2xl text-[11px] font-bold"
-      >
-        <span className="hidden sm:inline-block px-2 py-1 text-gray-400 text-[10px] font-mono uppercase tracking-wider">
-          Portal:
-        </span>
-        <button
-          onClick={() => handleTabChange('catalog')}
-          className={`px-2 sm:px-2.5 py-1 rounded-xl transition cursor-pointer flex items-center gap-1 ${
-            currentTab === 'catalog'
-              ? 'bg-[#d11243] text-white shadow-xs'
-              : 'text-gray-300 hover:text-white hover:bg-slate-800'
-          }`}
-          title="Consumer Shopping Storefront"
-        >
-          <span>🛒</span>
-          <span className="hidden md:inline">Store</span>
-        </button>
-        <button
-          onClick={() => handleTabChange('rider')}
-          className={`px-2 sm:px-2.5 py-1 rounded-xl transition cursor-pointer flex items-center gap-1 ${
-            currentTab === 'rider'
-              ? 'bg-rose-600 text-white shadow-xs'
-              : 'text-gray-300 hover:text-white hover:bg-slate-800'
-          }`}
-          title="Delivery Partner Mobile App"
-        >
-          <span>🛵</span>
-          <span className="hidden md:inline">Rider</span>
-        </button>
-        <button
-          onClick={() => handleTabChange('butcher')}
-          className={`px-2 sm:px-2.5 py-1 rounded-xl transition cursor-pointer flex items-center gap-1 ${
-            currentTab === 'butcher'
-              ? 'bg-amber-600 text-white shadow-xs'
-              : 'text-gray-300 hover:text-white hover:bg-slate-800'
-          }`}
-          title="Master Butcher Station & KDS"
-        >
-          <span>🥩</span>
-          <span className="hidden md:inline">Butcher</span>
-        </button>
-        <button
-          onClick={() => handleTabChange('admin')}
-          className={`px-2 sm:px-2.5 py-1 rounded-xl transition cursor-pointer flex items-center gap-1 ${
-            currentTab === 'admin'
-              ? 'bg-sky-600 text-white shadow-xs'
-              : 'text-gray-300 hover:text-white hover:bg-slate-800'
-          }`}
-          title="Central Hub Operations Admin"
-        >
-          <span>⚙️</span>
-          <span className="hidden md:inline">Admin</span>
-        </button>
-      </aside>
 
     </div>
   );

@@ -9,6 +9,7 @@ interface AuthContextType {
   login: (email: string, password: string) => Promise<User>;
   googleLogin: (credential: string) => Promise<void>;
   register: (data: { name: string; email: string; password: string; phone?: string; address?: string }) => Promise<void>;
+  setAuthSession: (user: User, token: string) => void;
   logout: () => void;
   refreshUser: () => Promise<void>;
 }
@@ -67,6 +68,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     setUser(res.user);
   };
 
+  const setAuthSession = (newUser: User, newToken: string) => {
+    localStorage.setItem('gomeat_token', newToken);
+    setToken(newToken);
+    setUser(newUser);
+  };
+
   const logout = () => {
     localStorage.removeItem('gomeat_token');
     localStorage.removeItem('frost_token');
@@ -83,6 +90,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         login,
         googleLogin,
         register,
+        setAuthSession,
         logout,
         refreshUser
       }}
