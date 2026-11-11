@@ -32,7 +32,7 @@ export const api = {
       body: JSON.stringify({ email, password })
     });
     if (!res.ok) {
-      const err = await res.json();
+      const err = await res.json().catch(() => ({ error: 'Unable to sign in. Please check your credentials or try again.' }));
       throw new Error(err.error || 'Failed to login');
     }
     return res.json();
@@ -45,7 +45,7 @@ export const api = {
       body: JSON.stringify(data)
     });
     if (!res.ok) {
-      const err = await res.json();
+      const err = await res.json().catch(() => ({ error: 'Unable to register account. Please check your details.' }));
       throw new Error(err.error || 'Failed to register');
     }
     return res.json();
@@ -58,7 +58,7 @@ export const api = {
       body: JSON.stringify({ role })
     });
     if (!res.ok) {
-      const err = await res.json();
+      const err = await res.json().catch(() => ({ error: 'Demo login temporarily unavailable' }));
       throw new Error(err.error || 'Demo login failed');
     }
     return res.json();

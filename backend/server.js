@@ -41,6 +41,9 @@ connectMongoDB().then(connected => {
 // SECURITY HARDENING (OWASP & Production Guardrails)
 // ==========================================
 
+// Enable reverse proxy trust for Vercel/Cloudflare headers
+app.set('trust proxy', 1);
+
 // 1. Hide server fingerprint
 app.disable('x-powered-by');
 
@@ -54,53 +57,40 @@ app.use(helmet({
   xXssProtection: true
 }));
 
-// 3. Strict Cross-Origin Resource Sharing (CORS) Configuration
-const allowedOriginRegexes = [
-  /^http:\/\/localhost(:\d+)?$/,
-  /^http:\/\/127\.0\.0\.1(:\d+)?$/,
-  /^https:\/\/.*\.vercel\.app$/,
-  /^https:\/\/.*gomeat\.(in|com|tech|me|app)$/
-];
-
+// 3. Permissive & Secure Cross-Origin Resource Sharing (CORS) Configuration
 app.use(cors({
-  origin: (origin, callback) => {
-    // Allow non-browser requests (e.g. mobile apps, server-to-server curl, webhooks)
-    if (!origin) return callback(null, true);
-    const isAllowed = allowedOriginRegexes.some(pattern => pattern.test(origin));
-    if (isAllowed) {
-      callback(null, true);
-    } else {
-      callback(new Error('Cross-Origin Request Blocked by GoMeat Security Policy'));
-    }
-  },
+  origin: true,
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept', 'X-Razorpay-Signature']
 }));
 
-// 4. Rate Limiting Protection (Anti-DDoS & Anti-Brute-Force)
+// 4. Rate Limiting Protection (Anti-DDoS & Anti-Brute-Force) with Vercel Serverless compatibility
 const generalLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 400, // 400 requests per 15 minutes per IP
+  windowMs: 15 * 60 * 1000,
+  max: 500,
   standardHeaders: true,
   legacyHeaders: false,
+  validate: { xForwardedForHeader: false, default: false },
   message: { error: 'Too many requests from this IP address. Please try again in 15 minutes.' }
 });
 app.use('/api/', generalLimiter);
 
 const authLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 25, // 25 auth attempts per 15 mins
+  windowMs: 15 * 60 * 1000,
+  max: 30,
   standardHeaders: true,
   legacyHeaders: false,
+  validate: { xForwardedForHeader: false, default: false },
   message: { error: 'Too many login attempts. For security, please wait 15 minutes before trying again.' }
 });
 
 const contactLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
-  max: 15,
+  max: 20,
   standardHeaders: true,
   legacyHeaders: false,
+  validate: { xForwardedForHeader: false, default: false },
   message: { error: 'Support message limit reached. Please contact us via WhatsApp or wait 15 minutes.' }
 });
 
