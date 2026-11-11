@@ -42,6 +42,7 @@ lerna-debug.log*
 # Database Backups & Snapshots
 backend/backups/*.json
 !backend/backups/.gitkeep
+scripts/*.json
 
 # Operating System Files
 .DS_Store

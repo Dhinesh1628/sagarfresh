@@ -6,7 +6,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { db } from '../db.js';
 
 const router = express.Router();
-const JWT_SECRET = process.env.JWT_SECRET || 'sagar-cuts-india-secret-2026';
+const JWT_SECRET = process.env.JWT_SECRET || 'gomeat-cuts-india-secret-2026';
 
 const getUserFromReq = (req) => {
   const authHeader = req.headers.authorization;

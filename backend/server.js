@@ -1,5 +1,7 @@
 import express from 'express';
 import cors from 'cors';
+import helmet from 'helmet';
+import rateLimit from 'express-rate-limit';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcryptjs';
 import { v4 as uuidv4 } from 'uuid';
@@ -35,7 +37,101 @@ connectMongoDB().then(connected => {
   }
 });
 
-app.use(cors());
+// ==========================================
+// SECURITY HARDENING (OWASP & Production Guardrails)
+// ==========================================
+
+// 1. Hide server fingerprint
+app.disable('x-powered-by');
+
+// 2. Comprehensive Security Headers with Helmet
+app.use(helmet({
+  contentSecurityPolicy: false, // Allows inline assets, fonts & map tiles to load seamlessly
+  crossOriginEmbedderPolicy: false,
+  xContentTypeOptions: true,
+  xDnsPrefetchControl: { allow: false },
+  xFrameOptions: { action: 'sameorigin' },
+  xXssProtection: true
+}));
+
+// 3. Strict Cross-Origin Resource Sharing (CORS) Configuration
+const allowedOriginRegexes = [
+  /^http:\/\/localhost(:\d+)?$/,
+  /^http:\/\/127\.0\.0\.1(:\d+)?$/,
+  /^https:\/\/.*\.vercel\.app$/,
+  /^https:\/\/.*gomeat\.(in|com|tech|me|app)$/
+];
+
+app.use(cors({
+  origin: (origin, callback) => {
+    // Allow non-browser requests (e.g. mobile apps, server-to-server curl, webhooks)
+    if (!origin) return callback(null, true);
+    const isAllowed = allowedOriginRegexes.some(pattern => pattern.test(origin));
+    if (isAllowed) {
+      callback(null, true);
+    } else {
+      callback(new Error('Cross-Origin Request Blocked by GoMeat Security Policy'));
+    }
+  },
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept', 'X-Razorpay-Signature']
+}));
+
+// 4. Rate Limiting Protection (Anti-DDoS & Anti-Brute-Force)
+const generalLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 400, // 400 requests per 15 minutes per IP
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { error: 'Too many requests from this IP address. Please try again in 15 minutes.' }
+});
+app.use('/api/', generalLimiter);
+
+const authLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 25, // 25 auth attempts per 15 mins
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { error: 'Too many login attempts. For security, please wait 15 minutes before trying again.' }
+});
+
+const contactLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 15,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { error: 'Support message limit reached. Please contact us via WhatsApp or wait 15 minutes.' }
+});
+
+// 5. XSS Input Sanitization Middleware
+const sanitizeValue = (val) => {
+  if (typeof val === 'string') {
+    return val
+      .replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '')
+      .replace(/javascript:/gi, '')
+      .replace(/on\w+\s*=/gi, '');
+  }
+  if (val && typeof val === 'object' && !Array.isArray(val)) {
+    const sanitized = {};
+    for (const key of Object.keys(val)) {
+      sanitized[key] = sanitizeValue(val[key]);
+    }
+    return sanitized;
+  }
+  if (Array.isArray(val)) {
+    return val.map(sanitizeValue);
+  }
+  return val;
+};
+
+app.use((req, res, next) => {
+  if (req.body) req.body = sanitizeValue(req.body);
+  if (req.query) req.query = sanitizeValue(req.query);
+  if (req.params) req.params = sanitizeValue(req.params);
+  next();
+});
+
 // Raw body retention for cryptographic Webhook signature verification
 app.use(express.json({
   verify: (req, res, buf) => {
@@ -122,9 +218,9 @@ const createToken = (user) => {
 // ==========================================
 
 // Google Sign-In & Sign-Up endpoint with official Google token verification
-app.post('/api/auth/google', (req, res) => handleGoogleAuth(req, res, createToken));
+app.post('/api/auth/google', authLimiter, (req, res) => handleGoogleAuth(req, res, createToken));
 
-app.post('/api/auth/register', (req, res) => {
+app.post('/api/auth/register', authLimiter, (req, res) => {
   const { name, email, password, phone, address, city, upiId } = req.body;
   if (!name || !email || !password) {
     return res.status(400).json({ error: 'Name, email, and password are required' });
@@ -156,7 +252,7 @@ app.post('/api/auth/register', (req, res) => {
 });
 
 // Standard Login supporting Email or Mobile number
-app.post('/api/auth/login', (req, res) => {
+app.post('/api/auth/login', authLimiter, (req, res) => {
   const { email, password } = req.body;
   const input = (email || '').toLowerCase().trim();
   if (!input || !password) {
@@ -648,8 +744,8 @@ app.post('/api/orders/:id/cancel', authenticate, (req, res) => {
   res.json({ success: true, message: 'Order cancelled successfully', order: updated });
 });
 
-// Customer Concierge Support & Contact Form Submission
-app.post('/api/contact', (req, res) => {
+// Customer Concierge Support & Contact Form Submission (Anti-Spam Rate Limited)
+app.post('/api/contact', contactLimiter, (req, res) => {
   const { name, email, phone, category, orderId, message } = req.body;
   if (!name || !phone || !message) {
     return res.status(400).json({ error: 'Name, phone number, and message are required.' });
@@ -1119,7 +1215,7 @@ app.post('/api/coolers/inspect/:coolerId/flag-damage', (req, res) => {
   });
 });
 
-app.get('/api/admin/cooler-analytics', (req, res) => {
+app.get('/api/admin/cooler-analytics', authenticate, requireAdmin, (req, res) => {
   const coolers = db.get('coolers') || [];
   const returns = db.get('coolerReturns') || [];
 
@@ -1300,6 +1396,23 @@ app.patch('/api/orders/:id/courier', authenticate, requireAdmin, (req, res) => {
   
   const updated = db.update('orders', req.params.id, updates);
   res.json(updated);
+});
+
+// Global Production Error Guard (Prevents stack trace leaks)
+app.use((err, req, res, next) => {
+  const isProd = process.env.NODE_ENV === 'production' || !!process.env.VERCEL;
+  const statusCode = err.status || err.statusCode || 500;
+  
+  if (err.message && err.message.includes('CORS')) {
+    return res.status(403).json({ error: 'Access denied by GoMeat CORS policy' });
+  }
+
+  console.error(`[API Error] ${req.method} ${req.url}:`, err.message || err);
+
+  res.status(statusCode).json({
+    error: isProd ? 'An unexpected server error occurred. Our team has been notified.' : (err.message || 'Server error'),
+    ...(isProd ? {} : { debugMessage: err.message })
+  });
 });
 
 const isDirectRun = process.argv[1] && fileURLToPath(import.meta.url) === path.resolve(process.argv[1]);
