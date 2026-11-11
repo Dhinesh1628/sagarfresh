@@ -633,6 +633,34 @@ export const Navbar: React.FC<NavbarProps> = ({
               <span>My Orders</span>
             </button>
 
+            {/* Rider Mobile App View Button */}
+            <button
+              onClick={() => setCurrentTab('rider')}
+              title="Delivery Partner Mobile View"
+              className={`hidden md:flex h-10 px-2.5 rounded-xl text-xs font-bold transition items-center gap-1.5 whitespace-nowrap shrink-0 cursor-pointer ${
+                currentTab === 'rider'
+                  ? 'bg-gradient-to-r from-rose-600 to-[#d11243] text-white shadow-xs'
+                  : 'bg-gray-100 dark:bg-slate-800 hover:bg-gray-200 text-gray-700 dark:text-gray-300 border border-gray-200 dark:border-slate-700'
+              }`}
+            >
+              <span>🛵</span>
+              <span>Rider App</span>
+            </button>
+
+            {/* Butcher Station KDS Button */}
+            <button
+              onClick={() => setCurrentTab('butcher')}
+              title="Master Butcher Station & KDS"
+              className={`hidden lg:flex h-10 px-2.5 rounded-xl text-xs font-bold transition items-center gap-1.5 whitespace-nowrap shrink-0 cursor-pointer ${
+                currentTab === 'butcher'
+                  ? 'bg-gradient-to-r from-slate-900 to-black text-white border border-[#d11243] shadow-xs'
+                  : 'bg-gray-100 dark:bg-slate-800 hover:bg-gray-200 text-gray-700 dark:text-gray-300 border border-gray-200 dark:border-slate-700'
+              }`}
+            >
+              <span>🥩</span>
+              <span>Butcher Station</span>
+            </button>
+
             {/* GoMeat Vault Wallet Live Pill */}
             {user && (
               <button
@@ -758,6 +786,32 @@ export const Navbar: React.FC<NavbarProps> = ({
                       className="w-full text-left px-3 py-2 hover:bg-gray-50 dark:hover:bg-slate-800 hover:text-[#d11243] dark:hover:text-rose-400 cursor-pointer"
                     >
                       Order & Temperature Status
+                    </button>
+
+                    <button
+                      onClick={() => setCurrentTab('rider')}
+                      className="w-full text-left px-3 py-2 hover:bg-rose-50 dark:hover:bg-rose-950/40 text-rose-700 dark:text-rose-300 font-bold flex items-center justify-between cursor-pointer"
+                    >
+                      <span className="flex items-center gap-1.5">
+                        <span>🛵</span>
+                        <span>Rider Mobile App</span>
+                      </span>
+                      <span className="px-1.5 py-0.2 rounded bg-rose-100 dark:bg-rose-900 text-[#d11243] dark:text-rose-200 text-[9px] font-black">
+                        Partner
+                      </span>
+                    </button>
+
+                    <button
+                      onClick={() => setCurrentTab('butcher')}
+                      className="w-full text-left px-3 py-2 hover:bg-slate-100 dark:hover:bg-slate-800 text-gray-800 dark:text-gray-200 font-bold flex items-center justify-between cursor-pointer"
+                    >
+                      <span className="flex items-center gap-1.5">
+                        <span>🥩</span>
+                        <span>Butcher Station KDS</span>
+                      </span>
+                      <span className="px-1.5 py-0.2 rounded bg-gray-200 dark:bg-slate-700 text-gray-700 dark:text-gray-300 text-[9px] font-black">
+                        KDS
+                      </span>
                     </button>
 
                     {user.role === 'admin' && (
@@ -963,6 +1017,26 @@ export const Navbar: React.FC<NavbarProps> = ({
             className="w-full text-left py-2 px-3 rounded-lg bg-rose-50 dark:bg-rose-950/60 text-[#d11243] dark:text-rose-400 font-semibold"
           >
             Box Returns (₹250 Refund)
+          </button>
+          <button
+            onClick={() => { 
+              setCurrentTab('rider'); 
+              setMobileMenuOpen(false); 
+            }}
+            className="w-full text-left py-2 px-3 rounded-lg bg-rose-100 dark:bg-rose-950 text-[#d11243] dark:text-rose-300 font-bold flex items-center justify-between"
+          >
+            <span>🛵 Rider App (Delivery Partner)</span>
+            <span className="text-[10px] px-1.5 py-0.5 rounded bg-[#d11243] text-white font-bold">Rider</span>
+          </button>
+          <button
+            onClick={() => { 
+              setCurrentTab('butcher'); 
+              setMobileMenuOpen(false); 
+            }}
+            className="w-full text-left py-2 px-3 rounded-lg bg-gray-100 dark:bg-slate-800 text-gray-900 dark:text-gray-100 font-bold flex items-center justify-between"
+          >
+            <span>🥩 Butcher Station (KDS & Prep)</span>
+            <span className="text-[10px] px-1.5 py-0.5 rounded bg-gray-800 text-white font-bold">Butcher</span>
           </button>
           <button
             onClick={() => { 

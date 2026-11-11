@@ -293,20 +293,6 @@
   ],
   "coolers": [
     {
-      "id": "BOX-BLR-103",
-      "qrCode": "GOMEAT-BOX-BLR-103",
-      "model": "ThermalVault Ultra-3L EPP",
-      "status": "with_customer",
-      "currentOrderId": "ORD-9281",
-      "currentUserId": "usr_customer",
-      "currentUserName": "Pooja Sundaram",
-      "cyclesUsed": 8,
-      "lastSanitizedDate": "2026-11-06",
-      "depositAmount": 250,
-      "maxHoldingHours": 36,
-      "assignedHub": "Mahadevapura Dark Hub"
-    },
-    {
       "_id": "6ae4e9c6d3dfa1be68125774",
       "id": "BOX-BLR-983",
       "qrCode": "SAGAR-BOX-BLR-983",
@@ -379,6 +365,25 @@
       "assignedHub": "Bengaluru Regional Hub Depot",
       "createdAt": "2026-11-09T04:51:25.923Z",
       "updatedAt": "2026-11-09T04:52:31.310Z",
+      "__v": 0
+    },
+    {
+      "_id": "6af2d7cfc1e411658cdaeed1",
+      "id": "BOX-BLR-103",
+      "qrCode": "GOMEAT-BOX-BLR-103",
+      "coolerCode": "GOMEAT-BOX-BLR-103",
+      "model": "ThermalVault Ultra-3L EPP",
+      "status": "with_customer",
+      "currentOrderId": "ORD-9281",
+      "currentUserId": "usr_customer",
+      "currentUserName": "Pooja Sundaram",
+      "cyclesUsed": 8,
+      "lastSanitizedDate": "2026-11-06",
+      "depositAmount": 250,
+      "maxHoldingHours": 36,
+      "assignedHub": "Mahadevapura Dark Hub",
+      "createdAt": "2026-11-10T08:37:35.823Z",
+      "updatedAt": "2026-11-10T08:37:35.823Z",
       "__v": 0
     }
   ],

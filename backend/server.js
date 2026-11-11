@@ -449,7 +449,7 @@ app.get('/api/orders/:id', authenticate, (req, res) => {
 
 // Swiggy-Grade Handover PIN Verification & Cooler Refund Endpoint
 const handleOrderHandover = (req, res) => {
-  const { pin, deliveryPin, coolerReturned } = req.body;
+  const { pin, deliveryPin, coolerReturned, podImage, notes } = req.body;
   const order = db.findById('orders', req.params.id);
   if (!order) {
     return res.status(404).json({ error: 'Order not found' });
@@ -473,7 +473,7 @@ const handleOrderHandover = (req, res) => {
     {
       time: timeStr,
       temp: 1.8,
-      event: `Delivered & Verified via 4-digit PIN. Cooler Box returned: ${coolerReturned ? 'YES (₹250 Refunded)' : 'NO (Retained by customer)'}`
+      event: `Delivered & Verified via 4-digit PIN. Cooler Box returned: ${coolerReturned ? 'YES (₹250 Refunded)' : 'NO (Retained by customer)'}${podImage ? ' [Contactless POD captured]' : ''}`
     }
   ];
 
@@ -481,6 +481,9 @@ const handleOrderHandover = (req, res) => {
     status: 'Delivered',
     orderStatus: 'DELIVERED',
     coolerReturned: !!coolerReturned,
+    podImage: podImage || order.podImage,
+    handoverNotes: notes || order.handoverNotes,
+    deliveredAt: new Date().toISOString(),
     liveTemp: 1.8,
     tempLog: updatedLog
   });
@@ -518,7 +521,7 @@ const handleOrderHandover = (req, res) => {
     }
   }
 
-  res.json({ success: true, message: 'Order delivered & handover verified', order: updatedOrder });
+  res.json(updatedOrder);
 };
 
 app.post('/api/orders/:id/handover', authenticate, handleOrderHandover);
@@ -526,7 +529,21 @@ app.put('/api/orders/:id/handover', authenticate, handleOrderHandover);
 
 // Update prep / delivery status
 const handleUpdateStatus = (req, res) => {
-  const { status, orderStatus, coolerId, notes, note, deliveryPin, coolerReturned } = req.body;
+  const { 
+    status, 
+    orderStatus, 
+    coolerId, 
+    notes, 
+    note, 
+    deliveryPin, 
+    coolerReturned,
+    weighedWeight,
+    batchLotId,
+    sealTag,
+    butcherName,
+    riderLocation,
+    deliveryExecutive
+  } = req.body;
   const order = db.findById('orders', req.params.id);
   if (!order) {
     return res.status(404).json({ error: 'Order not found' });
@@ -570,6 +587,12 @@ const handleUpdateStatus = (req, res) => {
     orderStatus: resolvedOrderStatus,
     prepStage: status,
     coolerId: coolerId || order.coolerId,
+    weighedWeight: weighedWeight || order.weighedWeight,
+    batchLotId: batchLotId || order.batchLotId,
+    sealTag: sealTag || order.sealTag,
+    butcherName: butcherName || order.butcherName,
+    riderLocation: riderLocation || order.riderLocation,
+    deliveryExecutive: deliveryExecutive || order.deliveryExecutive,
     liveTemp: newTemp,
     tempLog: updatedLog
   });

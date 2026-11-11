@@ -190,6 +190,18 @@ export interface Order {
   tipAmount?: number;
   deliveryPin?: string;
   coolerDetails?: Cooler;
+  weighedWeight?: string;
+  batchLotId?: string;
+  sealTag?: string;
+  butcherName?: string;
+  podImage?: string;
+  handoverNotes?: string;
+  deliveredAt?: string;
+  riderLocation?: {
+    lat: number;
+    lng: number;
+    heading?: number;
+  };
 }
 
 export interface Cooler {

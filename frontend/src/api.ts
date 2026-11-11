@@ -258,13 +258,65 @@ export const api = {
     return res.json();
   },
 
-  async updateOrderStatus(id: string, status: string, note?: string): Promise<Order> {
+  async updateOrderStatus(id: string, status: string, note?: string, extraData?: Record<string, any>): Promise<Order> {
     const res = await fetch(`${API_BASE}/orders/${id}/status`, {
       method: 'PATCH',
       headers: getHeaders(),
-      body: JSON.stringify({ status, note })
+      body: JSON.stringify({ status, note, ...(extraData || {}) })
     });
     if (!res.ok) throw new Error('Failed to update order status');
+    return res.json();
+  },
+
+  async handoverOrder(id: string, data: { pin?: string; deliveryPin?: string; coolerReturned?: boolean; podImage?: string; notes?: string }): Promise<Order> {
+    const res = await fetch(`${API_BASE}/orders/${id}/handover`, {
+      method: 'POST',
+      headers: getHeaders(),
+      body: JSON.stringify(data)
+    });
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      throw new Error(err.error || 'PIN verification failed');
+    }
+    return res.json();
+  },
+
+  async completeButcherPrep(id: string, prepData: {
+    weighedWeight?: string;
+    batchLotId?: string;
+    sealTag?: string;
+    coolerId?: string;
+    butcherName?: string;
+    liveTemp?: number;
+  }): Promise<Order> {
+    const res = await fetch(`${API_BASE}/orders/${id}/status`, {
+      method: 'PATCH',
+      headers: getHeaders(),
+      body: JSON.stringify({
+        status: 'Packed',
+        orderStatus: 'PACKED',
+        note: `Packed by Master Butcher ${prepData.butcherName || 'Butcher Station'}. Batch: ${prepData.batchLotId || 'LOT-MNG-0400'}. FreshSeal: #${prepData.sealTag || 'FS-101'}. Weighed: ${prepData.weighedWeight || '500g'}.`,
+        coolerId: prepData.coolerId,
+        weighedWeight: prepData.weighedWeight,
+        batchLotId: prepData.batchLotId,
+        sealTag: prepData.sealTag,
+        liveTemp: prepData.liveTemp || 1.4
+      })
+    });
+    if (!res.ok) throw new Error('Failed to complete butcher prep');
+    return res.json();
+  },
+
+  async updateRiderLocation(id: string, location: { lat: number; lng: number; heading?: number }): Promise<Order> {
+    const res = await fetch(`${API_BASE}/orders/${id}/status`, {
+      method: 'PATCH',
+      headers: getHeaders(),
+      body: JSON.stringify({
+        riderLocation: location,
+        note: `Rider GPS Ping at ${new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`
+      })
+    });
+    if (!res.ok) throw new Error('Failed to update rider location');
     return res.json();
   },
 

@@ -8,6 +8,8 @@ import { OrderTrackingPage } from './pages/OrderTrackingPage';
 import { CustomerDashboardPage } from './pages/CustomerDashboardPage';
 import { CoolerReturnsPage } from './pages/CoolerReturnsPage';
 import { AdminDashboardPage } from './pages/AdminDashboardPage';
+import { RiderDeliveryPage } from './pages/RiderDeliveryPage';
+import { ButcherStationPage } from './pages/ButcherStationPage';
 import { CartDrawer } from './components/CartDrawer';
 import { CheckoutModal } from './components/CheckoutModal';
 import { OrderConfirmationModal } from './components/OrderConfirmationModal';
@@ -21,9 +23,9 @@ import type { Order, DeliveryAddress } from './types';
 const MainApp: React.FC = () => {
   const { user, loading: authLoading } = useAuth();
   const { isCartOpen, setIsCartOpen } = useCart();
-  const [currentTab, setCurrentTab] = useState<'catalog' | 'tracking' | 'dashboard' | 'coolers' | 'admin'>(() => {
+  const [currentTab, setCurrentTab] = useState<'catalog' | 'tracking' | 'dashboard' | 'coolers' | 'admin' | 'rider' | 'butcher'>(() => {
     const hash = typeof window !== 'undefined' ? window.location.hash.replace('#', '') as any : 'catalog';
-    return ['catalog', 'tracking', 'dashboard', 'coolers', 'admin'].includes(hash) ? hash : 'catalog';
+    return ['catalog', 'tracking', 'dashboard', 'coolers', 'admin', 'rider', 'butcher'].includes(hash) ? hash : 'catalog';
   });
   // Modals and Overlays
   const [isAuthOpen, setIsAuthOpen] = useState(false);
@@ -110,9 +112,9 @@ const MainApp: React.FC = () => {
         return;
       }
 
-      // Step 2: If on a sub-tab (Live Tracking, Dashboard, Coolers, Hub Ops), return to Catalog homepage
+      // Step 2: If on a sub-tab (Live Tracking, Dashboard, Coolers, Hub Ops, Rider, Butcher), return to Catalog homepage
       const hash = window.location.hash.replace('#', '') as any;
-      if (hash && ['catalog', 'tracking', 'dashboard', 'coolers', 'admin'].includes(hash)) {
+      if (hash && ['catalog', 'tracking', 'dashboard', 'coolers', 'admin', 'rider', 'butcher'].includes(hash)) {
         setCurrentTab(hash);
       } else {
         setCurrentTab('catalog');
@@ -124,7 +126,7 @@ const MainApp: React.FC = () => {
   }, [isLocationModalOpen, isAiButcherOpen, isAuthOpen, isCheckoutOpen, isConfirmationOpen, legalModalType, isCartOpen, currentTab, setIsCartOpen]);
 
   // Tab switching with history push
-  const handleTabChange = (tab: 'catalog' | 'tracking' | 'dashboard' | 'coolers' | 'admin') => {
+  const handleTabChange = (tab: 'catalog' | 'tracking' | 'dashboard' | 'coolers' | 'admin' | 'rider' | 'butcher') => {
     if (tab === currentTab) return;
     window.history.pushState({ type: 'tab', tab }, '', tab === 'catalog' ? '/' : `#${tab}`);
     setCurrentTab(tab);
@@ -283,6 +285,14 @@ const MainApp: React.FC = () => {
               </button>
             </div>
           )
+        )}
+
+        {currentTab === 'rider' && (
+          <RiderDeliveryPage />
+        )}
+
+        {currentTab === 'butcher' && (
+          <ButcherStationPage />
         )}
       </main>
 
