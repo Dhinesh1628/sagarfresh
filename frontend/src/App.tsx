@@ -188,21 +188,23 @@ const MainApp: React.FC = () => {
         <div className="light-glow-orb-3" />
       </div>
 
-      {/* Top Navbar */}
-      <Navbar
-        currentTab={currentTab}
-        setCurrentTab={(tab) => handleTabChange(tab as any)}
-        onOpenAuth={handleOpenAuth}
-        selectedCity={selectedCity}
-        setSelectedCity={setSelectedCity}
-        searchQuery={searchQuery}
-        setSearchQuery={setSearchQuery}
-        currentAddress={currentAddress}
-        onOpenLocationModal={handleOpenLocationModal}
-      />
+      {/* Top Navbar - Only rendered for Consumer Storefront & Admin Hub */}
+      {!['rider', 'butcher'].includes(currentTab) && (
+        <Navbar
+          currentTab={currentTab}
+          setCurrentTab={(tab) => handleTabChange(tab as any)}
+          onOpenAuth={handleOpenAuth}
+          selectedCity={selectedCity}
+          setSelectedCity={setSelectedCity}
+          searchQuery={searchQuery}
+          setSearchQuery={setSearchQuery}
+          currentAddress={currentAddress}
+          onOpenLocationModal={handleOpenLocationModal}
+        />
+      )}
 
       {/* Main Container */}
-      <main className="flex-1 max-w-7xl w-full mx-auto px-3 sm:px-6 lg:px-8 pt-3 sm:pt-5 overflow-x-hidden">
+      <main className={`flex-1 w-full ${['rider', 'butcher'].includes(currentTab) ? 'p-0 max-w-full' : 'max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 pt-3 sm:pt-5'} overflow-x-hidden`}>
         {currentTab === 'catalog' && (
           <CatalogPage 
             onNavigateToReturns={() => {
@@ -288,18 +290,19 @@ const MainApp: React.FC = () => {
         )}
 
         {currentTab === 'rider' && (
-          <RiderDeliveryPage />
+          <RiderDeliveryPage onBackToStore={() => handleTabChange('catalog')} />
         )}
 
         {currentTab === 'butcher' && (
-          <ButcherStationPage />
+          <ButcherStationPage onBackToStore={() => handleTabChange('catalog')} />
         )}
       </main>
 
-      {/* Footer */}
-      <footer className="border-t border-gray-200 dark:border-slate-800 bg-white dark:bg-slate-950 mt-16 text-xs text-gray-600 dark:text-gray-400 transition-colors">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-8">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+      {/* Footer - Only shown for Consumer Storefront & Admin */}
+      {!['rider', 'butcher'].includes(currentTab) && (
+        <footer className="border-t border-gray-200 dark:border-slate-800 bg-white dark:bg-slate-950 mt-16 text-xs text-gray-600 dark:text-gray-400 transition-colors">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-8">
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
             
             <div className="space-y-3">
               <div className="flex items-center">
@@ -389,11 +392,12 @@ const MainApp: React.FC = () => {
           </div>
         </div>
       </footer>
+      )}
 
       {/* Swiggy Style Floating Bottom Cart Bar */}
       <FloatingBottomCartBar
         onViewCart={() => setIsCartOpen(true)}
-        isHidden={isCartOpen || isCheckoutOpen || isConfirmationOpen || isLocationModalOpen || isAiButcherOpen}
+        isHidden={['rider', 'butcher'].includes(currentTab) || isCartOpen || isCheckoutOpen || isConfirmationOpen || isLocationModalOpen || isAiButcherOpen}
       />
 
       {/* Cart Drawer */}
@@ -450,12 +454,72 @@ const MainApp: React.FC = () => {
       />
 
       {/* Floating AI Butcher & WhatsApp Concierge */}
-      <WhatsAppButton 
-        isChatbotOpen={isAiButcherOpen}
-        onOpenChatbot={handleOpenAiButcher}
-        onCloseChatbot={handleCloseAiButcher}
-        onNavigateTab={handleTabChange}
-      />
+      {!['rider', 'butcher'].includes(currentTab) && (
+        <WhatsAppButton 
+          isChatbotOpen={isAiButcherOpen}
+          onOpenChatbot={handleOpenAiButcher}
+          onCloseChatbot={handleCloseAiButcher}
+          onNavigateTab={handleTabChange}
+        />
+      )}
+
+      {/* Creative Ecosystem Role Switcher Dock */}
+      <aside 
+        aria-label="Platform Switcher"
+        className="fixed bottom-3 left-3 sm:bottom-4 sm:left-4 z-40 flex items-center gap-1 p-1 bg-slate-900/95 dark:bg-black/95 backdrop-blur-md rounded-2xl border border-slate-700/80 shadow-2xl text-[11px] font-bold"
+      >
+        <span className="hidden sm:inline-block px-2 py-1 text-gray-400 text-[10px] font-mono uppercase tracking-wider">
+          Portal:
+        </span>
+        <button
+          onClick={() => handleTabChange('catalog')}
+          className={`px-2 sm:px-2.5 py-1 rounded-xl transition cursor-pointer flex items-center gap-1 ${
+            currentTab === 'catalog'
+              ? 'bg-[#d11243] text-white shadow-xs'
+              : 'text-gray-300 hover:text-white hover:bg-slate-800'
+          }`}
+          title="Consumer Shopping Storefront"
+        >
+          <span>🛒</span>
+          <span className="hidden md:inline">Store</span>
+        </button>
+        <button
+          onClick={() => handleTabChange('rider')}
+          className={`px-2 sm:px-2.5 py-1 rounded-xl transition cursor-pointer flex items-center gap-1 ${
+            currentTab === 'rider'
+              ? 'bg-rose-600 text-white shadow-xs'
+              : 'text-gray-300 hover:text-white hover:bg-slate-800'
+          }`}
+          title="Delivery Partner Mobile App"
+        >
+          <span>🛵</span>
+          <span className="hidden md:inline">Rider</span>
+        </button>
+        <button
+          onClick={() => handleTabChange('butcher')}
+          className={`px-2 sm:px-2.5 py-1 rounded-xl transition cursor-pointer flex items-center gap-1 ${
+            currentTab === 'butcher'
+              ? 'bg-amber-600 text-white shadow-xs'
+              : 'text-gray-300 hover:text-white hover:bg-slate-800'
+          }`}
+          title="Master Butcher Station & KDS"
+        >
+          <span>🥩</span>
+          <span className="hidden md:inline">Butcher</span>
+        </button>
+        <button
+          onClick={() => handleTabChange('admin')}
+          className={`px-2 sm:px-2.5 py-1 rounded-xl transition cursor-pointer flex items-center gap-1 ${
+            currentTab === 'admin'
+              ? 'bg-sky-600 text-white shadow-xs'
+              : 'text-gray-300 hover:text-white hover:bg-slate-800'
+          }`}
+          title="Central Hub Operations Admin"
+        >
+          <span>⚙️</span>
+          <span className="hidden md:inline">Admin</span>
+        </button>
+      </aside>
 
     </div>
   );

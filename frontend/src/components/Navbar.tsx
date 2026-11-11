@@ -539,7 +539,7 @@ export const Navbar: React.FC<NavbarProps> = ({
             {/* Location Selector Button */}
             <button
               onClick={onOpenLocationModal}
-              className="flex items-center gap-1 sm:gap-2 px-1.5 sm:px-2.5 h-8 sm:h-10 rounded-xl border border-gray-200/90 dark:border-slate-800 hover:bg-gray-100/80 dark:hover:bg-slate-800/80 text-xs transition cursor-pointer text-left group shrink min-w-0 max-w-[110px] sm:max-w-[210px] xl:max-w-[240px]"
+              className="flex items-center gap-1.5 sm:gap-2 px-2 sm:px-3 h-9 sm:h-10 rounded-xl border border-gray-200/90 dark:border-slate-800 hover:bg-gray-100/80 dark:hover:bg-slate-800/80 text-xs transition cursor-pointer text-left group shrink-0 min-w-fit max-w-[130px] sm:max-w-[210px] xl:max-w-[240px]"
               title="Click to enter custom delivery address or detect location"
               type="button"
             >
@@ -631,34 +631,6 @@ export const Navbar: React.FC<NavbarProps> = ({
               }`}
             >
               <span>My Orders</span>
-            </button>
-
-            {/* Rider Mobile App View Button */}
-            <button
-              onClick={() => setCurrentTab('rider')}
-              title="Delivery Partner Mobile View"
-              className={`hidden md:flex h-10 px-2.5 rounded-xl text-xs font-bold transition items-center gap-1.5 whitespace-nowrap shrink-0 cursor-pointer ${
-                currentTab === 'rider'
-                  ? 'bg-gradient-to-r from-rose-600 to-[#d11243] text-white shadow-xs'
-                  : 'bg-gray-100 dark:bg-slate-800 hover:bg-gray-200 text-gray-700 dark:text-gray-300 border border-gray-200 dark:border-slate-700'
-              }`}
-            >
-              <span>🛵</span>
-              <span>Rider App</span>
-            </button>
-
-            {/* Butcher Station KDS Button */}
-            <button
-              onClick={() => setCurrentTab('butcher')}
-              title="Master Butcher Station & KDS"
-              className={`hidden lg:flex h-10 px-2.5 rounded-xl text-xs font-bold transition items-center gap-1.5 whitespace-nowrap shrink-0 cursor-pointer ${
-                currentTab === 'butcher'
-                  ? 'bg-gradient-to-r from-slate-900 to-black text-white border border-[#d11243] shadow-xs'
-                  : 'bg-gray-100 dark:bg-slate-800 hover:bg-gray-200 text-gray-700 dark:text-gray-300 border border-gray-200 dark:border-slate-700'
-              }`}
-            >
-              <span>🥩</span>
-              <span>Butcher Station</span>
             </button>
 
             {/* GoMeat Vault Wallet Live Pill */}
@@ -788,40 +760,59 @@ export const Navbar: React.FC<NavbarProps> = ({
                       Order & Temperature Status
                     </button>
 
-                    <button
-                      onClick={() => setCurrentTab('rider')}
-                      className="w-full text-left px-3 py-2 hover:bg-rose-50 dark:hover:bg-rose-950/40 text-rose-700 dark:text-rose-300 font-bold flex items-center justify-between cursor-pointer"
-                    >
-                      <span className="flex items-center gap-1.5">
-                        <span>🛵</span>
-                        <span>Rider Mobile App</span>
-                      </span>
-                      <span className="px-1.5 py-0.2 rounded bg-rose-100 dark:bg-rose-900 text-[#d11243] dark:text-rose-200 text-[9px] font-black">
-                        Partner
-                      </span>
-                    </button>
+                    <div className="border-t border-gray-100 dark:border-slate-800 my-1 pt-1">
+                      <div className="px-3 py-1 text-[9px] font-black uppercase tracking-wider text-gray-400 dark:text-gray-500">
+                        Staff & Partner Portals
+                      </div>
 
-                    <button
-                      onClick={() => setCurrentTab('butcher')}
-                      className="w-full text-left px-3 py-2 hover:bg-slate-100 dark:hover:bg-slate-800 text-gray-800 dark:text-gray-200 font-bold flex items-center justify-between cursor-pointer"
-                    >
-                      <span className="flex items-center gap-1.5">
-                        <span>🥩</span>
-                        <span>Butcher Station KDS</span>
-                      </span>
-                      <span className="px-1.5 py-0.2 rounded bg-gray-200 dark:bg-slate-700 text-gray-700 dark:text-gray-300 text-[9px] font-black">
-                        KDS
-                      </span>
-                    </button>
-
-                    {user.role === 'admin' && (
                       <button
-                        onClick={() => setCurrentTab('admin')}
-                        className="w-full text-left px-3 py-2 hover:bg-amber-50 dark:hover:bg-amber-950/60 text-amber-900 dark:text-amber-300 font-semibold cursor-pointer"
+                        onClick={() => {
+                          setCurrentTab('rider');
+                          setUserDropdownOpen(false);
+                        }}
+                        className="w-full text-left px-3 py-2 hover:bg-rose-50 dark:hover:bg-rose-950/40 text-rose-700 dark:text-rose-300 font-bold flex items-center justify-between cursor-pointer"
                       >
-                        Central Hub Operations
+                        <span className="flex items-center gap-1.5">
+                          <span>🛵</span>
+                          <span>Delivery Rider App</span>
+                        </span>
+                        <span className="px-1.5 py-0.2 rounded bg-rose-100 dark:bg-rose-900 text-[#d11243] dark:text-rose-200 text-[9px] font-black">
+                          Partner
+                        </span>
                       </button>
-                    )}
+
+                      <button
+                        onClick={() => {
+                          setCurrentTab('butcher');
+                          setUserDropdownOpen(false);
+                        }}
+                        className="w-full text-left px-3 py-2 hover:bg-slate-100 dark:hover:bg-slate-800 text-gray-800 dark:text-gray-200 font-bold flex items-center justify-between cursor-pointer"
+                      >
+                        <span className="flex items-center gap-1.5">
+                          <span>🥩</span>
+                          <span>Butcher Station KDS</span>
+                        </span>
+                        <span className="px-1.5 py-0.2 rounded bg-gray-200 dark:bg-slate-700 text-gray-700 dark:text-gray-300 text-[9px] font-black">
+                          KDS
+                        </span>
+                      </button>
+
+                      <button
+                        onClick={() => {
+                          handleAdminTabClick();
+                          setUserDropdownOpen(false);
+                        }}
+                        className="w-full text-left px-3 py-2 hover:bg-amber-50 dark:hover:bg-amber-950/60 text-amber-900 dark:text-amber-300 font-semibold flex items-center justify-between cursor-pointer"
+                      >
+                        <span className="flex items-center gap-1.5">
+                          <span>⚙️</span>
+                          <span>Central Hub Operations</span>
+                        </span>
+                        <span className="px-1.5 py-0.2 rounded bg-amber-100 dark:bg-amber-900/60 text-amber-900 dark:text-amber-200 text-[9px] font-black">
+                          Admin
+                        </span>
+                      </button>
+                    </div>
 
                     <div className="border-t border-gray-100 dark:border-slate-800 my-1"></div>
 
