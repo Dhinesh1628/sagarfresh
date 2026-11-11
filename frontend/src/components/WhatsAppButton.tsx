@@ -20,7 +20,7 @@ export const WhatsAppButton: React.FC<WhatsAppButtonProps> = ({
   const [internalChatbotOpen, setInternalChatbotOpen] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [showTooltip, setShowTooltip] = useState(false);
-  const phoneNumber = ''; // Uses WhatsApp text dispatch or in-app AI bot
+  const phoneNumber = '919741288301'; // Official GoMeat Direct WhatsApp Concierge: +91 97412 88301
 
   useEffect(() => {
     // Only show gentle nudge after 4s if not previously dismissed in session
@@ -133,21 +133,38 @@ export const WhatsAppButton: React.FC<WhatsAppButtonProps> = ({
 
             <div className="p-3 space-y-2 bg-gray-50 dark:bg-slate-800/80 text-xs">
               <button
-                onClick={() => handleOpenWhatsAppDirect("Hello GoMeat, I want to order fresh seafood and meat. Please share today's harbor catch.")}
+                onClick={() => openChatbot()}
+                className="w-full text-left p-2.5 bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 hover:border-emerald-500 dark:hover:border-emerald-500 rounded-xl flex items-center justify-between group shadow-2xs hover:bg-emerald-50/40 dark:hover:bg-emerald-950/40 transition cursor-pointer"
+              >
+                <div className="flex items-center gap-2">
+                  <Bot className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
+                  <div>
+                    <div className="font-bold text-gray-900 dark:text-white text-[11px] flex items-center gap-1">
+                      <span>AI Master Butcher</span>
+                      <Sparkles className="w-3 h-3 text-amber-400" />
+                    </div>
+                    <div className="text-[10px] text-gray-500 dark:text-gray-400">Recipes, prep advice & instant answers</div>
+                  </div>
+                </div>
+                <ChevronRight className="w-3.5 h-3.5 text-gray-400 group-hover:text-emerald-500" />
+              </button>
+
+              <button
+                onClick={() => handleOpenWhatsAppDirect("Hello GoMeat! I want to order fresh seafood/meat from today's harbor batch.")}
                 className="w-full text-left p-2.5 bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 hover:border-[#128C7E] dark:hover:border-[#128C7E] rounded-xl flex items-center justify-between group shadow-2xs hover:bg-emerald-50/40 dark:hover:bg-emerald-950/40 transition cursor-pointer"
               >
                 <div className="flex items-center gap-2">
                   <Sparkles className="w-4 h-4 text-[#128C7E]" />
                   <div>
-                    <div className="font-bold text-gray-900 dark:text-white text-[11px]">Order via WhatsApp</div>
-                    <div className="text-[10px] text-gray-500 dark:text-gray-400">90-min chilled delivery slots</div>
+                    <div className="font-bold text-gray-900 dark:text-white text-[11px]">Direct WhatsApp (+91 97412 88301)</div>
+                    <div className="text-[10px] text-gray-500 dark:text-gray-400">Quick order & 90-min chilled slot booking</div>
                   </div>
                 </div>
                 <ExternalLink className="w-3.5 h-3.5 text-gray-400 group-hover:text-[#128C7E]" />
               </button>
 
               <button
-                onClick={() => handleOpenWhatsAppDirect("Hi GoMeat, I want to return my ThermalVault cooler box for my ₹250 UPI refund.")}
+                onClick={() => handleOpenWhatsAppDirect("Hi GoMeat, I would like to schedule a doorstep pickup for my ThermalVault cold box for my ₹250 UPI refund.")}
                 className="w-full text-left p-2.5 bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 hover:border-[#128C7E] dark:hover:border-[#128C7E] rounded-xl flex items-center justify-between group shadow-2xs hover:bg-emerald-50/40 dark:hover:bg-emerald-950/40 transition cursor-pointer"
               >
                 <div className="flex items-center gap-2">

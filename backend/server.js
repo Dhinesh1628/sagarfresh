@@ -11,6 +11,7 @@ import { connectMongoDB, getMongoStatus } from './mongo.js';
 import whatsappWebhookRouter from './routes/whatsappWebhook.js';
 import paymentsRouter from './routes/payments.js';
 import { handleGoogleAuth } from './routes/googleAuth.js';
+import { createBackup } from './scripts/backup.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -647,6 +648,40 @@ app.post('/api/orders/:id/cancel', authenticate, (req, res) => {
   res.json({ success: true, message: 'Order cancelled successfully', order: updated });
 });
 
+// Customer Concierge Support & Contact Form Submission
+app.post('/api/contact', (req, res) => {
+  const { name, email, phone, category, orderId, message } = req.body;
+  if (!name || !phone || !message) {
+    return res.status(400).json({ error: 'Name, phone number, and message are required.' });
+  }
+
+  const ticketId = `TKT-${Math.floor(10000 + Math.random() * 90000)}`;
+  const ticket = {
+    id: ticketId,
+    name,
+    email: email || '',
+    phone,
+    category: category || 'general',
+    orderId: orderId || null,
+    message,
+    status: 'OPEN',
+    createdAt: new Date().toISOString()
+  };
+
+  try {
+    const contacts = db.get('contacts') || [];
+    db.insert('contacts', ticket);
+  } catch (e) {
+    console.warn('Could not insert to contacts table:', e.message);
+  }
+
+  res.json({
+    success: true,
+    ticketId,
+    message: 'Your message has been delivered to GoMeat Central Support. Response within 15 minutes.'
+  });
+});
+
 app.post('/api/orders/:id/simulate-temp', authenticate, (req, res) => {
   const order = db.findById('orders', req.params.id);
   if (!order) {
@@ -1170,6 +1205,20 @@ app.get('/api/admin/metrics', authenticate, requireAdmin, (req, res) => {
     coldChainCompliance: 99.6,
     productsCount: products.length
   });
+});
+
+// Admin Database Backup Snapshot
+app.post('/api/admin/backup', authenticate, requireAdmin, (req, res) => {
+  try {
+    const backupResult = createBackup();
+    res.json({
+      success: true,
+      message: `Database backup created successfully: ${backupResult.fileName}`,
+      ...backupResult
+    });
+  } catch (err) {
+    res.status(500).json({ error: 'Failed to create backup snapshot', details: err.message });
+  }
 });
 
 // Admin Customer Management

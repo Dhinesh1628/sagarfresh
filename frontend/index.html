@@ -2,16 +2,58 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
+    <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests" />
     <link rel="icon" type="image/png" href="/images/logo.png" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0" />
+    <link rel="apple-touch-icon" href="/images/logo.png" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, viewport-fit=cover" />
+    
     <title>GoMeat | Fresh Quality. Delivered with Care.</title>
-    <meta name="description" content="GoMeat - Fresh Quality. Delivered with Care. 0°C to 4°C blast-chilled chicken, mutton, fish & seafood delivered in reusable ThermalVault cold boxes." />
-    <meta property="og:title" content="GoMeat | Fresh Quality. Delivered with Care." />
-    <meta property="og:description" content="Fresh chicken, mutton, and coastal seafood delivered chilled within 90 minutes in eco-friendly reusable cold boxes." />
-    <meta property="og:site_name" content="GoMeat" />
+    <meta name="description" content="GoMeat - India's finest 0°C to 4°C cold-chain fresh chicken, mutton, and coastal seafood delivered within 90 minutes in eco-friendly reusable ThermalVault cold boxes with ₹250 refundable deposit." />
+    <link rel="canonical" href="https://gomeat-git-main-dhinesh-s-projects1.vercel.app/" />
     <meta name="theme-color" content="#d11243" />
+    
+    <!-- iOS Safari & Chrome Web App Meta Tags -->
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="GoMeat" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="format-detection" content="telephone=no" />
+
+    <!-- Open Graph Meta Tags (Strict WhatsApp / Facebook / iMessage Preview Specification) -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://gomeat-git-main-dhinesh-s-projects1.vercel.app/" />
+    <meta property="og:site_name" content="GoMeat - Fresh Quality Meats" />
+    <meta property="og:title" content="GoMeat | Fresh Quality. Delivered with Care." />
+    <meta property="og:description" content="0°C to 4°C farm-fresh chicken, pasture mutton & harbor seafood delivered within 90 mins in reusable cold boxes. 100% antibiotic-free, FSSAI certified." />
+    <meta property="og:image" content="https://gomeat-git-main-dhinesh-s-projects1.vercel.app/images/hero_banner_meat.jpg" />
+    <meta property="og:image:secure_url" content="https://gomeat-git-main-dhinesh-s-projects1.vercel.app/images/hero_banner_meat.jpg" />
+    <meta property="og:image:type" content="image/jpeg" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="GoMeat Farm-Fresh Meat & Cold Chain Delivery" />
+    <meta property="og:locale" content="en_IN" />
+
+    <!-- Twitter Card Meta Tags -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="GoMeat | Fresh Quality. Delivered with Care." />
+    <meta name="twitter:description" content="Fresh chicken, mutton, and coastal seafood delivered chilled within 90 minutes in eco-friendly reusable cold boxes." />
+    <meta name="twitter:image" content="https://gomeat-git-main-dhinesh-s-projects1.vercel.app/images/hero_banner_meat.jpg" />
+    <meta name="twitter:image:alt" content="GoMeat Farm-Fresh Meat" />
+
+    <!-- Google Analytics 4 (GA4) Tag -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-GOMEAT2026"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-GOMEAT2026', {
+        page_title: document.title,
+        page_path: window.location.pathname + window.location.hash,
+        send_page_view: true
+      });
+    </script>
   </head>
-  <body class="bg-[#f7f7f9] text-slate-800 antialiased">
+  <body class="bg-[#f7f7f9] text-slate-800 antialiased selection:bg-[#d11243] selection:text-white">
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>

@@ -488,5 +488,25 @@ export const api = {
     });
     if (!res.ok) throw new Error('Failed to fetch cooler analytics');
     return res.json();
+  },
+
+  async submitContactForm(data: {
+    name: string;
+    email?: string;
+    phone: string;
+    category: string;
+    orderId?: string;
+    message: string;
+  }): Promise<{ success: boolean; ticketId: string; message: string }> {
+    const res = await fetch(`${API_BASE}/contact`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data)
+    });
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      throw new Error(err.error || 'Failed to submit contact message');
+    }
+    return res.json();
   }
 };

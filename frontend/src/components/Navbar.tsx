@@ -497,7 +497,18 @@ export const Navbar: React.FC<NavbarProps> = ({
             <span className="truncate">Reusable Cold Box (₹250 Deposit Refund) • Never Frozen</span>
           </div>
 
-          <div className="hidden sm:flex items-center gap-4 text-gray-500 dark:text-gray-400 shrink-0">
+          <div className="hidden sm:flex items-center gap-3 text-gray-500 dark:text-gray-400 shrink-0">
+            <a 
+              href="https://wa.me/919741288301?text=Hello%20GoMeat%2C%20I%20need%20assistance%20with%20my%20order"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hover:text-emerald-600 dark:hover:text-emerald-400 font-medium flex items-center gap-1 cursor-pointer transition-colors"
+              title="Chat with GoMeat Customer Support"
+            >
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+              <span>Support: +91 97412 88301</span>
+            </a>
+            <span className="text-gray-300 dark:text-gray-700">•</span>
             <button 
               onClick={() => {
                 if (!user) {

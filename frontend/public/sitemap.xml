@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
+  
+  <!-- Main Catalog Storefront -->
+  <url>
+    <loc>https://gomeat-git-main-dhinesh-s-projects1.vercel.app/</loc>
+    <lastmod>2026-11-11</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>1.0</priority>
+    <image:image>
+      <image:loc>https://gomeat-git-main-dhinesh-s-projects1.vercel.app/images/hero_banner_meat.jpg</image:loc>
+      <image:title>GoMeat Fresh Cold-Chain Meat and Seafood</image:title>
+    </image:image>
+  </url>
+
+  <!-- Live Cold-Chain Order Tracking -->
+  <url>
+    <loc>https://gomeat-git-main-dhinesh-s-projects1.vercel.app/#tracking</loc>
+    <lastmod>2026-11-11</lastmod>
+    <changefreq>always</changefreq>
+    <priority>0.9</priority>
+  </url>
+
+  <!-- ThermalVault Cold Box Return & Deposit Refund -->
+  <url>
+    <loc>https://gomeat-git-main-dhinesh-s-projects1.vercel.app/#coolers</loc>
+    <lastmod>2026-11-11</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <!-- Customer Dashboard & Passbook -->
+  <url>
+    <loc>https://gomeat-git-main-dhinesh-s-projects1.vercel.app/#dashboard</loc>
+    <lastmod>2026-11-11</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+</urlset>

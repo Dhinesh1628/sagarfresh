@@ -14,6 +14,7 @@ import { CartDrawer } from './components/CartDrawer';
 import { CheckoutModal } from './components/CheckoutModal';
 import { OrderConfirmationModal } from './components/OrderConfirmationModal';
 import { LegalModal } from './components/LegalModals';
+import { ContactModal } from './components/ContactModal';
 import { WhatsAppButton } from './components/WhatsAppButton';
 import { GlassmorphicLoginGate } from './components/GlassmorphicLoginGate';
 import { LocationSelectorModal } from './components/LocationSelectorModal';
@@ -34,6 +35,7 @@ const MainApp: React.FC = () => {
   const [confirmedOrder, setConfirmedOrder] = useState<Order | null>(null);
   const [isConfirmationOpen, setIsConfirmationOpen] = useState(false);
   const [legalModalType, setLegalModalType] = useState<'tos' | 'privacy' | null>(null);
+  const [isContactOpen, setIsContactOpen] = useState(false);
   const [isAiButcherOpen, setIsAiButcherOpen] = useState(false);
   const [isLocationModalOpen, setIsLocationModalOpen] = useState(false);
 
@@ -107,6 +109,10 @@ const MainApp: React.FC = () => {
         setLegalModalType(null);
         return;
       }
+      if (isContactOpen) {
+        setIsContactOpen(false);
+        return;
+      }
       if (isCartOpen) {
         setIsCartOpen(false);
         return;
@@ -123,7 +129,7 @@ const MainApp: React.FC = () => {
 
     window.addEventListener('popstate', handlePopState);
     return () => window.removeEventListener('popstate', handlePopState);
-  }, [isLocationModalOpen, isAiButcherOpen, isAuthOpen, isCheckoutOpen, isConfirmationOpen, legalModalType, isCartOpen, currentTab, setIsCartOpen]);
+  }, [isLocationModalOpen, isAiButcherOpen, isAuthOpen, isCheckoutOpen, isConfirmationOpen, legalModalType, isContactOpen, isCartOpen, currentTab, setIsCartOpen]);
 
   // Tab switching with history push
   const handleTabChange = (tab: 'catalog' | 'tracking' | 'dashboard' | 'coolers' | 'admin' | 'rider' | 'butcher') => {
@@ -362,6 +368,18 @@ const MainApp: React.FC = () => {
                   </button>
                 </li>
                 <li>
+                  <button 
+                    onClick={() => {
+                      window.history.pushState({ type: 'modal', name: 'contact' }, '');
+                      setIsContactOpen(true);
+                    }} 
+                    className="text-emerald-700 dark:text-emerald-400 font-bold hover:text-emerald-800 dark:hover:text-emerald-300 cursor-pointer flex items-center gap-1.5"
+                  >
+                    <span>Contact Support & Concierge</span>
+                    <span className="px-1.5 py-0.2 rounded-full text-[9px] bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300 font-extrabold border border-emerald-300 dark:border-emerald-700">24/7 Live</span>
+                  </button>
+                </li>
+                <li>
                   <button onClick={() => {
                     if (!user) handleOpenAuth('customer');
                     else handleTabChange('coolers');
@@ -451,6 +469,12 @@ const MainApp: React.FC = () => {
       <LegalModal
         type={legalModalType}
         onClose={() => setLegalModalType(null)}
+      />
+
+      {/* Customer Support & Concierge Modal */}
+      <ContactModal
+        isOpen={isContactOpen}
+        onClose={() => setIsContactOpen(false)}
       />
 
       {/* Floating AI Butcher & WhatsApp Concierge */}

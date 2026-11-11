@@ -1,0 +1,8 @@
+# GoMeat Production Robots.txt
+User-agent: *
+Allow: /
+Disallow: /api/
+Disallow: /admin
+
+# Sitemap declaration for Google Search Console & Bing Webmaster
+Sitemap: https://gomeat-git-main-dhinesh-s-projects1.vercel.app/sitemap.xml
