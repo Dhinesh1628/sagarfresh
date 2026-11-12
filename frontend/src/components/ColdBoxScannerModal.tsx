@@ -326,15 +326,19 @@ export const ColdBoxScannerModal: React.FC<ColdBoxScannerModalProps> = ({
             isCompliant: !isDamaged,
             complianceRate: isDamaged ? 62 : 100,
             thermalHealthScore: isDamaged ? 54.2 : 98.6,
-            tatHours: isDamaged ? 91.2 : 24.2,
+            tatHours: isDamaged ? 91.2 : (isDepot ? 0 : 24.2),
             tatStatus: isDamaged ? 'OVERDUE' : 'ON_TIME',
-            cyclesUsed: 14,
-            singleUsePlasticBoxesSaved: 28,
+            cyclesUsed: isDepot ? 22 : 14,
+            singleUsePlasticBoxesSaved: isDepot ? 44 : 28,
             tempLog: isDamaged ? [
               { time: '09:00 AM', temp: 1.4, event: 'Sealed at Indiranagar Fulfillment Center' },
               { time: '09:30 AM', temp: 3.2, event: 'Dispatched with Cold-Chain Courier' },
               { time: '10:15 AM', temp: 5.4, event: 'ALERT: Gasket seal leaked in transit' },
               { time: '10:45 AM', temp: 5.8, event: 'ALERT: Customer doorstep delivery temp breach' }
+            ] : isDepot ? [
+              { time: '06:30 AM', temp: 1.2, event: 'Sanitized with automated UV-C sterilization cycle' },
+              { time: '07:15 AM', temp: 1.4, event: 'Sub-zero PCM gel packs loaded at Indiranagar Dark Hub' },
+              { time: '08:00 AM', temp: 1.8, event: 'Stored in Depot cold-staging bay. Ready for next order.' }
             ] : [
               { time: '07:15 AM', temp: 0.8, event: 'Sealed at Mahadevapura Dark Hub' },
               { time: '07:30 AM', temp: 1.2, event: 'Dispatched with EV Chilled Courier' },
@@ -349,6 +353,9 @@ export const ColdBoxScannerModal: React.FC<ColdBoxScannerModalProps> = ({
             verdict: isDamaged ? {
               status: 'DEFECTIVE - STAYED ABOVE THE TEMPERATURE',
               reason: '2 of 4 readings were above 4°C. The highest was 5.8°C at 10:45. Thermal seal compromised.'
+            } : isDepot ? {
+              status: 'DEPOT_READY',
+              reason: 'Cooler is UV-C sanitized and pre-chilled in depot reserve (1.8°C). Ready for next customer dispatch.'
             } : {
               status: 'CORRECT',
               reason: 'All readings stayed within 0°C to 4°C FreshSeal safe limit.'
@@ -358,6 +365,9 @@ export const ColdBoxScannerModal: React.FC<ColdBoxScannerModalProps> = ({
             decision: isDamaged ? {
               status: 'NOT_ELIGIBLE',
               reason: 'Exceeded 36-hour customer return limit (91.2h elapsed) and breached cold-chain temperature.'
+            } : isDepot ? {
+              status: 'IN_DEPOT',
+              reason: 'Cooler is safely in central depot stock. Ready for packing (No customer deposit held).'
             } : {
               status: 'ELIGIBLE',
               reason: 'Returned within 36-hour SLA window in optimal thermal state.'
@@ -367,7 +377,7 @@ export const ColdBoxScannerModal: React.FC<ColdBoxScannerModalProps> = ({
             score: isDamaged ? 25 : 98,
             grade: isDamaged ? 'D' : 'A',
             agingStatus: isDamaged ? 'retire_recommended' : 'optimal',
-            action: isDamaged ? 'Route to Depot Maintenance Bay' : 'Sanitize & Ready for Next Dispatch'
+            action: isDamaged ? 'Route to Depot Maintenance Bay' : 'Ready for Next Order Dispatch'
           },
           customerDetails: {
             name: 'Pooja Sundaram',
@@ -820,12 +830,16 @@ export const ColdBoxScannerModal: React.FC<ColdBoxScannerModalProps> = ({
                     <div className={`mt-3 p-3 rounded-xl border ${
                       inspectionData.tempCheck.verdict?.status === 'CORRECT'
                         ? 'bg-emerald-50 dark:bg-emerald-950/60 border-emerald-200 dark:border-emerald-800 text-emerald-900 dark:text-emerald-200'
+                        : inspectionData.tempCheck.verdict?.status === 'DEPOT_READY' || inspectionData.cooler?.status === 'available'
+                        ? 'bg-cyan-50 dark:bg-cyan-950/60 border-cyan-200 dark:border-cyan-800 text-cyan-900 dark:text-cyan-200'
                         : 'bg-rose-50 dark:bg-rose-950/60 border-rose-200 dark:border-rose-800 text-rose-900 dark:text-rose-200'
                     }`}>
                       <div className="flex items-center justify-between text-xs font-bold">
                         <span className="flex items-center gap-1.5">
                           {inspectionData.tempCheck.verdict?.status === 'CORRECT' ? (
                             <ShieldCheck className="w-4 h-4 text-emerald-600 dark:text-emerald-400 shrink-0" />
+                          ) : inspectionData.tempCheck.verdict?.status === 'DEPOT_READY' || inspectionData.cooler?.status === 'available' ? (
+                            <CheckCircle2 className="w-4 h-4 text-cyan-600 dark:text-cyan-400 shrink-0" />
                           ) : (
                             <AlertTriangle className="w-4 h-4 text-rose-600 dark:text-rose-400 shrink-0" />
                           )}

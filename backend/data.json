@@ -437,23 +437,16 @@
       "refundId": "",
       "refundTxnId": "",
       "liveTemp": 1.8,
-      "deliveredAt": "2026-11-12T01:30:00.000Z",
-      "createdAt": "2026-11-11T23:30:00.000Z",
       "tempLog": [
         {
-          "time": "08:00 AM",
-          "temp": 0.8,
-          "event": "Sealed with chilled ice-gel packs at Mahadevapura Dark Hub"
+          "time": "09:20",
+          "temp": 0.6,
+          "event": "Order Confirmed. Packed in sanitized box BOX-BLR-417."
         },
         {
-          "time": "08:30 AM",
-          "temp": 1.2,
-          "event": "Dispatched with EV Cold-Chain Courier"
-        },
-        {
-          "time": "09:15 AM",
+          "time": "09:20",
           "temp": 1.8,
-          "event": "Delivered at customer doorstep (Sub-4C guaranteed)"
+          "event": "Box delivered to Flat 402"
         }
       ],
       "trackingCode": "GOMEAT-TRK-1388",
@@ -696,31 +689,6 @@
       "__v": 0,
       "prepStage": "Out for Delivery",
       "coolerReturned": true
-    },
-    {
-      "id": "ORD-103-BREACH",
-      "orderNumber": "ORD-103-BREACH",
-      "userId": "usr_customer",
-      "customerName": "Pooja Sundaram",
-      "customerEmail": "pooja.sundaram@gmail.com",
-      "customerPhone": "+91 98765 43210",
-      "deliveryAddress": "Flat 402, Alpine Eco Apartments, Doddanekkundi, Marathahalli, Bengaluru 560037",
-      "city": "Bengaluru",
-      "coolerId": "BOX-BLR-103",
-      "coolerModel": "ThermalVault 24L - Dual Phase ColdGel Box",
-      "status": "Delivered",
-      "orderStatus": "DELIVERED",
-      "lifecycleStatus": "DELIVERED",
-      "total": 1598,
-      "coolerDeposit": 250,
-      "deliveredAt": "2026-11-08T10:45:00.000Z",
-      "createdAt": "2026-11-08T08:00:00.000Z",
-      "tempLog": [
-        { "time": "09:00", "temp": 1.4, "event": "Sealed at Indiranagar Fulfillment Center" },
-        { "time": "09:30", "temp": 3.2, "event": "Dispatched with Cold-Chain Courier" },
-        { "time": "10:15", "temp": 5.4, "event": "ALERT: Gasket seal leaked in transit" },
-        { "time": "10:45", "temp": 5.8, "event": "ALERT: Customer doorstep delivery temp breach" }
-      ]
     }
   ],
   "coolerReturns": [
