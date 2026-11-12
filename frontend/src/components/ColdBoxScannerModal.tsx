@@ -326,15 +326,48 @@ export const ColdBoxScannerModal: React.FC<ColdBoxScannerModalProps> = ({
             isCompliant: !isDamaged,
             complianceRate: isDamaged ? 62 : 100,
             thermalHealthScore: isDamaged ? 54.2 : 98.6,
-            tatHours: 24.2,
-            tatStatus: 'ON_TIME',
+            tatHours: isDamaged ? 91.2 : 24.2,
+            tatStatus: isDamaged ? 'OVERDUE' : 'ON_TIME',
             cyclesUsed: 14,
             singleUsePlasticBoxesSaved: 28,
-            tempLog: [
+            tempLog: isDamaged ? [
+              { time: '09:00 AM', temp: 1.4, event: 'Sealed at Indiranagar Fulfillment Center' },
+              { time: '09:30 AM', temp: 3.2, event: 'Dispatched with Cold-Chain Courier' },
+              { time: '10:15 AM', temp: 5.4, event: 'ALERT: Gasket seal leaked in transit' },
+              { time: '10:45 AM', temp: 5.8, event: 'ALERT: Customer doorstep delivery temp breach' }
+            ] : [
               { time: '07:15 AM', temp: 0.8, event: 'Sealed at Mahadevapura Dark Hub' },
               { time: '07:30 AM', temp: 1.2, event: 'Dispatched with EV Chilled Courier' },
               { time: '08:15 AM', temp: parseFloat(matchSample.temp), event: 'Delivered at customer doorstep' }
             ]
+          },
+          tempCheck: {
+            found: true,
+            coolerId: matchSample.id,
+            requiredMin: 0,
+            requiredMax: 4,
+            verdict: isDamaged ? {
+              status: 'DEFECTIVE - STAYED ABOVE THE TEMPERATURE',
+              reason: '2 of 4 readings were above 4°C. The highest was 5.8°C at 10:45. Thermal seal compromised.'
+            } : {
+              status: 'CORRECT',
+              reason: 'All readings stayed within 0°C to 4°C FreshSeal safe limit.'
+            }
+          },
+          fleetDetails: {
+            decision: isDamaged ? {
+              status: 'NOT_ELIGIBLE',
+              reason: 'Exceeded 36-hour customer return limit (91.2h elapsed) and breached cold-chain temperature.'
+            } : {
+              status: 'ELIGIBLE',
+              reason: 'Returned within 36-hour SLA window in optimal thermal state.'
+            }
+          },
+          health: {
+            score: isDamaged ? 25 : 98,
+            grade: isDamaged ? 'D' : 'A',
+            agingStatus: isDamaged ? 'retire_recommended' : 'optimal',
+            action: isDamaged ? 'Route to Depot Maintenance Bay' : 'Sanitize & Ready for Next Dispatch'
           },
           customerDetails: {
             name: 'Pooja Sundaram',
@@ -791,7 +824,11 @@ export const ColdBoxScannerModal: React.FC<ColdBoxScannerModalProps> = ({
                     }`}>
                       <div className="flex items-center justify-between text-xs font-bold">
                         <span className="flex items-center gap-1.5">
-                          <ShieldCheck className="w-4 h-4 text-emerald-600 dark:text-emerald-400 shrink-0" />
+                          {inspectionData.tempCheck.verdict?.status === 'CORRECT' ? (
+                            <ShieldCheck className="w-4 h-4 text-emerald-600 dark:text-emerald-400 shrink-0" />
+                          ) : (
+                            <AlertTriangle className="w-4 h-4 text-rose-600 dark:text-rose-400 shrink-0" />
+                          )}
                           Script #3 Verdict: {inspectionData.tempCheck.verdict?.status}
                         </span>
                         {inspectionData.health && (

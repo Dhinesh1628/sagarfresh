@@ -1512,8 +1512,8 @@ app.get('/api/coolers/inspect/:coolerId', (req, res) => {
         id: normalizedBoxId,
         qrCode: `GOMEAT-${normalizedBoxId}`,
         model: 'ThermalVault Ultra-3L EPP',
-        status: isBreach ? 'with_customer' : (normalizedBoxId.includes('182') ? 'assigned' : 'with_customer'),
-        currentOrderId: 'ORD-9281',
+        status: isBreach ? 'damaged' : (normalizedBoxId.includes('182') ? 'assigned' : 'with_customer'),
+        currentOrderId: isBreach ? 'ORD-103-BREACH' : 'ORD-9281',
         currentUserId: 'usr_customer',
         currentUserName: 'Pooja Sundaram',
         cyclesUsed: 8,
@@ -1610,9 +1610,13 @@ app.get('/api/coolers/inspect/:coolerId', (req, res) => {
         ? 'APPROVE_REFUND_AND_REPAIR_BOX' 
         : (isEligible ? 'APPROVE_INSTANT_REFUND' : 'BOX_READY_FOR_USE')
     },
-    tempCheck: getTemperatureCheck(cooler, db.data || {}),
-    fleetDetails: getFleetDetails(cooler, db.data || {}),
-    health: calculateHealthScore(cooler, getTemperatureCheck(cooler, db.data || {}), getFleetDetails(cooler, db.data || {}))
+    tempCheck: getTemperatureCheck({ ...cooler, status: isDamagedBox ? 'damaged' : cooler.status }, db.data || {}),
+    fleetDetails: getFleetDetails({ ...cooler, status: isDamagedBox ? 'damaged' : cooler.status }, db.data || {}),
+    health: calculateHealthScore(
+      { ...cooler, status: isDamagedBox ? 'damaged' : cooler.status },
+      getTemperatureCheck({ ...cooler, status: isDamagedBox ? 'damaged' : cooler.status }, db.data || {}),
+      getFleetDetails({ ...cooler, status: isDamagedBox ? 'damaged' : cooler.status }, db.data || {})
+    )
   });
 });
 

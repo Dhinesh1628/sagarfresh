@@ -689,44 +689,6 @@
       "__v": 0,
       "prepStage": "Out for Delivery",
       "coolerReturned": true
-    },
-    {
-      "id": "ORD-9281",
-      "orderNumber": "ORD-9281",
-      "customerName": "Pooja Sundaram",
-      "customerPhone": "+91 98765 43210",
-      "customerEmail": "pooja.sundaram@gmail.com",
-      "userId": "usr_customer",
-      "coolerId": "BOX-BLR-103",
-      "status": "Delivered",
-      "orderStatus": "DELIVERED",
-      "total": 1598,
-      "totalAmount": 1598,
-      "createdAt": "2026-11-10T11:00:00.000Z",
-      "deliveredAt": "2026-11-10T12:45:00.000Z",
-      "coolerReturned": false,
-      "tempLog": [
-        {
-          "time": "11:00",
-          "temp": 1.8,
-          "event": "Sealed with chilled ice-gel bricks at Depot"
-        },
-        {
-          "time": "11:30",
-          "temp": 3.4,
-          "event": "In-transit EV Cold-Courier dispatched"
-        },
-        {
-          "time": "12:15",
-          "temp": 5.8,
-          "event": "ALERT: Sensor rose above 4C safe threshold"
-        },
-        {
-          "time": "12:45",
-          "temp": 6.2,
-          "event": "Delivered at doorstep (Thermal seal compromised)"
-        }
-      ]
     }
   ],
   "coolerReturns": [

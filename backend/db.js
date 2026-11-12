@@ -380,6 +380,22 @@ const INITIAL_DATA = {
       assignedHub: "Bengaluru Central Hub Depot"
     },
     {
+      id: "BOX-BLR-103",
+      qrCode: "GOMEAT-BOX-BLR-103",
+      coolerCode: "GOMEAT-BOX-BLR-103",
+      model: "ThermalVault 24L - Dual Phase ColdGel Box",
+      status: "damaged",
+      currentOrderId: "ORD-103-BREACH",
+      currentUserId: "usr_customer",
+      currentUserName: "Pooja Sundaram",
+      cyclesUsed: 19,
+      lastSanitizedDate: "2026-10-24",
+      depositAmount: 250,
+      maxHoldingHours: 36,
+      assignedHub: "Bengaluru Central (Indiranagar Hub)",
+      maintenanceReason: "Worn silicone gasket seal • Thermal breach excursion (5.8°C > 4.0°C safe limit)"
+    },
+    {
       id: "BOX-BLR-101",
       qrCode: "GOMEAT-BOX-101",
       qrCode: "GOMEAT-BOX-101",
@@ -567,6 +583,34 @@ const INITIAL_DATA = {
       paymentMethod: "Razorpay (Credit Card)",
       createdAt: new Date().toISOString(),
       deliveryNotes: "Fresh cuts only. Please make medium bone-in pieces."
+    },
+    {
+      id: "ORD-103-BREACH",
+      orderNumber: "ORD-103-BREACH",
+      userId: "usr_customer",
+      customerName: "Pooja Sundaram",
+      customerEmail: "pooja.sundaram@gmail.com",
+      customerPhone: "+91 98765 43210",
+      deliveryAddress: "Flat 402, Alpine Eco Apartments, Doddanekkundi, Marathahalli, Bengaluru 560037",
+      city: "Bengaluru",
+      coolerId: "BOX-BLR-103",
+      coolerModel: "ThermalVault 24L - Dual Phase ColdGel Box",
+      status: "Delivered",
+      orderStatus: "DELIVERED",
+      lifecycleStatus: "DELIVERED",
+      total: 1598,
+      totalAmount: 1598,
+      createdAt: "2026-11-08T09:00:00.000Z",
+      deliveredAt: "2026-11-08T10:45:00.000Z",
+      coolerReturned: false,
+      deliveryExecutive: "Sunil Gowda (Fleet #09)",
+      paymentMethod: "UPI (Google Pay)",
+      tempLog: [
+        { time: "09:00", temp: 1.4, event: "Cuts packed with chilled gel bricks at Halal Cuts Station" },
+        { time: "09:30", temp: 3.2, event: "Dispatched with EV Chilled Courier" },
+        { time: "10:15", temp: 5.4, event: "ALERT: Sensor rose above 4C safe threshold" },
+        { time: "10:45", temp: 5.8, event: "Delivered at doorstep - Gasket seal compromised (5.8C)" }
+      ]
     }
   ],
   coolerReturns: [
@@ -600,6 +644,24 @@ class Database {
       if (fs.existsSync(DATA_FILE)) {
         const raw = fs.readFileSync(DATA_FILE, 'utf-8');
         this.data = JSON.parse(raw);
+        if (!this.data.coolers) this.data.coolers = [];
+        if (!this.data.orders) this.data.orders = [];
+
+        const box103 = this.data.coolers.find(c => c.id === 'BOX-BLR-103');
+        if (!box103) {
+          const init103 = INITIAL_DATA.coolers.find(c => c.id === 'BOX-BLR-103');
+          if (init103) this.data.coolers.push({ ...init103 });
+        } else {
+          box103.currentOrderId = 'ORD-103-BREACH';
+          box103.status = 'damaged';
+          box103.maintenanceReason = 'Thermal gasket compromised • Sensor reached 5.8°C (>4.0°C safe limit)';
+        }
+
+        if (!this.data.orders.some(o => o.id === 'ORD-103-BREACH' || o.coolerId === 'BOX-BLR-103')) {
+          const breachOrder = INITIAL_DATA.orders.find(o => o.id === 'ORD-103-BREACH');
+          if (breachOrder) this.data.orders.push({ ...breachOrder });
+        }
+        this.save();
         console.log('[DB] Loaded GoMeat database from persistence');
         return;
       }
