@@ -1,14 +1,11 @@
 import React, { createContext, useContext, useState, useEffect, useRef } from 'react';
 
-export type SoundEffectType = 'pop' | 'click' | 'ding';
-
 interface SoundContextType {
   isSoundEnabled: boolean;
-  soundType: SoundEffectType;
   toggleSound: () => void;
-  setSoundType: (type: SoundEffectType) => void;
-  playSound: (overrideType?: SoundEffectType) => void;
-  playPopSound: () => void; // Backward compatibility with previous references
+  playSound: () => void;
+  playDingSound: () => void;
+  playPopSound: () => void; // Maintained for backwards compatibility across components
 }
 
 const SoundContext = createContext<SoundContextType | undefined>(undefined);
@@ -17,64 +14,32 @@ export const SoundProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   const [isSoundEnabled, setIsSoundEnabled] = useState<boolean>(() => {
     if (typeof window === 'undefined') return true;
     const saved = localStorage.getItem('gomeat_sound_enabled');
+    // Default state: Sound ON
     return saved !== null ? saved === 'true' : true;
   });
 
-  const [soundType, setSoundTypeState] = useState<SoundEffectType>(() => {
-    if (typeof window === 'undefined') return 'pop';
-    const saved = localStorage.getItem('gomeat_sound_type') as SoundEffectType;
-    return ['pop', 'click', 'ding'].includes(saved) ? saved : 'pop';
-  });
-
   const audioCtxRef = useRef<AudioContext | null>(null);
-  const audioCacheRef = useRef<Record<SoundEffectType, HTMLAudioElement | null>>({
-    pop: null,
-    click: null,
-    ding: null
-  });
+  const audioElemRef = useRef<HTMLAudioElement | null>(null);
 
   useEffect(() => {
     localStorage.setItem('gomeat_sound_enabled', String(isSoundEnabled));
   }, [isSoundEnabled]);
 
-  useEffect(() => {
-    localStorage.setItem('gomeat_sound_type', soundType);
-  }, [soundType]);
-
-  // Preload audio fallbacks
+  // Preload ding.wav fallback
   useEffect(() => {
     try {
-      (['pop', 'click', 'ding'] as SoundEffectType[]).forEach(type => {
-        const audio = new Audio(`/sounds/${type}.wav`);
-        audio.volume = type === 'click' ? 0.35 : 0.25;
-        audioCacheRef.current[type] = audio;
-      });
+      const audio = new Audio('/sounds/ding.wav');
+      audio.volume = 0.28;
+      audioElemRef.current = audio;
     } catch {
       // Audio element not supported in this runtime
     }
   }, []);
 
-  const setSoundType = (type: SoundEffectType) => {
-    setSoundTypeState(type);
-    // Preview selected sound immediately
-    triggerAudio(type, true);
-  };
-
-  const toggleSound = () => {
-    setIsSoundEnabled(prev => {
-      const nextState = !prev;
-      if (nextState) {
-        // Confirmation preview chirp when turning ON
-        setTimeout(() => triggerAudio(soundType, true), 30);
-      }
-      return nextState;
-    });
-  };
-
-  const triggerAudio = (targetType: SoundEffectType, forcePlay = false) => {
+  const triggerDing = (forcePlay = false) => {
     if (!isSoundEnabled && !forcePlay) return;
 
-    // 1. Try zero-latency Web Audio API synthesis
+    // 1. Instant zero-latency Web Audio API synthesis (Harmonic crystal chime E6 1318.5Hz + E7 2637Hz)
     try {
       const AudioCtx = window.AudioContext || (window as any).webkitAudioContext;
       if (AudioCtx) {
@@ -87,116 +52,77 @@ export const SoundProvider: React.FC<{ children: React.ReactNode }> = ({ childre
         }
 
         const now = ctx.currentTime;
+        const osc1 = ctx.createOscillator();
+        const osc2 = ctx.createOscillator();
+        const gain1 = ctx.createGain();
+        const gain2 = ctx.createGain();
 
-        if (targetType === 'pop') {
-          // Acoustic Cork / Bubble Pop (880Hz down to 320Hz with resonance)
-          const osc = ctx.createOscillator();
-          const gain = ctx.createGain();
+        // Fundamental tone: E6 (1318.5 Hz)
+        osc1.type = 'sine';
+        osc1.frequency.setValueAtTime(1318.5, now);
 
-          osc.type = 'sine';
-          osc.frequency.setValueAtTime(880, now);
-          osc.frequency.exponentialRampToValueAtTime(320, now + 0.12);
+        // Harmonic overtone: E7 (2637.0 Hz)
+        osc2.type = 'sine';
+        osc2.frequency.setValueAtTime(2637.0, now);
 
-          gain.gain.setValueAtTime(0.01, now);
-          gain.gain.linearRampToValueAtTime(0.35, now + 0.005);
-          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.16);
+        // Shimmering, smooth acoustic decay
+        gain1.gain.setValueAtTime(0.01, now);
+        gain1.gain.linearRampToValueAtTime(0.28, now + 0.003);
+        gain1.gain.exponentialRampToValueAtTime(0.001, now + 0.35);
 
-          osc.connect(gain);
-          gain.connect(ctx.destination);
+        gain2.gain.setValueAtTime(0.01, now);
+        gain2.gain.linearRampToValueAtTime(0.12, now + 0.003);
+        gain2.gain.exponentialRampToValueAtTime(0.001, now + 0.26);
 
-          osc.start(now);
-          osc.stop(now + 0.18);
-          return;
-        }
+        osc1.connect(gain1);
+        osc2.connect(gain2);
+        gain1.connect(ctx.destination);
+        gain2.connect(ctx.destination);
 
-        if (targetType === 'click') {
-          // Crisp Tactile Haptic Switch / Mechanical Click (2400Hz sharp transient)
-          const osc = ctx.createOscillator();
-          const gain = ctx.createGain();
-
-          osc.type = 'triangle';
-          osc.frequency.setValueAtTime(2400, now);
-          osc.frequency.exponentialRampToValueAtTime(900, now + 0.035);
-
-          gain.gain.setValueAtTime(0.01, now);
-          gain.gain.linearRampToValueAtTime(0.32, now + 0.002);
-          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.05);
-
-          osc.connect(gain);
-          gain.connect(ctx.destination);
-
-          osc.start(now);
-          osc.stop(now + 0.06);
-          return;
-        }
-
-        if (targetType === 'ding') {
-          // Crystalline Success Bell / Service Chime (Harmonic E6 + E7 chord)
-          const osc1 = ctx.createOscillator();
-          const osc2 = ctx.createOscillator();
-          const gain1 = ctx.createGain();
-          const gain2 = ctx.createGain();
-
-          osc1.type = 'sine';
-          osc1.frequency.setValueAtTime(1318.5, now); // E6
-
-          osc2.type = 'sine';
-          osc2.frequency.setValueAtTime(2637.0, now); // E7 overtone
-
-          // Smooth chime decay
-          gain1.gain.setValueAtTime(0.01, now);
-          gain1.gain.linearRampToValueAtTime(0.28, now + 0.003);
-          gain1.gain.exponentialRampToValueAtTime(0.001, now + 0.32);
-
-          gain2.gain.setValueAtTime(0.01, now);
-          gain2.gain.linearRampToValueAtTime(0.12, now + 0.003);
-          gain2.gain.exponentialRampToValueAtTime(0.001, now + 0.25);
-
-          osc1.connect(gain1);
-          osc2.connect(gain2);
-          gain1.connect(ctx.destination);
-          gain2.connect(ctx.destination);
-
-          osc1.start(now);
-          osc2.start(now);
-          osc1.stop(now + 0.35);
-          osc2.stop(now + 0.35);
-          return;
-        }
+        osc1.start(now);
+        osc2.start(now);
+        osc1.stop(now + 0.38);
+        osc2.stop(now + 0.38);
+        return;
       }
     } catch {
-      // Fallback to pre-generated WAV audio element
+      // Fall through to HTML5 audio element
     }
 
-    // 2. Fallback to HTML5 audio element
+    // 2. Pre-rendered ding.wav audio fallback
     try {
-      const audio = audioCacheRef.current[targetType];
-      if (audio) {
-        audio.currentTime = 0;
-        audio.play().catch(() => {});
+      if (audioElemRef.current) {
+        audioElemRef.current.currentTime = 0;
+        audioElemRef.current.play().catch(() => {});
       }
     } catch {
       // Browser autoplay policy silent fallback
     }
   };
 
-  const playSound = (overrideType?: SoundEffectType) => {
-    triggerAudio(overrideType || soundType, false);
+  const toggleSound = () => {
+    setIsSoundEnabled(prev => {
+      const nextState = !prev;
+      if (nextState) {
+        // Confirmation ding when unmuting
+        setTimeout(() => triggerDing(true), 30);
+      }
+      return nextState;
+    });
   };
 
-  const playPopSound = () => {
-    playSound();
+  const playDingSound = () => {
+    triggerDing(false);
   };
 
   return (
     <SoundContext.Provider 
       value={{ 
         isSoundEnabled, 
-        soundType, 
         toggleSound, 
-        setSoundType, 
-        playSound, 
-        playPopSound 
+        playSound: playDingSound,
+        playDingSound, 
+        playPopSound: playDingSound 
       }}
     >
       {children}
@@ -209,10 +135,9 @@ export const useSound = () => {
   if (!context) {
     return {
       isSoundEnabled: true,
-      soundType: 'pop' as SoundEffectType,
       toggleSound: () => {},
-      setSoundType: () => {},
       playSound: () => {},
+      playDingSound: () => {},
       playPopSound: () => {}
     };
   }
