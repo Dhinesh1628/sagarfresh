@@ -3,6 +3,7 @@ import { ThemeProvider } from './context/ThemeContext';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import { SoundProvider } from './context/SoundContext';
 import { CartProvider, useCart } from './context/CartContext';
+import { ErrorBoundary } from './components/ErrorBoundary';
 import { Navbar } from './components/Navbar';
 import { SoundControlButton } from './components/SoundControlButton';
 import { CatalogPage } from './pages/CatalogPage';
@@ -508,14 +509,16 @@ const MainApp: React.FC = () => {
 
 export default function App() {
   return (
-    <ThemeProvider>
-      <AuthProvider>
-        <SoundProvider>
-          <CartProvider>
-            <MainApp />
-          </CartProvider>
-        </SoundProvider>
-      </AuthProvider>
-    </ThemeProvider>
+    <ErrorBoundary>
+      <ThemeProvider>
+        <AuthProvider>
+          <SoundProvider>
+            <CartProvider>
+              <MainApp />
+            </CartProvider>
+          </SoundProvider>
+        </AuthProvider>
+      </ThemeProvider>
+    </ErrorBoundary>
   );
 }

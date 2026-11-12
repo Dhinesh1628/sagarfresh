@@ -99,7 +99,7 @@ export const CustomerDashboardPage: React.FC<CustomerDashboardPageProps> = ({
     try {
       setLoadingOrders(true);
       const data = await api.getOrders();
-      setOrders(data);
+      setOrders(Array.isArray(data) ? data : []);
     } catch (err) {
       console.error('Failed to load customer orders:', err);
     } finally {
@@ -114,7 +114,7 @@ export const CustomerDashboardPage: React.FC<CustomerDashboardPageProps> = ({
       setLoadingWallet(true);
       const data = await api.getWallet();
       setWalletBalance(data.balance ?? 0);
-      setWalletTransactions(data.transactions || []);
+      setWalletTransactions(Array.isArray(data?.transactions) ? data.transactions : []);
     } catch (err) {
       console.error('Failed to load wallet passbook:', err);
     } finally {
@@ -126,8 +126,8 @@ export const CustomerDashboardPage: React.FC<CustomerDashboardPageProps> = ({
     try {
       setLoadingCoolers(true);
       const data = await api.getMyCoolers();
-      setCoolers(data.coolers || []);
-      setReturns(data.returns || []);
+      setCoolers(Array.isArray(data?.coolers) ? data.coolers : []);
+      setReturns(Array.isArray(data?.returns) ? data.returns : []);
     } catch (err) {
       console.error('Failed to load cooler inventory:', err);
     } finally {
@@ -232,7 +232,7 @@ export const CustomerDashboardPage: React.FC<CustomerDashboardPageProps> = ({
     localStorage.setItem('gomeat_saved_addresses', JSON.stringify(updated));
   };
 
-  const totalHeldDeposit = coolers.length * 250;
+  const totalHeldDeposit = (coolers || []).length * 250;
 
   return (
     <div className="space-y-6 pb-20 max-w-6xl mx-auto">
@@ -408,7 +408,7 @@ export const CustomerDashboardPage: React.FC<CustomerDashboardPageProps> = ({
 
                     {/* Items row */}
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-                      {ord.items.map((it, idx) => (
+                      {(ord.items || []).map((it, idx) => (
                         <div key={idx} className="flex items-center gap-3 p-2.5 rounded-xl bg-gray-50 dark:bg-slate-800/60 border border-gray-100 dark:border-slate-800">
                           <img 
                             src={it.image || it.imageUrl || `/images/products/${it.productId}.jpg`} 
@@ -1085,7 +1085,7 @@ export const CustomerDashboardPage: React.FC<CustomerDashboardPageProps> = ({
             {/* Cuts breakdown */}
             <div className="space-y-2">
               <span className="font-bold uppercase text-gray-400 text-[10px]">Cuts in this Cold Box:</span>
-              {selectedOrder.items.map((it, idx) => (
+              {(selectedOrder.items || []).map((it, idx) => (
                 <div key={idx} className="flex justify-between items-center p-2 rounded-lg bg-gray-50 dark:bg-slate-800/60">
                   <div>
                     <span className="font-bold block">{it.name}</span>

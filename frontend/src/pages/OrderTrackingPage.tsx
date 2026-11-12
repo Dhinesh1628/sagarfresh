@@ -369,7 +369,7 @@ export const OrderTrackingPage: React.FC<OrderTrackingPageProps> = ({ onNavigate
                         )}
                       </div>
                       <span className="text-[11px] text-gray-500 dark:text-gray-400 block mt-0.5">
-                        {ord.items.length} Fresh Cut(s) • ₹{ord.total}
+                        {(ord.items || []).length} Fresh Cut(s) • ₹{ord.total}
                       </span>
                     </div>
 
@@ -720,7 +720,7 @@ export const OrderTrackingPage: React.FC<OrderTrackingPageProps> = ({ onNavigate
             <div className="flex items-center justify-between border-b border-gray-100 dark:border-slate-800 pb-3">
               <h4 className="text-xs font-black uppercase tracking-wider text-gray-950 dark:text-white flex items-center gap-1.5">
                 <Package className="w-3.5 h-3.5 text-[#d11243] dark:text-rose-500" />
-                <span>Your Items ({currentOrder.items.length})</span>
+                <span>Your Items ({(currentOrder.items || []).length})</span>
               </h4>
               <span className="text-xs font-extrabold text-[#d11243] dark:text-rose-400">
                 Paid: ₹{currentOrder.total} ({currentOrder.paymentMethod || 'Online'})
@@ -729,7 +729,7 @@ export const OrderTrackingPage: React.FC<OrderTrackingPageProps> = ({ onNavigate
 
             {/* Items List */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              {currentOrder.items.map((it, idx) => (
+              {(currentOrder.items || []).map((it, idx) => (
                 <div key={idx} className="p-3 bg-gray-50 dark:bg-slate-800/80 rounded-2xl border border-gray-200 dark:border-slate-700 flex items-center justify-between text-xs">
                   <div className="space-y-0.5">
                     <div className="font-extrabold text-gray-950 dark:text-white">{it.name}</div>

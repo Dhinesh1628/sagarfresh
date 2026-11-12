@@ -26,7 +26,7 @@
       "phone": "+91 98765 43210",
       "city": "Bengaluru",
       "address": "Flat 402, Alpine Eco Apartments, Doddanekkundi, Marathahalli, Bengaluru 560037",
-      "depositBalance": 1250,
+      "depositBalance": 1500,
       "upiId": "pooja@okhdfcbank",
       "createdAt": "2026-02-10T11:20:00.000Z",
       "__v": 0,
@@ -84,7 +84,7 @@
       "catchDate": "Daily 4:00 AM Harbor Catch",
       "origin": "Mangalore Old Port Jetty, Karnataka",
       "cutStyle": "Curry Cut & Tawa Fry Steaks",
-      "stock": 34,
+      "stock": 33,
       "rating": 4.8,
       "reviewsCount": 120,
       "badge": "",
@@ -297,10 +297,10 @@
       "id": "BOX-BLR-983",
       "qrCode": "SAGAR-BOX-BLR-983",
       "model": "ThermalVault 18L - Reusable EPP Cold-Gel Box",
-      "status": "available",
-      "currentOrderId": null,
-      "currentUserId": null,
-      "currentUserName": null,
+      "status": "assigned",
+      "currentOrderId": "ORD-1434",
+      "currentUserId": "usr_customer",
+      "currentUserName": "Pooja Sundaram",
       "cyclesUsed": 2,
       "lastSanitizedDate": "2026-11-10",
       "depositAmount": 250,
@@ -317,7 +317,7 @@
       "coolerCode": "GOMEAT-BOX-BLR-417",
       "model": "ThermalVault 18L - Reusable EPP Cold-Gel Box",
       "status": "with_customer",
-      "currentOrderId": null,
+      "currentOrderId": "ORD-417-DELIVERED",
       "currentUserId": "usr_customer",
       "currentUserName": "Pooja Sundaram",
       "cyclesUsed": 1,
@@ -373,8 +373,8 @@
       "qrCode": "GOMEAT-BOX-BLR-103",
       "coolerCode": "GOMEAT-BOX-BLR-103",
       "model": "ThermalVault Ultra-3L EPP",
-      "status": "with_customer",
-      "currentOrderId": "ORD-9281",
+      "status": "damaged",
+      "currentOrderId": "ORD-103-BREACH",
       "currentUserId": "usr_customer",
       "currentUserName": "Pooja Sundaram",
       "cyclesUsed": 8,
@@ -384,10 +384,57 @@
       "assignedHub": "Mahadevapura Dark Hub",
       "createdAt": "2026-11-10T08:37:35.823Z",
       "updatedAt": "2026-11-10T08:37:35.823Z",
-      "__v": 0
+      "__v": 0,
+      "maintenanceReason": "Thermal gasket compromised • Sensor reached 5.8°C (>4.0°C safe limit)"
     }
   ],
   "orders": [
+    {
+      "id": "ORD-1434",
+      "deliveryPin": "8358",
+      "userId": "usr_customer",
+      "customerName": "Pooja Sundaram",
+      "customerEmail": "pooja.sundaram@gmail.com",
+      "customerPhone": "+91 98765 43210",
+      "deliveryAddress": "Flat 402, Alpine Eco, Doddanekkundi, Bengaluru - 560037",
+      "city": "Bengaluru",
+      "items": [
+        {
+          "productId": "prod_1",
+          "name": "Mangalore Surmai Tawa Fry (Large Steaks)",
+          "price": 799,
+          "quantity": 1,
+          "unit": "500g",
+          "netWeight": "450g",
+          "chillingMethod": "0°C to 4°C FreshSeal™ Cold Chain",
+          "cutStyle": "Curry Cut & Tawa Fry Steaks",
+          "image": "/images/products/prod_1.jpg"
+        }
+      ],
+      "subtotal": 799,
+      "discountAmount": 0,
+      "couponCode": null,
+      "coolerDeposit": 250,
+      "shippingFee": 0,
+      "total": 1049,
+      "status": "Cold Box Packed",
+      "coolerId": "BOX-BLR-983",
+      "coolerModel": "ThermalVault 18L - Reusable EPP Cold-Gel Box",
+      "liveTemp": 0.6,
+      "deliveryExecutive": "Karthik S (+91 99014 55210)",
+      "tempLog": [
+        {
+          "time": "12:57",
+          "temp": 0.6,
+          "event": "Order Confirmed. Packed in sanitized box BOX-BLR-983."
+        }
+      ],
+      "deliverySlot": "Today, Express in 90 Mins",
+      "trackingCode": "GOMEAT-TRK-5745",
+      "paymentMethod": "UPI (Google Pay)",
+      "createdAt": "2026-11-12T07:27:32.202Z",
+      "deliveryNotes": ""
+    },
     {
       "_id": "6af1431d8597919bceb15680",
       "id": "ORD-1406",
@@ -689,6 +736,108 @@
       "__v": 0,
       "prepStage": "Out for Delivery",
       "coolerReturned": true
+    },
+    {
+      "id": "ORD-417-DELIVERED",
+      "orderNumber": "ORD-417-DELIVERED",
+      "userId": "usr_customer",
+      "customerName": "Pooja Sundaram",
+      "customerEmail": "pooja.sundaram@gmail.com",
+      "customerPhone": "+91 98765 43210",
+      "deliveryAddress": "Flat 402, Alpine Eco Apartments, Doddanekkundi, Marathahalli, Bengaluru 560037",
+      "city": "Bengaluru",
+      "coolerId": "BOX-BLR-417",
+      "coolerModel": "ThermalVault 18L - Reusable EPP Cold-Gel Box",
+      "status": "Delivered",
+      "orderStatus": "DELIVERED",
+      "lifecycleStatus": "DELIVERED",
+      "total": 1299,
+      "coolerDeposit": 250,
+      "createdAt": "2026-11-11T12:00:00.000Z",
+      "deliveredAt": "2026-11-11T14:30:00.000Z",
+      "tempLog": [
+        {
+          "time": "08:00 AM",
+          "temp": 0.8,
+          "event": "Sealed with chilled ice-gel packs at Mahadevapura Dark Hub"
+        },
+        {
+          "time": "08:30 AM",
+          "temp": 1.2,
+          "event": "Dispatched with EV Cold-Chain Courier"
+        },
+        {
+          "time": "09:15 AM",
+          "temp": 1.8,
+          "event": "Delivered at customer doorstep (Sub-4C guaranteed)"
+        }
+      ],
+      "items": [
+        {
+          "productId": "prod_1",
+          "name": "Mangalore Surmai Steaks (Chilled 0°C-4°C)",
+          "price": 1049,
+          "quantity": 1,
+          "unit": "500g",
+          "netWeight": "450g",
+          "chillingMethod": "0°C to 4°C FreshSeal™ Cold Chain"
+        }
+      ]
+    },
+    {
+      "id": "ORD-103-BREACH",
+      "orderNumber": "ORD-103-BREACH",
+      "userId": "usr_customer",
+      "customerName": "Pooja Sundaram",
+      "customerEmail": "pooja.sundaram@gmail.com",
+      "customerPhone": "+91 98765 43210",
+      "deliveryAddress": "Flat 402, Alpine Eco Apartments, Doddanekkundi, Marathahalli, Bengaluru 560037",
+      "city": "Bengaluru",
+      "coolerId": "BOX-BLR-103",
+      "coolerModel": "ThermalVault 24L - Dual Phase ColdGel Box",
+      "status": "Delivered",
+      "orderStatus": "DELIVERED",
+      "lifecycleStatus": "DELIVERED",
+      "total": 1598,
+      "totalAmount": 1598,
+      "createdAt": "2026-11-08T09:00:00.000Z",
+      "deliveredAt": "2026-11-08T10:45:00.000Z",
+      "coolerReturned": false,
+      "deliveryExecutive": "Sunil Gowda (Fleet #09)",
+      "paymentMethod": "UPI (Google Pay)",
+      "tempLog": [
+        {
+          "time": "09:00",
+          "temp": 1.4,
+          "event": "Cuts packed with chilled gel bricks at Halal Cuts Station"
+        },
+        {
+          "time": "09:30",
+          "temp": 3.2,
+          "event": "Dispatched with EV Chilled Courier"
+        },
+        {
+          "time": "10:15",
+          "temp": 5.4,
+          "event": "ALERT: Sensor rose above 4C safe threshold"
+        },
+        {
+          "time": "10:45",
+          "temp": 5.8,
+          "event": "Delivered at doorstep - Gasket seal compromised (5.8C)"
+        }
+      ],
+      "items": [
+        {
+          "productId": "prod_1",
+          "name": "Mangalore Surmai Steaks (Chilled 0°C-4°C)",
+          "price": 1348,
+          "quantity": 1,
+          "unit": "500g",
+          "netWeight": "450g",
+          "chillingMethod": "0°C to 4°C FreshSeal™ Cold Chain"
+        }
+      ]
     }
   ],
   "coolerReturns": [

@@ -796,7 +796,7 @@ export const RiderDeliveryPage: React.FC<RiderDeliveryPageProps> = ({ onBackToSt
                           </span>
                         </div>
                         <p className="text-xs text-gray-400 mt-0.5">
-                          {ord.items.length} Pack(s) • ₹{ord.total} • {ord.paymentMethod || 'Prepaid'}
+                          {(ord.items || []).length} Pack(s) • ₹{ord.total} • {ord.paymentMethod || 'Prepaid'}
                         </p>
                       </div>
 

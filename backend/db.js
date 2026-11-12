@@ -554,6 +554,26 @@ const INITIAL_DATA = {
       status: "Delivered",
       orderStatus: "DELIVERED",
       lifecycleStatus: "DELIVERED",
+      items: [
+        {
+          productId: "prod_1",
+          name: "Seer Fish / Surmai (Large Steaks)",
+          price: 799,
+          quantity: 1,
+          unit: "500g",
+          netWeight: "450g",
+          chillingMethod: "0°C to 4°C FreshSeal™ Cold Chain"
+        },
+        {
+          productId: "prod_3",
+          name: "Tender Curry Cut Broiler Chicken (Skinless)",
+          price: 249,
+          quantity: 2,
+          unit: "500g",
+          netWeight: "900g",
+          chillingMethod: "0°C to 4°C FreshSeal™ Cold Chain"
+        }
+      ],
       total: 1299,
       coolerDeposit: 250,
       createdAt: "2026-11-11T12:00:00.000Z",
@@ -625,6 +645,26 @@ const INITIAL_DATA = {
       status: "Delivered",
       orderStatus: "DELIVERED",
       lifecycleStatus: "DELIVERED",
+      items: [
+        {
+          productId: "prod_2",
+          name: "Young Goat / Mutton Biryani Cut (Tender)",
+          price: 549,
+          quantity: 2,
+          unit: "500g",
+          netWeight: "1000g",
+          chillingMethod: "0°C to 4°C FreshSeal™ Cold Chain"
+        },
+        {
+          productId: "prod_4",
+          name: "White Prawns / Jhinga (Cleaned & Deveined)",
+          price: 499,
+          quantity: 1,
+          unit: "500g",
+          netWeight: "450g",
+          chillingMethod: "0°C to 4°C FreshSeal™ Cold Chain"
+        }
+      ],
       total: 1598,
       totalAmount: 1598,
       createdAt: "2026-11-08T09:00:00.000Z",
@@ -708,6 +748,27 @@ class Database {
           const breachOrder = INITIAL_DATA.orders.find(o => o.id === 'ORD-103-BREACH');
           if (breachOrder) this.data.orders.push({ ...breachOrder });
         }
+
+        // Guarantee every order in persistent database has non-empty items array
+        this.data.orders.forEach(o => {
+          if (!o.items || !Array.isArray(o.items) || o.items.length === 0) {
+            const initOrd = INITIAL_DATA.orders.find(io => io.id === o.id);
+            if (initOrd && initOrd.items && initOrd.items.length > 0) {
+              o.items = JSON.parse(JSON.stringify(initOrd.items));
+            } else {
+              o.items = [
+                {
+                  productId: 'prod_1',
+                  name: 'Mangalore Surmai Steaks (Chilled 0°C-4°C)',
+                  price: o.total ? Math.max(199, o.total - 250) : 499,
+                  quantity: 1,
+                  unit: '500g'
+                }
+              ];
+            }
+          }
+        });
+
         this.save();
         console.log('[DB] Loaded GoMeat database from persistence');
         return;
