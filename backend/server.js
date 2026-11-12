@@ -232,7 +232,14 @@ const createToken = (user) => {
 // ==========================================
 
 // Google Sign-In & Sign-Up endpoint with official Google token verification
-app.post('/api/auth/google', authLimiter, (req, res) => handleGoogleAuth(req, res, createToken));
+app.post('/api/auth/google', authLimiter, async (req, res, next) => {
+  try {
+    await handleGoogleAuth(req, res, createToken);
+  } catch (err) {
+    console.error('[Google Auth Route Crash]:', err);
+    res.status(500).json({ error: 'Google authentication service initializing. Please try again.' });
+  }
+});
 
 app.post('/api/auth/register', authLimiter, (req, res) => {
   const { name, email, password, phone, address, city, upiId } = req.body;

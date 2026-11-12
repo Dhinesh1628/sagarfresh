@@ -3,6 +3,7 @@ import { X, Plus, Minus, Zap, ShieldCheck, Star, Award, CheckCircle2, ChevronRig
 import type { Product } from '../types';
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
+import { useSound } from '../context/SoundContext';
 import { getProductWeightOptions } from '../utils/weightUtils';
 import { getProductVisual } from '../data/productVisuals';
 
@@ -19,6 +20,7 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
 }) => {
   const { items, addItem, updateQuantity } = useCart();
   const { user } = useAuth();
+  const { playPopSound } = useSound();
   
   if (!product) return null;
 
@@ -494,7 +496,10 @@ export const ProductDetailModal: React.FC<ProductDetailModalProps> = ({
                     return (
                       <div
                         key={opt.weight}
-                        onClick={() => setSelectedWeight(opt.weight)}
+                        onClick={() => {
+                          setSelectedWeight(opt.weight);
+                          playPopSound();
+                        }}
                         className={`p-3 rounded-xl border text-left cursor-pointer transition relative ${
                           isSelected
                             ? 'bg-rose-50/70 dark:bg-rose-950/60 border-[#d11243] dark:border-rose-500 ring-1 ring-[#d11243] dark:ring-rose-500'

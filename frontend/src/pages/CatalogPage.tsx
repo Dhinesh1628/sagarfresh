@@ -8,6 +8,7 @@ import {
 import type { Product } from '../types';
 import { api } from '../api';
 import { useCart } from '../context/CartContext';
+import { useSound } from '../context/SoundContext';
 import { ProductDetailModal } from '../components/ProductDetailModal';
 import { HeroSection } from '../components/HeroSection';
 import { CategorySection } from '../components/CategorySection';
@@ -60,6 +61,7 @@ export const CatalogPage: React.FC<CatalogPageProps> = ({
   };
 
   const { items, addItem, updateQuantity } = useCart();
+  const { playPopSound } = useSound();
 
   // Load wishlist from localStorage
   useEffect(() => {
@@ -327,7 +329,10 @@ export const CatalogPage: React.FC<CatalogPageProps> = ({
                     <button
                       key={opt.weight}
                       type="button"
-                      onClick={() => setSelectedWeights(prev => ({ ...prev, [product.id]: opt.weight }))}
+                      onClick={() => {
+                        setSelectedWeights(prev => ({ ...prev, [product.id]: opt.weight }));
+                        playPopSound();
+                      }}
                       className={`py-1.5 px-1 rounded-xl text-center font-extrabold text-[11px] transition cursor-pointer border ${
                         isSelected
                           ? 'bg-rose-50 dark:bg-rose-950/70 border-[#d11243] dark:border-rose-500 text-[#d11243] dark:text-rose-400 shadow-2xs ring-1 ring-[#d11243]'

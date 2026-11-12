@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { ThemeProvider } from './context/ThemeContext';
 import { AuthProvider, useAuth } from './context/AuthContext';
+import { SoundProvider } from './context/SoundContext';
 import { CartProvider, useCart } from './context/CartContext';
 import { Navbar } from './components/Navbar';
+import { SoundControlButton } from './components/SoundControlButton';
 import { CatalogPage } from './pages/CatalogPage';
 import { OrderTrackingPage } from './pages/OrderTrackingPage';
 import { CustomerDashboardPage } from './pages/CustomerDashboardPage';
@@ -497,6 +499,9 @@ const MainApp: React.FC = () => {
         />
       )}
 
+      {/* Fixed Sound Control Button (Top-Right on All Pages & Portals) */}
+      <SoundControlButton />
+
     </div>
   );
 };
@@ -505,9 +510,11 @@ export default function App() {
   return (
     <ThemeProvider>
       <AuthProvider>
-        <CartProvider>
-          <MainApp />
-        </CartProvider>
+        <SoundProvider>
+          <CartProvider>
+            <MainApp />
+          </CartProvider>
+        </SoundProvider>
       </AuthProvider>
     </ThemeProvider>
   );

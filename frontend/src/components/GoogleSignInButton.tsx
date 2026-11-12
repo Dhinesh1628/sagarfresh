@@ -18,7 +18,8 @@ export const GoogleSignInButton: React.FC<GoogleSignInButtonProps> = ({
   const [authenticating, setAuthenticating] = useState(false);
   const [internalError, setInternalError] = useState<string | null>(null);
 
-  const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
+  const GOOGLE_CLIENT_ID_FALLBACK = '938924164898-ch4lvils61jkqp39cfl23pn2rkgrfggp.apps.googleusercontent.com';
+  const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID || GOOGLE_CLIENT_ID_FALLBACK;
 
   const handleGoogleSuccess = async (credentialResponse: CredentialResponse) => {
     if (!credentialResponse.credential) {
@@ -36,7 +37,10 @@ export const GoogleSignInButton: React.FC<GoogleSignInButtonProps> = ({
       await googleLogin(credentialResponse.credential);
       if (onSuccess) onSuccess();
     } catch (err: any) {
-      const message = err.message || 'Google authentication failed. Please verify your connection.';
+      const raw = err?.message || '';
+      const message = (raw.includes('JSON') || raw.includes('Unexpected token') || raw.includes('server error'))
+        ? 'Google authentication initializing. Please try again or use 1-Click Demo Login.'
+        : (raw || 'Google authentication failed. Please verify your connection.');
       setInternalError(message);
       if (onError) onError(message);
     } finally {

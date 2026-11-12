@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import type { Product, CartItem } from '../types';
+import { useSound } from './SoundContext';
 
 interface CartContextType {
   items: CartItem[];
@@ -30,6 +31,7 @@ interface CartContextType {
 const CartContext = createContext<CartContextType | undefined>(undefined);
 
 export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const { playPopSound } = useSound();
   const [items, setItems] = useState<CartItem[]>(() => {
     try {
       const saved = localStorage.getItem('gomeat_cart') || localStorage.getItem('sagar_cart');
@@ -102,6 +104,9 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
     unitPrice?: number,
     unitMrp?: number
   ) => {
+    // Play soft pop sound on add to cart
+    playPopSound();
+
     const weight = selectedWeight || product.netWeight || product.unit || '500g';
     const cut = selectedCutStyle || product.cutStyle || 'Default';
     const finalPrice = typeof unitPrice === 'number' && unitPrice > 0 ? unitPrice : product.price;

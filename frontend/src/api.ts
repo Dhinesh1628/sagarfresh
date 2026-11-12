@@ -10,68 +10,106 @@ const getHeaders = () => {
   };
 };
 
+async function safeFetchJson<T = any>(url: string, init?: RequestInit, fallbackError = 'Request failed'): Promise<T> {
+  let res: Response;
+  try {
+    res = await fetch(url, init);
+  } catch {
+    throw new Error('Network connection issue. Please check your internet connection.');
+  }
+
+  const text = await res.text();
+  let data: any = null;
+  if (text && text.trim().length > 0) {
+    try {
+      data = JSON.parse(text);
+    } catch {
+      data = null;
+    }
+  }
+
+  if (!res.ok) {
+    if (data && typeof data.error === 'string') {
+      throw new Error(data.error);
+    }
+    if (res.status === 401) {
+      throw new Error('Invalid credentials or session expired. Please sign in again.');
+    }
+    if (res.status === 403) {
+      throw new Error('Access denied. You do not have permission.');
+    }
+    if (res.status === 429) {
+      throw new Error('Too many requests. Please wait a few moments and try again.');
+    }
+    if (res.status >= 500) {
+      throw new Error('GoMeat cloud service is initializing. Please try again in a few moments.');
+    }
+    throw new Error(fallbackError);
+  }
+
+  if (data === null && text && text.trim().length > 0) {
+    throw new Error('Server returned an unexpected response. Please refresh the page.');
+  }
+
+  return (data ?? {}) as T;
+}
+
 export const api = {
   // Auth
   async googleLogin(credential: string): Promise<{ user: User; token: string }> {
-    const res = await fetch(`${API_BASE}/auth/google`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ credential })
-    });
-    if (!res.ok) {
-      const err = await res.json().catch(() => ({}));
-      throw new Error(err.error || 'Google authentication failed. Please try again.');
-    }
-    return res.json();
+    return safeFetchJson<{ user: User; token: string }>(
+      `${API_BASE}/auth/google`,
+      {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ credential })
+      },
+      'Google authentication failed. Please try again.'
+    );
   },
 
-  async login(email: string, password: string) {
-    const res = await fetch(`${API_BASE}/auth/login`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email, password })
-    });
-    if (!res.ok) {
-      const err = await res.json().catch(() => ({ error: 'Unable to sign in. Please check your credentials or try again.' }));
-      throw new Error(err.error || 'Failed to login');
-    }
-    return res.json();
+  async login(email: string, password: string): Promise<{ user: User; token: string }> {
+    return safeFetchJson<{ user: User; token: string }>(
+      `${API_BASE}/auth/login`,
+      {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password })
+      },
+      'Unable to sign in. Please check your credentials or try again.'
+    );
   },
 
-  async register(data: { name: string; email: string; password: string; phone?: string; address?: string }) {
-    const res = await fetch(`${API_BASE}/auth/register`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(data)
-    });
-    if (!res.ok) {
-      const err = await res.json().catch(() => ({ error: 'Unable to register account. Please check your details.' }));
-      throw new Error(err.error || 'Failed to register');
-    }
-    return res.json();
+  async register(data: { name: string; email: string; password: string; phone?: string; address?: string }): Promise<{ user: User; token: string }> {
+    return safeFetchJson<{ user: User; token: string }>(
+      `${API_BASE}/auth/register`,
+      {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+      },
+      'Unable to register account. Please check your details.'
+    );
   },
 
-  async demoLogin(role: 'customer' | 'admin') {
-    const res = await fetch(`${API_BASE}/auth/demo-login`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ role })
-    });
-    if (!res.ok) {
-      const err = await res.json().catch(() => ({ error: 'Demo login temporarily unavailable' }));
-      throw new Error(err.error || 'Demo login failed');
-    }
-    return res.json();
+  async demoLogin(role: 'customer' | 'admin'): Promise<{ user: User; token: string }> {
+    return safeFetchJson<{ user: User; token: string }>(
+      `${API_BASE}/auth/demo-login`,
+      {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ role })
+      },
+      'Demo login temporarily unavailable'
+    );
   },
 
   async getCurrentUser(): Promise<User> {
-    const res = await fetch(`${API_BASE}/auth/me`, {
-      headers: getHeaders()
-    });
-    if (!res.ok) {
-      throw new Error('Failed to fetch user');
-    }
-    return res.json();
+    return safeFetchJson<User>(
+      `${API_BASE}/auth/me`,
+      { headers: getHeaders() },
+      'Failed to fetch user session'
+    );
   },
 
   // Products

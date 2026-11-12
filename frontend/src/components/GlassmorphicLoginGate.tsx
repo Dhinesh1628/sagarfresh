@@ -387,7 +387,14 @@ export const GlassmorphicLoginGate: React.FC<GlassmorphicLoginGateProps> = ({
               onSuccess={() => {
                 if (onCloseModal) onCloseModal();
               }}
-              onError={(err) => setError(err)}
+              onError={(err) => {
+                const msg = err || '';
+                if (msg.includes('JSON') || msg.includes('token') || msg.includes('server error') || msg.includes('Unexpected token')) {
+                  setError('Authentication service initializing. Please try again or use 1-Click Demo Login below.');
+                } else {
+                  setError(msg);
+                }
+              }}
             />
           </div>
 
