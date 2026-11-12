@@ -242,7 +242,7 @@ export interface Cooler {
   id: string;
   qrCode: string;
   model: string;
-  status: 'available' | 'assigned' | 'in_transit' | 'with_customer' | 'return_requested' | 'returned' | 'sanitizing';
+  status: 'available' | 'assigned' | 'in_transit' | 'with_customer' | 'return_requested' | 'returned' | 'sanitizing' | 'damaged' | 'maintenance' | 'decommissioned';
   currentOrderId?: string | null;
   currentUserId?: string | null;
   currentUserName?: string | null;
@@ -251,6 +251,122 @@ export interface Cooler {
   depositAmount: number; // ₹250
   maxHoldingHours: number;
   assignedHub: string;
+  maintenanceReason?: string;
+}
+
+export interface TempReading {
+  time: string;
+  temp: number;
+  status: 'OK' | 'TOO LOW' | 'TOO HIGH';
+  event: string;
+}
+
+export interface TempCheckReport {
+  found: boolean;
+  coolerId: string;
+  requiredMin: number;
+  requiredMax: number;
+  order?: {
+    orderId: string;
+    orderStatus: string;
+    delivered: boolean;
+    orderedAt: string;
+  };
+  readings?: TempReading[];
+  ignoredReadings?: number;
+  summary?: {
+    lowest: number;
+    highest: number;
+    average: number;
+  };
+  verdict: {
+    status: 'CORRECT' | 'DEFECTIVE' | 'NO_ORDER' | 'NO_READINGS';
+    reason?: string;
+    title?: string;
+    reasons?: string[];
+  };
+}
+
+export interface FleetDetailsReport {
+  found: boolean;
+  coolerId: string;
+  qrCode?: string;
+  model?: string;
+  coolerStatus?: string;
+  hub?: string;
+  limitHours: number;
+  depositAmount: number;
+  thisDelivery?: {
+    orderId: string;
+    deliveredAt: string;
+    returnedAt: string | null;
+  };
+  decision: {
+    status: 'ELIGIBLE' | 'NOT_ELIGIBLE' | 'WAIT' | 'NOT_DELIVERED_YET' | 'NO_ORDER';
+    hoursKept?: number;
+    hoursSinceDelivery?: number;
+    ifReturnedNow?: 'ELIGIBLE' | 'NOT_ELIGIBLE';
+    refundAmount?: number;
+    reason: string;
+    refundRecorded?: string;
+  };
+  history: {
+    deliveries: number;
+    returned: number;
+    averageReturnHours: number | null;
+    medianReturnHours: number | null;
+    recoveryRatePct: number;
+    returnsWithoutOrder: Array<{
+      id: string;
+      status: string;
+      refundAmount: number;
+      when: string;
+    }>;
+  };
+}
+
+export interface CoolerHealthScore {
+  score: number;
+  grade: 'A' | 'B' | 'C' | 'D';
+  agingStatus: 'optimal' | 'moderate' | 'aging' | 'retire_recommended';
+  deductions: string[];
+}
+
+export interface CoolerHealthReport {
+  success: boolean;
+  found: boolean;
+  cooler: Cooler;
+  tempCheck: TempCheckReport;
+  fleetDetails: FleetDetailsReport;
+  health: CoolerHealthScore;
+}
+
+export interface FleetHealthOverview {
+  success: boolean;
+  summary: {
+    total: number;
+    optimal: number;
+    tempDefects: number;
+    agingAlerts: number;
+    maintenanceCount: number;
+    complianceRatePct: number;
+    avgFleetReturnHours: number;
+  };
+  fleet: Array<{
+    id: string;
+    qrCode: string;
+    model: string;
+    status: string;
+    assignedHub: string;
+    cyclesUsed: number;
+    lastSanitizedDate: string;
+    tempVerdict: string;
+    tempSummary?: { lowest: number; highest: number; average: number } | null;
+    returnStatus: string;
+    healthScore: number;
+    healthGrade: 'A' | 'B' | 'C' | 'D';
+    agingStatus: 'optimal' | 'moderate' | 'aging' | 'retire_recommended';
+  }>;
 }
 
 export interface CoolerReturn {

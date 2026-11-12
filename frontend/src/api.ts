@@ -1,4 +1,4 @@
-import { Product, Order, Cooler, CoolerReturn, AdminMetrics, User, WalletTransaction } from './types';
+import { Product, Order, Cooler, CoolerReturn, AdminMetrics, User, WalletTransaction, CoolerHealthReport, FleetHealthOverview } from './types';
 
 const API_BASE = '/api';
 
@@ -697,6 +697,44 @@ export const api = {
       body: JSON.stringify(data)
     });
     if (!res.ok) throw new Error('Failed to assign rider or shop to order');
+    return res.json();
+  },
+
+  // ==========================================
+  // COOLER HEALTH CHECKER (Teammate Analytical Scripts Suite)
+  // ==========================================
+  async getCoolerFleetHealth(): Promise<FleetHealthOverview> {
+    const res = await fetch(`${API_BASE}/admin/coolers/health`, {
+      headers: getHeaders()
+    });
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      throw new Error(err.error || 'Failed to fetch cooler fleet health analytics');
+    }
+    return res.json();
+  },
+
+  async getCoolerHealthDiagnostic(qrOrId: string): Promise<CoolerHealthReport> {
+    const res = await fetch(`${API_BASE}/coolers/${encodeURIComponent(qrOrId)}/health`, {
+      headers: getHeaders()
+    });
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      throw new Error(err.error || `No cooler found for QR code '${qrOrId}'`);
+    }
+    return res.json();
+  },
+
+  async applyCoolerAction(id: string, action: 'sanitize' | 'flag_damage' | 'decommission' | 'recommission', notes?: string): Promise<any> {
+    const res = await fetch(`${API_BASE}/admin/coolers/${encodeURIComponent(id)}/action`, {
+      method: 'POST',
+      headers: getHeaders(),
+      body: JSON.stringify({ action, notes })
+    });
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      throw new Error(err.error || `Failed to apply '${action}' action to cooler ${id}`);
+    }
     return res.json();
   }
 };

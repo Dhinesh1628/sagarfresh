@@ -41,6 +41,7 @@ import { api } from '../api';
 import { useAuth } from '../context/AuthContext';
 import { getOrderDeliveryPin } from '../utils/pinHelper';
 import { ColdBoxScannerModal } from '../components/ColdBoxScannerModal';
+import { CoolerHealthChecker } from '../components/CoolerHealthChecker';
 
 export const AdminDashboardPage: React.FC = () => {
   const { user } = useAuth();
@@ -112,6 +113,7 @@ export const AdminDashboardPage: React.FC = () => {
   const [scannerOpen, setScannerOpen] = useState(false);
   const [scannedCoolerId, setScannedCoolerId] = useState<string | undefined>(undefined);
   const [coolerAnalytics, setCoolerAnalytics] = useState<any>(null);
+  const [coolerSubView, setCoolerSubView] = useState<'health' | 'inventory'>('health');
 
   const loadAllData = async () => {
     try {
@@ -1405,8 +1407,71 @@ export const AdminDashboardPage: React.FC = () => {
         const cm = coolerAnalytics?.metrics || coolerAnalytics || {};
         return (
         <div className="space-y-4">
-          {/* Ashik's Data Analytics Suite: 5 Cold-Chain & Box Performance KPIs */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
+          {/* Sub-view Switcher: Cooler Health Checker (Script #3) vs Fleet Inventory */}
+          <div className="flex items-center justify-between flex-wrap gap-2 pb-1 border-b border-gray-200 dark:border-slate-800">
+            <div className="flex items-center gap-1.5 bg-gray-100 dark:bg-slate-800/80 p-1 rounded-xl">
+              <button
+                onClick={() => setCoolerSubView('health')}
+                className={`px-3 py-1.5 rounded-lg text-xs font-bold transition cursor-pointer flex items-center gap-1.5 ${
+                  coolerSubView === 'health'
+                    ? 'bg-white dark:bg-slate-700 text-gray-950 dark:text-white shadow-2xs'
+                    : 'text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white'
+                }`}
+              >
+                <Thermometer className="w-3.5 h-3.5 text-cyan-600 dark:text-cyan-400" />
+                <span>Cooler Health Checker (Script #3)</span>
+                <span className="px-1.5 py-0.2 rounded text-[10px] bg-cyan-100 dark:bg-cyan-950 text-cyan-700 dark:text-cyan-300 font-extrabold">Live</span>
+              </button>
+
+              <button
+                onClick={() => setCoolerSubView('inventory')}
+                className={`px-3 py-1.5 rounded-lg text-xs font-bold transition cursor-pointer flex items-center gap-1.5 ${
+                  coolerSubView === 'inventory'
+                    ? 'bg-white dark:bg-slate-700 text-gray-950 dark:text-white shadow-2xs'
+                    : 'text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white'
+                }`}
+              >
+                <Package className="w-3.5 h-3.5 text-indigo-600 dark:text-indigo-400" />
+                <span>Fleet Inventory & Returns</span>
+                <span className="px-1.5 py-0.2 rounded text-[10px] bg-gray-200 dark:bg-slate-700 font-mono text-gray-700 dark:text-gray-300">{coolers.length}</span>
+              </button>
+            </div>
+
+            <div className="flex items-center gap-2">
+              <button
+                onClick={() => {
+                  setScannedCoolerId(undefined);
+                  setScannerOpen(true);
+                }}
+                className="px-3 py-1.5 bg-gradient-to-r from-sky-600 to-indigo-600 hover:from-sky-700 hover:to-indigo-700 text-white rounded-xl font-bold text-xs flex items-center gap-1.5 cursor-pointer shadow-xs transition"
+              >
+                <Camera className="w-3.5 h-3.5" />
+                <span>Camera QR Scanner</span>
+              </button>
+              <button
+                onClick={() => setShowAddCoolerModal(true)}
+                className="px-3 py-1.5 bg-sky-700 hover:bg-sky-800 text-white rounded-xl font-bold text-xs flex items-center gap-1 cursor-pointer"
+              >
+                <Plus className="w-3.5 h-3.5" />
+                <span>Register Cooler</span>
+              </button>
+            </div>
+          </div>
+
+          {coolerSubView === 'health' && (
+            <CoolerHealthChecker 
+              initialQr={scannedCoolerId || 'GOMEAT-BOX-BLR-417'}
+              onOpenScanner={() => {
+                setScannedCoolerId(undefined);
+                setScannerOpen(true);
+              }}
+            />
+          )}
+
+          {coolerSubView === 'inventory' && (
+            <>
+              {/* Ashik's Data Analytics Suite: 5 Cold-Chain & Box Performance KPIs */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
             <div className="p-3.5 bg-white dark:bg-slate-900 border border-gray-200 dark:border-slate-800 rounded-xl shadow-2xs">
               <div className="flex items-center justify-between text-gray-500 dark:text-gray-400">
                 <span className="text-[11px] font-bold uppercase tracking-wider">0°C–4°C Compliance</span>
@@ -1672,6 +1737,8 @@ export const AdminDashboardPage: React.FC = () => {
               </div>
             )}
           </div>
+          </>
+        )}
         </div>
         );
       })()}

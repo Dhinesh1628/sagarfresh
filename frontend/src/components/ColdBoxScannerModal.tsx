@@ -781,6 +781,35 @@ export const ColdBoxScannerModal: React.FC<ColdBoxScannerModalProps> = ({
                       <strong className="text-sky-700 dark:text-sky-400 text-xs">{inspectionData.telemetry?.singleUsePlasticBoxesSaved} boxes</strong>
                     </div>
                   </div>
+
+                  {/* Teammate Script #3 Cold Chain & SLA Analysis */}
+                  {inspectionData.tempCheck && (
+                    <div className={`mt-3 p-3 rounded-xl border ${
+                      inspectionData.tempCheck.verdict?.status === 'CORRECT'
+                        ? 'bg-emerald-50 dark:bg-emerald-950/60 border-emerald-200 dark:border-emerald-800 text-emerald-900 dark:text-emerald-200'
+                        : 'bg-rose-50 dark:bg-rose-950/60 border-rose-200 dark:border-rose-800 text-rose-900 dark:text-rose-200'
+                    }`}>
+                      <div className="flex items-center justify-between text-xs font-bold">
+                        <span className="flex items-center gap-1.5">
+                          <ShieldCheck className="w-4 h-4 text-emerald-600 dark:text-emerald-400 shrink-0" />
+                          Script #3 Verdict: {inspectionData.tempCheck.verdict?.status}
+                        </span>
+                        {inspectionData.health && (
+                          <span className="px-2 py-0.5 rounded text-[10px] bg-white/70 dark:bg-slate-800 font-black">
+                            Grade {inspectionData.health.grade} • {inspectionData.health.score}% Health
+                          </span>
+                        )}
+                      </div>
+                      <p className="text-[11px] mt-1 leading-relaxed opacity-90">
+                        {inspectionData.tempCheck.verdict?.reason || inspectionData.tempCheck.verdict?.title}
+                      </p>
+                      {inspectionData.fleetDetails?.decision && (
+                        <p className="text-[10px] font-semibold mt-1.5 pt-1.5 border-t border-black/10 dark:border-white/10 opacity-80">
+                          Return SLA (36h limit): {inspectionData.fleetDetails.decision.status} — {inspectionData.fleetDetails.decision.reason}
+                        </p>
+                      )}
+                    </div>
+                  )}
                 </div>
 
                 {/* 2. CHRONOLOGICAL COLD-CHAIN TRIP LOG */}

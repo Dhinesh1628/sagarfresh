@@ -14,6 +14,13 @@ import whatsappWebhookRouter from './routes/whatsappWebhook.js';
 import paymentsRouter from './routes/payments.js';
 import { handleGoogleAuth } from './routes/googleAuth.js';
 import { createBackup } from './scripts/backup.js';
+import {
+  findCooler,
+  getTemperatureCheck,
+  getFleetDetails,
+  calculateHealthScore,
+  generateFleetHealthOverview
+} from './services/coolerHealthAnalytics.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -1363,6 +1370,125 @@ app.patch('/api/returns/:id/status', authenticate, requireAdmin, (req, res) => {
 });
 
 // ==========================================
+// 4A-1. COOLER HEALTH CHECKER (Teammate Analytical Scripts Suite)
+// Evaluates 0°C-4°C Cold-Chain Compliance, Return SLA (36h limit),
+// Cycle Aging, and Breakdown Anomaly Detection.
+// ==========================================
+
+// 1. Fleet-wide Cooler Health Overview
+app.get('/api/admin/coolers/health', (req, res) => {
+  try {
+    const overview = generateFleetHealthOverview(db.data || {});
+    res.json({
+      success: true,
+      ...overview
+    });
+  } catch (err) {
+    console.error('[Cooler Health] Fleet overview error:', err);
+    res.status(500).json({ error: 'Failed to generate fleet health overview' });
+  }
+});
+
+// 2. Specific Cooler Health Diagnostic (By QR Code or Box ID)
+const handleCoolerHealthDiagnostic = (req, res) => {
+  try {
+    const qrOrId = (req.params.qr || req.params.coolerId || '').trim();
+    const coolers = db.get('coolers') || [];
+    let cooler = findCooler(coolers, qrOrId);
+
+    if (!cooler) {
+      // Auto-provision standard test box if it matches standard naming format
+      const normalizedBoxId = qrOrId.toUpperCase().replace(/^(GOMEAT-|SAGAR-|TV-)/i, '');
+      if (/^BOX-[A-Z0-9-]+/i.test(normalizedBoxId) || /^BOX-\d+/i.test(normalizedBoxId)) {
+        cooler = db.insert('coolers', {
+          id: normalizedBoxId,
+          qrCode: `GOMEAT-${normalizedBoxId}`,
+          model: 'ThermalVault Ultra-3L EPP',
+          status: 'available',
+          cyclesUsed: 4,
+          lastSanitizedDate: new Date().toISOString().split('T')[0],
+          depositAmount: 250,
+          maxHoldingHours: 36,
+          assignedHub: 'Bengaluru Central Hub Depot'
+        });
+      } else {
+        return res.status(404).json({
+          found: false,
+          qr: qrOrId,
+          error: `No cooler found for QR code '${qrOrId}'. Please scan again.`
+        });
+      }
+    }
+
+    const tempCheck = getTemperatureCheck(cooler, db.data || {});
+    const fleetDetails = getFleetDetails(cooler, db.data || {});
+    const health = calculateHealthScore(cooler, tempCheck, fleetDetails);
+
+    res.json({
+      success: true,
+      found: true,
+      cooler,
+      tempCheck,
+      fleetDetails,
+      health
+    });
+  } catch (err) {
+    console.error('[Cooler Health] Diagnostic error:', err);
+    res.status(500).json({ error: 'Failed to run cooler health diagnostic' });
+  }
+};
+
+app.get('/api/admin/coolers/:qr/health', handleCoolerHealthDiagnostic);
+app.get('/api/coolers/:qr/health', handleCoolerHealthDiagnostic);
+
+// 3. Cooler Maintenance / Operational Actions (Sanitize, Flag Breakdown, Decommission)
+app.post('/api/admin/coolers/:id/action', (req, res) => {
+  try {
+    const coolerId = req.params.id;
+    const { action, notes } = req.body;
+    const cooler = db.findById('coolers', coolerId);
+
+    if (!cooler) {
+      return res.status(404).json({ error: `Cooler ${coolerId} not found` });
+    }
+
+    const updates = {};
+    const timestamp = new Date().toISOString();
+
+    if (action === 'sanitize') {
+      updates.status = 'available';
+      updates.lastSanitizedDate = timestamp.split('T')[0];
+      updates.cyclesUsed = (cooler.cyclesUsed || 0) + 1;
+      updates.lastSanitizedNotes = notes || 'UV-C sanitization & antimicrobial wash certified';
+    } else if (action === 'flag_damage' || action === 'flag_maintenance') {
+      updates.status = 'damaged';
+      updates.maintenanceReason = notes || 'Thermal gasket wear or lid seal compromise detected';
+      updates.flaggedAt = timestamp;
+    } else if (action === 'decommission') {
+      updates.status = 'decommissioned';
+      updates.decommissionReason = notes || 'Retired after maximum lifecycle wear';
+      updates.retiredAt = timestamp;
+    } else if (action === 'recommission') {
+      updates.status = 'available';
+      updates.maintenanceReason = null;
+      updates.recommissionedAt = timestamp;
+    } else {
+      return res.status(400).json({ error: 'Invalid action. Supported: sanitize, flag_damage, decommission, recommission' });
+    }
+
+    const updated = db.update('coolers', coolerId, updates);
+    res.json({
+      success: true,
+      message: `Action '${action}' applied successfully to ${coolerId}`,
+      cooler: updated
+    });
+  } catch (err) {
+    console.error('[Cooler Health] Action error:', err);
+    res.status(500).json({ error: 'Failed to apply cooler action' });
+  }
+});
+
+// ==========================================
 // 4B. COLD BOX QR SCANNER, TELEMETRY & DIAGNOSTICS (Ashik Spec)
 // ==========================================
 app.get('/api/coolers/inspect/:coolerId', (req, res) => {
@@ -1483,7 +1609,10 @@ app.get('/api/coolers/inspect/:coolerId', (req, res) => {
       recommendedAction: isDamagedBox 
         ? 'APPROVE_REFUND_AND_REPAIR_BOX' 
         : (isEligible ? 'APPROVE_INSTANT_REFUND' : 'BOX_READY_FOR_USE')
-    }
+    },
+    tempCheck: getTemperatureCheck(cooler, db.data || {}),
+    fleetDetails: getFleetDetails(cooler, db.data || {}),
+    health: calculateHealthScore(cooler, getTemperatureCheck(cooler, db.data || {}), getFleetDetails(cooler, db.data || {}))
   });
 });
 
