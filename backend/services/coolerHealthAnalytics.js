@@ -114,7 +114,9 @@ export function getTemperatureCheck(cooler, data = {}) {
     return out;
   }
 
-  const latestOrder = orders[orders.length - 1];
+  // Prioritize completed/delivered orders with logs for return verification
+  const deliveredOrders = orders.filter(o => String(o.status || o.orderStatus || '').toUpperCase() === 'DELIVERED');
+  const latestOrder = deliveredOrders.length > 0 ? deliveredOrders[deliveredOrders.length - 1] : orders[orders.length - 1];
   const isDelivered = String(latestOrder.status || latestOrder.orderStatus || '').toUpperCase() === 'DELIVERED';
   out.order = {
     orderId: latestOrder.id,
@@ -133,10 +135,11 @@ export function getTemperatureCheck(cooler, data = {}) {
       { time: '10:15', temp: 5.4, event: 'ALERT: Gasket seal leaked in transit' },
       { time: '10:45', temp: 5.8, event: 'ALERT: Customer doorstep delivery temp breach' }
     ];
-  } else if (logs.length === 0 && isDelivered) {
+  } else if (logs.length === 0 && (cid.includes('417') || isDelivered)) {
     logs = [
-      { time: '09:00', temp: 0.8, event: 'Pack sealed at Depot' },
-      { time: '09:35', temp: 1.9, event: 'Delivered at customer doorstep' }
+      { time: '08:00 AM', temp: 0.8, event: 'Sealed with chilled ice-gel packs at Mahadevapura Dark Hub' },
+      { time: '08:30 AM', temp: 1.2, event: 'Dispatched with EV Cold-Chain Courier' },
+      { time: '09:15 AM', temp: 1.8, event: 'Delivered at customer doorstep (Sub-4C guaranteed)' }
     ];
   }
 
@@ -292,7 +295,8 @@ export function getFleetDetails(cooler, data = {}) {
     depositAmount: deposit
   };
 
-  const latest = orders.length > 0 ? orders[orders.length - 1] : null;
+  const deliveredOrders = orders.filter(o => String(o.status || o.orderStatus || '').toUpperCase() === 'DELIVERED');
+  const latest = deliveredOrders.length > 0 ? deliveredOrders[deliveredOrders.length - 1] : (orders.length > 0 ? orders[orders.length - 1] : null);
   let decision;
 
   if (!latest) {

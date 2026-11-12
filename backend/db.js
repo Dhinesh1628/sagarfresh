@@ -328,7 +328,7 @@ const INITIAL_DATA = {
       qrCode: "GOMEAT-BOX-417",
       model: "ThermalVault 18L - Reusable EPP Cold-Gel Box",
       status: "with_customer",
-      currentOrderId: "ORD-9281",
+      currentOrderId: "ORD-417-DELIVERED",
       currentUserId: "usr_customer",
       currentUserName: "Pooja Sundaram",
       cyclesUsed: 14,
@@ -541,6 +541,30 @@ const INITIAL_DATA = {
       deliveryNotes: "Leave at security desk or ring Flat 402 doorbell."
     },
     {
+      id: "ORD-417-DELIVERED",
+      orderNumber: "ORD-417-DELIVERED",
+      userId: "usr_customer",
+      customerName: "Pooja Sundaram",
+      customerEmail: "pooja.sundaram@gmail.com",
+      customerPhone: "+91 98765 43210",
+      deliveryAddress: "Flat 402, Alpine Eco Apartments, Doddanekkundi, Marathahalli, Bengaluru 560037",
+      city: "Bengaluru",
+      coolerId: "BOX-BLR-417",
+      coolerModel: "ThermalVault 18L - Reusable EPP Cold-Gel Box",
+      status: "Delivered",
+      orderStatus: "DELIVERED",
+      lifecycleStatus: "DELIVERED",
+      total: 1299,
+      coolerDeposit: 250,
+      createdAt: "2026-11-11T12:00:00.000Z",
+      deliveredAt: "2026-11-11T14:30:00.000Z",
+      tempLog: [
+        { time: "08:00 AM", temp: 0.8, event: "Sealed with chilled ice-gel packs at Mahadevapura Dark Hub" },
+        { time: "08:30 AM", temp: 1.2, event: "Dispatched with EV Cold-Chain Courier" },
+        { time: "09:15 AM", temp: 1.8, event: "Delivered at customer doorstep (Sub-4C guaranteed)" }
+      ]
+    },
+    {
       id: "ORD-7740",
       userId: "usr_customer",
       customerName: "Pooja Sundaram",
@@ -573,9 +597,12 @@ const INITIAL_DATA = {
       riderPhone: "+91 97412 •••01",
       riderVehicle: "EV 2-Wheeler (KA-04-EV-819)",
       riderEta: "Pending butcher packing",
-      coolerId: "BOX-BLR-417",
+      coolerId: "BOX-BLR-774",
       coolerModel: "ThermalVault 18L - Reusable EPP Cold-Gel Box",
       liveTemp: 1.0,
+      tempLog: [
+        { time: "06:15 AM", temp: 0.2, event: "Cuts packed with chilled gel bricks at Halal Cuts Station" }
+      ],
       deliveryExecutive: "Suresh Patil (EV Fleet #14)",
       deliverySlot: "Today, Evening 5:00 PM - 7:00 PM",
       trackingCode: "GOMEAT-TRK-7740",
@@ -646,6 +673,26 @@ class Database {
         this.data = JSON.parse(raw);
         if (!this.data.coolers) this.data.coolers = [];
         if (!this.data.orders) this.data.orders = [];
+
+        const box417 = this.data.coolers.find(c => c.id === 'BOX-BLR-417');
+        if (!box417) {
+          const init417 = INITIAL_DATA.coolers.find(c => c.id === 'BOX-BLR-417');
+          if (init417) this.data.coolers.push({ ...init417 });
+        } else {
+          box417.currentOrderId = 'ORD-417-DELIVERED';
+          box417.status = 'with_customer';
+        }
+
+        if (!this.data.orders.some(o => o.id === 'ORD-417-DELIVERED')) {
+          const ord417 = INITIAL_DATA.orders.find(o => o.id === 'ORD-417-DELIVERED');
+          if (ord417) this.data.orders.push({ ...ord417 });
+        }
+
+        // Clean any conflict where ORD-7740 took BOX-BLR-417
+        const ord7740 = this.data.orders.find(o => o.id === 'ORD-7740');
+        if (ord7740 && ord7740.coolerId === 'BOX-BLR-417') {
+          ord7740.coolerId = 'BOX-BLR-774';
+        }
 
         const box103 = this.data.coolers.find(c => c.id === 'BOX-BLR-103');
         if (!box103) {
