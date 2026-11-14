@@ -627,24 +627,24 @@ export const Navbar: React.FC<NavbarProps> = ({
           {/* Right Navigation & Actions */}
           <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
             
-            {/* GoMeat Offers Button */}
+            {/* GoMeat Offers Button (Visible on extra-wide screens) */}
             <button
               onClick={handleOffersClick}
               title="Click to apply instant 20% OFF deals"
-              className="hidden md:flex h-10 px-2.5 rounded-xl text-xs font-bold transition items-center gap-1.5 whitespace-nowrap shrink-0 text-amber-700 dark:text-amber-400 bg-amber-50 hover:bg-amber-100 dark:bg-amber-950/60 dark:hover:bg-amber-900/60 border border-amber-200 dark:border-amber-800/70 shadow-2xs cursor-pointer"
+              className="hidden 2xl:flex h-10 px-2.5 rounded-xl text-xs font-bold transition items-center gap-1.5 whitespace-nowrap shrink-0 text-amber-700 dark:text-amber-400 bg-amber-50 hover:bg-amber-100 dark:bg-amber-950/60 dark:hover:bg-amber-900/60 border border-amber-200 dark:border-amber-800/70 shadow-2xs cursor-pointer"
             >
               <Percent className="w-3.5 h-3.5 text-amber-600 dark:text-amber-400" />
-              <span className="hidden xl:inline">Offers</span>
+              <span>Offers</span>
               <span className="text-[10px] bg-amber-600 text-white font-extrabold px-1.5 py-0.2 rounded-full">20%</span>
             </button>
             
-            {/* My Orders / Dashboard Button */}
+            {/* My Orders / Dashboard Button (Visible on extra-wide screens) */}
             <button
               onClick={() => {
                 if (!user) onOpenAuth('customer');
                 else setCurrentTab('dashboard');
               }}
-              className={`hidden lg:flex h-10 px-3 rounded-xl text-xs font-bold cursor-pointer transition items-center gap-1.5 whitespace-nowrap shrink-0 ${
+              className={`hidden 2xl:flex h-10 px-3 rounded-xl text-xs font-bold cursor-pointer transition items-center gap-1.5 whitespace-nowrap shrink-0 ${
                 currentTab === 'dashboard' 
                   ? 'bg-rose-50 dark:bg-rose-950/60 text-[#d11243] dark:text-rose-400 border border-rose-200 dark:border-rose-900 shadow-2xs' 
                   : 'text-gray-700 dark:text-gray-200 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-slate-800 border border-transparent'
@@ -658,15 +658,33 @@ export const Navbar: React.FC<NavbarProps> = ({
               <button
                 onClick={() => setCurrentTab('dashboard')}
                 title="GoMeat Vault Wallet - Click to view passbook"
-                className="hidden xl:flex h-10 px-3 rounded-xl bg-emerald-50 hover:bg-emerald-100 dark:bg-emerald-950/60 dark:hover:bg-emerald-900/60 border border-emerald-300 dark:border-emerald-700/60 text-emerald-800 dark:text-emerald-300 text-xs font-bold items-center gap-1.5 cursor-pointer transition shadow-2xs shrink-0 whitespace-nowrap"
+                className="hidden 2xl:flex h-10 px-3 rounded-xl bg-emerald-50 hover:bg-emerald-100 dark:bg-emerald-950/60 dark:hover:bg-emerald-900/60 border border-emerald-300 dark:border-emerald-700/60 text-emerald-800 dark:text-emerald-300 text-xs font-bold items-center gap-1.5 cursor-pointer transition shadow-2xs shrink-0 whitespace-nowrap"
               >
                 <Wallet className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
-                <span className="hidden xl:inline text-[11px] font-medium text-emerald-700 dark:text-emerald-400">Wallet:</span>
+                <span className="text-[11px] font-medium text-emerald-700 dark:text-emerald-400">Wallet:</span>
                 <span className="font-extrabold text-emerald-900 dark:text-emerald-200">₹{user.walletBalance ?? 0}</span>
               </button>
             )}
 
-            {/* Dark / Light Theme Toggle: ALWAYS VISIBLE & PROMINENT ON BOTH MOBILE & DESKTOP */}
+            {/* Ding Sound Toggle Button: ELEGANT SQUARE ICON PAIRED WITH THEME TOGGLE */}
+            <button
+              onClick={toggleSound}
+              className={`h-8 sm:h-10 w-8 sm:w-10 rounded-xl border transition-all duration-200 cursor-pointer flex items-center justify-center shrink-0 active:scale-95 ${
+                isSoundEnabled
+                  ? 'bg-emerald-50 dark:bg-emerald-950/60 border-emerald-300 dark:border-emerald-700/80 text-emerald-700 dark:text-emerald-300 hover:bg-emerald-100'
+                  : 'bg-gray-50 dark:bg-slate-800 border-gray-200 dark:border-slate-700 text-gray-400 hover:bg-gray-100 dark:hover:bg-slate-700'
+              }`}
+              title={isSoundEnabled ? 'Ding Chime is ON (Click to mute)' : 'Sound is Muted (Click to unmute)'}
+              aria-label="Toggle chime sound"
+            >
+              {isSoundEnabled ? (
+                <Bell className="w-3.5 sm:w-4 h-3.5 sm:h-4 text-emerald-600 dark:text-emerald-400" />
+              ) : (
+                <VolumeX className="w-3.5 sm:w-4 h-3.5 sm:h-4 text-gray-400" />
+              )}
+            </button>
+
+            {/* Dark / Light Theme Toggle: ALWAYS VISIBLE ON NAVBAR */}
             <button
               onClick={toggleTheme}
               className="h-8 sm:h-10 w-8 sm:w-10 rounded-xl border border-gray-200 dark:border-slate-700 bg-gray-50 dark:bg-slate-800 text-gray-700 dark:text-amber-400 hover:border-[#d11243] hover:shadow-[0_0_15px_rgba(225,29,67,0.25)] transition-all duration-300 cursor-pointer flex items-center justify-center shrink-0 active:scale-95"
@@ -677,31 +695,6 @@ export const Navbar: React.FC<NavbarProps> = ({
                 <Sun className="w-3.5 sm:w-4 h-3.5 sm:h-4 text-amber-400 hover:rotate-45 transition-transform" />
               ) : (
                 <Moon className="w-3.5 sm:w-4 h-3.5 sm:h-4 text-gray-700 hover:text-[#d11243] transition-colors" />
-              )}
-            </button>
-
-            {/* Ding Sound Toggle Button: ALWAYS VISIBLE ON NAVBAR */}
-            <button
-              onClick={toggleSound}
-              className={`h-8 sm:h-10 px-2.5 sm:px-3 rounded-xl border text-xs font-bold transition-all duration-200 cursor-pointer flex items-center gap-1.5 shrink-0 active:scale-95 ${
-                isSoundEnabled
-                  ? 'bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 border-emerald-300 dark:border-emerald-700 hover:bg-emerald-100'
-                  : 'bg-gray-50 dark:bg-slate-800 text-gray-500 dark:text-gray-400 border-gray-200 dark:border-slate-700 hover:bg-gray-100'
-              }`}
-              title={isSoundEnabled ? 'Crystal Ding Chime is ON (Click to mute)' : 'Sound is Muted (Click to unmute)'}
-              aria-label="Toggle chime sound"
-            >
-              {isSoundEnabled ? (
-                <>
-                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
-                  <Bell className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" />
-                  <span className="hidden xl:inline text-[11px]">Sound ON</span>
-                </>
-              ) : (
-                <>
-                  <VolumeX className="w-3.5 h-3.5 text-gray-400" />
-                  <span className="hidden xl:inline text-[11px]">Muted</span>
-                </>
               )}
             </button>
 
