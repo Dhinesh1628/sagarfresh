@@ -501,16 +501,16 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
       {/* ======================================================== */}
       {/* 3. MAIN 3D SHOWCASE HERO STAGE                           */}
       {/* ======================================================== */}
-      <div className="relative min-h-[250px] sm:min-h-[320px] md:min-h-[360px] lg:min-h-[390px] flex items-center justify-center px-2 sm:px-4 overflow-hidden">
+      <div className="relative min-h-[320px] sm:min-h-[420px] md:min-h-[480px] lg:min-h-[520px] flex items-center justify-center px-2 sm:px-4 overflow-hidden">
         
         {/* ---------------------------------------------------- */}
-        {/* LAYER 1: SOLID GIGANTIC TYPOGRAPHY (BEHIND MEAT CUT) */}
+        {/* LAYER 1: SOLID GIGANTIC TEXT (BEHIND MEAT CUT)       */}
         {/* Plain, clean, high-contrast, pure white bold letters */}
         {/* ---------------------------------------------------- */}
         <div 
           className="absolute inset-0 flex items-center justify-center pointer-events-none select-none z-0 overflow-hidden"
           style={{
-            transform: `translate(${tilt.x * -30}px, ${tilt.y * -16}px)`,
+            transform: `translate(${tilt.x * -35}px, ${tilt.y * -20}px)`,
             transition: isAnimating ? 'all 0.4s ease' : 'transform 0.15s ease-out'
           }}
         >
@@ -519,10 +519,10 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
               isAnimating ? 'opacity-0 scale-90 translate-y-8' : 'opacity-90 scale-100 translate-y-0'
             }`}
             style={{
-              fontSize: 'clamp(2.4rem, 10vw, 9.5rem)',
+              fontSize: 'clamp(4.2rem, 14vw, 13.5rem)',
               lineHeight: '0.85',
               fontFamily: 'Montserrat, system-ui, -apple-system, sans-serif',
-              textShadow: '0 4px 16px rgba(0, 0, 0, 0.4)'
+              textShadow: '0 20px 40px rgba(0, 0, 0, 0.9)'
             }}
           >
             {currentSlide.giantText}
@@ -575,13 +575,13 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
               : 'transform 0.15s ease-out'
           }}
         >
-          <div className={`relative flex items-center justify-center transition-all duration-500 ${
+          <div className={`relative flex items-center justify-center drop-shadow-[0_25px_45px_rgba(0,0,0,0.85)] transition-all duration-500 ${
             isAnimating ? 'opacity-0 scale-75 translate-y-12' : 'opacity-100 scale-100 translate-y-0'
           }`}>
             
             {/* Frosted Glass Culinary Platter (Pristine, Unobstructed Cut) */}
             <div className="relative flex flex-col items-center">
-              <div className="relative w-48 h-48 sm:w-64 sm:h-64 md:w-76 md:h-76 lg:w-84 lg:h-84 rounded-full p-2.5 sm:p-3 bg-gradient-to-tr from-white/20 via-white/5 to-transparent backdrop-blur-3xl ring-1 ring-white/25 shadow-[0_20px_45px_rgba(0,0,0,0.6)] overflow-hidden flex items-center justify-center group">
+              <div className="relative w-48 h-48 sm:w-64 sm:h-64 md:w-76 md:h-76 lg:w-84 lg:h-84 rounded-full p-2.5 sm:p-3 bg-gradient-to-tr from-white/20 via-white/5 to-transparent backdrop-blur-3xl ring-2 ring-white/30 shadow-[0_25px_50px_rgba(0,0,0,0.8)] overflow-hidden flex items-center justify-center group">
                 <img 
                   src={currentSlide.image} 
                   alt={currentSlide.title}
@@ -591,6 +591,34 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
             </div>
 
           </div>
+        </div>
+
+        {/* ---------------------------------------------------- */}
+        {/* LAYER 3: 3D STROKED TEXT (DIRECTLY IN FRONT OF CUT)   */}
+        {/* Blends seamlessly across the photo for 3D depth      */}
+        {/* ---------------------------------------------------- */}
+        <div 
+          className="absolute inset-0 flex items-center justify-center pointer-events-none select-none z-30 overflow-hidden"
+          style={{
+            transform: `translate(${tilt.x * -35}px, ${tilt.y * -20}px)`,
+            transition: isAnimating ? 'all 0.4s ease' : 'transform 0.15s ease-out'
+          }}
+        >
+          <span 
+            className={`font-black uppercase tracking-[0.12em] sm:tracking-[0.14em] select-none transition-all duration-500 truncate max-w-full text-center ${
+              isAnimating ? 'opacity-0 scale-90 translate-y-8' : 'opacity-95 scale-100 translate-y-0'
+            }`}
+            style={{
+              fontSize: 'clamp(4.2rem, 14vw, 13.5rem)',
+              lineHeight: '0.85',
+              fontFamily: 'Montserrat, system-ui, -apple-system, sans-serif',
+              color: 'transparent',
+              WebkitTextStroke: '2px rgba(255, 255, 255, 0.92)',
+              filter: 'drop-shadow(0 0 10px rgba(255, 255, 255, 0.25))'
+            }}
+          >
+            {currentSlide.giantText}
+          </span>
         </div>
 
       </div>
