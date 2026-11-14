@@ -22,11 +22,14 @@ import {
   ArrowRight,
   Check,
   TrendingUp,
-  HelpCircle
+  HelpCircle,
+  VolumeX,
+  Bell
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { useCart } from '../context/CartContext';
 import { useTheme } from '../context/ThemeContext';
+import { useSound } from '../context/SoundContext';
 import { api } from '../api';
 import type { DeliveryAddress, Product } from '../types';
 
@@ -67,6 +70,7 @@ export const Navbar: React.FC<NavbarProps> = ({
   const { user, logout } = useAuth();
   const { totalItems, subtotal, setIsCartOpen, items, addItem, updateQuantity, applyCoupon } = useCart();
   const { theme, toggleTheme } = useTheme();
+  const { isSoundEnabled, toggleSound } = useSound();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [userDropdownOpen, setUserDropdownOpen] = useState(false);
   const [offersToast, setOffersToast] = useState<string | null>(null);
@@ -491,7 +495,7 @@ export const Navbar: React.FC<NavbarProps> = ({
       
       {/* Top announcement */}
       <div className="bg-[#fcf8f9] dark:bg-slate-950 border-b border-rose-100/70 dark:border-slate-800/80 px-3 sm:px-4 py-1.5 text-[10px] sm:text-[11px] text-gray-700 dark:text-gray-300 overflow-hidden">
-        <div className="max-w-7xl mx-auto flex items-center justify-between gap-2 pr-28 sm:pr-32">
+        <div className="max-w-7xl mx-auto flex items-center justify-between gap-2">
           <div className="flex items-center gap-1.5 min-w-0 truncate">
             <span className="font-extrabold text-[#d11243] dark:text-rose-400 shrink-0 text-[10px] sm:text-[11px]">0°C CHILLED FRESH:</span>
             <span className="truncate text-gray-800 dark:text-gray-200 font-medium">Reusable Cold Box (₹250 Deposit Refund) • Never Frozen</span>
@@ -550,7 +554,7 @@ export const Navbar: React.FC<NavbarProps> = ({
             {/* Location Selector Button */}
             <button
               onClick={onOpenLocationModal}
-              className="flex items-center gap-1.5 sm:gap-2 px-2.5 sm:px-3 h-9 sm:h-10 rounded-xl bg-white dark:bg-slate-800/90 border border-gray-200 dark:border-slate-700 hover:bg-gray-50 dark:hover:bg-slate-700 text-xs transition cursor-pointer text-left group shrink-0 max-w-[130px] sm:max-w-[200px] xl:max-w-[230px] shadow-2xs overflow-hidden"
+              className="flex items-center gap-1.5 sm:gap-2 px-2.5 sm:px-3 h-9 sm:h-10 rounded-xl bg-white dark:bg-slate-800/90 border border-gray-200 dark:border-slate-700 hover:bg-gray-50 dark:hover:bg-slate-700 text-xs transition cursor-pointer text-left group shrink-0 max-w-[150px] sm:max-w-[260px] lg:max-w-[300px] shadow-2xs overflow-hidden"
               title="Click to enter custom delivery address or detect location"
               type="button"
             >
@@ -565,7 +569,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                   <ChevronDown className="w-3 h-3 text-gray-400 group-hover:text-[#d11243] transition-transform group-hover:translate-y-0.5 shrink-0" />
                 </div>
                 <div className="hidden sm:flex items-center gap-1 mt-0.5">
-                  <span className="text-gray-500 dark:text-gray-400 font-medium truncate max-w-[65px] sm:max-w-[90px] xl:max-w-[120px] text-[10px]">
+                  <span className="text-gray-500 dark:text-gray-400 font-medium truncate max-w-[80px] sm:max-w-[130px] lg:max-w-[160px] text-[10px]">
                     {getLocationSubtitle()}
                   </span>
                   <span className="w-1 h-1 rounded-full bg-emerald-500 shrink-0" />
@@ -578,14 +582,19 @@ export const Navbar: React.FC<NavbarProps> = ({
           </div>
 
           {/* Swiggy-Grade Search Bar - Center Zone */}
-          <div ref={searchContainerRef} className="hidden sm:flex flex-1 min-w-[200px] max-w-xl mx-2 lg:mx-4 relative z-10">
+          <div ref={searchContainerRef} className="hidden sm:flex flex-1 min-w-[220px] max-w-xl mx-2 lg:mx-4 relative z-10">
             <div className="relative w-full">
               <Search className={`w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none transition-colors z-10 ${
                 isSearchFocused ? 'text-[#d11243]' : 'text-gray-500 dark:text-gray-400'
               }`} />
               <input
                 ref={searchInputRef}
-                type="text"
+                type="search"
+                name="gomeat_catalog_search"
+                id="gomeat_catalog_search"
+                autoComplete="off"
+                autoCorrect="off"
+                spellCheck={false}
                 value={searchQuery}
                 onFocus={() => setIsSearchFocused(true)}
                 onKeyDown={handleKeyDown}
@@ -668,6 +677,31 @@ export const Navbar: React.FC<NavbarProps> = ({
                 <Sun className="w-3.5 sm:w-4 h-3.5 sm:h-4 text-amber-400 hover:rotate-45 transition-transform" />
               ) : (
                 <Moon className="w-3.5 sm:w-4 h-3.5 sm:h-4 text-gray-700 hover:text-[#d11243] transition-colors" />
+              )}
+            </button>
+
+            {/* Ding Sound Toggle Button: ALWAYS VISIBLE ON NAVBAR */}
+            <button
+              onClick={toggleSound}
+              className={`h-8 sm:h-10 px-2.5 sm:px-3 rounded-xl border text-xs font-bold transition-all duration-200 cursor-pointer flex items-center gap-1.5 shrink-0 active:scale-95 ${
+                isSoundEnabled
+                  ? 'bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 border-emerald-300 dark:border-emerald-700 hover:bg-emerald-100'
+                  : 'bg-gray-50 dark:bg-slate-800 text-gray-500 dark:text-gray-400 border-gray-200 dark:border-slate-700 hover:bg-gray-100'
+              }`}
+              title={isSoundEnabled ? 'Crystal Ding Chime is ON (Click to mute)' : 'Sound is Muted (Click to unmute)'}
+              aria-label="Toggle chime sound"
+            >
+              {isSoundEnabled ? (
+                <>
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                  <Bell className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" />
+                  <span className="hidden xl:inline text-[11px]">Sound ON</span>
+                </>
+              ) : (
+                <>
+                  <VolumeX className="w-3.5 h-3.5 text-gray-400" />
+                  <span className="hidden xl:inline text-[11px]">Muted</span>
+                </>
               )}
             </button>
 
