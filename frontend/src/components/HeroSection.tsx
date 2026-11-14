@@ -579,26 +579,14 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
             isAnimating ? 'opacity-0 scale-75 translate-y-12' : 'opacity-100 scale-100 translate-y-0'
           }`}>
             
-            {/* Frosted Glass Culinary Platter & Clean External Telemetry Badge */}
+            {/* Frosted Glass Culinary Platter (Pristine, Unobstructed Cut) */}
             <div className="relative flex flex-col items-center">
-              <div className="relative w-44 h-44 sm:w-60 sm:h-60 md:w-72 md:h-72 lg:w-76 lg:h-76 rounded-full p-2.5 sm:p-3 bg-gradient-to-tr from-white/15 via-white/5 to-transparent backdrop-blur-3xl ring-1 ring-white/20 shadow-[0_15px_35px_rgba(0,0,0,0.5)] overflow-hidden flex items-center justify-center group">
+              <div className="relative w-48 h-48 sm:w-64 sm:h-64 md:w-76 md:h-76 lg:w-84 lg:h-84 rounded-full p-2.5 sm:p-3 bg-gradient-to-tr from-white/20 via-white/5 to-transparent backdrop-blur-3xl ring-1 ring-white/25 shadow-[0_20px_45px_rgba(0,0,0,0.6)] overflow-hidden flex items-center justify-center group">
                 <img 
                   src={currentSlide.image} 
                   alt={currentSlide.title}
                   className="w-full h-full object-cover rounded-full transition-transform duration-700 group-hover:scale-105"
                 />
-              </div>
-
-              {/* Clean Cold-Chain Telemetry Pill Below Platter (Zero Clipping) */}
-              <div className="-mt-4 sm:-mt-5 z-30 px-3 sm:px-4 py-1 sm:py-1.5 rounded-full bg-black/90 backdrop-blur-2xl ring-1 ring-white/25 shadow-2xl flex items-center gap-1.5 sm:gap-2 text-center max-w-[90%]">
-                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 shrink-0 shadow-[0_0_8px_#34d399] animate-pulse" />
-                <span className="text-[9px] sm:text-[11px] font-black uppercase tracking-wider text-white whitespace-nowrap">
-                  {currentSlide.cutStyle}
-                </span>
-                <span className="text-gray-500 text-[10px] hidden sm:inline">•</span>
-                <span className="text-[8px] sm:text-[10px] text-gray-300 font-semibold whitespace-nowrap hidden sm:inline">
-                  {currentSlide.origin}
-                </span>
               </div>
             </div>
 
