@@ -504,30 +504,25 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
       <div className="relative min-h-[250px] sm:min-h-[320px] md:min-h-[360px] lg:min-h-[390px] flex items-center justify-center px-2 sm:px-4 overflow-hidden">
         
         {/* ---------------------------------------------------- */}
-        {/* LAYER 1: CINEMATIC BLENDED BACKGROUND TYPOGRAPHY    */}
-        {/* Softly blended with ambient lighting & gradient mask */}
+        {/* LAYER 1: SOLID GIGANTIC TYPOGRAPHY (BEHIND MEAT CUT) */}
+        {/* Plain, clean, high-contrast, pure white bold letters */}
         {/* ---------------------------------------------------- */}
         <div 
           className="absolute inset-0 flex items-center justify-center pointer-events-none select-none z-0 overflow-hidden"
           style={{
-            transform: `translate(${tilt.x * -25}px, ${tilt.y * -14}px)`,
+            transform: `translate(${tilt.x * -30}px, ${tilt.y * -16}px)`,
             transition: isAnimating ? 'all 0.4s ease' : 'transform 0.15s ease-out'
           }}
         >
           <span 
-            className={`font-black uppercase tracking-[0.14em] sm:tracking-[0.18em] select-none transition-all duration-700 truncate max-w-full text-center ${
-              isAnimating ? 'opacity-0 scale-95 translate-y-6' : 'opacity-100 scale-100 translate-y-0'
+            className={`font-black uppercase tracking-[0.12em] sm:tracking-[0.14em] text-white select-none transition-all duration-500 truncate max-w-full text-center ${
+              isAnimating ? 'opacity-0 scale-90 translate-y-8' : 'opacity-90 scale-100 translate-y-0'
             }`}
             style={{
-              fontSize: 'clamp(2.5rem, 11vw, 10.5rem)',
+              fontSize: 'clamp(2.4rem, 10vw, 9.5rem)',
               lineHeight: '0.85',
               fontFamily: 'Montserrat, system-ui, -apple-system, sans-serif',
-              background: 'linear-gradient(180deg, rgba(255, 255, 255, 0.28) 0%, rgba(255, 255, 255, 0.10) 65%, rgba(255, 255, 255, 0.02) 100%)',
-              WebkitBackgroundClip: 'text',
-              WebkitTextFillColor: 'transparent',
-              WebkitTextStroke: '1px rgba(255, 255, 255, 0.12)',
-              filter: `drop-shadow(0 0 45px ${currentSlide.glowColor || 'rgba(255, 255, 255, 0.08)'})`,
-              mixBlendMode: 'plus-lighter'
+              textShadow: '0 4px 16px rgba(0, 0, 0, 0.4)'
             }}
           >
             {currentSlide.giantText}
