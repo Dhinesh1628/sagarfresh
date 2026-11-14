@@ -588,12 +588,12 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
               />
 
               {/* Cold-Chain Telemetry Capsule Inside Platter */}
-              <div className="absolute bottom-2.5 sm:bottom-4 inset-x-2.5 sm:inset-x-6 bg-black/85 backdrop-blur-2xl rounded-xl py-1 sm:py-1.5 px-2 sm:px-3 text-center shadow-2xl ring-1 ring-white/20">
-                <div className="flex items-center justify-center gap-1.5 text-white font-black text-[9px] sm:text-[10px] uppercase tracking-wider">
-                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
+              <div className="absolute bottom-2.5 sm:bottom-3.5 left-1/2 -translate-x-1/2 w-[82%] max-w-[190px] sm:max-w-[220px] bg-black/90 backdrop-blur-2xl rounded-xl py-1 sm:py-1.5 px-2 text-center shadow-2xl ring-1 ring-white/30 z-10">
+                <div className="flex items-center justify-center gap-1.5 text-white font-black text-[9px] sm:text-[10px] uppercase tracking-wider truncate">
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 shrink-0 shadow-[0_0_6px_#34d399]" />
                   <span className="truncate">{currentSlide.cutStyle}</span>
                 </div>
-                <p className="text-[8px] sm:text-[9px] text-gray-300 font-semibold mt-0.5 tracking-wide line-clamp-1">
+                <p className="text-[8px] sm:text-[9px] text-gray-200 font-semibold mt-0.5 tracking-tight truncate">
                   {currentSlide.origin}
                 </p>
               </div>
@@ -607,7 +607,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
       {/* ======================================================== */}
       {/* 4. BOTTOM CONTROL PANEL (Seamless Obsidian Glass)        */}
       {/* ======================================================== */}
-      <div className="relative z-40 px-3.5 sm:px-10 py-3 sm:py-4 bg-gradient-to-t from-black/90 via-black/60 to-transparent backdrop-blur-md">
+      <div className="relative z-40 px-3.5 sm:px-10 pt-3 sm:pt-4 pb-20 sm:pb-5 bg-gradient-to-t from-black/95 via-black/75 to-transparent backdrop-blur-md">
         <div className="flex flex-col md:flex-row items-center justify-between gap-3.5 sm:gap-4">
           
           {/* Bottom Left: Title, Tagline, Description & Shop Now Button */}
@@ -621,7 +621,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
               </h2>
             </div>
 
-            <p className="text-[10px] sm:text-xs text-gray-300 max-w-md leading-relaxed font-medium line-clamp-2">
+            <p className="text-[10px] sm:text-xs text-gray-200 max-w-md leading-relaxed font-medium line-clamp-2">
               {currentSlide.description}
             </p>
 
@@ -658,15 +658,15 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
           </div>
 
           {/* Bottom Center: Bold Price Tag Capsule */}
-          <div className="text-center shrink-0 px-4 py-1.5 sm:px-5 sm:py-2 rounded-full bg-black/50 ring-1 ring-white/15 backdrop-blur-xl shadow-xl">
-            <span className="text-[9px] uppercase font-black text-gray-400 tracking-widest block mb-0.5">
+          <div className="text-center shrink-0 px-4 py-2 sm:px-6 sm:py-2.5 rounded-2xl bg-black/75 ring-1 ring-white/25 backdrop-blur-xl shadow-2xl">
+            <span className="text-[10px] uppercase font-black text-gray-200 tracking-widest block mb-0.5">
               Price (500g)
             </span>
-            <div className="flex items-baseline justify-center gap-1.5">
-              <span className="text-xl sm:text-3xl font-black text-white tracking-tight">
+            <div className="flex items-baseline justify-center gap-2">
+              <span className="text-2xl sm:text-3xl font-black text-white tracking-tight font-mono">
                 {currentSlide.price}
               </span>
-              <span className="text-xs text-gray-500 line-through font-bold">
+              <span className="text-xs text-gray-400 line-through font-bold">
                 {currentSlide.mrp}
               </span>
             </div>

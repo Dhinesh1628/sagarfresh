@@ -490,25 +490,25 @@ export const Navbar: React.FC<NavbarProps> = ({
     <header className="sticky top-0 z-40 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md border-b border-gray-200 dark:border-slate-800 shadow-2xs transition-colors duration-300">
       
       {/* Top announcement */}
-      <div className="bg-[#fcf8f9] dark:bg-slate-950 border-b border-rose-100/70 dark:border-slate-800/80 px-3 sm:px-4 py-1 text-[10px] sm:text-[11px] text-gray-600 dark:text-gray-400 overflow-hidden">
-        <div className="max-w-7xl mx-auto flex items-center justify-between gap-2">
+      <div className="bg-[#fcf8f9] dark:bg-slate-950 border-b border-rose-100/70 dark:border-slate-800/80 px-3 sm:px-4 py-1.5 text-[10px] sm:text-[11px] text-gray-700 dark:text-gray-300 overflow-hidden">
+        <div className="max-w-7xl mx-auto flex items-center justify-between gap-2 pr-28 sm:pr-32">
           <div className="flex items-center gap-1.5 min-w-0 truncate">
-            <span className="font-extrabold text-[#d11243] shrink-0 text-[10px] sm:text-[11px]">0°C CHILLED FRESH:</span>
-            <span className="truncate">Reusable Cold Box (₹250 Deposit Refund) • Never Frozen</span>
+            <span className="font-extrabold text-[#d11243] dark:text-rose-400 shrink-0 text-[10px] sm:text-[11px]">0°C CHILLED FRESH:</span>
+            <span className="truncate text-gray-800 dark:text-gray-200 font-medium">Reusable Cold Box (₹250 Deposit Refund) • Never Frozen</span>
           </div>
 
-          <div className="hidden sm:flex items-center gap-3 text-gray-500 dark:text-gray-400 shrink-0">
+          <div className="hidden sm:flex items-center gap-3 text-gray-600 dark:text-gray-300 shrink-0">
             <a 
               href="https://wa.me/919741288301?text=Hello%20GoMeat%2C%20I%20need%20assistance%20with%20my%20order"
               target="_blank"
               rel="noopener noreferrer"
-              className="hover:text-emerald-600 dark:hover:text-emerald-400 font-medium flex items-center gap-1 cursor-pointer transition-colors"
+              className="hover:text-emerald-600 dark:hover:text-emerald-400 font-semibold flex items-center gap-1 cursor-pointer transition-colors text-gray-700 dark:text-gray-200"
               title="Chat with GoMeat Customer Support"
             >
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
               <span>Support: +91 97412 88301</span>
             </a>
-            <span className="text-gray-300 dark:text-gray-700">•</span>
+            <span className="text-gray-300 dark:text-gray-600">•</span>
             <button 
               onClick={() => {
                 if (!user) {
@@ -517,7 +517,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                   setCurrentTab('coolers');
                 }
               }}
-              className="text-[#d11243] hover:underline font-semibold cursor-pointer"
+              className="text-[#d11243] dark:text-rose-400 hover:underline font-bold cursor-pointer"
             >
               Return Empty Box for ₹250 Refund &rarr;
             </button>
@@ -550,14 +550,14 @@ export const Navbar: React.FC<NavbarProps> = ({
             {/* Location Selector Button */}
             <button
               onClick={onOpenLocationModal}
-              className="flex items-center gap-1.5 sm:gap-2 px-2 sm:px-3 h-9 sm:h-10 rounded-xl border border-gray-200/90 dark:border-slate-800 hover:bg-gray-100/80 dark:hover:bg-slate-800/80 text-xs transition cursor-pointer text-left group shrink-0 min-w-fit max-w-[130px] sm:max-w-[210px] xl:max-w-[240px]"
+              className="flex items-center gap-1.5 sm:gap-2 px-2.5 sm:px-3 h-9 sm:h-10 rounded-xl bg-white dark:bg-slate-800/90 border border-gray-200 dark:border-slate-700 hover:bg-gray-50 dark:hover:bg-slate-700 text-xs transition cursor-pointer text-left group shrink-0 max-w-[130px] sm:max-w-[200px] xl:max-w-[230px] shadow-2xs overflow-hidden"
               title="Click to enter custom delivery address or detect location"
               type="button"
             >
-              <div className="w-5 h-5 sm:w-7 sm:h-7 rounded-lg bg-rose-50 dark:bg-rose-950/60 text-[#d11243] flex items-center justify-center group-hover:scale-105 transition-transform shrink-0">
+              <div className="w-5 h-5 sm:w-7 sm:h-7 rounded-lg bg-rose-50 dark:bg-rose-950/80 text-[#d11243] dark:text-rose-400 flex items-center justify-center group-hover:scale-105 transition-transform shrink-0">
                 <MapPin className="w-2.5 sm:w-3.5 h-2.5 sm:h-3.5" />
               </div>
-              <div className="leading-tight overflow-hidden min-w-0">
+              <div className="leading-tight overflow-hidden min-w-0 flex-1">
                 <div className="flex items-center gap-0.5 sm:gap-1 min-w-0">
                   <span className="font-extrabold text-gray-900 dark:text-white group-hover:text-[#d11243] transition-colors truncate text-[10px] sm:text-xs">
                     {getLocationHeading()}
@@ -565,7 +565,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                   <ChevronDown className="w-3 h-3 text-gray-400 group-hover:text-[#d11243] transition-transform group-hover:translate-y-0.5 shrink-0" />
                 </div>
                 <div className="hidden sm:flex items-center gap-1 mt-0.5">
-                  <span className="text-gray-500 dark:text-gray-400 font-medium truncate max-w-[70px] sm:max-w-[100px] xl:max-w-[130px] text-[10px]">
+                  <span className="text-gray-500 dark:text-gray-400 font-medium truncate max-w-[65px] sm:max-w-[90px] xl:max-w-[120px] text-[10px]">
                     {getLocationSubtitle()}
                   </span>
                   <span className="w-1 h-1 rounded-full bg-emerald-500 shrink-0" />
@@ -578,10 +578,10 @@ export const Navbar: React.FC<NavbarProps> = ({
           </div>
 
           {/* Swiggy-Grade Search Bar - Center Zone */}
-          <div ref={searchContainerRef} className="hidden sm:flex flex-1 min-w-[200px] max-w-xl mx-2 lg:mx-4 relative">
+          <div ref={searchContainerRef} className="hidden sm:flex flex-1 min-w-[200px] max-w-xl mx-2 lg:mx-4 relative z-10">
             <div className="relative w-full">
-              <Search className={`w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none transition-colors ${
-                isSearchFocused ? 'text-[#d11243]' : 'text-gray-400'
+              <Search className={`w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none transition-colors z-10 ${
+                isSearchFocused ? 'text-[#d11243]' : 'text-gray-500 dark:text-gray-400'
               }`} />
               <input
                 ref={searchInputRef}
@@ -597,7 +597,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                   }
                 }}
                 placeholder={isSearchFocused ? 'Search chicken, mutton, surmai, prawns, cuts...' : searchPlaceholders[placeholderIndex]}
-                className="w-full h-10 pl-10 pr-9 rounded-xl bg-gray-100/90 dark:bg-slate-800/90 hover:bg-gray-100 dark:hover:bg-slate-800 focus:bg-white dark:focus:bg-slate-900 border border-gray-200 dark:border-slate-700/80 focus:border-[#d11243] text-gray-900 dark:text-gray-100 text-xs placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[#d11243]/20 shadow-xs transition-all"
+                className="w-full h-10 pl-10 pr-9 rounded-xl bg-gray-100 dark:bg-slate-800 hover:bg-gray-100/90 dark:hover:bg-slate-700/80 focus:bg-white dark:focus:bg-slate-900 border border-gray-300 dark:border-slate-600 focus:border-[#d11243] text-gray-900 dark:text-white text-xs font-medium placeholder-gray-500 dark:placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-[#d11243]/20 shadow-xs transition-all"
               />
               {searchQuery && (
                 <button
